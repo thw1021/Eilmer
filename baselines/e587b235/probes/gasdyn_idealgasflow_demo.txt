@@ -1,0 +1,43 @@
+Begin gasdynamic demo...
+Use M=2.4 and gamma=1.4
+Test: T0_T...
+...returns T0/T = 2.152
+Literature value = 2.152
+Test: p0_p...
+...returns p0/p = 14.62
+Literature value = 14.620
+Test: NuFromM...
+...returns nu = 0.641348
+Literature value = 0.6413
+...provided M=0.8:
+Caught subsonic value.
+Test: MFromNu...
+...returns M = 2.4
+Literature value = 2.4
+...provided nu=-0.5:
+Caught subsonic value.
+Test: MachAngle...
+...returns mu = 0.429775
+Literature value = 0.430
+...provided M=0.8:
+Caught subsonic value.
+Oblique shock relations may not quite match (data is from chart)...
+Computed: M1=2, theta(beta=0.767945)=0.243957, beta(theta=0.244346)=0.768443
+Conditions behind shock:
+M2=1.4885, expected 1.482 (from chart, 14 degree deflection)
+Computed: T2/T1=1.24781, p2/p1=2.08523, r2/r1=1.67112
+Expected: T2/T1=1.249, p2/p1=2.088, r2/r1=1.673 (approx. normal-shock table M=1.390)
+V2/V1=0.830809, p02/p01=0.960817
+Expected: V2/V1=0.8304=sin(B)/sin(B-d)*r1/r2
+
+Taylor-Maccoll cone flow demo with M1=1.5
+for M1=1.5, beta=49deg, expect theta=20deg from NACA1135.
+theta_c(deg)=19.9584 expected 20deg, surface speed V_c=428.151
+surface pressure coefficient=0.386169 expected 0.385
+p_c: 160800, T_c: 343.837
+
+Conical shock from cone with half-angle 20deg in M1=1.5
+sigma(deg)=49.0399 expected 49deg
+Repeat above test, but call beta_cone2()
+sigma(deg)=49.0305 expected 49deg
+Finished gasdynamic demo.
