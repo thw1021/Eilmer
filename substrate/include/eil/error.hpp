@@ -1,0 +1,121 @@
+#pragma once
+// eil/error.hpp — failure paths with D-matching text.
+//
+// The messages below are copied from Phobos output captured by
+// tools/fmt_probe.d (tools/fmt_corpus.txt), not invented:
+//
+//   range:  index [10] is out of bounds for array of length 3
+//   conv:   error converting input to floating point for input "not a number".
+//
+// Two shapes matter for log equivalence:
+//   * FlowSolverException is the solver's own exception class
+//     (globalconfig.d:70-77). It takes file/line defaults the way D does, and
+//     its message is what catch blocks in main.d/steadystate_core.d print.
+//   * D's enforce(cond, "fmt", args...) was measured to keep the format string
+//     *unsubstituted* in .msg. That is what enforce() does here; if a ported
+//     call site is found whose message depends on substitution, record it in
+//     reports/ rather than quietly changing this helper.
+
+#include <cstdio>
+#include <stdexcept>
+#include <string>
+
+namespace eil {
+
+// Base for everything the solver throws. D distinguishes Exception (catchable by
+// `catch (Exception e)`) from Error/Throwable (caught only by `catch (Throwable)`),
+// and both appear in the solver, so the split is preserved.
+class ExceptionBase : public std::runtime_error {
+  public:
+    explicit ExceptionBase(const std::string& msg, const char* file = "", size_t line = 0)
+        : std::runtime_error(msg), file_(file), line_(line) {}
+    // std::runtime_error::what() is the message; D calls it .msg.
+    std::string msg() const { return std::string(what()); }
+    const char* file() const { return file_.c_str(); }
+    size_t line() const { return line_; }
+    // D's Throwable.toString() is "file(line): message"; some call sites print it.
+    std::string toString() const {
+        if (file_.empty()) return msg();
+        return file_ + "(" + std::to_string(line_) + "): " + msg();
+    }
+
+  private:
+    std::string file_;
+    size_t line_;
+};
+
+class ErrorBase : public ExceptionBase {
+  public:
+    using ExceptionBase::ExceptionBase;
+};
+
+// globalconfig.d:70
+class FlowSolverException : public ExceptionBase {
+  public:
+    FlowSolverException(const std::string& message, const char* file = "", size_t line = 0)
+        : ExceptionBase(message, file, line) {}
+};
+
+// D's exception ctor defaults are `__FILE__`/`__LINE__` at the *caller*. A C++
+// default argument would expand to this header instead, so call sites use this
+// macro to keep the file/line text that ends up in solver logs.
+#define EIL_THROW_FLOW(message) throw ::eil::FlowSolverException((message), __FILE__, __LINE__)
+
+// core.exception.RangeError, as surfaced by `arr[i]` and slice bounds.
+class RangeError : public ErrorBase {
+  public:
+    RangeError(size_t index, size_t length, const char* file = "", size_t line = 0)
+        : ErrorBase(range_text(index, length), file, line), index_(index), length_(length) {}
+    static std::string range_text(size_t index, size_t length) {
+        char buf[96];
+        std::snprintf(buf, sizeof buf, "index [%llu] is out of bounds for array of length %llu",
+                      static_cast<unsigned long long>(index),
+                      static_cast<unsigned long long>(length));
+        return buf;
+    }
+    size_t index() const { return index_; }
+    size_t length() const { return length_; }
+
+  private:
+    size_t index_;
+    size_t length_;
+};
+
+class SliceError : public ErrorBase {
+  public:
+    SliceError(const std::string& m, const char* file = "", size_t line = 0)
+        : ErrorBase(m, file, line) {}
+};
+
+// std.conv.ConvException text for numeric parsing.
+class ConversionException : public ExceptionBase {
+  public:
+    explicit ConversionException(const std::string& input, const char* file = "", size_t line = 0)
+        : ExceptionBase("error converting input to floating point for input \"" + input + "\".",
+                        file, line) {}
+};
+
+// std.exception.enforce. Message text is the raw first argument (see header note).
+template <typename... Args>
+inline void enforce(bool condition, const std::string& msg, const Args&...) {
+    if (!condition) throw ExceptionBase(msg);
+}
+inline void enforce(bool condition, const std::string& msg) {
+    if (!condition) throw ExceptionBase(msg);
+}
+
+// D's `assert(...)` is a hard runtime check compiled into the release solver
+// (249 sites in src/eilmer), so it is not std::assert: it throws and stays live.
+inline void d_assert(bool condition, const char* what, const char* file, size_t line) {
+    if (!condition) throw ErrorBase(std::string("Assertion failure: ") + what, file, line);
+}
+#define eil_assert(cond) ::eil::d_assert((cond), #cond, __FILE__, __LINE__)
+
+// core.exception.OutOfMemoryError and friends appear via `new` failing; kept as a
+// distinct type so ported catch clauses stay honest.
+class OutOfMemoryError : public ErrorBase {
+  public:
+    using ErrorBase::ErrorBase;
+};
+
+} // namespace eil
