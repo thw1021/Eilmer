@@ -1,0 +1,5 @@
+# this line is skipped, but the next one is not: std.string.split gives "#c" as
+# token 0, which is not equal to "#", so the reader tries to convert it to double
+# and std.conv raises a ConversionException (an Exception, not an Error).
+#c
+0.5 1.0

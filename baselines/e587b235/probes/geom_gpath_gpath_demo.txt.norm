@@ -1,0 +1,38 @@
+Begin demonstration of the geometric Path primitives.
+a = Vector3(1, 2.2, 3), b = Vector3(1, 0, 0)
+ab= Line(p0=Vector3(1, 2.2, 3), p1=Vector3(1, 0, 0))
+ab(0.5)= Vector3(1, 1.1, 1.5)
+Arc
+abc= Arc(a=Vector3(2, 2, 0), b=Vector3(1, 2, 1), c=Vector3(1, 2, 0))
+abc(0.5)= Vector3(1.70711, 2, 0.707107)
+Arc3
+adb(0.5)= Vector3(1.70711, 2, 0.707107)
+Helix
+helix= Helix(a0=Vector3(0, 0, 0), a1=Vector3(1, 0, 0), xdsh=Vector3(0, 1, 0), r0=1, r1=1, theta01=1.5708)
+helix(0.5)=Vector3(0.5, 0.707107, 0.707107)
+Bezier
+Bezier adb= Bezier(B=[Vector3(2, 2, 0), Vector3(1.70711, 2, 0.707107), Vector3(1, 2, 1)])
+bez_adb(0.5)=Vector3(1.60355, 2, 0.603553)
+Polyline
+polyline= Polyline(segments=[Arc(a=Vector3(2, 2, 0), b=Vector3(1, 2, 1), c=Vector3(1, 2, 0)), Line(p0=Vector3(1, 2, 1), p1=Vector3(1, 2, 0))], closed=false)
+polyline(0.25)= Vector3(1.80048, 2, 0.599358)
+polyline(0.50)= Vector3(1.28154, 2, 0.95955)
+polyline(0.75)= Vector3(1, 2, 0.642699)
+ArcLengthParameterizedPath
+alpp= ArcLengthParameterizedPath(underlying_path=Bezier(B=[Vector3(0, 0, 0), Vector3(1, 1, 1), Vector3(4, 4, 4)]))
+alpp(0.5)= Vector3(1.99997, 1.99997, 1.99997)
+SubRangedPath
+srp= SubRangedPath(underlying_path=Polyline(segments=[Arc(a=Vector3(2, 2, 0), b=Vector3(1, 2, 1), c=Vector3(1, 2, 0)), Line(p0=Vector3(1, 2, 1), p1=Vector3(1, 2, 0))], closed=false), t0=1 t1=0)
+srp(0.25)= Vector3(1, 2, 0.642699)
+srp(0.50)= Vector3(1.28154, 2, 0.95955)
+srp(0.75)= Vector3(1.80048, 2, 0.599358)
+ReversedPath
+rp= SubRangedPath(underlying_path=Polyline(segments=[Arc(a=Vector3(2, 2, 0), b=Vector3(1, 2, 1), c=Vector3(1, 2, 0)), Line(p0=Vector3(1, 2, 1), p1=Vector3(1, 2, 0))], closed=false), t0=1 t1=0)
+rp(0.25)= Vector3(1, 2, 0.642699)
+rp(0.50)= Vector3(1.28154, 2, 0.95955)
+rp(0.75)= Vector3(1.80048, 2, 0.599358)
+Spline (Polyline)
+circle= Polyline(segments=[Bezier(B=[Vector3(0, -1, 0), Vector3(-0.5, -0.714286, 0), Vector3(-1, -0.428571, 0), Vector3(-1, 0, 0)]), Bezier(B=[Vector3(-1, 0, 0), Vector3(-1, 0.428571, 0), Vector3(-0.5, 1, 0), Vector3(0, 1, 0)]), Bezier(B=[Vector3(0, 1, 0), Vector3(0.5, 1, 0), Vector3(1, 0.428571, 0), Vector3(1, 0, 0)]), Bezier(B=[Vector3(1, 0, 0), Vector3(1, -0.428571, 0), Vector3(0.5, -0.714286, 0), Vector3(0, -1, 0)])], closed=false)
+circle(5.0/8)= Vector3(0.677023, 0.671567, 0)
+closest distance of point (0.5,0.5) to line (0.0,0.0) -> (1.0,0.0) is: 0.5
+Done gpath_demo.

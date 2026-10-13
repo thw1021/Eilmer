@@ -1,0 +1,548 @@
+poly.parab class=Polynomial
+poly.parab str=Polynomial(P=[Vector3(-1, 1, 0), Vector3(0, 0, 0), Vector3(1, 1, 0)])
+poly.parab length=2.9578260862759125
+poly.parab opCall t=0 x=-1 y=1 z=0
+poly.parab dpdt t=0 x=1 y=-2 z=0
+poly.parab d2pdt2 t=0 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0 tb=0 L=0
+poly.parab plenswap ta=0 tb=0 L=0
+poly.parab opCall t=0.00050000000000000001 x=-0.999 y=0.99800100000000003 z=0
+poly.parab dpdt t=0.00050000000000000001 x=1 y=-1.998 z=0
+poly.parab d2pdt2 t=0.00050000000000000001 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.0011173632205650702
+poly.parab plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.0011173632205650702
+poly.parab opCall t=0.001 x=-0.998 y=0.996004 z=0
+poly.parab dpdt t=0.001 x=1 y=-1.996 z=0
+poly.parab d2pdt2 t=0.001 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.00050000000000000001 tb=0.001 L=0.0022333851138619967
+poly.parab plenswap ta=0.001 tb=0.00050000000000000001 L=0.0022333851138619967
+poly.parab opCall t=0.050000000000000003 x=-0.90000000000000002 y=0.81000000000000005 z=0
+poly.parab dpdt t=0.050000000000000003 x=1 y=-1.8 z=0
+poly.parab d2pdt2 t=0.050000000000000003 x=0 y=7.9999999998969784 z=0
+poly.parab plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.10515094459133367
+poly.parab plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.10515094459133367
+poly.parab opCall t=0.25 x=-0.5 y=0.25 z=0
+poly.parab dpdt t=0.25 x=1 y=-1 z=0
+poly.parab d2pdt2 t=0.25 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.125 tb=0.25 L=0.40083481604848109
+poly.parab plenswap ta=0.25 tb=0.125 L=0.40083481604848109
+poly.parab opCall t=0.5 x=0 y=0 z=0
+poly.parab dpdt t=0.5 x=1 y=0 z=0
+poly.parab d2pdt2 t=0.5 x=0 y=8.000000000000016 z=0
+poly.parab plen ta=0.25 tb=0.5 L=0.57389531420580953
+poly.parab plenswap ta=0.5 tb=0.25 L=0.57389531420580953
+poly.parab opCall t=0.75 x=0.5 y=0.25 z=0
+poly.parab dpdt t=0.75 x=1 y=1 z=0
+poly.parab d2pdt2 t=0.75 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.375 tb=0.75 L=0.83394858128730343
+poly.parab plenswap ta=0.75 tb=0.375 L=0.83394858128730343
+poly.parab opCall t=0.94999999999999996 x=0.89999999999999991 y=0.80999999999999983 z=0
+poly.parab dpdt t=0.94999999999999996 x=1 y=1.7999999999999998 z=0
+poly.parab d2pdt2 t=0.94999999999999996 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.3142927837583818
+poly.parab plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.3142927837583818
+poly.parab opCall t=0.999 x=0.998 y=0.996004 z=0
+poly.parab dpdt t=0.999 x=1 y=1.996 z=0
+poly.parab d2pdt2 t=0.999 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.4995 tb=0.999 L=1.4754668471654353
+poly.parab plenswap ta=0.999 tb=0.4995 L=1.4754668471654353
+poly.parab opCall t=0.99950000000000006 x=0.99900000000000011 y=0.99800100000000025 z=0
+poly.parab dpdt t=0.99950000000000006 x=1 y=1.9980000000000002 z=0
+poly.parab d2pdt2 t=0.99950000000000006 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.4772002310650052
+poly.parab plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.4772002310650052
+poly.parab opCall t=1 x=1 y=1 z=0
+poly.parab dpdt t=1 x=1 y=2 z=0
+poly.parab d2pdt2 t=1 x=0 y=8.0000000000080007 z=0
+poly.parab plen ta=0.5 tb=1 L=1.4789354039742377
+poly.parab plenswap ta=1 tb=0.5 L=1.4789354039742377
+poly.parab pfl target=0 t=0.001 x=-0.998 y=0.996004 z=0
+poly.parab pfl target=0.73945652156897812 t=0.19500000000000001 x=-0.60999999999999999 y=0.37209999999999999 z=0
+poly.parab pfl target=1.4789130431379562 t=0.5 x=0 y=0 z=0
+poly.parab pfl target=2.2183695647069346 t=0.80600000000000005 x=0.6120000000000001 y=0.3745440000000001 z=0
+poly.parab pfl target=2.9548682601896368 t=1 x=1 y=1 z=0
+poly.parab pfl target=2.9578260862759125 t=1 x=1 y=1 z=0
+poly.parab pfl target=4.4367391294138692 t=1 x=1 y=1 z=0
+poly.parab cd px=0.5 py=0.5 pz=0 t=0.81497941543232877 dist=0.16592048184674524
+poly.parab cd px=0 py=0 pz=0 t=0.50000069733625474 dist=1.3946725094817998e-06
+poly.parab cd px=1 py=1 pz=1 t=0.99999815799335934 dist=1.0000000000339297
+poly.parab cd px=2 py=0 pz=1 t=0.91756219576753439 dist=1.6862228865259947
+poly.parab i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.75000000000000011
+poly.parab i2d10 found=true t=0.75
+poly.parab i2db found=true t=0.625
+poly.parab C[0]=0
+poly.parab C[1]=0
+poly.parab C[2]=1
+poly.parab ncoef=3
+poly.parab xrange a=-1 b=1
+poly.wide class=Polynomial
+poly.wide str=Polynomial(P=[Vector3(-2, 4, 0), Vector3(0, 0, 0), Vector3(2, 4, 0)])
+poly.wide length=9.293308819697959
+poly.wide opCall t=0 x=-2 y=4 z=0
+poly.wide dpdt t=0 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0 tb=0 L=0
+poly.wide plenswap ta=0 tb=0 L=0
+poly.wide opCall t=0.00050000000000000001 x=-1.998 y=3.9920040000000001 z=0
+poly.wide dpdt t=0.00050000000000000001 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.00050000000000000001 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.0041201952647462719
+poly.wide plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.0041201952647462719
+poly.wide opCall t=0.001 x=-1.996 y=3.984016 z=0
+poly.wide dpdt t=0.001 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.001 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.00050000000000000001 tb=0.001 L=0.0082345700746659176
+poly.wide plenswap ta=0.001 tb=0.00050000000000000001 L=0.0082345700746659176
+poly.wide opCall t=0.050000000000000003 x=-1.8 y=3.2400000000000002 z=0
+poly.wide dpdt t=0.050000000000000003 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.050000000000000003 x=0 y=31.999999999587914 z=0
+poly.wide plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.38327831891090891
+poly.wide plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.38327831891090891
+poly.wide opCall t=0.25 x=-1 y=1 z=0
+poly.wide dpdt t=0.25 x=1 y=-2 z=0
+poly.wide d2pdt2 t=0.25 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.125 tb=0.25 L=1.3473768893566265
+poly.wide plenswap ta=0.25 tb=0.125 L=1.3473768893566265
+poly.wide opCall t=0.5 x=0 y=0 z=0
+poly.wide dpdt t=0.5 x=1 y=0 z=0
+poly.wide d2pdt2 t=0.5 x=0 y=32.000000000000064 z=0
+poly.wide plen ta=0.25 tb=0.5 L=1.4789354039742377
+poly.wide plenswap ta=0.5 tb=0.25 L=1.4789354039742377
+poly.wide opCall t=0.75 x=1 y=1 z=0
+poly.wide dpdt t=0.75 x=1 y=2 z=0
+poly.wide d2pdt2 t=0.75 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.375 tb=0.75 L=2.05280961581694
+poly.wide plenswap ta=0.75 tb=0.375 L=2.05280961581694
+poly.wide opCall t=0.94999999999999996 x=1.7999999999999998 y=3.2399999999999993 z=0
+poly.wide dpdt t=0.94999999999999996 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.94999999999999996 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.47499999999999998 tb=0.94999999999999996 L=3.9615142822008114
+poly.wide plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=3.9615142822008114
+poly.wide opCall t=0.999 x=1.996 y=3.984016 z=0
+poly.wide dpdt t=0.999 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.999 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.4995 tb=0.999 L=4.6322744642022675
+poly.wide plenswap ta=0.999 tb=0.4995 L=4.6322744642022675
+poly.wide opCall t=0.99950000000000006 x=1.9980000000000002 y=3.992004000000001 z=0
+poly.wide dpdt t=0.99950000000000006 x=1 y=-nan z=0
+poly.wide d2pdt2 t=0.99950000000000006 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.49975000000000003 tb=0.99950000000000006 L=4.6395090618670158
+poly.wide plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=4.6395090618670158
+poly.wide opCall t=1 x=2 y=4 z=0
+poly.wide dpdt t=1 x=1 y=-nan z=0
+poly.wide d2pdt2 t=1 x=0 y=32.000000000032003 z=0
+poly.wide plen ta=0.5 tb=1 L=4.6467514243339352
+poly.wide plenswap ta=1 tb=0.5 L=4.6467514243339352
+poly.wide pfl target=0 t=0.001 x=-1.996 y=3.984016 z=0
+poly.wide pfl target=2.3233272049244897 t=0.16700000000000001 x=-1.3319999999999999 y=1.7742239999999996 z=0
+poly.wide pfl target=4.6466544098489795 t=0.5 x=0 y=0 z=0
+poly.wide pfl target=6.9699816147734692 t=0.83399999999999996 x=1.3359999999999999 y=1.7848959999999996 z=0
+poly.wide pfl target=9.2840155108782607 t=1 x=2 y=4 z=0
+poly.wide pfl target=9.293308819697959 t=1 x=2 y=4 z=0
+poly.wide pfl target=13.939963229546938 t=1 x=2 y=4 z=0
+poly.wide cd px=0.5 py=0.5 pz=0 t=0.65749076761784919 dist=0.16592048187264707
+poly.wide cd px=0 py=0 pz=0 t=0.50000069733625474 dist=2.7893450189717384e-06
+poly.wide cd px=1 py=1 pz=1 t=0.7500005740322111 dist=1.0000000000131806
+poly.wide cd px=2 py=0 pz=1 t=0.70878145350724076 dist=1.6862228865380413
+poly.wide i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.625
+poly.wide i2d10 found=true t=0.625
+poly.wide i2db found=true t=0.5625
+poly.wide C[0]=0
+poly.wide C[1]=0
+poly.wide C[2]=1
+poly.wide ncoef=3
+poly.deriv t=0 x=1 y=-nan z=0
+poly.deriv.inrange t=0 x=1 y=-2 z=0
+poly.deriv t=0.25 x=1 y=-2 z=0
+poly.deriv.inrange t=0.25 x=1 y=-1 z=0
+poly.deriv t=0.5 x=1 y=0 z=0
+poly.deriv.inrange t=0.5 x=1 y=0 z=0
+poly.deriv t=1 x=1 y=-nan z=0
+poly.deriv.inrange t=1 x=1 y=2 z=0
+poly.five class=Polynomial
+poly.five str=Polynomial(P=[Vector3(0, 1, 0), Vector3(0.25, 1.0954, 0), Vector3(0.5, 1.1892, 0), Vector3(0.75, 1.2649, 0), Vector3(1, 1.3229, 0)])
+poly.five length=1.0525845692178541
+poly.five opCall t=0 x=0 y=0.99999999999999578 z=0
+poly.five dpdt t=0 x=1 y=0.34590000000054416 z=0
+poly.five d2pdt2 t=0 x=0 y=0.48359079074522526 z=0
+poly.five plen ta=0 tb=0 L=0
+poly.five plenswap ta=0 tb=0 L=0
+poly.five opCall t=0.00050000000000000001 x=0.00050000000000000001 y=1.0001730107275406 z=0
+poly.five dpdt t=0.00050000000000000001 x=1 y=0.34614279862400799 z=0
+poly.five d2pdt2 t=0.00050000000000000001 x=0 y=0.48225429449821888 z=0
+poly.five plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00026454830122863581
+poly.five plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00026454830122863581
+poly.five opCall t=0.001 x=0.001 y=1.0003461426871099 z=0
+poly.five dpdt t=0.001 x=1 y=0.34638492818827171 z=0
+poly.five d2pdt2 t=0.001 x=0 y=0.48359079074522526 z=0
+poly.five plen ta=0.00050000000000000001 tb=0.001 L=0.00052912633322752434
+poly.five plenswap ta=0.001 tb=0.00050000000000000001 L=0.00052912633322752434
+poly.five opCall t=0.050000000000000003 x=0.050000000000000003 y=1.0178481600000162 z=0
+poly.five dpdt t=0.050000000000000003 x=1 y=0.36695546666695666 z=0
+poly.five d2pdt2 t=0.050000000000000003 x=0 y=0.35775502738033538 z=0
+poly.five plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.026589628791849056
+poly.five plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.026589628791849056
+poly.five opCall t=0.25 x=0.25 y=1.095400000000015 z=0
+poly.five dpdt t=0.25 x=1 y=0.39503333333315982 z=0
+poly.five d2pdt2 t=0.25 x=0 y=-0.048132972496617299 z=0
+poly.five plen ta=0.125 tb=0.25 L=0.13433122424698948
+poly.five plenswap ta=0.25 tb=0.125 L=0.13433122424698948
+poly.five opCall t=0.5 x=0.5 y=1.189199999999982 z=0
+poly.five dpdt t=0.5 x=1 y=0.34436666666665028 z=0
+poly.five d2pdt2 t=0.5 x=0 y=-0.31213297257970396 z=0
+poly.five plen ta=0.25 tb=0.5 L=0.26704128176723679
+poly.five plenswap ta=0.5 tb=0.25 L=0.26704128176723679
+poly.five opCall t=0.75 x=0.75 y=1.2649000000000092 z=0
+poly.five dpdt t=0.75 x=1 y=0.26150000000016893 z=0
+poly.five d2pdt2 t=0.75 x=0 y=-0.30573297316038861 z=0
+poly.five plen ta=0.375 tb=0.75 L=0.39422490966658263
+poly.five plenswap ta=0.75 tb=0.375 L=0.39422490966658263
+poly.five opCall t=0.94999999999999996 x=0.94999999999999996 y=1.3121289600000152 z=0
+poly.five dpdt t=0.94999999999999996 x=1 y=0.21744986666643462 z=0
+poly.five d2pdt2 t=0.94999999999999996 x=0 y=-0.1059249725710032 z=0
+poly.five plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.49326267647114302
+poly.five plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.49326267647114302
+poly.five opCall t=0.999 x=0.999 y=1.3226859519255121 z=0
+poly.five dpdt t=0.999 x=1 y=0.21406308994514056 z=0
+poly.five d2pdt2 t=0.999 x=0 y=-0.030578809484538283 z=0
+poly.five plen ta=0.4995 tb=0.999 L=0.51744353070707683
+poly.five plenswap ta=0.999 tb=0.4995 L=0.51744353070707683
+poly.five opCall t=0.99950000000000006 x=0.99950000000000006 y=1.322792979682343 z=0
+poly.five dpdt t=0.99950000000000006 x=1 y=0.21404800590940443 z=0
+poly.five d2pdt2 t=0.99950000000000006 x=0 y=-0.03140010540469973 z=0
+poly.five plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.51769043946510529
+poly.five plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.51769043946510529
+poly.five opCall t=1 x=1 y=1.3228999999999982 z=0
+poly.five dpdt t=1 x=1 y=0.21403333333286856 z=0
+poly.five d2pdt2 t=1 x=0 y=-0.030578809484538283 z=0
+poly.five plen ta=0.5 tb=1 L=0.51793735301672805
+poly.five plenswap ta=1 tb=0.5 L=0.51793735301672805
+poly.five pfl target=0 t=0.001 x=0.001 y=1.0003461426871099 z=0
+poly.five pfl target=0.26314614230446354 t=0.246 x=0.246 y=1.0938194986786973 z=0
+poly.five pfl target=0.52629228460892707 t=0.49299999999999999 x=0.49299999999999999 y=1.1867818159517356 z=0
+poly.five pfl target=0.78943842691339061 t=0.74399999999999999 x=0.74399999999999999 y=1.2633254766432338 z=0
+poly.five pfl target=1.0515319846486364 t=0.999 x=0.999 y=1.3226859519255121 z=0
+poly.five pfl target=1.0525845692178541 t=1 x=1 y=1.3228999999999982 z=0
+poly.five pfl target=1.5788768538267812 t=1 x=1 y=1.3228999999999982 z=0
+poly.five cd px=0.5 py=0.5 pz=0 t=0.26320186034861215 dist=0.6456052816162563
+poly.five cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.000000637152614
+poly.five cd px=1 py=1 pz=1 t=0.93232226192421552 dist=1.0486223690910592
+poly.five cd px=2 py=0 pz=1 t=0.99999815799335934 dist=1.9365089854962905
+poly.five i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.5
+poly.five i2d10 found=true t=0.5
+poly.five i2db found=true t=0.25
+poly.five C[0]=0.99999999999999578
+poly.five C[1]=0.34590000000054416
+poly.five C[2]=0.24313333333045839
+poly.five C[3]=-0.44639999999540853
+poly.five C[4]=0.18026666666440833
+poly.five ncoef=5
+poly.fromC class=Polynomial
+poly.fromC str=Polynomial(P=[Vector3(0, 1, 0), Vector3(1, 2.625, 0)])
+poly.fromC length=1.9103888467318804
+poly.fromC opCall t=0 x=0 y=1 z=0
+poly.fromC dpdt t=0 x=1 y=2 z=0
+poly.fromC d2pdt2 t=0 x=0 y=-0.99924999985567808 z=0
+poly.fromC plen ta=0 tb=0 L=0
+poly.fromC plenswap ta=0 tb=0 L=0
+poly.fromC opCall t=0.00050000000000000001 x=0.00050000000000000001 y=1.000999875015625 z=0
+poly.fromC dpdt t=0.00050000000000000001 x=1 y=1.99950009375 z=0
+poly.fromC d2pdt2 t=0.00050000000000000001 x=0 y=-0.99887499982465044 z=0
+poly.fromC plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00055893315568455179
+poly.fromC plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00055893315568455179
+poly.fromC opCall t=0.001 x=0.001 y=1.0019995001249999 z=0
+poly.fromC dpdt t=0.001 x=1 y=1.9990003750000001 z=0
+poly.fromC d2pdt2 t=0.001 x=0 y=-0.99924999985567808 z=0
+poly.fromC plen ta=0.00050000000000000001 tb=0.001 L=0.0011176986894211695
+poly.fromC plenswap ta=0.001 tb=0.00050000000000000001 L=0.0011176986894211695
+poly.fromC opCall t=0.050000000000000003 x=0.050000000000000003 y=1.0987656250000002 z=0
+poly.fromC dpdt t=0.050000000000000003 x=1 y=1.9509375 z=0
+poly.fromC d2pdt2 t=0.050000000000000003 x=0 y=-0.96250000014563852 z=0
+poly.fromC plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.055077009542824372
+poly.fromC plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.055077009542824372
+poly.fromC opCall t=0.25 x=0.25 y=1.470703125 z=0
+poly.fromC dpdt t=0.25 x=1 y=1.7734375 z=0
+poly.fromC d2pdt2 t=0.25 x=0 y=-0.81249999972499154 z=0
+poly.fromC plen ta=0.125 tb=0.25 L=0.2602620532609537
+poly.fromC plenswap ta=0.25 tb=0.125 L=0.2602620532609537
+poly.fromC opCall t=0.5 x=0.5 y=1.890625 z=0
+poly.fromC dpdt t=0.5 x=1 y=1.59375 z=0
+poly.fromC d2pdt2 t=0.5 x=0 y=-0.62500000019838353 z=0
+poly.fromC plen ta=0.25 tb=0.5 L=0.48875186154757011
+poly.fromC plenswap ta=0.5 tb=0.25 L=0.48875186154757011
+poly.fromC opCall t=0.75 x=0.75 y=2.271484375 z=0
+poly.fromC dpdt t=0.75 x=1 y=1.4609375 z=0
+poly.fromC d2pdt2 t=0.75 x=0 y=-0.43750000022768631 z=0
+poly.fromC plen ta=0.375 tb=0.75 L=0.69516213132917637
+poly.fromC plenswap ta=0.75 tb=0.375 L=0.69516213132917637
+poly.fromC opCall t=0.94999999999999996 x=0.94999999999999996 y=2.5559218750000001 z=0
+poly.fromC dpdt t=0.94999999999999996 x=1 y=1.3884375 z=0
+poly.fromC d2pdt2 t=0.94999999999999996 x=0 y=-0.28750000069521775 z=0
+poly.fromC plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.85053775432301237
+poly.fromC plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.85053775432301237
+poly.fromC opCall t=0.999 x=0.999 y=2.623624874875 z=0
+poly.fromC dpdt t=0.999 x=1 y=1.3752503749999998 z=0
+poly.fromC d2pdt2 t=0.999 x=0 y=-0.25074999987495517 z=0
+poly.fromC plen ta=0.4995 tb=0.999 L=0.88784840473200666
+poly.fromC plenswap ta=0.999 tb=0.4995 L=0.88784840473200666
+poly.fromC opCall t=0.99950000000000006 x=0.99950000000000006 y=2.6243124687343751 z=0
+poly.fromC dpdt t=0.99950000000000006 x=1 y=1.3751250937499999 z=0
+poly.fromC d2pdt2 t=0.99950000000000006 x=0 y=-0.25112499946189359 z=0
+poly.fromC plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.88822814810503814
+poly.fromC plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.88822814810503814
+poly.fromC opCall t=1 x=1 y=2.625 z=0
+poly.fromC dpdt t=1 x=1 y=1.375 z=0
+poly.fromC d2pdt2 t=1 x=0 y=-0.25074999987495517 z=0
+poly.fromC plen ta=0.5 tb=1 L=0.88860787395395024
+poly.fromC plenswap ta=1 tb=0.5 L=0.88860787395395024
+poly.fromC pfl target=0 t=0.001 x=0.001 y=1.0019995001249999 z=0
+poly.fromC pfl target=0.47759721168297009 t=0.223 x=0.223 y=1.422521695875 z=0
+poly.fromC pfl target=0.95519442336594018 t=0.46500000000000002 x=0.46500000000000002 y=1.834455578125 z=0
+poly.fromC pfl target=1.4327916350489103 t=0.72499999999999998 x=0.72499999999999998 y=2.2348222656250001 z=0
+poly.fromC pfl target=1.9084784578851486 t=0.999 x=0.999 y=2.623624874875 z=0
+poly.fromC pfl target=1.9103888467318804 t=1 x=1 y=2.625 z=0
+poly.fromC pfl target=2.8655832700978205 t=1 x=1 y=2.625 z=0
+poly.fromC cd px=0.5 py=0.5 pz=0 t=1.8420066406622953e-06 dist=0.70710808369153089
+poly.fromC cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.0000036840132815
+poly.fromC cd px=1 py=1 pz=1 t=0.22773719008651769 dist=1.3349782624740996
+poly.fromC cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=2.4494897427859486
+poly.fromC i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.5
+poly.fromC i2d10 found=true t=0.5
+poly.fromC i2db found=true t=0.25
+poly.fromC C[0]=1
+poly.fromC C[1]=2
+poly.fromC C[2]=-0.5
+poly.fromC C[3]=0.125
+poly.fromC ncoef=4
+poly.fromC P0 x=0 y=1 P1 x=1 y=2.625
+poly.fromPC class=Polynomial
+poly.fromPC str=Polynomial(P=[Vector3(0, 1, 0), Vector3(1, 2.625, 0)])
+poly.fromPC length=1.9103888467318804
+poly.fromPC opCall t=0 x=0 y=1 z=0
+poly.fromPC dpdt t=0 x=1 y=2 z=0
+poly.fromPC d2pdt2 t=0 x=0 y=-0.99924999985567808 z=0
+poly.fromPC plen ta=0 tb=0 L=0
+poly.fromPC plenswap ta=0 tb=0 L=0
+poly.fromPC opCall t=0.00050000000000000001 x=0.00050000000000000001 y=1.000999875015625 z=0
+poly.fromPC dpdt t=0.00050000000000000001 x=1 y=1.99950009375 z=0
+poly.fromPC d2pdt2 t=0.00050000000000000001 x=0 y=-0.99887499982465044 z=0
+poly.fromPC plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00055893315568455179
+poly.fromPC plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00055893315568455179
+poly.fromPC opCall t=0.001 x=0.001 y=1.0019995001249999 z=0
+poly.fromPC dpdt t=0.001 x=1 y=1.9990003750000001 z=0
+poly.fromPC d2pdt2 t=0.001 x=0 y=-0.99924999985567808 z=0
+poly.fromPC plen ta=0.00050000000000000001 tb=0.001 L=0.0011176986894211695
+poly.fromPC plenswap ta=0.001 tb=0.00050000000000000001 L=0.0011176986894211695
+poly.fromPC opCall t=0.050000000000000003 x=0.050000000000000003 y=1.0987656250000002 z=0
+poly.fromPC dpdt t=0.050000000000000003 x=1 y=1.9509375 z=0
+poly.fromPC d2pdt2 t=0.050000000000000003 x=0 y=-0.96250000014563852 z=0
+poly.fromPC plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.055077009542824372
+poly.fromPC plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.055077009542824372
+poly.fromPC opCall t=0.25 x=0.25 y=1.470703125 z=0
+poly.fromPC dpdt t=0.25 x=1 y=1.7734375 z=0
+poly.fromPC d2pdt2 t=0.25 x=0 y=-0.81249999972499154 z=0
+poly.fromPC plen ta=0.125 tb=0.25 L=0.2602620532609537
+poly.fromPC plenswap ta=0.25 tb=0.125 L=0.2602620532609537
+poly.fromPC opCall t=0.5 x=0.5 y=1.890625 z=0
+poly.fromPC dpdt t=0.5 x=1 y=1.59375 z=0
+poly.fromPC d2pdt2 t=0.5 x=0 y=-0.62500000019838353 z=0
+poly.fromPC plen ta=0.25 tb=0.5 L=0.48875186154757011
+poly.fromPC plenswap ta=0.5 tb=0.25 L=0.48875186154757011
+poly.fromPC opCall t=0.75 x=0.75 y=2.271484375 z=0
+poly.fromPC dpdt t=0.75 x=1 y=1.4609375 z=0
+poly.fromPC d2pdt2 t=0.75 x=0 y=-0.43750000022768631 z=0
+poly.fromPC plen ta=0.375 tb=0.75 L=0.69516213132917637
+poly.fromPC plenswap ta=0.75 tb=0.375 L=0.69516213132917637
+poly.fromPC opCall t=0.94999999999999996 x=0.94999999999999996 y=2.5559218750000001 z=0
+poly.fromPC dpdt t=0.94999999999999996 x=1 y=1.3884375 z=0
+poly.fromPC d2pdt2 t=0.94999999999999996 x=0 y=-0.28750000069521775 z=0
+poly.fromPC plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.85053775432301237
+poly.fromPC plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.85053775432301237
+poly.fromPC opCall t=0.999 x=0.999 y=2.623624874875 z=0
+poly.fromPC dpdt t=0.999 x=1 y=1.3752503749999998 z=0
+poly.fromPC d2pdt2 t=0.999 x=0 y=-0.25074999987495517 z=0
+poly.fromPC plen ta=0.4995 tb=0.999 L=0.88784840473200666
+poly.fromPC plenswap ta=0.999 tb=0.4995 L=0.88784840473200666
+poly.fromPC opCall t=0.99950000000000006 x=0.99950000000000006 y=2.6243124687343751 z=0
+poly.fromPC dpdt t=0.99950000000000006 x=1 y=1.3751250937499999 z=0
+poly.fromPC d2pdt2 t=0.99950000000000006 x=0 y=-0.25112499946189359 z=0
+poly.fromPC plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.88822814810503814
+poly.fromPC plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.88822814810503814
+poly.fromPC opCall t=1 x=1 y=2.625 z=0
+poly.fromPC dpdt t=1 x=1 y=1.375 z=0
+poly.fromPC d2pdt2 t=1 x=0 y=-0.25074999987495517 z=0
+poly.fromPC plen ta=0.5 tb=1 L=0.88860787395395024
+poly.fromPC plenswap ta=1 tb=0.5 L=0.88860787395395024
+poly.fromPC pfl target=0 t=0.001 x=0.001 y=1.0019995001249999 z=0
+poly.fromPC pfl target=0.47759721168297009 t=0.223 x=0.223 y=1.422521695875 z=0
+poly.fromPC pfl target=0.95519442336594018 t=0.46500000000000002 x=0.46500000000000002 y=1.834455578125 z=0
+poly.fromPC pfl target=1.4327916350489103 t=0.72499999999999998 x=0.72499999999999998 y=2.2348222656250001 z=0
+poly.fromPC pfl target=1.9084784578851486 t=0.999 x=0.999 y=2.623624874875 z=0
+poly.fromPC pfl target=1.9103888467318804 t=1 x=1 y=2.625 z=0
+poly.fromPC pfl target=2.8655832700978205 t=1 x=1 y=2.625 z=0
+poly.fromPC cd px=0.5 py=0.5 pz=0 t=1.8420066406622953e-06 dist=0.70710808369153089
+poly.fromPC cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.0000036840132815
+poly.fromPC cd px=1 py=1 pz=1 t=0.22773719008651769 dist=1.3349782624740996
+poly.fromPC cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=2.4494897427859486
+poly.fromPC i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.5
+poly.fromPC i2d10 found=true t=0.5
+poly.fromPC i2db found=true t=0.25
+poly.err.mismatch asError=true asException=false msg=Polynomial() points and coefficients do not match.
+poly.err.nocoef asError=true asException=false msg=Polynomial() No coefficients provided.
+poly.err.noPoints asError=true asException=false msg=Polynomial() No control points present.
+poly.err.onePoint asError=true asException=false msg=Polynomial() Only one control point, not enough for a curve.
+poly.dup.exact asError=false asException=false msg=
+poly.dup.wide asError=false asException=false msg=
+poly.dup.five asError=true asException=false msg=Polynomial() points and coefficients do not match.
+poly.dup.fromC asError=false asException=false msg=
+poly.dup.exactok t=0.5 x=0 y=0 z=0
+poly.copy class=Polynomial
+poly.copy str=Polynomial(P=[Vector3(0, 1, 0), Vector3(0.25, 1.0954, 0), Vector3(0.5, 1.1892, 0), Vector3(0.75, 1.2649, 0), Vector3(1, 1.3229, 0)])
+poly.copy length=1.0525845692178541
+poly.copy opCall t=0 x=0 y=0.99999999999999578 z=0
+poly.copy dpdt t=0 x=1 y=0.34590000000054416 z=0
+poly.copy d2pdt2 t=0 x=0 y=0.48359079074522526 z=0
+poly.copy plen ta=0 tb=0 L=0
+poly.copy plenswap ta=0 tb=0 L=0
+poly.copy opCall t=0.00050000000000000001 x=0.00050000000000000001 y=1.0001730107275406 z=0
+poly.copy dpdt t=0.00050000000000000001 x=1 y=0.34614279862400799 z=0
+poly.copy d2pdt2 t=0.00050000000000000001 x=0 y=0.48225429449821888 z=0
+poly.copy plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00026454830122863581
+poly.copy plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00026454830122863581
+poly.copy opCall t=0.001 x=0.001 y=1.0003461426871099 z=0
+poly.copy dpdt t=0.001 x=1 y=0.34638492818827171 z=0
+poly.copy d2pdt2 t=0.001 x=0 y=0.48359079074522526 z=0
+poly.copy plen ta=0.00050000000000000001 tb=0.001 L=0.00052912633322752434
+poly.copy plenswap ta=0.001 tb=0.00050000000000000001 L=0.00052912633322752434
+poly.copy opCall t=0.050000000000000003 x=0.050000000000000003 y=1.0178481600000162 z=0
+poly.copy dpdt t=0.050000000000000003 x=1 y=0.36695546666695666 z=0
+poly.copy d2pdt2 t=0.050000000000000003 x=0 y=0.35775502738033538 z=0
+poly.copy plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.026589628791849056
+poly.copy plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.026589628791849056
+poly.copy opCall t=0.25 x=0.25 y=1.095400000000015 z=0
+poly.copy dpdt t=0.25 x=1 y=0.39503333333315982 z=0
+poly.copy d2pdt2 t=0.25 x=0 y=-0.048132972496617299 z=0
+poly.copy plen ta=0.125 tb=0.25 L=0.13433122424698948
+poly.copy plenswap ta=0.25 tb=0.125 L=0.13433122424698948
+poly.copy opCall t=0.5 x=0.5 y=1.189199999999982 z=0
+poly.copy dpdt t=0.5 x=1 y=0.34436666666665028 z=0
+poly.copy d2pdt2 t=0.5 x=0 y=-0.31213297257970396 z=0
+poly.copy plen ta=0.25 tb=0.5 L=0.26704128176723679
+poly.copy plenswap ta=0.5 tb=0.25 L=0.26704128176723679
+poly.copy opCall t=0.75 x=0.75 y=1.2649000000000092 z=0
+poly.copy dpdt t=0.75 x=1 y=0.26150000000016893 z=0
+poly.copy d2pdt2 t=0.75 x=0 y=-0.30573297316038861 z=0
+poly.copy plen ta=0.375 tb=0.75 L=0.39422490966658263
+poly.copy plenswap ta=0.75 tb=0.375 L=0.39422490966658263
+poly.copy opCall t=0.94999999999999996 x=0.94999999999999996 y=1.3121289600000152 z=0
+poly.copy dpdt t=0.94999999999999996 x=1 y=0.21744986666643462 z=0
+poly.copy d2pdt2 t=0.94999999999999996 x=0 y=-0.1059249725710032 z=0
+poly.copy plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.49326267647114302
+poly.copy plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.49326267647114302
+poly.copy opCall t=0.999 x=0.999 y=1.3226859519255121 z=0
+poly.copy dpdt t=0.999 x=1 y=0.21406308994514056 z=0
+poly.copy d2pdt2 t=0.999 x=0 y=-0.030578809484538283 z=0
+poly.copy plen ta=0.4995 tb=0.999 L=0.51744353070707683
+poly.copy plenswap ta=0.999 tb=0.4995 L=0.51744353070707683
+poly.copy opCall t=0.99950000000000006 x=0.99950000000000006 y=1.322792979682343 z=0
+poly.copy dpdt t=0.99950000000000006 x=1 y=0.21404800590940443 z=0
+poly.copy d2pdt2 t=0.99950000000000006 x=0 y=-0.03140010540469973 z=0
+poly.copy plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.51769043946510529
+poly.copy plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.51769043946510529
+poly.copy opCall t=1 x=1 y=1.3228999999999982 z=0
+poly.copy dpdt t=1 x=1 y=0.21403333333286856 z=0
+poly.copy d2pdt2 t=1 x=0 y=-0.030578809484538283 z=0
+poly.copy plen ta=0.5 tb=1 L=0.51793735301672805
+poly.copy plenswap ta=1 tb=0.5 L=0.51793735301672805
+poly.copy pfl target=0 t=0.001 x=0.001 y=1.0003461426871099 z=0
+poly.copy pfl target=0.26314614230446354 t=0.246 x=0.246 y=1.0938194986786973 z=0
+poly.copy pfl target=0.52629228460892707 t=0.49299999999999999 x=0.49299999999999999 y=1.1867818159517356 z=0
+poly.copy pfl target=0.78943842691339061 t=0.74399999999999999 x=0.74399999999999999 y=1.2633254766432338 z=0
+poly.copy pfl target=1.0515319846486364 t=0.999 x=0.999 y=1.3226859519255121 z=0
+poly.copy pfl target=1.0525845692178541 t=1 x=1 y=1.3228999999999982 z=0
+poly.copy pfl target=1.5788768538267812 t=1 x=1 y=1.3228999999999982 z=0
+poly.copy cd px=0.5 py=0.5 pz=0 t=0.26320186034861215 dist=0.6456052816162563
+poly.copy cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.000000637152614
+poly.copy cd px=1 py=1 pz=1 t=0.93232226192421552 dist=1.0486223690910592
+poly.copy cd px=2 py=0 pz=1 t=0.99999815799335934 dist=1.9365089854962905
+poly.copy i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.5
+poly.copy i2d10 found=true t=0.5
+poly.copy i2db found=true t=0.25
+poly.flat class=Polynomial
+poly.flat str=Polynomial(P=[Vector3(0, 1, 0), Vector3(1, 1, 0), Vector3(2, 1, 0)])
+poly.flat length=2
+poly.flat opCall t=0 x=0 y=1 z=0
+poly.flat dpdt t=0 x=1 y=0 z=0
+poly.flat d2pdt2 t=0 x=0 y=0 z=0
+poly.flat plen ta=0 tb=0 L=0
+poly.flat plenswap ta=0 tb=0 L=0
+poly.flat opCall t=0.00050000000000000001 x=0.001 y=1 z=0
+poly.flat dpdt t=0.00050000000000000001 x=1 y=0 z=0
+poly.flat d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+poly.flat plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00050000000000000001
+poly.flat plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00050000000000000001
+poly.flat opCall t=0.001 x=0.002 y=1 z=0
+poly.flat dpdt t=0.001 x=1 y=0 z=0
+poly.flat d2pdt2 t=0.001 x=0 y=0 z=0
+poly.flat plen ta=0.00050000000000000001 tb=0.001 L=0.001
+poly.flat plenswap ta=0.001 tb=0.00050000000000000001 L=0.001
+poly.flat opCall t=0.050000000000000003 x=0.10000000000000001 y=1 z=0
+poly.flat dpdt t=0.050000000000000003 x=1 y=0 z=0
+poly.flat d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+poly.flat plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.050000000000000003
+poly.flat plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.050000000000000003
+poly.flat opCall t=0.25 x=0.5 y=1 z=0
+poly.flat dpdt t=0.25 x=1 y=0 z=0
+poly.flat d2pdt2 t=0.25 x=0 y=0 z=0
+poly.flat plen ta=0.125 tb=0.25 L=0.25
+poly.flat plenswap ta=0.25 tb=0.125 L=0.25
+poly.flat opCall t=0.5 x=1 y=1 z=0
+poly.flat dpdt t=0.5 x=1 y=0 z=0
+poly.flat d2pdt2 t=0.5 x=0 y=0 z=0
+poly.flat plen ta=0.25 tb=0.5 L=0.5
+poly.flat plenswap ta=0.5 tb=0.25 L=0.5
+poly.flat opCall t=0.75 x=1.5 y=1 z=0
+poly.flat dpdt t=0.75 x=1 y=-nan z=0
+poly.flat d2pdt2 t=0.75 x=0 y=0 z=0
+poly.flat plen ta=0.375 tb=0.75 L=0.75
+poly.flat plenswap ta=0.75 tb=0.375 L=0.75
+poly.flat opCall t=0.94999999999999996 x=1.8999999999999999 y=1 z=0
+poly.flat dpdt t=0.94999999999999996 x=1 y=-nan z=0
+poly.flat d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+poly.flat plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.94999999999999996
+poly.flat plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.94999999999999996
+poly.flat opCall t=0.999 x=1.998 y=1 z=0
+poly.flat dpdt t=0.999 x=1 y=-nan z=0
+poly.flat d2pdt2 t=0.999 x=0 y=0 z=0
+poly.flat plen ta=0.4995 tb=0.999 L=0.99900000000000022
+poly.flat plenswap ta=0.999 tb=0.4995 L=0.99900000000000022
+poly.flat opCall t=0.99950000000000006 x=1.9990000000000001 y=1 z=0
+poly.flat dpdt t=0.99950000000000006 x=1 y=-nan z=0
+poly.flat d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+poly.flat plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.99950000000000006
+poly.flat plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.99950000000000006
+poly.flat opCall t=1 x=2 y=1 z=0
+poly.flat dpdt t=1 x=1 y=-nan z=0
+poly.flat d2pdt2 t=1 x=0 y=0 z=0
+poly.flat plen ta=0.5 tb=1 L=1
+poly.flat plenswap ta=1 tb=0.5 L=1
+poly.flat pfl target=0 t=0.001 x=0.002 y=1 z=0
+poly.flat pfl target=0.5 t=0.251 x=0.502 y=1 z=0
+poly.flat pfl target=1 t=0.501 x=1.002 y=1 z=0
+poly.flat pfl target=1.5 t=0.751 x=1.502 y=1 z=0
+poly.flat pfl target=1.998 t=1 x=2 y=1 z=0
+poly.flat pfl target=2 t=1 x=2 y=1 z=0
+poly.flat pfl target=3 t=1 x=2 y=1 z=0
+poly.flat cd px=0.5 py=0.5 pz=0 t=0.24999942596778893 dist=0.50000000000131806
+poly.flat cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.0000000000067859
+poly.flat cd px=1 py=1 pz=1 t=0.50000069733625474 dist=1.0000000000009726
+poly.flat cd px=2 py=0 pz=1 t=0.99999815799335934 dist=1.4142135623778935
+poly.flat i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.25
+poly.flat i2d10 found=true t=0.25
+poly.flat i2db found=true t=0.125
+poly.flat C[0]=1
+poly.flat C[1]=-0
+poly.flat C[2]=-0
+poly.flat ncoef=3
+poly.dup.flat asError=false asException=false msg=
+poly.rankdeficient threw msg=matrix is essentially singular

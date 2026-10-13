@@ -90,9 +90,15 @@ number Path::partial_length(double ta, double tb) const {
 // D:98-101
 number Path::length() const { return partial_length(0.0, 1.0); }
 
-// D:102-121. D's `out double t` is written as a reference here; both exits
-// assign it, so the D out-parameter reset to double.init is not observable.
+// D:102-121. D's `out double t` is written as a reference here, and reset to
+// double.init (NaN) on entry because that is what D does to the caller's variable
+// before the body runs (measured with ldc2: an empty `void set(out double x){}`
+// leaves a caller holding 3.25 as nan). Every return path below assigns t, so the
+// reset is not observable through this function — it is written so the two `out`
+// parameters of path.d behave the same way, and so a future early return cannot
+// silently leak the caller's previous value.
 Vector3 Path::point_from_length(number length, double& t) const {
+    t = eil::d_init<double>(); // D: `out double t`
     number L = 0.0;
     int n = 1000;
     double dt = 1.0 / n;
@@ -124,12 +130,26 @@ bool Path::intersect2D(const Vector3& ps, const Vector3& d, double& t, int nseg)
     //     true, if the intersection point was located;
     //     false, if the intersection was not found
     // See PJ's workbook page 34, 2017-06-24 for notation and derivation.
+    //
+    // D:124 declares `out double t`, which assigns double.init (NaN) to the
+    // *caller's* variable before the body runs. That is observable here and only
+    // here in this module, because the `return false` at D:149 leaves t unwritten:
+    // a caller that held a valid t from an earlier successful call keeps NaN, not
+    // the stale value. Measured with ldc2 (row "path.i2d.parallel" of
+    // baselines/e587b235/probes/geom_gpath_path.txt prints t=nan after a ray
+    // parallel to every segment), so the reset is reproduced rather than treated as
+    // a plain reference.
+    t = eil::d_init<double>(); // D: `out double t`
     if (dynamic_cast<const Line*>(this) != nullptr) { nseg = 1; } // straight Line
     double delt = 1.0 / nseg;
     double t0 = 0.0; Vector3 p0 = (*this)(0.0);
     for (int i = 0; i < nseg; ++i) { // D: foreach (i; 0 .. nseg)
         double t1 = delt * (i + 1); Vector3 p1 = (*this)(t1);
-        double tOnSegment;
+        // D:141 `double tOnSegment;` is an uninitialised local, which in D is
+        // double.init; the free intersect2D (projection.d:16, also an `out`
+        // parameter) resets it on entry, and the guard below only reads it when the
+        // call returned true.
+        double tOnSegment = eil::d_init<double>();
         // D:142 calls the FREE geom.elements.intersect2D (projection.d:16). The
         // member name hides it in this scope, so the qualified name is required;
         // without the ::eil::geom qualifier this line would recurse into itself.

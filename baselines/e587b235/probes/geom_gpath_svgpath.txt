@@ -1,0 +1,818 @@
+fmt.M ok v0=3 v1=3 v2=nan v3=nan v4=nan v5=nan
+fmt.H ok v0=4 v1=nan v2=nan v3=nan v4=nan v5=nan
+fmt.Q ok v0=2 v1=2 v2=0 v3=2 v4=nan v5=nan
+fmt.C ok v0=2 v1=1.1045700000000001 v2=1.1045700000000001 v3=2 v4=0 v5=2
+fmt.neg ok v0=-1 v1=-2.5 v2=nan v3=nan v4=nan v5=nan
+fmt.leadws asError=false asException=true msg=no digits seen for input "  1.0,2.0".
+fmt.aftercomma asError=false asException=true msg=no digits seen for input " 2.0".
+fmt.beforecomma asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+fmt.spacelit asError=false asException=true msg=no digits seen for input ",3.0".
+fmt.nosep ok v0=2 v1=2 v2=0 v3=2 v4=nan v5=nan
+fmt.tab ok v0=5 v1=5 v2=6 v3=4 v4=nan v5=nan
+fmt.crlf asError=false asException=true msg=no digits seen for input "\r\n2.0".
+fmt.empty ok v0=nan v1=nan v2=nan v3=nan v4=nan v5=nan
+fmt.short asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+fmt.trailingcomma ok v0=1 v1=nan v2=nan v3=nan v4=nan v5=nan
+fmt.litafterempty asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+fmt.litafterinput asError=false asException=true msg=Trailing characters in formattedRead format string
+fmt.spaceonly asError=false asException=true msg=no digits seen for input " ".
+fmt.dot ok v0=0.5 v1=0.5 v2=nan v3=nan v4=nan v5=nan
+fmt.explow ok v0=1000 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.expup ok v0=1000 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.plus ok v0=1 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.inf ok v0=inf v1=nan v2=nan v3=nan v4=nan v5=nan
+fmt.garbage asError=false asException=true msg=no digits seen for input "abc,2.0".
+fmt.hex asError=false asException=true msg=Floating point parsing: exponent is required for input "0x10,2".
+fmt.badexp asError=false asException=true msg=No digits seen.
+fmt.twodots asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+fmt.junkafter asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+fmt.overflow asError=false asException=true msg=Range error
+fmt.underflow ok v0=0 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.ints ok v0=123 v1=456 v2=nan v3=nan v4=nan v5=nan
+fmt.minf ok v0=inf v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.neginf ok v0=-inf v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.nanword ok v0=nan v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.NANUP ok v0=nan v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.dashabc asError=false asException=true msg=no digits seen for input "-abc,2".
+fmt.dashdot ok v0=-0.5 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.tail ok v0=1 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.commafirst asError=false asException=true msg=no digits seen for input ",2".
+fmt.spaceskip ok v0=1 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.twospaceskip ok v0=1 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.eplus ok v0=1000 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.esign ok v0=0.001 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.ebaredigit asError=false asException=true msg=no digits seen for input "e5,2".
+fmt.hexp ok v0=8 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.veryneg ok v0=-0 v1=2 v2=nan v3=nan v4=nan v5=nan
+fmt.dotspace asError=false asException=true msg=no digits seen for input " 2.0 ".
+fmt.orphans.M ok v0=3 v1=3 v2=nan v3=nan v4=nan v5=nan
+fmt.orphans.extra asError=false asException=true msg=no digits seen for input " 3.0,4.0".
+fmt.trailing_input ok v0=2 v1=2 v2=nan v3=nan v4=nan v5=nan
+split.empty len=0
+split.trailing len=2
+split.trailing part[0]=|M1.0,1.0|
+split.trailing part[1]=||
+split.leading len=2
+split.leading part[0]=||
+split.leading part[1]=|M1.0,1.0|
+split.spaces len=1
+split.spaces part[0]=|M1.0,1.0|
+split.two len=5
+split.two part[0]=|M3.0,3.0|
+split.two part[1]=|L4.0,3.0|
+split.two part[2]=|v1.0|
+split.two part[3]=|h-1.0|
+split.two part[4]=|Z|
+svg.rect class=SVGPath
+svg.rect str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.rect length=4
+svg.rect opCall t=0 x=3 y=3 z=0
+svg.rect dpdt t=0 x=4.0000000000000036 y=0 z=0
+svg.rect d2pdt2 t=0 x=0 y=0 z=0
+svg.rect plen ta=0 tb=0 L=0
+svg.rect plenswap ta=0 tb=0 L=0
+svg.rect opCall t=0.00050000000000000001 x=3.0019999999999998 y=2.9999999999999996 z=0
+svg.rect dpdt t=0.00050000000000000001 x=4.0000000000004476 y=4.4408920985006262e-13 z=0
+svg.rect d2pdt2 t=0.00050000000000000001 x=-8.8817841970012523e-10 y=-8.8817841970012523e-10 z=0
+svg.rect plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00099999999999988987
+svg.rect plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00099999999999988987
+svg.rect opCall t=0.001 x=3.004 y=3 z=0
+svg.rect dpdt t=0.001 x=4.0000000000000036 y=0 z=0
+svg.rect d2pdt2 t=0.001 x=0 y=0 z=0
+svg.rect plen ta=0.00050000000000000001 tb=0.001 L=0.0020000000000002238
+svg.rect plenswap ta=0.001 tb=0.00050000000000000001 L=0.0020000000000002238
+svg.rect opCall t=0.050000000000000003 x=3.2000000000000002 y=3.0000000000000004 z=0
+svg.rect dpdt t=0.050000000000000003 x=4.0000000000000036 y=0 z=0
+svg.rect d2pdt2 t=0.050000000000000003 x=-8.8817841970012523e-10 y=-8.8817841970012523e-10 z=0
+svg.rect plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.10000000000000009
+svg.rect plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.10000000000000009
+svg.rect opCall t=0.25 x=4 y=3 z=0
+svg.rect dpdt t=0.25 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.rect d2pdt2 t=0.25 x=-4000.0000000000036 y=4000.0000000000036 z=0
+svg.rect plen ta=0.125 tb=0.25 L=0.5
+svg.rect plenswap ta=0.25 tb=0.125 L=0.5
+svg.rect opCall t=0.5 x=4 y=4 z=0
+svg.rect dpdt t=0.5 x=-2.0000000000000018 y=2.0000000000000018 z=0
+svg.rect d2pdt2 t=0.5 x=-3999.9999999995598 y=-4000.0000000000036 z=0
+svg.rect plen ta=0.25 tb=0.5 L=1
+svg.rect plenswap ta=0.5 tb=0.25 L=1
+svg.rect opCall t=0.75 x=3 y=4 z=0
+svg.rect dpdt t=0.75 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.rect d2pdt2 t=0.75 x=4000.0000000000036 y=-3999.9999999995598 z=0
+svg.rect plen ta=0.375 tb=0.75 L=1.4961803398874989
+svg.rect plenswap ta=0.75 tb=0.375 L=1.4961803398874989
+svg.rect opCall t=0.94999999999999996 x=3 y=3.2000000000000002 z=0
+svg.rect dpdt t=0.94999999999999996 x=0 y=-4.0000000000000036 z=0
+svg.rect d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+svg.rect plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.8939833115159423
+svg.rect plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.8939833115159423
+svg.rect opCall t=0.999 x=3 y=3.004 z=0
+svg.rect dpdt t=0.999 x=0 y=-4.0000000000000036 z=0
+svg.rect d2pdt2 t=0.999 x=0 y=0 z=0
+svg.rect plen ta=0.4995 tb=0.999 L=1.9933738739171611
+svg.rect plenswap ta=0.999 tb=0.4995 L=1.9933738739171611
+svg.rect opCall t=0.99950000000000006 x=3 y=3.0019999999999998 z=0
+svg.rect dpdt t=0.99950000000000006 x=0 y=-4.0000000000000036 z=0
+svg.rect d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+svg.rect plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.9965870553398037
+svg.rect plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.9965870553398037
+svg.rect opCall t=1 x=3 y=3 z=0
+svg.rect dpdt t=1 x=0 y=-4.0000000000000036 z=0
+svg.rect d2pdt2 t=1 x=0 y=0 z=0
+svg.rect plen ta=0.5 tb=1 L=2
+svg.rect plenswap ta=1 tb=0.5 L=2
+svg.rect pfl target=0 t=0.001 x=3.004 y=3 z=0
+svg.rect pfl target=1 t=0.251 x=4 y=3.004 z=0
+svg.rect pfl target=2 t=0.501 x=3.996 y=4 z=0
+svg.rect pfl target=3 t=0.751 x=3 y=3.996 z=0
+svg.rect pfl target=3.996 t=1 x=3 y=3 z=0
+svg.rect pfl target=4 t=1 x=3 y=3 z=0
+svg.rect pfl target=6 t=1 x=3 y=3 z=0
+svg.rect cd px=0.5 py=0.5 pz=0 t=0.99999815799335934 dist=3.5355391159181226
+svg.rect cd px=0 py=0 pz=0 t=0.99999815799335934 dist=4.2426458971040306
+svg.rect cd px=1 py=1 pz=1 t=0.99999815799335934 dist=3.0000049120227348
+svg.rect cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=3.3166270119064358
+svg.rect i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+svg.rect i2d10 found=false t=nan
+svg.rect i2db found=false t=nan
+svg.rect nseg=4
+svg.rect seg[0] class=Line p0 x=3 y=3 z=0 p1 x=4 y=3 z=0
+svg.rect seg[1] class=Line p0 x=4 y=3 z=0 p1 x=4 y=4 z=0
+svg.rect seg[2] class=Line p0 x=4 y=4 z=0 p1 x=3 y=4 z=0
+svg.rect seg[3] class=Line p0 x=3 y=4 z=0 p1 x=3 y=3 z=0
+svg.rect t_values[0]=0.25
+svg.rect t_values[1]=0.5
+svg.rect t_values[2]=0.75
+svg.rect t_values[3]=1
+svg.rect str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.quad class=SVGPath
+svg.quad str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.quad length=3.2464171466554643
+svg.quad opCall t=0 x=2 y=0 z=0
+svg.quad dpdt t=0 x=-0.0020000000000575113 y=3.9979999999999998 z=0
+svg.quad d2pdt2 t=0 x=-3.9999999996709334 y=-4.0000000000005311 z=0
+svg.quad plen ta=0 tb=0 L=0
+svg.quad plenswap ta=0 tb=0 L=0
+svg.quad opCall t=0.00050000000000000001 x=1.9999995000000002 y=0.0019995000000000004 z=0
+svg.quad dpdt t=0.00050000000000000001 x=-0.0040000000001150227 y=3.9960000000000004 z=0
+svg.quad d2pdt2 t=0.00050000000000000001 x=-3.9999999998929781 y=-4.0000000000013989 z=0
+svg.quad plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00099962507294571248
+svg.quad plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00099962507294571248
+svg.quad opCall t=0.001 x=1.9999979999999999 y=0.0039979999999999998 z=0
+svg.quad dpdt t=0.001 x=-0.0040000000000040004 y=3.9959999999999996 z=0
+svg.quad d2pdt2 t=0.001 x=-3.9999999996709334 y=-4.0000000000005311 z=0
+svg.quad plen ta=0.00050000000000000001 tb=0.001 L=0.0019985005838002857
+svg.quad plenswap ta=0.001 tb=0.00050000000000000001 L=0.0019985005838002857
+svg.quad opCall t=0.050000000000000003 x=1.9949999999999999 y=0.19500000000000001 z=0
+svg.quad dpdt t=0.050000000000000003 x=-0.19999999999997797 y=3.8000000000000118 z=0
+svg.quad d2pdt2 t=0.050000000000000003 x=-4.0000000001150227 y=-3.9999999999762448 z=0
+svg.quad plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.096325938072777409
+svg.quad plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.096325938072777409
+svg.quad opCall t=0.25 x=1.875 y=0.875 z=0
+svg.quad dpdt t=0.25 x=-1.0000000000000009 y=3.0000000000000027 z=0
+svg.quad d2pdt2 t=0.25 x=-3.9999999998929781 y=-3.9999999998929781 z=0
+svg.quad plen ta=0.125 tb=0.25 L=0.4174887706199148
+svg.quad plenswap ta=0.25 tb=0.125 L=0.4174887706199148
+svg.quad opCall t=0.5 x=1.5 y=1.5 z=0
+svg.quad dpdt t=0.5 x=-2.0000000000000018 y=2.0000000000000018 z=0
+svg.quad d2pdt2 t=0.5 x=-4.0000000001150227 y=-4.0000000001150227 z=0
+svg.quad plen ta=0.25 tb=0.5 L=0.73555219339907951
+svg.quad plenswap ta=0.5 tb=0.25 L=0.73555219339907951
+svg.quad opCall t=0.75 x=0.875 y=1.875 z=0
+svg.quad dpdt t=0.75 x=-3.0000000000000027 y=1.0000000000000009 z=0
+svg.quad d2pdt2 t=0.75 x=-3.9999999998929781 y=-3.9999999998929781 z=0
+svg.quad plen ta=0.375 tb=0.75 L=1.0927530257726279
+svg.quad plenswap ta=0.75 tb=0.375 L=1.0927530257726279
+svg.quad opCall t=0.94999999999999996 x=0.19500000000000017 y=1.9950000000000001 z=0
+svg.quad dpdt t=0.94999999999999996 x=-3.8000000000000118 y=0.19999999999997797 z=0
+svg.quad d2pdt2 t=0.94999999999999996 x=-4.0000000000317559 y=-4.0000000001150227 z=0
+svg.quad plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.4988749935534615
+svg.quad plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.4988749935534615
+svg.quad opCall t=0.999 x=0.0039980000000000033 y=1.9999979999999999 z=0
+svg.quad dpdt t=0.999 x=-3.9960000000000031 y=0.0040000000000040004 z=0
+svg.quad d2pdt2 t=0.999 x=-4.0000000000005311 y=-3.9999999998929781 z=0
+svg.quad plen ta=0.4995 tb=0.999 L=1.6206372932082893
+svg.quad plenswap ta=0.999 tb=0.4995 L=1.6206372932082893
+svg.quad opCall t=0.99950000000000006 x=0.0019994999999997801 y=1.9999994999999999 z=0
+svg.quad dpdt t=0.99950000000000006 x=-3.996000000000004 y=0.0039999999998929781 z=0
+svg.quad d2pdt2 t=0.99950000000000006 x=-4.0000000000005311 y=-4.0000000001150227 z=0
+svg.quad plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.6219286834968181
+svg.quad plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.6219286834968181
+svg.quad opCall t=1 x=0 y=2 z=0
+svg.quad dpdt t=1 x=-3.9980000000000033 y=0.0020000000000575113 z=0
+svg.quad d2pdt2 t=1 x=-4.0000000000005311 y=-3.9999999998929781 z=0
+svg.quad plen ta=0.5 tb=1 L=1.6232210734644497
+svg.quad plenswap ta=1 tb=0.5 L=1.6232210734644497
+svg.quad pfl target=0 t=0.001 x=1.9999979999999999 y=0.0039979999999999998 z=0
+svg.quad pfl target=0.81160428666386608 t=0.22700000000000001 x=1.8969420000000001 y=0.80494200000000005 z=0
+svg.quad pfl target=1.6232085733277322 t=0.5 x=1.5 y=1.5 z=0
+svg.quad pfl target=2.4348128599915984 t=0.77400000000000002 x=0.80184799999999989 y=1.897848 z=0
+svg.quad pfl target=3.243170729508809 t=1 x=0 y=2 z=0
+svg.quad pfl target=3.2464171466554643 t=1 x=0 y=2 z=0
+svg.quad pfl target=4.8696257199831967 t=1 x=0 y=2 z=0
+svg.quad cd px=0.5 py=0.5 pz=0 t=0.5000966090259471 dist=1.4142135623730954
+svg.quad cd px=0 py=0 pz=0 t=0.99999815799335934 dist=2.0000000000067861
+svg.quad cd px=1 py=1 pz=1 t=0.50000069733625474 dist=1.2247448713923832
+svg.quad cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=1.0000000000271438
+svg.quad i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.86571428571428577
+svg.quad i2d10 found=true t=0.86470588235294121
+svg.quad i2db found=true t=0.93513513513513513
+svg.quad nseg=1
+svg.quad seg[0] class=Bezier p0 x=2 y=0 z=0 p1 x=0 y=2 z=0
+svg.quad seg[0] B[0] x=2 y=0 z=0
+svg.quad seg[0] B[1] x=2 y=2 z=0
+svg.quad seg[0] B[2] x=0 y=2 z=0
+svg.quad t_values[0]=1
+svg.quad str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.cubic class=SVGPath
+svg.cubic str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.cubic length=3.1420012673319273
+svg.cubic opCall t=0 x=2 y=0 z=0
+svg.cubic dpdt t=0 x=-0.0026856037100841945 y=3.3130818937099997 z=0
+svg.cubic d2pdt2 t=0 x=-5.368462259625062 y=-1.2589577399997958 z=0
+svg.cubic plen ta=0 tb=0 L=0
+svg.cubic plenswap ta=0 tb=0 L=0
+svg.cubic opCall t=0.00050000000000000001 x=1.9999993285132864 y=0.0016566980592137501 z=0
+svg.cubic dpdt t=0.00050000000000000001 x=-0.0053703495577206439 y=3.3124529295574998 z=0
+svg.cubic d2pdt2 t=0.00050000000000000001 x=-5.3664033894396113 y=-1.2610166099987636 z=0
+svg.cubic plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00082830994244987861
+svg.cubic plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00082830994244987861
+svg.cubic opCall t=0.001 x=1.9999973143962899 y=0.0033130818937099999 z=0
+svg.cubic dpdt t=0.001 x=-0.0053698348398967255 y=3.3124524148400001 z=0
+svg.cubic d2pdt2 t=0.001 x=-5.368462259625062 y=-1.2589577399997958 z=0
+svg.cubic plen ta=0.00050000000000000001 tb=0.001 L=0.0016563851044011021
+svg.cubic plenswap ta=0.001 tb=0.00050000000000000001 L=0.0016563851044011021
+svg.cubic opCall t=0.050000000000000003 x=1.9933700612499998 y=0.16403116375000001 z=0
+svg.cubic dpdt t=0.050000000000000003 x=-0.26348113870988676 y=3.2458201387100121 z=0
+svg.cubic d2pdt2 t=0.050000000000000003 x=-5.1666930001026401 y=-1.4607269999966643 z=0
+svg.cubic plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.081747581704097003
+svg.cubic plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.081747581704097003
+svg.cubic opCall t=0.25 x=1.84283015625 y=0.77849046875000005 z=0
+svg.cubic dpdt t=0.25 x=-1.2144649387099138 y=2.8713199387099264 z=0
+svg.cubic d2pdt2 t=0.25 x=-4.3431449998632132 y=-2.2842750000418022 z=0
+svg.cubic plen ta=0.125 tb=0.25 L=0.39373730978476085
+svg.cubic plenswap ta=0.25 tb=0.125 L=0.39373730978476085
+svg.cubic opCall t=0.5 x=1.41421375 y=1.41421375 z=0
+svg.cubic dpdt t=0.5 x=-2.1715718137100826 y=2.1715718137100826 z=0
+svg.cubic d2pdt2 t=0.5 x=-3.3137100001745523 y=-3.3137100001745523 z=0
+svg.cubic plen ta=0.25 tb=0.5 L=0.77147687144185673
+svg.cubic plenswap ta=0.5 tb=0.25 L=0.77147687144185673
+svg.cubic opCall t=0.75 x=0.77849046875000005 y=1.84283015625 z=0
+svg.cubic dpdt t=0.75 x=-2.8713199387099264 y=1.2144649387099138 z=0
+svg.cubic d2pdt2 t=0.75 x=-2.2842750000418022 y=-4.3431449998632132 z=0
+svg.cubic plen ta=0.375 tb=0.75 L=1.1557993139433131
+svg.cubic plenswap ta=0.75 tb=0.375 L=1.1557993139433131
+svg.cubic opCall t=0.94999999999999996 x=0.16403116375000015 y=1.99337006125 z=0
+svg.cubic dpdt t=0.94999999999999996 x=-3.2458201387100121 y=0.26348113870999779 z=0
+svg.cubic d2pdt2 t=0.94999999999999996 x=-1.4607269999966643 y=-5.1666930003246847 z=0
+svg.cubic plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.4835835464464104
+svg.cubic plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.4835835464464104
+svg.cubic opCall t=0.999 x=0.0033130818937100034 y=1.9999973143962901 z=0
+svg.cubic dpdt t=0.999 x=-3.3124524148400032 y=0.0053698348398967255 z=0
+svg.cubic d2pdt2 t=0.999 x=-1.2589577400006631 y=-5.3684622600691512 z=0
+svg.cubic plen ta=0.4995 tb=0.999 L=1.5692352271843486
+svg.cubic plenswap ta=0.999 tb=0.4995 L=1.5692352271843486
+svg.cubic opCall t=0.99950000000000006 x=0.0016566980592135675 y=1.999999328513286 z=0
+svg.cubic dpdt t=0.99950000000000006 x=-3.3124529295575029 y=0.0053703495572765547 z=0
+svg.cubic d2pdt2 t=0.99950000000000006 x=-1.2610166099987636 y=-5.3664033901057451 z=0
+svg.cubic plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.5701238387388359
+svg.cubic plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.5701238387388359
+svg.cubic opCall t=1 x=0 y=2 z=0
+svg.cubic dpdt t=1 x=-3.3130818937100033 y=0.0026856037098621499 z=0
+svg.cubic d2pdt2 t=1 x=-1.2589577400006631 y=-5.3684622600691512 z=0
+svg.cubic plen ta=0.5 tb=1 L=1.5710127634420561
+svg.cubic plenswap ta=1 tb=0.5 L=1.5710127634420561
+svg.cubic pfl target=0 t=0.001 x=1.9999973143962899 y=0.0033130818937099999 z=0
+svg.cubic pfl target=0.78550031683298183 t=0.246 x=1.8476532296674402 y=0.76698695597255995 z=0
+svg.cubic pfl target=1.5710006336659637 t=0.5 x=1.41421375 y=1.41421375 z=0
+svg.cubic pfl target=2.3565009504989454 t=0.755 x=0.76410539797374999 y=1.8488481092762499 z=0
+svg.cubic pfl target=3.1388592660645953 t=1 x=0 y=2 z=0
+svg.cubic pfl target=3.1420012673319273 t=1 x=0 y=2 z=0
+svg.cubic pfl target=4.7130019009978907 t=1 x=0 y=2 z=0
+svg.cubic cd px=0.5 py=0.5 pz=0 t=0.50000069733625474 dist=1.2928934841586004
+svg.cubic cd px=0 py=0 pz=0 t=0.50000069733625474 dist=2.0000002653445206
+svg.cubic cd px=1 py=1 pz=1 t=0.50000069733625474 dist=1.1589417851563453
+svg.cubic cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=1.0000000000186287
+svg.cubic i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.8436063883623186
+svg.cubic i2d10 found=true t=0.84294306992521106
+svg.cubic i2db found=true t=0.92319828323904274
+svg.cubic nseg=1
+svg.cubic seg[0] class=Bezier p0 x=2 y=0 z=0 p1 x=0 y=2 z=0
+svg.cubic seg[0] B[0] x=2 y=0 z=0
+svg.cubic seg[0] B[1] x=2 y=1.1045700000000001 z=0
+svg.cubic seg[0] B[2] x=1.1045700000000001 y=2 z=0
+svg.cubic seg[0] B[3] x=0 y=2 z=0
+svg.cubic t_values[0]=1
+svg.cubic str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.all class=SVGPath
+svg.all str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.all length=31.118356284255611
+svg.all opCall t=0 x=1 y=1 z=0
+svg.all dpdt t=0 x=31.109496719624818 y=0 z=0
+svg.all d2pdt2 t=0 x=0 y=0 z=0
+svg.all plen ta=0 tb=0 L=0
+svg.all plenswap ta=0 tb=0 L=0
+svg.all opCall t=0.00050000000000000001 x=1.0155547483598124 y=1 z=0
+svg.all dpdt t=0.00050000000000000001 x=31.109496719624818 y=0 z=0
+svg.all d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+svg.all plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.0077773741799060936
+svg.all plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.0077773741799060936
+svg.all opCall t=0.001 x=1.0311094967196248 y=1 z=0
+svg.all dpdt t=0.001 x=31.109496719624818 y=0 z=0
+svg.all d2pdt2 t=0.001 x=0 y=0 z=0
+svg.all plen ta=0.00050000000000000001 tb=0.001 L=0.015554748359812409
+svg.all plenswap ta=0.001 tb=0.00050000000000000001 L=0.015554748359812409
+svg.all opCall t=0.050000000000000003 x=2.3927800233008214 y=1.3927800233008214 z=0
+svg.all dpdt t=0.050000000000000003 x=21.997736089747644 y=21.99773608974731 z=0
+svg.all d2pdt2 t=0.050000000000000003 x=0 y=2.2204460492503131e-10 z=0
+svg.all plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.77716042451983736
+svg.all plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.77716042451983736
+svg.all opCall t=0.25 x=5.4433869116109994 y=4.3467792927006554 z=0
+svg.all dpdt t=0.25 x=23.813534889089993 y=-7.2958990192950601 z=0
+svg.all d2pdt2 t=0.25 x=-150.02659265839213 y=-500.08864219197591 z=0
+svg.all plen ta=0.125 tb=0.25 L=4.9369793571365346
+svg.all plenswap ta=0.25 tb=0.125 L=4.9369793571365346
+svg.all opCall t=0.5 x=7.9802338815936782 y=8.550902732149801 z=0
+svg.all dpdt t=0.5 x=3.2756807759595219 y=34.203771657702831 z=0
+svg.all d2pdt2 t=0.5 x=-271.42619318176742 y=476.7567057122335 z=0
+svg.all plen ta=0.25 tb=0.5 L=7.5048024845260946
+svg.all plenswap ta=0.5 tb=0.25 L=7.5048024845260946
+svg.all opCall t=0.75 x=5.2239865748952612 y=7.4479731497905224 z=0
+svg.all dpdt t=0.75 x=-13.912589882177695 y=-27.825179764355834 z=0
+svg.all d2pdt2 t=0.75 x=8.8817841970012523e-10 y=8.8817841970012523e-10 z=0
+svg.all plen ta=0.375 tb=0.75 L=11.490856223233109
+svg.all plenswap ta=0.75 tb=0.375 L=11.490856223233109
+svg.all opCall t=0.94999999999999996 x=2.0405578061976666 y=2.1561753402196295 z=0
+svg.all dpdt t=0.94999999999999996 x=-20.811156123953456 y=-23.1235068043929 z=0
+svg.all d2pdt2 t=0.94999999999999996 x=0 y=4.4408920985006262e-10 z=0
+svg.all plen ta=0.47499999999999998 tb=0.94999999999999996 L=14.787221893968042
+svg.all plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=14.787221893968042
+svg.all opCall t=0.999 x=1.0208111561239532 y=1.0231235068043925 z=0
+svg.all dpdt t=0.999 x=-20.811156123953346 y=-23.123506804392679 z=0
+svg.all d2pdt2 t=0.999 x=2.2204460492503131e-10 y=4.4408920985006262e-10 z=0
+svg.all plen ta=0.4995 tb=0.999 L=15.540389808433545
+svg.all plenswap ta=0.999 tb=0.4995 L=15.540389808433545
+svg.all opCall t=0.99950000000000006 x=1.0104055780619756 y=1.011561753402195 z=0
+svg.all dpdt t=0.99950000000000006 x=-20.811156123953232 y=-23.123506804392456 z=0
+svg.all d2pdt2 t=0.99950000000000006 x=2.2204460492503131e-10 y=4.4408920985006262e-10 z=0
+svg.all plen ta=0.49975000000000003 tb=0.99950000000000006 L=15.544686162207539
+svg.all plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=15.544686162207539
+svg.all opCall t=1 x=1 y=1 z=0
+svg.all dpdt t=1 x=-20.811156123953232 y=-23.123506804392456 z=0
+svg.all d2pdt2 t=1 x=2.2204460492503131e-10 y=4.4408920985006262e-10 z=0
+svg.all plen ta=0.5 tb=1 L=15.550959005537672
+svg.all plenswap ta=1 tb=0.5 L=15.550959005537672
+svg.all pfl target=0 t=0.001 x=1.0311094967196248 y=1 z=0
+svg.all pfl target=7.7795890710639028 t=0.21199999999999999 x=4.4301533859265891 y=4.2629594557705781 z=0
+svg.all pfl target=15.559178142127806 t=0.47200000000000003 x=7.782115752139803 y=7.7600736939240988 z=0
+svg.all pfl target=23.338767213191709 t=0.72199999999999998 x=5.613539091596234 y=8.227078183192468 z=0
+svg.all pfl target=31.087237927971355 t=0.97099999999999997 x=1.6035235275946467 y=1.670581697327385 z=0
+svg.all pfl target=31.118356284255611 t=0.97199999999999998 x=1.5827123714706932 y=1.6474581905229926 z=0
+svg.all pfl target=46.677534426383417 t=1 x=1 y=1 z=0
+svg.all cd px=0.5 py=0.5 pz=0 t=1.8420066406622953e-06 dist=0.70714730232341416
+svg.all cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.4142540829295234
+svg.all cd px=1 py=1 pz=1 t=1.8420066406622953e-06 dist=1.0000000016418684
+svg.all cd px=2 py=0 pz=1 t=0.03214327835827252 dist=1.4142135629050014
+svg.all i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+svg.all i2d10 found=false t=nan
+svg.all i2db found=false t=nan
+svg.all nseg=12
+svg.all seg[0] class=Line p0 x=1 y=1 z=0 p1 x=2 y=1 z=0
+svg.all seg[1] class=Line p0 x=2 y=1 z=0 p1 x=2.5 y=1.5 z=0
+svg.all seg[2] class=Line p0 x=2.5 y=1.5 z=0 p1 x=4 y=1.5 z=0
+svg.all seg[3] class=Line p0 x=4 y=1.5 z=0 p1 x=4.25 y=1.5 z=0
+svg.all seg[4] class=Line p0 x=4.25 y=1.5 z=0 p1 x=4.25 y=3 z=0
+svg.all seg[5] class=Line p0 x=4.25 y=3 z=0 p1 x=4.25 y=3.5 z=0
+svg.all seg[6] class=Bezier p0 x=3.25 y=3.5 z=0 p1 x=6 y=4 z=0
+svg.all seg[6] B[0] x=3.25 y=3.5 z=0
+svg.all seg[6] B[1] x=5 y=5 z=0
+svg.all seg[6] B[2] x=6 y=4 z=0
+svg.all seg[7] class=Bezier p0 x=6 y=4 z=0 p1 x=5 y=6 z=0
+svg.all seg[7] B[0] x=6 y=4 z=0
+svg.all seg[7] B[1] x=7 y=5 z=0
+svg.all seg[7] B[2] x=5 y=6 z=0
+svg.all seg[8] class=Bezier p0 x=5 y=6 z=0 p1 x=8 y=9 z=0
+svg.all seg[8] B[0] x=5 y=6 z=0
+svg.all seg[8] B[1] x=7 y=7 z=0
+svg.all seg[8] B[2] x=8 y=7 z=0
+svg.all seg[8] B[3] x=8 y=9 z=0
+svg.all seg[9] class=Bezier p0 x=8 y=9 z=0 p1 x=7 y=11 z=0
+svg.all seg[9] B[0] x=8 y=9 z=0
+svg.all seg[9] B[1] x=9 y=9 z=0
+svg.all seg[9] B[2] x=9 y=11 z=0
+svg.all seg[9] B[3] x=7 y=11 z=0
+svg.all seg[10] class=Line p0 x=7 y=11 z=0 p1 x=3.25 y=3.5 z=0
+svg.all seg[11] class=Line p0 x=3.25 y=3.5 z=0 p1 x=1 y=1 z=0
+svg.all t_values[0]=0.032144525159391889
+svg.all t_values[1]=0.054874136877619481
+svg.all t_values[2]=0.10309092461670731
+svg.all t_values[3]=0.11112705590655529
+svg.all t_values[4]=0.15934384364564314
+svg.all t_values[5]=0.17541610622533907
+svg.all t_values[6]=0.2754072431844875
+svg.all t_values[7]=0.36338936364191315
+svg.all t_values[8]=0.51206840333855896
+svg.all t_values[9]=0.622344873230263
+svg.all t_values[10]=0.89188491083345989
+svg.all t_values[11]=1
+svg.all str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.xform class=SVGPath
+svg.xform str=SVGPath(path="", xtrans=0.5, ytrans=-0.25, xscale=2, yscale=3, tolerance=1e-10)
+svg.xform length=9.2022859796900338
+svg.xform opCall t=0 x=3 y=5.25 z=0
+svg.xform dpdt t=0 x=5.1094003924507803 y=7.6641005886761704 z=0
+svg.xform d2pdt2 t=0 x=-8.8817841970012523e-10 y=-1.7763568394002505e-09 z=0
+svg.xform plen ta=0 tb=0 L=0
+svg.xform plenswap ta=0 tb=0 L=0
+svg.xform opCall t=0.00050000000000000001 x=3.0025547001962249 y=5.2538320502943376 z=0
+svg.xform dpdt t=0.00050000000000000001 x=5.1094003924507803 y=7.6641005886752822 z=0
+svg.xform d2pdt2 t=0.00050000000000000001 x=-4.4408920985006262e-10 y=8.8817841970012523e-10 z=0
+svg.xform plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.0023027756377323248
+svg.xform plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.0023027756377323248
+svg.xform opCall t=0.001 x=3.0051094003924508 y=5.2576641005886762 z=0
+svg.xform dpdt t=0.001 x=5.1094003924503362 y=7.6641005886752822 z=0
+svg.xform d2pdt2 t=0.001 x=-8.8817841970012523e-10 y=-1.7763568394002505e-09 z=0
+svg.xform plen ta=0.00050000000000000001 tb=0.001 L=0.0046055512754648968
+svg.xform plenswap ta=0.001 tb=0.00050000000000000001 L=0.0046055512754648968
+svg.xform opCall t=0.050000000000000003 x=3.255470019622523 y=5.6332050294337837 z=0
+svg.xform dpdt t=0.050000000000000003 x=5.1094003924507803 y=7.6641005886761704 z=0
+svg.xform d2pdt2 t=0.050000000000000003 x=0 y=1.7763568394002505e-09 z=0
+svg.xform plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.23027756377319869
+svg.xform plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.23027756377319869
+svg.xform opCall t=0.25 x=4.2773500981126151 y=7.1660251471689218 z=0
+svg.xform dpdt t=0.25 x=5.1094003924507803 y=7.6641005886757263 z=0
+svg.xform d2pdt2 t=0.25 x=0 y=8.8817841970012523e-10 z=0
+svg.xform plen ta=0.125 tb=0.25 L=1.1513878188659987
+svg.xform plenswap ta=0.25 tb=0.125 L=1.1513878188659987
+svg.xform opCall t=0.5 x=5.5547001962252294 y=9.0820502943378436 z=0
+svg.xform dpdt t=0.5 x=5.1094003924503362 y=7.6641005886761704 z=0
+svg.xform d2pdt2 t=0.5 x=8.8817841970012523e-10 y=1.7763568394002505e-09 z=0
+svg.xform plen ta=0.25 tb=0.5 L=2.3027756377319943
+svg.xform plenswap ta=0.5 tb=0.25 L=2.3027756377319943
+svg.xform opCall t=0.75 x=6.8320502943378445 y=10.998075441506767 z=0
+svg.xform dpdt t=0.75 x=5.1094003924503362 y=7.6641005886761704 z=0
+svg.xform d2pdt2 t=0.75 x=-8.8817841970012523e-10 y=-1.7763568394002505e-09 z=0
+svg.xform plen ta=0.375 tb=0.75 L=3.4541634565979922
+svg.xform plenswap ta=0.75 tb=0.375 L=3.4541634565979922
+svg.xform opCall t=0.94999999999999996 x=8.5394448724536005 y=11.25 z=0
+svg.xform dpdt t=0.94999999999999996 x=9.211102550928274 y=0 z=0
+svg.xform d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+svg.xform plen ta=0.47499999999999998 tb=0.94999999999999996 L=4.3722288485470244
+svg.xform plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=4.3722288485470244
+svg.xform opCall t=0.999 x=8.9907888974490735 y=11.25 z=0
+svg.xform dpdt t=0.999 x=9.2111025509273858 y=0 z=0
+svg.xform d2pdt2 t=0.999 x=-1.7763568394002505e-09 y=0 z=0
+svg.xform plen ta=0.4995 tb=0.999 L=4.5967219357994509
+svg.xform plenswap ta=0.999 tb=0.4995 L=4.5967219357994509
+svg.xform opCall t=0.99950000000000006 x=8.9953944487245376 y=11.25 z=0
+svg.xform dpdt t=0.99950000000000006 x=9.2111025509300504 y=0 z=0
+svg.xform d2pdt2 t=0.99950000000000006 x=1.7763568394002505e-09 y=0 z=0
+svg.xform plen ta=0.49975000000000003 tb=0.99950000000000006 L=4.5983386246879601
+svg.xform plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=4.5983386246879601
+svg.xform opCall t=1 x=9 y=11.25 z=0
+svg.xform dpdt t=1 x=9.2111025509264977 y=0 z=0
+svg.xform d2pdt2 t=1 x=-1.7763568394002505e-09 y=0 z=0
+svg.xform plen ta=0.5 tb=1 L=4.600229415267739
+svg.xform plenswap ta=1 tb=0.5 L=4.600229415267739
+svg.xform pfl target=0 t=0.001 x=3.0051094003924508 y=5.2576641005886762 z=0
+svg.xform pfl target=2.3005714949225085 t=0.25 x=4.2773500981126151 y=7.1660251471689218 z=0
+svg.xform pfl target=4.6011429898450169 t=0.5 x=5.5547001962252294 y=9.0820502943378436 z=0
+svg.xform pfl target=6.9017144847675258 t=0.75 x=6.8320502943378445 y=10.998075441506767 z=0
+svg.xform pfl target=9.193083693710344 t=0.999 x=8.9907888974490735 y=11.25 z=0
+svg.xform pfl target=9.2022859796900338 t=1 x=9 y=11.25 z=0
+svg.xform pfl target=13.803428969535052 t=1 x=9 y=11.25 z=0
+svg.xform cd px=0.5 py=0.5 pz=0 t=1.8420066406622953e-06 dist=5.3677445144692602
+svg.xform cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=6.0467102379300819
+svg.xform cd px=1 py=1 pz=1 t=1.8420066406622953e-06 dist=4.8023595912573231
+svg.xform cd px=2 py=0 pz=1 t=1.8420066406622953e-06 dist=5.4371561551320795
+svg.xform i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+svg.xform i2d10 found=false t=nan
+svg.xform i2db found=false t=nan
+svg.xform nseg=2
+svg.xform seg[0] class=Line p0 x=3 y=5.25 z=0 p1 x=7 y=11.25 z=0
+svg.xform seg[1] class=Line p0 x=7 y=11.25 z=0 p1 x=9 y=11.25 z=0
+svg.xform t_values[0]=0.78287072704466742
+svg.xform t_values[1]=1
+svg.xform str=SVGPath(path="", xtrans=0.5, ytrans=-0.25, xscale=2, yscale=3, tolerance=1e-10)
+svg.tol2 class=SVGPath
+svg.tol2 str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=2)
+svg.tol2 length=2
+svg.tol2 opCall t=0 x=0 y=0 z=0
+svg.tol2 dpdt t=0 x=2 y=0 z=0
+svg.tol2 d2pdt2 t=0 x=0 y=0 z=0
+svg.tol2 plen ta=0 tb=0 L=0
+svg.tol2 plenswap ta=0 tb=0 L=0
+svg.tol2 opCall t=0.00050000000000000001 x=0.001 y=0 z=0
+svg.tol2 dpdt t=0.00050000000000000001 x=2 y=0 z=0
+svg.tol2 d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+svg.tol2 plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00050000000000000001
+svg.tol2 plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00050000000000000001
+svg.tol2 opCall t=0.001 x=0.002 y=0 z=0
+svg.tol2 dpdt t=0.001 x=2 y=0 z=0
+svg.tol2 d2pdt2 t=0.001 x=0 y=0 z=0
+svg.tol2 plen ta=0.00050000000000000001 tb=0.001 L=0.001
+svg.tol2 plenswap ta=0.001 tb=0.00050000000000000001 L=0.001
+svg.tol2 opCall t=0.050000000000000003 x=0.10000000000000001 y=0 z=0
+svg.tol2 dpdt t=0.050000000000000003 x=2.0000000000000018 y=0 z=0
+svg.tol2 d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+svg.tol2 plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.050000000000000003
+svg.tol2 plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.050000000000000003
+svg.tol2 opCall t=0.25 x=0.5 y=0 z=0
+svg.tol2 dpdt t=0.25 x=2.0000000000000018 y=0 z=0
+svg.tol2 d2pdt2 t=0.25 x=0 y=0 z=0
+svg.tol2 plen ta=0.125 tb=0.25 L=0.25
+svg.tol2 plenswap ta=0.25 tb=0.125 L=0.25
+svg.tol2 opCall t=0.5 x=1 y=0 z=0
+svg.tol2 dpdt t=0.5 x=1.0000000000000009 y=1.0000000000000009 z=0
+svg.tol2 d2pdt2 t=0.5 x=-2000.0000000000018 y=2000.0000000000018 z=0
+svg.tol2 plen ta=0.25 tb=0.5 L=0.5
+svg.tol2 plenswap ta=0.5 tb=0.25 L=0.5
+svg.tol2 opCall t=0.75 x=1 y=0.5 z=0
+svg.tol2 dpdt t=0.75 x=0 y=2.0000000000000018 z=0
+svg.tol2 d2pdt2 t=0.75 x=0 y=0 z=0
+svg.tol2 plen ta=0.375 tb=0.75 L=0.74809016994374944
+svg.tol2 plenswap ta=0.75 tb=0.375 L=0.74809016994374944
+svg.tol2 opCall t=0.94999999999999996 x=1 y=0.89999999999999991 z=0
+svg.tol2 dpdt t=0.94999999999999996 x=0 y=2.0000000000000018 z=0
+svg.tol2 d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+svg.tol2 plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.94793303437365917
+svg.tol2 plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.94793303437365917
+svg.tol2 opCall t=0.999 x=1 y=0.998 z=0
+svg.tol2 dpdt t=0.999 x=0 y=2.0000000000000018 z=0
+svg.tol2 d2pdt2 t=0.999 x=0 y=0 z=0
+svg.tol2 plen ta=0.4995 tb=0.999 L=0.9980554463682012
+svg.tol2 plenswap ta=0.999 tb=0.4995 L=0.9980554463682012
+svg.tol2 opCall t=0.99950000000000006 x=1 y=0.99900000000000011 z=0
+svg.tol2 dpdt t=0.99950000000000006 x=0 y=2.0000000000000018 z=0
+svg.tol2 d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+svg.tol2 plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.99901315570970528
+svg.tol2 plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.99901315570970528
+svg.tol2 opCall t=1 x=1 y=1 z=0
+svg.tol2 dpdt t=1 x=0 y=2.0000000000000018 z=0
+svg.tol2 d2pdt2 t=1 x=0 y=0 z=0
+svg.tol2 plen ta=0.5 tb=1 L=1
+svg.tol2 plenswap ta=1 tb=0.5 L=1
+svg.tol2 pfl target=0 t=0.001 x=0.002 y=0 z=0
+svg.tol2 pfl target=0.5 t=0.251 x=0.502 y=0 z=0
+svg.tol2 pfl target=1 t=0.501 x=1 y=0.0020000000000000018 z=0
+svg.tol2 pfl target=1.5 t=0.751 x=1 y=0.502 z=0
+svg.tol2 pfl target=1.998 t=1 x=1 y=1 z=0
+svg.tol2 pfl target=2 t=1 x=1 y=1 z=0
+svg.tol2 pfl target=3 t=1 x=1 y=1 z=0
+svg.tol2 cd px=0.5 py=0.5 pz=0 t=0.7500005740322111 dist=0.50000000000131806
+svg.tol2 cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=3.6840132813245907e-06
+svg.tol2 cd px=1 py=1 pz=1 t=0.99999815799335934 dist=1.0000000000067859
+svg.tol2 cd px=2 py=0 pz=1 t=0.50000069733625474 dist=1.4142135623737828
+svg.tol2 i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.25
+svg.tol2 i2d10 found=true t=0.25
+svg.tol2 i2db found=true t=0.125
+svg.tol2 nseg=2
+svg.tol2 seg[0] class=Line p0 x=0 y=0 z=0 p1 x=1 y=0 z=0
+svg.tol2 seg[1] class=Line p0 x=1 y=0 z=0 p1 x=1 y=1 z=0
+svg.tol2 t_values[0]=0.5
+svg.tol2 t_values[1]=1
+svg.tol2 str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=2)
+svg.toldefault class=SVGPath
+svg.toldefault str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.toldefault length=3.3861029224487162
+svg.toldefault opCall t=0 x=0 y=0 z=0
+svg.toldefault dpdt t=0 x=3.4142135623730949 y=0 z=0
+svg.toldefault d2pdt2 t=0 x=0 y=0 z=0
+svg.toldefault plen ta=0 tb=0 L=0
+svg.toldefault plenswap ta=0 tb=0 L=0
+svg.toldefault opCall t=0.00050000000000000001 x=0.0017071067811865474 y=0 z=0
+svg.toldefault dpdt t=0.00050000000000000001 x=3.4142135623730954 y=0 z=0
+svg.toldefault d2pdt2 t=0.00050000000000000001 x=-2.1684043449710089e-13 y=0 z=0
+svg.toldefault plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00085355339059327371
+svg.toldefault plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00085355339059327371
+svg.toldefault opCall t=0.001 x=0.0034142135623730949 y=0 z=0
+svg.toldefault dpdt t=0.001 x=3.4142135623730949 y=0 z=0
+svg.toldefault d2pdt2 t=0.001 x=0 y=0 z=0
+svg.toldefault plen ta=0.00050000000000000001 tb=0.001 L=0.0017071067811865474
+svg.toldefault plenswap ta=0.001 tb=0.00050000000000000001 L=0.0017071067811865474
+svg.toldefault opCall t=0.050000000000000003 x=0.17071067811865476 y=0 z=0
+svg.toldefault dpdt t=0.050000000000000003 x=3.4142135623730918 y=0 z=0
+svg.toldefault d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+svg.toldefault plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.085355339059327379
+svg.toldefault plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.085355339059327379
+svg.toldefault opCall t=0.25 x=0.85355339059327373 y=0 z=0
+svg.toldefault dpdt t=0.25 x=3.4142135623730918 y=0 z=0
+svg.toldefault d2pdt2 t=0.25 x=1.1102230246251565e-10 y=0 z=0
+svg.toldefault plen ta=0.125 tb=0.25 L=0.42677669529663687
+svg.toldefault plenswap ta=0.25 tb=0.125 L=0.42677669529663687
+svg.toldefault opCall t=0.5 x=1 y=0.70710678118654746 z=0
+svg.toldefault dpdt t=0.5 x=0 y=3.4142135623730918 z=0
+svg.toldefault d2pdt2 t=0.5 x=0 y=1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.25 tb=0.5 L=0.8523350731540148
+svg.toldefault plenswap ta=0.5 tb=0.25 L=0.8523350731540148
+svg.toldefault opCall t=0.75 x=0.60355339059327373 y=0.60355339059327373 z=0
+svg.toldefault dpdt t=0.75 x=-2.4142135623730909 y=-2.4142135623730909 z=0
+svg.toldefault d2pdt2 t=0.75 x=1.1102230246251565e-10 y=1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.375 tb=0.75 L=1.2759628220235333
+svg.toldefault plenswap ta=0.75 tb=0.375 L=1.2759628220235333
+svg.toldefault opCall t=0.94999999999999996 x=0.12071067811865488 y=0.12071067811865488 z=0
+svg.toldefault dpdt t=0.94999999999999996 x=-2.4142135623730909 y=-2.4142135623730909 z=0
+svg.toldefault d2pdt2 t=0.94999999999999996 x=-1.1102230246251565e-10 y=-1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.613688847890397
+svg.toldefault plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.613688847890397
+svg.toldefault opCall t=0.999 x=0.0024142135623731464 y=0.0024142135623731464 z=0
+svg.toldefault dpdt t=0.999 x=-2.4142135623730909 y=-2.4142135623730909 z=0
+svg.toldefault d2pdt2 t=0.999 x=-1.1102230246251565e-10 y=-1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.4995 tb=0.999 L=1.6979923419262899
+svg.toldefault plenswap ta=0.999 tb=0.4995 L=1.6979923419262899
+svg.toldefault opCall t=0.99950000000000006 x=0.0012071067811864067 y=0.0012071067811864067 z=0
+svg.toldefault dpdt t=0.99950000000000006 x=-2.4142135623731464 y=-2.4142135623731464 z=0
+svg.toldefault d2pdt2 t=0.99950000000000006 x=-1.1102230246251565e-10 y=-1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.7002751206183337
+svg.toldefault plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.7002751206183337
+svg.toldefault opCall t=1 x=0 y=0 z=0
+svg.toldefault dpdt t=1 x=-2.4142135623731464 y=-2.4142135623731464 z=0
+svg.toldefault d2pdt2 t=1 x=-1.1102230246251565e-10 y=-1.1102230246251565e-10 z=0
+svg.toldefault plen ta=0.5 tb=1 L=1.7026665995097321
+svg.toldefault plenswap ta=1 tb=0.5 L=1.7026665995097321
+svg.toldefault pfl target=0 t=0.001 x=0.0034142135623730949 y=0 z=0
+svg.toldefault pfl target=0.84652573061217906 t=0.248 x=0.84672496346852755 y=0 z=0
+svg.toldefault pfl target=1.6930514612243581 t=0.496 x=1 y=0.69344992693705509 z=0
+svg.toldefault pfl target=2.5395771918365373 t=0.745 x=0.61562445840513935 y=0.61562445840513935 z=0
+svg.toldefault pfl target=3.3827168195262676 t=0.99199999999999999 x=0.019313708498984727 y=0.019313708498984727 z=0
+svg.toldefault pfl target=3.3861029224487162 t=0.99299999999999999 x=0.016899494936611692 y=0.016899494936611692 z=0
+svg.toldefault pfl target=5.0791543836730746 t=1 x=0 y=0 z=0
+svg.toldefault cd px=0.5 py=0.5 pz=0 t=0.43933897120840332 dist=0.5000000000085616
+svg.toldefault cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=6.2890040545305128e-06
+svg.toldefault cd px=1 py=1 pz=1 t=0.58578602219132936 dist=1.0000000000010059
+svg.toldefault cd px=2 py=0 pz=1 t=0.2928927860440434 dist=1.4142146071712578
+svg.toldefault i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.14644660940672621
+svg.toldefault i2d10 found=true t=0.14644660940672624
+svg.toldefault i2db found=true t=0.073223304703363121
+svg.toldefault nseg=3
+svg.toldefault seg[0] class=Line p0 x=0 y=0 z=0 p1 x=1 y=0 z=0
+svg.toldefault seg[1] class=Line p0 x=1 y=0 z=0 p1 x=1 y=1 z=0
+svg.toldefault seg[2] class=Line p0 x=1 y=1 z=0 p1 x=0 y=0 z=0
+svg.toldefault t_values[0]=0.29289321881345248
+svg.toldefault t_values[1]=0.58578643762690497
+svg.toldefault t_values[2]=1
+svg.toldefault str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.err.unknown asError=false asException=true msg=Unknown SVG command: X
+svg.err.nocomma asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+svg.err.spaceaftercomma asError=false asException=true msg=no digits seen for input " 2.0".
+svg.err.toofew asError=false asException=true msg=parseToFormatSpec: Cannot find character ',' in the input string.
+svg.err.emptysegment asError=true asException=false msg=index [0] is out of bounds for array of length 0
+svg.err.moveonly asError=true asException=false msg=Polyline() No segments present.
+svg.err.empty asError=true asException=false msg=Polyline() No segments present.
+svg.err.lowerz asError=false asException=true msg=Unknown SVG command: z
+svg.err.trailing class=SVGPath
+svg.err.trailing str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.err.trailing length=2.8284271247461956
+svg.err.trailing opCall t=0 x=1 y=1 z=0
+svg.err.trailing dpdt t=0 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0 x=0 y=0 z=0
+svg.err.trailing plen ta=0 tb=0 L=0
+svg.err.trailing plenswap ta=0 tb=0 L=0
+svg.err.trailing opCall t=0.00050000000000000001 x=1.0009999999999999 y=1.0009999999999999 z=0
+svg.err.trailing dpdt t=0.00050000000000000001 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+svg.err.trailing plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.0007071067811864688
+svg.err.trailing plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.0007071067811864688
+svg.err.trailing opCall t=0.001 x=1.002 y=1.002 z=0
+svg.err.trailing dpdt t=0.001 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.001 x=0 y=0 z=0
+svg.err.trailing plen ta=0.00050000000000000001 tb=0.001 L=0.0014142135623732516
+svg.err.trailing plenswap ta=0.001 tb=0.00050000000000000001 L=0.0014142135623732516
+svg.err.trailing opCall t=0.050000000000000003 x=1.1000000000000001 y=1.1000000000000001 z=0
+svg.err.trailing dpdt t=0.050000000000000003 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+svg.err.trailing plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.070710678118654821
+svg.err.trailing plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.070710678118654821
+svg.err.trailing opCall t=0.25 x=1.5 y=1.5 z=0
+svg.err.trailing dpdt t=0.25 x=2.0000000000000018 y=2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.25 x=0 y=0 z=0
+svg.err.trailing plen ta=0.125 tb=0.25 L=0.3535533905932734
+svg.err.trailing plenswap ta=0.25 tb=0.125 L=0.3535533905932734
+svg.err.trailing opCall t=0.5 x=2 y=2 z=0
+svg.err.trailing dpdt t=0.5 x=0 y=0 z=0
+svg.err.trailing d2pdt2 t=0.5 x=-3999.9999999997817 y=-3999.9999999997817 z=0
+svg.err.trailing plen ta=0.25 tb=0.5 L=0.70710678118654646
+svg.err.trailing plenswap ta=0.5 tb=0.25 L=0.70710678118654646
+svg.err.trailing opCall t=0.75 x=1.5 y=1.5 z=0
+svg.err.trailing dpdt t=0.75 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.75 x=0 y=0 z=0
+svg.err.trailing plen ta=0.375 tb=0.75 L=1.0535891039679559
+svg.err.trailing plenswap ta=0.75 tb=0.375 L=1.0535891039679559
+svg.err.trailing opCall t=0.94999999999999996 x=1.1000000000000001 y=1.1000000000000001 z=0
+svg.err.trailing dpdt t=0.94999999999999996 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+svg.err.trailing plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.336431816442573
+svg.err.trailing plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.336431816442573
+svg.err.trailing opCall t=0.999 x=1.002 y=1.002 z=0
+svg.err.trailing dpdt t=0.999 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.999 x=0 y=0 z=0
+svg.err.trailing plen ta=0.4995 tb=0.999 L=1.4099709216859764
+svg.err.trailing plenswap ta=0.999 tb=0.4995 L=1.4099709216859764
+svg.err.trailing opCall t=0.99950000000000006 x=1.0009999999999999 y=1.0009999999999999 z=0
+svg.err.trailing dpdt t=0.99950000000000006 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+svg.err.trailing plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.4120922420295363
+svg.err.trailing plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.4120922420295363
+svg.err.trailing opCall t=1 x=1 y=1 z=0
+svg.err.trailing dpdt t=1 x=-2.0000000000000018 y=-2.0000000000000018 z=0
+svg.err.trailing d2pdt2 t=1 x=0 y=0 z=0
+svg.err.trailing plen ta=0.5 tb=1 L=1.4142135623730954
+svg.err.trailing plenswap ta=1 tb=0.5 L=1.4142135623730954
+svg.err.trailing pfl target=0 t=0.001 x=1.002 y=1.002 z=0
+svg.err.trailing pfl target=0.70710678118654891 t=0.251 x=1.502 y=1.502 z=0
+svg.err.trailing pfl target=1.4142135623730978 t=0.5 x=2 y=2 z=0
+svg.err.trailing pfl target=2.1213203435596468 t=0.75 x=1.5 y=1.5 z=0
+svg.err.trailing pfl target=2.8255986976214493 t=0.999 x=1.002 y=1.002 z=0
+svg.err.trailing pfl target=2.8284271247461956 t=1 x=1 y=1 z=0
+svg.err.trailing pfl target=4.2426406871192937 t=1 x=1 y=1 z=0
+svg.err.trailing cd px=0.5 py=0.5 pz=0 t=0.99999815799335934 dist=0.70711199116809398
+svg.err.trailing cd px=0 py=0 pz=0 t=0.99999815799335934 dist=1.4142187723546416
+svg.err.trailing cd px=1 py=1 pz=1 t=0.99999815799335934 dist=1.0000000000135718
+svg.err.trailing cd px=2 py=0 pz=1 t=0.99999815799335934 dist=1.7320508075767131
+svg.err.trailing i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+svg.err.trailing i2d10 found=false t=nan
+svg.err.trailing i2db found=false t=nan
+svg.err.trailing nseg=2
+svg.err.trailing seg[0] class=Line p0 x=1 y=1 z=0 p1 x=2 y=2 z=0
+svg.err.trailing seg[1] class=Line p0 x=2 y=2 z=0 p1 x=1 y=1 z=0
+svg.err.trailing t_values[0]=0.5
+svg.err.trailing t_values[1]=1
+svg.err.trailing str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.init class=SVGPath
+svg.init str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.init length=nan
+svg.init opCall t=0 x=nan y=nan z=0
+svg.init dpdt t=0 x=nan y=nan z=0
+svg.init d2pdt2 t=0 x=nan y=nan z=0
+svg.init plen ta=0 tb=0 L=nan
+svg.init plenswap ta=0 tb=0 L=nan
+svg.init opCall t=0.00050000000000000001 x=nan y=nan z=0
+svg.init dpdt t=0.00050000000000000001 x=nan y=nan z=0
+svg.init d2pdt2 t=0.00050000000000000001 x=nan y=nan z=0
+svg.init plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=nan
+svg.init plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=nan
+svg.init opCall t=0.001 x=nan y=nan z=0
+svg.init dpdt t=0.001 x=nan y=nan z=0
+svg.init d2pdt2 t=0.001 x=nan y=nan z=0
+svg.init plen ta=0.00050000000000000001 tb=0.001 L=nan
+svg.init plenswap ta=0.001 tb=0.00050000000000000001 L=nan
+svg.init opCall t=0.050000000000000003 x=nan y=nan z=0
+svg.init dpdt t=0.050000000000000003 x=nan y=nan z=0
+svg.init d2pdt2 t=0.050000000000000003 x=nan y=nan z=0
+svg.init plen ta=0.025000000000000001 tb=0.050000000000000003 L=nan
+svg.init plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=nan
+svg.init opCall t=0.25 x=nan y=nan z=0
+svg.init dpdt t=0.25 x=nan y=nan z=0
+svg.init d2pdt2 t=0.25 x=nan y=nan z=0
+svg.init plen ta=0.125 tb=0.25 L=nan
+svg.init plenswap ta=0.25 tb=0.125 L=nan
+svg.init opCall t=0.5 x=nan y=nan z=0
+svg.init dpdt t=0.5 x=nan y=nan z=0
+svg.init d2pdt2 t=0.5 x=nan y=nan z=0
+svg.init plen ta=0.25 tb=0.5 L=nan
+svg.init plenswap ta=0.5 tb=0.25 L=nan
+svg.init opCall t=0.75 x=nan y=nan z=0
+svg.init dpdt t=0.75 x=nan y=nan z=0
+svg.init d2pdt2 t=0.75 x=nan y=nan z=0
+svg.init plen ta=0.375 tb=0.75 L=nan
+svg.init plenswap ta=0.75 tb=0.375 L=nan
+svg.init opCall t=0.94999999999999996 x=nan y=nan z=0
+svg.init dpdt t=0.94999999999999996 x=nan y=nan z=0
+svg.init d2pdt2 t=0.94999999999999996 x=nan y=nan z=0
+svg.init plen ta=0.47499999999999998 tb=0.94999999999999996 L=nan
+svg.init plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=nan
+svg.init opCall t=0.999 x=nan y=nan z=0
+svg.init dpdt t=0.999 x=nan y=nan z=0
+svg.init d2pdt2 t=0.999 x=nan y=nan z=0
+svg.init plen ta=0.4995 tb=0.999 L=nan
+svg.init plenswap ta=0.999 tb=0.4995 L=nan
+svg.init opCall t=0.99950000000000006 x=nan y=nan z=0
+svg.init dpdt t=0.99950000000000006 x=nan y=nan z=0
+svg.init d2pdt2 t=0.99950000000000006 x=nan y=nan z=0
+svg.init plen ta=0.49975000000000003 tb=0.99950000000000006 L=nan
+svg.init plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=nan
+svg.init opCall t=1 x=nan y=nan z=0
+svg.init dpdt t=1 x=nan y=nan z=0
+svg.init d2pdt2 t=1 x=nan y=nan z=0
+svg.init plen ta=0.5 tb=1 L=nan
+svg.init plenswap ta=1 tb=0.5 L=nan
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init pfl target=nan t=1 x=nan y=nan z=0
+svg.init cd px=0.5 py=0.5 pz=0 t=0.99999815799335934 dist=nan
+svg.init cd px=0 py=0 pz=0 t=0.99999815799335934 dist=nan
+svg.init cd px=1 py=1 pz=1 t=0.99999815799335934 dist=nan
+svg.init cd px=2 py=0 pz=1 t=0.99999815799335934 dist=nan
+svg.init i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+svg.init i2d10 found=false t=nan
+svg.init i2db found=false t=nan
+svg.init nseg=1
+svg.init seg[0] class=Line p0 x=nan y=nan z=0 p1 x=nan y=nan z=0
+svg.init t_values[0]=nan
+svg.init str=SVGPath(path="", xtrans=0, ytrans=0, xscale=1, yscale=1, tolerance=1e-10)
+svg.dup asError=true asException=false msg=Polyline() No segments present.
+svg.copy asError=true asException=false msg=Polyline() No segments present.

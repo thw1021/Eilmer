@@ -42,8 +42,11 @@ number Line::partial_length(double ta, double tb) const {
     return std::fabs(tb - ta) * eil::geom::abs(dp);
 }
 
-// D:56-61
+// D:56-61. `out double t` (line.d:56) resets the caller's variable to double.init
+// before the body runs, the same D spelling path.d:124 uses; the assignment below
+// covers every path, so the reset only keeps the two `out` parameters honest.
 Vector3 Line::point_from_length(number length, double& t) const {
+    t = eil::d_init<double>(); // D: `out double t`
     Vector3 dp = p1 - p0;
     t = eil::re(length / eil::geom::abs(dp));
     return (*this)(t);

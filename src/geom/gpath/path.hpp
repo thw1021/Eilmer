@@ -31,10 +31,15 @@
 //   * D:136 `if (cast(Line)this !is null)` is a run-time type check, kept as
 //     dynamic_cast<const Line*>(this) rather than a virtual flag (brief 4b item 4).
 //     This is why path.cpp includes line.hpp: Line must be a complete type there.
-//   * D:151 `ref double t` ports to `double& t`; D:102 `out double t` also ports to
-//     `double& t`. The distinction D makes (out resets the caller's variable to
-//     double.init == NaN on entry, ref leaves it) is invisible at every gpath call
-//     site because both functions assign t on every path through the body.
+//   * D:151 `ref double t` ports to `double& t`. D:102 and D:124 `out double t` also
+//     port to `double& t`, but with the entry reset D performs on an out parameter
+//     reproduced explicitly (path.cpp: `t = eil::d_init<double>()` at the top of
+//     point_from_length and intersect2D). Measured with ldc2: `out` writes
+//     double.init (NaN) into the *caller's* variable before the body runs, so the
+//     `return false` exit of intersect2D (D:149) leaves the caller with NaN rather
+//     than the value it held on entry — row "path.i2d.parallel" of
+//     baselines/e587b235/probes/geom_gpath_path.txt. point_from_length assigns t on
+//     every path, so its reset is invisible; it is written for the same contract.
 //   * D:154 the nested function `distanceToPoint` closes over `this` and `p`; it
 //     becomes the capturing lambda passed to the callable overload of
 //     eil::nm::linesearch::minimize (added for exactly this site). The two entry

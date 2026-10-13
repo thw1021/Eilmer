@@ -57,6 +57,33 @@ class Arc : public Path {
     void evaluate_position_and_length(double t, Vector3& loc, number& L) const;
 }; // end class Arc
 
+// ---------------------------------------------------------------------------
+// phobos_atan2(): D's std.math.atan2(double, double) is NOT libm's atan2.
+// std/math/trigonometry.d:945 routes it to atan2Impl!double, which reduces the
+// quadrant and then calls atanImpl!double (the CEPHES/fdlibm rational
+// approximation that D keeps in pure source). glibc implements the same function
+// with the IBM Accurate Mathematical Engine, and the two disagree by 1 ULP for
+// arguments close to the y-axis. Measured on this machine:
+//   atan2(1.0, -1.6653345369377348e-16)  D 1.5707963267948966   glibc 1.5707963267948968
+//   atan2(1.0,  0.5)                    D 1.1071487177940904   glibc 1.1071487177940904
+// That one ULP moves every point of an Arc whose centre is not exactly on a
+// coordinate axis (arc.d:92 is the only atan2 call in this module, and it feeds
+// theta, L, cos/sin and the whole transform back), so Arc has to evaluate the same
+// algorithm D does. The corpus in baselines/e587b235/probes/geom_gpath_arcsteps.txt
+// (probes/geom/gpath/probe_arcsteps.d) pins this function against ldc2 over 40
+// (y,x) pairs, including the four special-case branches, and the arc test replays
+// it; the arc probe replay then shows it working through the geometry.
+//
+// SUBSTRATE GAP (T-9xx candidate, reported to the main thread): this belongs in
+// substrate/include/eil/math.hpp next to eil::pow/eil::sqrt as eil::atan2, because
+// geom/elements/vector3.cpp:313 (rotate_about_zaxis), geom/gpath/helix.cpp:44 and
+// the asin replica in src/gasdyn/idealgasflow.cpp all call std::atan2 directly and
+// carry the same latent 1 ULP divergence. It is declared here, in the one module
+// that is measurably affected, until the substrate owns it.
+// ---------------------------------------------------------------------------
+double phobos_atan2(double y, double x);
+double phobos_atan(double x);
+
 class Arc3 : public Arc {
     // Arc constructed from start-point a, end-point b and another intermediate
     // point m. Internally it is stored as an Arc object.

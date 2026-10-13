@@ -1,0 +1,6 @@
+# edge cases for the gpath file readers
+0.0
+0.5 1.0
+#
+# trailing comment
+1.0 2.0 3.0

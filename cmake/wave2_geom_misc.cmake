@@ -29,17 +29,18 @@ foreach(_m IN ITEMS svg nurbs_utils)
                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_misc_${_m}.txt)
 endforeach()
 
-# univariatefunctions (833 D lines, 9 UnivariateFunction subclasses) is registered
-# but its test was never written: the stage agent hit its turn limit first. The block
-# self-registers once the file exists so the rest of the tree stays buildable.
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_misc_univariatefunctions.cpp)
-  add_executable(test_geom_misc_univariatefunctions
-                 tests/test_geom_misc_univariatefunctions.cpp)
-  target_link_libraries(test_geom_misc_univariatefunctions PRIVATE eil_geom eil_nm eil_substrate)
-  add_test(NAME geom_misc_univariatefunctions
-           COMMAND test_geom_misc_univariatefunctions
-                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_misc_univariatefunctions.txt)
-endif()
+# univariatefunctions (833 D lines, 9 UnivariateFunction subclasses counted by the
+# wave-02 brief: the 8 classes defined here plus geom/luawrap/luaunifunction.d:207
+# LuaFnUnivariateFunction, which is Wave 7). Its test replays the 857-line probe
+# corpus and D's unittest block. See the two header comments in
+# tests/test_geom_misc_univariatefunctions.cpp for why that corpus comes from
+# probes/geom/misc/univariatefunctions_copy.d rather than the module itself.
+add_executable(test_geom_misc_univariatefunctions
+               tests/test_geom_misc_univariatefunctions.cpp)
+target_link_libraries(test_geom_misc_univariatefunctions PRIVATE eil_geom eil_nm eil_substrate)
+add_test(NAME geom_misc_univariatefunctions
+         COMMAND test_geom_misc_univariatefunctions
+                 ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_misc_univariatefunctions.txt)
 
 # kdtree takes a second file: the 100 query points Phobos' MT19937 draws from seed
 # 19920829 (kdtree.d:176-182). Phobos' RNG is not ported, so the points are captured
@@ -61,15 +62,11 @@ add_test(NAME geom_misc_kdtree
 # Both demos also *write* SVG files (svg.d draws into a File), so they run in the build
 # directory and their stdout is what is compared; the document text itself is gated by
 # the geom_misc_svg probe replay.
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_geom_misc_svg.cpp)
 add_executable(demo_geom_misc_svg tests/demo_geom_misc_svg.cpp)
 target_link_libraries(demo_geom_misc_svg PRIVATE eil_geom eil_nm eil_substrate)
-endif()
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_geom_misc_univariatefunctions.cpp)
 add_executable(demo_geom_misc_univariatefunctions tests/demo_geom_misc_univariatefunctions.cpp)
 target_link_libraries(demo_geom_misc_univariatefunctions PRIVATE eil_geom eil_nm eil_substrate)
-endif()
 
 find_program(BASH_PROGRAM bash)
 if(BASH_PROGRAM)

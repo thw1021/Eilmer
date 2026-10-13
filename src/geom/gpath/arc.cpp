@@ -3,6 +3,7 @@
 #include "geom/gpath/arc.hpp"
 
 #include <cmath>
+#include <limits>
 #include <memory>
 
 #include "eil/error.hpp"
@@ -14,6 +15,128 @@
 
 namespace eil {
 namespace geom {
+
+// ---------------------------------------------------------------------------
+// phobos_atan / phobos_atan2 — see the declaration in arc.hpp for why Arc needs
+// D's own arc tangent rather than libm's. Translated statement for statement from
+// std/math/trigonometry.d: atan2Impl (990-1035) and the `realFormat ==
+// RealFormat.ieeeDouble` branch of atanImpl (694-846), with T = double.
+// ---------------------------------------------------------------------------
+namespace {
+
+// D's constants are 80-bit `real` and reach a `double` only through the casts the
+// Phobos source writes, so the wide value is computed here and rounded on store
+// (wave-02-brief section 5).
+constexpr double kPI = static_cast<double>(EIL_PI);
+constexpr double kPI_2 = static_cast<double>(EIL_PI / 2.0L);
+constexpr double kPI_4 = static_cast<double>(EIL_PI / 4.0L);
+
+// atanImpl!double coefficients (trigonometry.d:753-766). Written as long-double
+// literals because that is how D spells them; the narrow to double is D's too.
+const double kP[5] = {
+    -6.485021904942025371773E1L, -1.228866684490136173410E2L, -7.500855792314704667340E1L,
+    -1.615753718733365076637E1L, -8.750608600031904122785E-1L,
+};
+const double kQ[6] = {
+    1.945506571482613964425E2L,  4.853903996359136964868E2L, 4.328810604912902668951E2L,
+    1.650270098316988542046E2L,  2.485846490142306297962E1L, 1.000000000000000000000E0L,
+};
+constexpr double kMOREBITS = static_cast<double>(6.123233995736765886130E-17L);
+// tan(PI/8) and tan(3*PI/8), as D spells them (trigonometry.d:779-782).
+constexpr double kTAN_PI_8 = static_cast<double>(0.414213562373095048801688724209698078569672L);
+constexpr double kTAN3_PI_8 = static_cast<double>(2.414213562373095048801688724209698078569672L);
+
+// std.math.algebraic.poly with the statically unrolled `ref const T[N]` overload
+// (algebraic.d:557-566): Horner from the highest coefficient down.
+template <size_t N> double poly(double x, const double (&A)[N]) {
+    double r = A[N - 1];
+    for (size_t i = 1; i < N; ++i) {
+        r *= x;
+        r += A[N - 1 - i];
+    }
+    return r;
+}
+
+} // namespace
+
+double phobos_atan(double x) {
+    // Special cases. (trigonometry.d:785-789)
+    if (x == 0.0) return x;
+    if (std::isinf(x)) return std::copysign(kPI_2, x);
+
+    // Make argument positive but save the sign. (trigonometry.d:791-795)
+    bool sign = false;
+    if (std::signbit(x)) {
+        sign = true;
+        x = -x;
+    }
+
+    // The double-precision branch (trigonometry.d:797-825).
+    short flag = 0;
+    double y;
+    if (x > kTAN3_PI_8) {
+        y = kPI_2;
+        flag = 1;
+        x = -(1.0 / x);
+    } else if (x <= 0.66) {
+        y = 0.0;
+    } else {
+        y = kPI_4;
+        flag = 2;
+        x = (x - 1.0) / (x + 1.0);
+    }
+
+    double z = x * x;
+    z = z * poly(z, kP) / poly(z, kQ);
+    z = x * z + x;
+    if (flag == 2)
+        z += 0.5 * kMOREBITS;
+    else if (flag == 1)
+        z += kMOREBITS;
+    y = y + z;
+
+    return sign ? -y : y;
+}
+
+double phobos_atan2(double y, double x) {
+    // atan2Impl!double (trigonometry.d:990-1035), special cases first.
+    if (std::isnan(x) || std::isnan(y)) return std::numeric_limits<double>::quiet_NaN();
+    if (y == 0.0) {
+        if (x >= 0 && !std::signbit(x))
+            return std::copysign(0.0, y);
+        else
+            return std::copysign(kPI, y);
+    }
+    if (x == 0.0) return std::copysign(kPI_2, y);
+    if (std::isinf(x)) {
+        if (std::signbit(x)) {
+            if (std::isinf(y))
+                return std::copysign(3 * kPI_4, y);
+            else
+                return std::copysign(kPI, y);
+        } else {
+            if (std::isinf(y))
+                return std::copysign(kPI_4, y);
+            else
+                return std::copysign(0.0, y);
+        }
+    }
+    if (std::isinf(y)) return std::copysign(kPI_2, y);
+
+    // Call atan and determine the quadrant.
+    double z = phobos_atan(y / x);
+
+    if (std::signbit(x)) {
+        if (std::signbit(y))
+            z = z - kPI;
+        else
+            z = z + kPI;
+    }
+
+    if (z == 0.0) return std::copysign(z, y);
+
+    return z;
+}
 
 // D:22-25
 Arc::Arc(const Vector3& va, const Vector3& vb, const Vector3& vc) : a(va), b(vb), c(vc) {}
@@ -94,7 +217,9 @@ void Arc::evaluate_position_and_length(double t, Vector3& loc, number& L) const 
                             __FILE__, __LINE__);
     }
     // Angle of the final point on the arc is in the range -pi < th <= +pi.
-    theta = std::atan2(cb_local.y, cb_local.x);
+    // D's atan2 is Phobos' own atan2Impl, not libm's (see arc.hpp); 1 ULP here
+    // moves every point on the arc and the length L.
+    theta = phobos_atan2(cb_local.y, cb_local.x);
     // The length of the circular arc.
     L = theta * cb_mag;
     // Move the second point around the arc in the local xy-plane.

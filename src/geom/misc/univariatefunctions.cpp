@@ -35,6 +35,19 @@
 //   * D:253  lambertW throws after 99 iterations at tol=1e-15; the probe shows it fires
 //            for ordinary-looking parameters (a=0.005, r=1.1, N=21).
 //   * D:59   kdtree's unused nPos — different module, noted there.
+//
+// Transcendental fidelity (measured 2026-10-14, not a code defect but it moves bits):
+// the std::tanh/std::sinh/std::exp calls below are the port's standing mapping of D's
+// std.math functions onto libm (wave-02-brief section 3, eil/math.hpp). Phobos does NOT
+// call libm for those four: from inside D, std.math.exp disagreed with
+// core.stdc.math.exp on 569 of 4001 arguments on [0,2] (1 ULP each), sinh on 1933, cosh
+// on 699, tanh on 1286, and double(glibc expl(x)) reproduces none of them. So this
+// module's Vinokur rows (tanh in opCall, sinh inside brent) and its two erf/exp rows
+// land up to 21 ULP (relative 3.15e-15) from the captured corpus, and D's non-symmetric
+// tanh gives f(0) = -1.1102230246251575e-15 where libm gives exactly 0. Counted and
+// gated in tests/test_geom_misc_univariatefunctions.cpp; closing it means porting
+// Phobos' exp/tanh/sinh into the substrate, which changes every module that
+// transcends, so it is not decided here.
 #include "geom/misc/univariatefunctions.hpp"
 
 #include <cmath>

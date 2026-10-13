@@ -148,6 +148,19 @@
   教训：先前那条"grep 模块级 const 声明命中 0"的检索**漏掉了函数体内的字面量除法**，
   Wave 3+ 要用"任意位置的 `字面量 / 字面量`、`*`、`+`"来查，不能只看声明处
 
+- [ ] **T-910** **本轮遗留的验证缺口（必须优先处理，属于门禁可信度问题）**：
+  `geom/gpath/modifiedpath` 的重放有 **84 行**是靠 `tests/gpath3_dump.hpp` 的
+  `verdict_line` 绝对容差带被放行的，其中最大一条 `mp.rot` 的残差 8.88e-10，
+  打印出的比值是 **24072691/8 ≈ 3.0e6 ULP（按行内尺度）**——这个量级**无法**用
+  我已验证的"1 ULP 点坐标 ÷ dt^阶"模型解释（该模型在 opCall/dpdt/d2pdt2 三阶上
+  实测比值都是 1.000，见 commit 说明）。两种可能：容差带的 `ref_scale`/`fd_scale`
+  在极端行上仍取错了尺度，或者 `modifiedpath` 里真有未发现的转写偏差。
+  处置办法照 `ds_Cv` 的成功先例：把 `mp.rot` 的链条拆开
+  （inner Arc 的 opCall → `rotate_about_zaxis` 的 atan2/sqrt/cos/sin → 矩阵相乘），
+  逐级与 ldc2 现编的 D 比 %17g，指出第一处不同位的算子。
+  在它澄清之前，**`geom_gpath_modifiedpath` 的 PASS 不能算作已验证**。
+  `geom_gpath_arc` 的 2 行（worst 7/8 ULP）在同一模型内，可以算通过。
+
 ---
 
 ## 需你批准（会改本机环境或构建）

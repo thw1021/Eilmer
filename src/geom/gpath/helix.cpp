@@ -41,6 +41,15 @@ Helix::Helix(const Vector3& point_start, const Vector3& point_end,
     r1 = eil::re(eil::geom::abs(a1c));
     Vector3 origin = Vector3(0.0, 0.0, 0.0);
     a1c.transform_to_local_frame(xdsh, ydsh, zdsh, origin);
+    // D:59 `atan2(a1c.y.re, a1c.x.re)`. NOTE for the substrate owner (T-9xx): D's
+    // std.math.atan2 for doubles is not glibc's -- std/math/trigonometry.d:945-950
+    // defines it as atan(y/x) with a quadrant correction, and its atan (:676,
+    // :694-834) is a rational minimax that differs from a correctly rounded atan by
+    // 1 ULP on ~7% of arguments. Here (0, 1) both spellings give the same double, so
+    // tests/test_geom_gpath_helix.cpp replays bit-identically (1603 of 1603
+    // quantities); the divergence shows up in Vector3::rotate_about_zaxis, where the
+    // angle is then cancelled against PI/2. Once eil::atan2 mirrors Phobos, this line
+    // should call it.
     theta01 = std::atan2(eil::re(a1c.y), eil::re(a1c.x));
 }
 

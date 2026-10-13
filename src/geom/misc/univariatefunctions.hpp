@@ -198,7 +198,13 @@ class GaussianFunction : public UnivariateFunction {
     GaussianFunction(const GaussianFunction& other);
     std::shared_ptr<GaussianFunction> dup() const;
     double operator()(double x) const override;
-    std::string toString() const override;
+    // NO toString here: D:286-368 does not override it, so a GaussianFunction handle
+    // prints the base text. Measured by the probe rows "str gauss.mX=UnivariateFunction()"
+    // (baselines/e587b235/probes/geom_misc_univariatefunctions.txt:511, :521, :531,
+    // :541, :551). An earlier revision of this header declared the override with no
+    // definition, which left GaussianFunction's vtable with an undefined reference
+    // (link error in any TU that constructs one); the declaration is gone rather than
+    // defined, because D has no such method.
 
     // Trip count of the cluster-centre Newton loop of the last construction. Not in D.
     int centre_iterations = 0;

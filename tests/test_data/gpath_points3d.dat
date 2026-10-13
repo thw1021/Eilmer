@@ -1,0 +1,14 @@
+# x y z triples for the geom/gpath file constructors
+# (polyline.d:111-130 reads all three columns).
+0.0 0.0 0.0
+0.1 0.02 0.0
+0.2 0.08 0.0
+0.3 0.18 0.0
+0.4 0.32 0.0
+
+0.5 0.5 0.0
+0.6 0.72 0.0
+0.7 0.98 0.0
+0.8 1.28 0.5
+0.9 1.62 0.5
+1.0 2.0 0.5

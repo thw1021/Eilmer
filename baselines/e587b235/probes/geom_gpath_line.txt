@@ -1,0 +1,376 @@
+line.ab class=Line
+line.ab str=Line(p0=Vector3(1, 2.2, 3), p1=Vector3(1, 0, 0))
+line.ab length=3.7202150475476548
+line.ab opCall t=0 x=1 y=2.2000000000000002 z=3
+line.ab dpdt t=0 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0 x=0 y=0 z=0
+line.ab plen ta=0 tb=0 L=0
+line.ab plenswap ta=0 tb=0 L=0
+line.ab opCall t=0.00050000000000000001 x=1 y=2.1989000000000001 z=2.9984999999999999
+line.ab dpdt t=0.00050000000000000001 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+line.ab plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00093005376188691371
+line.ab plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00093005376188691371
+line.ab opCall t=0.001 x=1 y=2.1978 z=2.9969999999999999
+line.ab dpdt t=0.001 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.001 x=0 y=0 z=0
+line.ab plen ta=0.00050000000000000001 tb=0.001 L=0.0018601075237738274
+line.ab plenswap ta=0.001 tb=0.00050000000000000001 L=0.0018601075237738274
+line.ab opCall t=0.050000000000000003 x=1 y=2.0899999999999999 z=2.8499999999999996
+line.ab dpdt t=0.050000000000000003 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+line.ab plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.093005376188691369
+line.ab plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.093005376188691369
+line.ab opCall t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.ab dpdt t=0.25 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.25 x=0 y=0 z=0
+line.ab plen ta=0.125 tb=0.25 L=0.46502688094345684
+line.ab plenswap ta=0.25 tb=0.125 L=0.46502688094345684
+line.ab opCall t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.ab dpdt t=0.5 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.5 x=0 y=0 z=0
+line.ab plen ta=0.25 tb=0.5 L=0.93005376188691369
+line.ab plenswap ta=0.5 tb=0.25 L=0.93005376188691369
+line.ab opCall t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.ab dpdt t=0.75 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.75 x=0 y=0 z=0
+line.ab plen ta=0.375 tb=0.75 L=1.3950806428303706
+line.ab plenswap ta=0.75 tb=0.375 L=1.3950806428303706
+line.ab opCall t=0.94999999999999996 x=1 y=0.11000000000000011 z=0.15000000000000013
+line.ab dpdt t=0.94999999999999996 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+line.ab plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.7671021475851358
+line.ab plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.7671021475851358
+line.ab opCall t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.ab dpdt t=0.999 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.999 x=0 y=0 z=0
+line.ab plen ta=0.4995 tb=0.999 L=1.8582474162500535
+line.ab plenswap ta=0.999 tb=0.4995 L=1.8582474162500535
+line.ab opCall t=0.99950000000000006 x=1 y=0.0010999999999998789 z=0.0014999999999998348
+line.ab dpdt t=0.99950000000000006 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+line.ab plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.8591774700119406
+line.ab plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.8591774700119406
+line.ab opCall t=1 x=1 y=0 z=0
+line.ab dpdt t=1 x=0 y=-2.2000000000000002 z=-3
+line.ab d2pdt2 t=1 x=0 y=0 z=0
+line.ab plen ta=0.5 tb=1 L=1.8601075237738274
+line.ab plenswap ta=1 tb=0.5 L=1.8601075237738274
+line.ab pfl target=0 t=0 x=1 y=2.2000000000000002 z=3
+line.ab pfl target=0.93005376188691369 t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.ab pfl target=1.8601075237738274 t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.ab pfl target=2.7901612856607412 t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.ab pfl target=3.716494832500107 t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.ab pfl target=3.7202150475476548 t=1 x=1 y=0 z=0
+line.ab pfl target=5.5803225713214824 t=1.5 x=1 y=-1.1000000000000001 z=-1.5
+line.ab cd px=0.5 py=0.5 pz=0 t=0.9205199961826096 dist=0.64231787639456572
+line.ab cd px=0 py=0 pz=0 t=0.99999815799335934 dist=1.0000000000234794
+line.ab cd px=1 py=1 pz=1 t=0.62427828484568515 dist=0.21504133225026067
+line.ab cd px=2 py=0 pz=1 t=0.78323689666472651 dist=1.1617706239439398
+line.ab i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+line.ab i2d10 found=false t=nan
+line.ab i2db found=false t=nan
+line.dup class=Line
+line.dup str=Line(p0=Vector3(1, 2.2, 3), p1=Vector3(1, 0, 0))
+line.dup length=3.7202150475476548
+line.dup opCall t=0 x=1 y=2.2000000000000002 z=3
+line.dup dpdt t=0 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0 x=0 y=0 z=0
+line.dup plen ta=0 tb=0 L=0
+line.dup plenswap ta=0 tb=0 L=0
+line.dup opCall t=0.00050000000000000001 x=1 y=2.1989000000000001 z=2.9984999999999999
+line.dup dpdt t=0.00050000000000000001 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+line.dup plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00093005376188691371
+line.dup plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00093005376188691371
+line.dup opCall t=0.001 x=1 y=2.1978 z=2.9969999999999999
+line.dup dpdt t=0.001 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.001 x=0 y=0 z=0
+line.dup plen ta=0.00050000000000000001 tb=0.001 L=0.0018601075237738274
+line.dup plenswap ta=0.001 tb=0.00050000000000000001 L=0.0018601075237738274
+line.dup opCall t=0.050000000000000003 x=1 y=2.0899999999999999 z=2.8499999999999996
+line.dup dpdt t=0.050000000000000003 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+line.dup plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.093005376188691369
+line.dup plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.093005376188691369
+line.dup opCall t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.dup dpdt t=0.25 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.25 x=0 y=0 z=0
+line.dup plen ta=0.125 tb=0.25 L=0.46502688094345684
+line.dup plenswap ta=0.25 tb=0.125 L=0.46502688094345684
+line.dup opCall t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.dup dpdt t=0.5 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.5 x=0 y=0 z=0
+line.dup plen ta=0.25 tb=0.5 L=0.93005376188691369
+line.dup plenswap ta=0.5 tb=0.25 L=0.93005376188691369
+line.dup opCall t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.dup dpdt t=0.75 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.75 x=0 y=0 z=0
+line.dup plen ta=0.375 tb=0.75 L=1.3950806428303706
+line.dup plenswap ta=0.75 tb=0.375 L=1.3950806428303706
+line.dup opCall t=0.94999999999999996 x=1 y=0.11000000000000011 z=0.15000000000000013
+line.dup dpdt t=0.94999999999999996 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+line.dup plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.7671021475851358
+line.dup plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.7671021475851358
+line.dup opCall t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.dup dpdt t=0.999 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.999 x=0 y=0 z=0
+line.dup plen ta=0.4995 tb=0.999 L=1.8582474162500535
+line.dup plenswap ta=0.999 tb=0.4995 L=1.8582474162500535
+line.dup opCall t=0.99950000000000006 x=1 y=0.0010999999999998789 z=0.0014999999999998348
+line.dup dpdt t=0.99950000000000006 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+line.dup plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.8591774700119406
+line.dup plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.8591774700119406
+line.dup opCall t=1 x=1 y=0 z=0
+line.dup dpdt t=1 x=0 y=-2.2000000000000002 z=-3
+line.dup d2pdt2 t=1 x=0 y=0 z=0
+line.dup plen ta=0.5 tb=1 L=1.8601075237738274
+line.dup plenswap ta=1 tb=0.5 L=1.8601075237738274
+line.dup pfl target=0 t=0 x=1 y=2.2000000000000002 z=3
+line.dup pfl target=0.93005376188691369 t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.dup pfl target=1.8601075237738274 t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.dup pfl target=2.7901612856607412 t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.dup pfl target=3.716494832500107 t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.dup pfl target=3.7202150475476548 t=1 x=1 y=0 z=0
+line.dup pfl target=5.5803225713214824 t=1.5 x=1 y=-1.1000000000000001 z=-1.5
+line.dup cd px=0.5 py=0.5 pz=0 t=0.9205199961826096 dist=0.64231787639456572
+line.dup cd px=0 py=0 pz=0 t=0.99999815799335934 dist=1.0000000000234794
+line.dup cd px=1 py=1 pz=1 t=0.62427828484568515 dist=0.21504133225026067
+line.dup cd px=2 py=0 pz=1 t=0.78323689666472651 dist=1.1617706239439398
+line.dup i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+line.dup i2d10 found=false t=nan
+line.dup i2db found=false t=nan
+line.horiz class=Line
+line.horiz str=Line(p0=Vector3(0, 1, 0), p1=Vector3(1, 1, 0))
+line.horiz length=1
+line.horiz opCall t=0 x=0 y=1 z=0
+line.horiz dpdt t=0 x=1 y=0 z=0
+line.horiz d2pdt2 t=0 x=0 y=0 z=0
+line.horiz plen ta=0 tb=0 L=0
+line.horiz plenswap ta=0 tb=0 L=0
+line.horiz opCall t=0.00050000000000000001 x=0.00050000000000000001 y=1 z=0
+line.horiz dpdt t=0.00050000000000000001 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+line.horiz plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00025000000000000001
+line.horiz plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00025000000000000001
+line.horiz opCall t=0.001 x=0.001 y=1 z=0
+line.horiz dpdt t=0.001 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.001 x=0 y=0 z=0
+line.horiz plen ta=0.00050000000000000001 tb=0.001 L=0.00050000000000000001
+line.horiz plenswap ta=0.001 tb=0.00050000000000000001 L=0.00050000000000000001
+line.horiz opCall t=0.050000000000000003 x=0.050000000000000003 y=1 z=0
+line.horiz dpdt t=0.050000000000000003 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+line.horiz plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.025000000000000001
+line.horiz plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.025000000000000001
+line.horiz opCall t=0.25 x=0.25 y=1 z=0
+line.horiz dpdt t=0.25 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.25 x=0 y=0 z=0
+line.horiz plen ta=0.125 tb=0.25 L=0.125
+line.horiz plenswap ta=0.25 tb=0.125 L=0.125
+line.horiz opCall t=0.5 x=0.5 y=1 z=0
+line.horiz dpdt t=0.5 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.5 x=0 y=0 z=0
+line.horiz plen ta=0.25 tb=0.5 L=0.25
+line.horiz plenswap ta=0.5 tb=0.25 L=0.25
+line.horiz opCall t=0.75 x=0.75 y=1 z=0
+line.horiz dpdt t=0.75 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.75 x=0 y=0 z=0
+line.horiz plen ta=0.375 tb=0.75 L=0.375
+line.horiz plenswap ta=0.75 tb=0.375 L=0.375
+line.horiz opCall t=0.94999999999999996 x=0.94999999999999996 y=1 z=0
+line.horiz dpdt t=0.94999999999999996 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+line.horiz plen ta=0.47499999999999998 tb=0.94999999999999996 L=0.47499999999999998
+line.horiz plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0.47499999999999998
+line.horiz opCall t=0.999 x=0.999 y=1 z=0
+line.horiz dpdt t=0.999 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.999 x=0 y=0 z=0
+line.horiz plen ta=0.4995 tb=0.999 L=0.4995
+line.horiz plenswap ta=0.999 tb=0.4995 L=0.4995
+line.horiz opCall t=0.99950000000000006 x=0.99950000000000006 y=1 z=0
+line.horiz dpdt t=0.99950000000000006 x=1 y=0 z=0
+line.horiz d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+line.horiz plen ta=0.49975000000000003 tb=0.99950000000000006 L=0.49975000000000003
+line.horiz plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0.49975000000000003
+line.horiz opCall t=1 x=1 y=1 z=0
+line.horiz dpdt t=1 x=1 y=0 z=0
+line.horiz d2pdt2 t=1 x=0 y=0 z=0
+line.horiz plen ta=0.5 tb=1 L=0.5
+line.horiz plenswap ta=1 tb=0.5 L=0.5
+line.horiz pfl target=0 t=0 x=0 y=1 z=0
+line.horiz pfl target=0.25 t=0.25 x=0.25 y=1 z=0
+line.horiz pfl target=0.5 t=0.5 x=0.5 y=1 z=0
+line.horiz pfl target=0.75 t=0.75 x=0.75 y=1 z=0
+line.horiz pfl target=0.999 t=0.999 x=0.999 y=1 z=0
+line.horiz pfl target=1 t=1 x=1 y=1 z=0
+line.horiz pfl target=1.5 t=1.5 x=1.5 y=1 z=0
+line.horiz cd px=0.5 py=0.5 pz=0 t=0.50000069733625474 dist=0.50000000000048628
+line.horiz cd px=0 py=0 pz=0 t=1.8420066406622953e-06 dist=1.0000000000016964
+line.horiz cd px=1 py=1 pz=1 t=0.99999815799335934 dist=1.0000000000016964
+line.horiz cd px=2 py=0 pz=1 t=0.99999815799335934 dist=1.7320518710525601
+line.horiz i2d psx=0.5 psy=0.5 dx=0 dy=1 found=true t=0.5
+line.horiz i2d10 found=true t=0.5
+line.horiz i2db found=true t=0.25
+line.cmp t=0 exact x=0 y=-2.2000000000000002 z=-3 fd x=0 y=-2.2000000000002018 z=-3.0000000000001137
+line.cmp2 t=0 exact x=0 y=0 z=0 fd x=0 y=4.4408920985006262e-10 z=0
+line.cmp t=0.5 exact x=0 y=-2.2000000000000002 z=-3 fd x=0 y=-2.1999999999999797 z=-3.0000000000001137
+line.cmp2 t=0.5 exact x=0 y=0 z=0 fd x=0 y=0 z=0
+line.cmp t=1 exact x=0 y=-2.2000000000000002 z=-3 fd x=0 y=-2.2000000000000024 z=-3.0000000000000027
+line.cmp2 t=1 exact x=0 y=0 z=0 fd x=0 y=0 z=0
+line.pl exact=1.8601075237738272 base=1.8601075237738287 ta=0.20000000000000001 tb=0.69999999999999996
+line.pl.swap exact=1.8601075237738272 base=1.8601075237738287
+line.length exact=3.7202150475476548 base=3.7202150475476548
+line.pfl target=0 t=0 x=1 y=2.2000000000000002 z=3
+line.pfl target=1.8601075237738274 t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.pfl target=3.7202150475476548 t=1 x=1 y=0 z=0
+line.pfl target=7.4404300950953095 t=2 x=1 y=-2.2000000000000002 z=-3
+line.degen pfl t=-nan x=-nan y=-nan z=-nan
+line.degen length=0 pl=0
+line.degen class=Line
+line.degen str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+line.degen length=0
+line.degen opCall t=0 x=1 y=2 z=3
+line.degen dpdt t=0 x=0 y=0 z=0
+line.degen d2pdt2 t=0 x=0 y=0 z=0
+line.degen plen ta=0 tb=0 L=0
+line.degen plenswap ta=0 tb=0 L=0
+line.degen opCall t=0.00050000000000000001 x=1 y=2 z=3
+line.degen dpdt t=0.00050000000000000001 x=0 y=0 z=0
+line.degen d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+line.degen plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0
+line.degen plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0
+line.degen opCall t=0.001 x=1 y=2 z=3
+line.degen dpdt t=0.001 x=0 y=0 z=0
+line.degen d2pdt2 t=0.001 x=0 y=0 z=0
+line.degen plen ta=0.00050000000000000001 tb=0.001 L=0
+line.degen plenswap ta=0.001 tb=0.00050000000000000001 L=0
+line.degen opCall t=0.050000000000000003 x=1 y=2 z=2.9999999999999996
+line.degen dpdt t=0.050000000000000003 x=0 y=0 z=0
+line.degen d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+line.degen plen ta=0.025000000000000001 tb=0.050000000000000003 L=0
+line.degen plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0
+line.degen opCall t=0.25 x=1 y=2 z=3
+line.degen dpdt t=0.25 x=0 y=0 z=0
+line.degen d2pdt2 t=0.25 x=0 y=0 z=0
+line.degen plen ta=0.125 tb=0.25 L=0
+line.degen plenswap ta=0.25 tb=0.125 L=0
+line.degen opCall t=0.5 x=1 y=2 z=3
+line.degen dpdt t=0.5 x=0 y=0 z=0
+line.degen d2pdt2 t=0.5 x=0 y=0 z=0
+line.degen plen ta=0.25 tb=0.5 L=0
+line.degen plenswap ta=0.5 tb=0.25 L=0
+line.degen opCall t=0.75 x=1 y=2 z=3
+line.degen dpdt t=0.75 x=0 y=0 z=0
+line.degen d2pdt2 t=0.75 x=0 y=0 z=0
+line.degen plen ta=0.375 tb=0.75 L=0
+line.degen plenswap ta=0.75 tb=0.375 L=0
+line.degen opCall t=0.94999999999999996 x=1 y=2 z=3
+line.degen dpdt t=0.94999999999999996 x=0 y=0 z=0
+line.degen d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+line.degen plen ta=0.47499999999999998 tb=0.94999999999999996 L=0
+line.degen plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=0
+line.degen opCall t=0.999 x=1 y=2 z=3
+line.degen dpdt t=0.999 x=0 y=0 z=0
+line.degen d2pdt2 t=0.999 x=0 y=0 z=0
+line.degen plen ta=0.4995 tb=0.999 L=0
+line.degen plenswap ta=0.999 tb=0.4995 L=0
+line.degen opCall t=0.99950000000000006 x=1 y=2 z=3
+line.degen dpdt t=0.99950000000000006 x=0 y=0 z=0
+line.degen d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+line.degen plen ta=0.49975000000000003 tb=0.99950000000000006 L=0
+line.degen plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=0
+line.degen opCall t=1 x=1 y=2 z=3
+line.degen dpdt t=1 x=0 y=0 z=0
+line.degen d2pdt2 t=1 x=0 y=0 z=0
+line.degen plen ta=0.5 tb=1 L=0
+line.degen plenswap ta=1 tb=0.5 L=0
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen pfl target=0 t=-nan x=-nan y=-nan z=-nan
+line.degen cd px=0.5 py=0.5 pz=0 t=0.99999815799335934 dist=3.3911649915626341
+line.degen cd px=0 py=0 pz=0 t=0.99999815799335934 dist=3.7416573867739413
+line.degen cd px=1 py=1 pz=1 t=0.99999815799335934 dist=2.2360679774997898
+line.degen cd px=2 py=0 pz=1 t=0.99999815799335934 dist=3
+line.degen i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+line.degen i2d10 found=false t=nan
+line.degen i2db found=false t=nan
+line.copy class=Line
+line.copy str=Line(p0=Vector3(1, 2.2, 3), p1=Vector3(1, 0, 0))
+line.copy length=3.7202150475476548
+line.copy opCall t=0 x=1 y=2.2000000000000002 z=3
+line.copy dpdt t=0 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0 x=0 y=0 z=0
+line.copy plen ta=0 tb=0 L=0
+line.copy plenswap ta=0 tb=0 L=0
+line.copy opCall t=0.00050000000000000001 x=1 y=2.1989000000000001 z=2.9984999999999999
+line.copy dpdt t=0.00050000000000000001 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.00050000000000000001 x=0 y=0 z=0
+line.copy plen ta=0.00025000000000000001 tb=0.00050000000000000001 L=0.00093005376188691371
+line.copy plenswap ta=0.00050000000000000001 tb=0.00025000000000000001 L=0.00093005376188691371
+line.copy opCall t=0.001 x=1 y=2.1978 z=2.9969999999999999
+line.copy dpdt t=0.001 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.001 x=0 y=0 z=0
+line.copy plen ta=0.00050000000000000001 tb=0.001 L=0.0018601075237738274
+line.copy plenswap ta=0.001 tb=0.00050000000000000001 L=0.0018601075237738274
+line.copy opCall t=0.050000000000000003 x=1 y=2.0899999999999999 z=2.8499999999999996
+line.copy dpdt t=0.050000000000000003 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.050000000000000003 x=0 y=0 z=0
+line.copy plen ta=0.025000000000000001 tb=0.050000000000000003 L=0.093005376188691369
+line.copy plenswap ta=0.050000000000000003 tb=0.025000000000000001 L=0.093005376188691369
+line.copy opCall t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.copy dpdt t=0.25 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.25 x=0 y=0 z=0
+line.copy plen ta=0.125 tb=0.25 L=0.46502688094345684
+line.copy plenswap ta=0.25 tb=0.125 L=0.46502688094345684
+line.copy opCall t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.copy dpdt t=0.5 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.5 x=0 y=0 z=0
+line.copy plen ta=0.25 tb=0.5 L=0.93005376188691369
+line.copy plenswap ta=0.5 tb=0.25 L=0.93005376188691369
+line.copy opCall t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.copy dpdt t=0.75 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.75 x=0 y=0 z=0
+line.copy plen ta=0.375 tb=0.75 L=1.3950806428303706
+line.copy plenswap ta=0.75 tb=0.375 L=1.3950806428303706
+line.copy opCall t=0.94999999999999996 x=1 y=0.11000000000000011 z=0.15000000000000013
+line.copy dpdt t=0.94999999999999996 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.94999999999999996 x=0 y=0 z=0
+line.copy plen ta=0.47499999999999998 tb=0.94999999999999996 L=1.7671021475851358
+line.copy plenswap ta=0.94999999999999996 tb=0.47499999999999998 L=1.7671021475851358
+line.copy opCall t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.copy dpdt t=0.999 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.999 x=0 y=0 z=0
+line.copy plen ta=0.4995 tb=0.999 L=1.8582474162500535
+line.copy plenswap ta=0.999 tb=0.4995 L=1.8582474162500535
+line.copy opCall t=0.99950000000000006 x=1 y=0.0010999999999998789 z=0.0014999999999998348
+line.copy dpdt t=0.99950000000000006 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=0.99950000000000006 x=0 y=0 z=0
+line.copy plen ta=0.49975000000000003 tb=0.99950000000000006 L=1.8591774700119406
+line.copy plenswap ta=0.99950000000000006 tb=0.49975000000000003 L=1.8591774700119406
+line.copy opCall t=1 x=1 y=0 z=0
+line.copy dpdt t=1 x=0 y=-2.2000000000000002 z=-3
+line.copy d2pdt2 t=1 x=0 y=0 z=0
+line.copy plen ta=0.5 tb=1 L=1.8601075237738274
+line.copy plenswap ta=1 tb=0.5 L=1.8601075237738274
+line.copy pfl target=0 t=0 x=1 y=2.2000000000000002 z=3
+line.copy pfl target=0.93005376188691369 t=0.25 x=1 y=1.6500000000000001 z=2.25
+line.copy pfl target=1.8601075237738274 t=0.5 x=1 y=1.1000000000000001 z=1.5
+line.copy pfl target=2.7901612856607412 t=0.75 x=1 y=0.55000000000000004 z=0.75
+line.copy pfl target=3.716494832500107 t=0.999 x=1 y=0.0022000000000000023 z=0.0030000000000000027
+line.copy pfl target=3.7202150475476548 t=1 x=1 y=0 z=0
+line.copy pfl target=5.5803225713214824 t=1.5 x=1 y=-1.1000000000000001 z=-1.5
+line.copy cd px=0.5 py=0.5 pz=0 t=0.9205199961826096 dist=0.64231787639456572
+line.copy cd px=0 py=0 pz=0 t=0.99999815799335934 dist=1.0000000000234794
+line.copy cd px=1 py=1 pz=1 t=0.62427828484568515 dist=0.21504133225026067
+line.copy cd px=2 py=0 pz=1 t=0.78323689666472651 dist=1.1617706239439398
+line.copy i2d psx=0.5 psy=0.5 dx=0 dy=1 found=false t=nan
+line.copy i2d10 found=false t=nan
+line.copy i2db found=false t=nan
+line.copy str=Line(p0=Vector3(1, 2.2, 3), p1=Vector3(1, 0, 0))
