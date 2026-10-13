@@ -165,6 +165,15 @@
 - `eil::geom::Vector3` 与 D 的逐位对照结果：**53 行 `%17g`/`%.6g` 观测 diff 为空**
   （`ctest -R geom_elements_vector3_equiv`，基线 `baselines/e587b235/probes/geom_elements_vector3.txt`）。
 
+- **`iota` 用 `eil::iota`（`substrate/include/eil/range.hpp`），不要写 `for (v += step)`**。
+  实测 31 行语料（`probes/substrate/probe_iota.d` → `ctest -R substrate_iota` 0 差异）：
+  D 的第 n 个元素是 **`begin + n*step`**，不是累加——`iota(0.0,1.0,0.1)` 第 6 个元素
+  D 给 `0.60000000000000009`，累加给 `0.59999999999999998`（第 7/8/9 个也不同）；
+  远端边界是**严格**的：`iota(0.0,1.0,0.25)` 到 0.75 就停，丢掉正好等于 1.0 的那一个，
+  写成 `v <= end` 会多出一个点。负步长镜像同一条（`iota(5,0,-1)` → 5,4,3,2,1，不含 0）。
+  Wave 2 共 **31 处 iota**，其中 29 处在 `geom/surface/beziertrianglepatch.d`
+  （降指标遍历），另有浮点扫描在 sgrid 与该文件里。
+
 （待补：数组切片越界文本）
 
 ## 6. D 探针与对照流程（必须可复现）

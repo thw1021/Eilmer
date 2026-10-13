@@ -107,6 +107,12 @@ target_link_libraries(test_substrate_pow PRIVATE eil_substrate)
 add_test(NAME substrate_pow COMMAND test_substrate_pow
          ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_pow.txt)
 
+# Substrate rules for std.range.iota element values and bound strictness.
+add_executable(test_substrate_iota tests/test_substrate_iota.cpp)
+target_link_libraries(test_substrate_iota PRIVATE eil_substrate)
+add_test(NAME substrate_iota COMMAND test_substrate_iota
+         ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_iota.txt)
+
 # --- Wave 1: nm --------------------------------------------------------------------------------
 foreach(_m IN ITEMS bracketing brent ridder secant linesearch newton bbla rsla schedule
                     newtoncotes gaussquad rungekutta)
@@ -160,4 +166,6 @@ endif()
 include(cmake/wave2_nm.cmake)
 include(cmake/wave2_geom.cmake)
 include(cmake/wave2_geom_core.cmake)
+include(cmake/wave2_geom_gpath.cmake)
+include(cmake/wave2_geom_misc.cmake)
 include(cmake/wave2_gasdyn.cmake)

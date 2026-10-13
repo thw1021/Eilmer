@@ -7,3 +7,4 @@
 #include "eil/format.hpp"
 #include "eil/math.hpp"
 #include "eil/number.hpp"
+#include "eil/range.hpp"

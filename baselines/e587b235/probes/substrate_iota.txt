@@ -1,0 +1,31 @@
+one tenth[0]=0
+one tenth[1]=0.10000000000000001
+one tenth[2]=0.20000000000000001
+one tenth[3]=0.30000000000000004
+one tenth[4]=0.40000000000000002
+one tenth[5]=0.5
+one tenth[6]=0.60000000000000009
+one tenth[7]=0.70000000000000007
+one tenth[8]=0.80000000000000004
+one tenth[9]=0.90000000000000002
+one tenth.count=10
+quarter[0]=0
+quarter[1]=0.25
+quarter[2]=0.5
+quarter[3]=0.75
+quarter.count=4
+sgrid[0]=0
+sgrid[1]=0.25
+sgrid[2]=0.5
+sgrid[3]=0.75
+sgrid[4]=1
+sgrid.count=5
+neg float[0]=1
+neg float[1]=0.75
+neg float[2]=0.5
+neg float[3]=0.25
+neg float.count=4
+empty.count=0
+desc4=4,3,2,1,0 count=5
+desc_n0=5,4,3,2,1 count=5
+up=0,1,2,3,4 count=5
