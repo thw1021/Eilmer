@@ -90,12 +90,15 @@
 // unmodified module does not compile with this toolchain, so there is no second D
 // measurement of the same quantity to compare against. What the replay does give is a
 // cross-implementation check: src/nm/brent.hpp's solve was ported from the ORIGINAL
-// nm/brent.d (where @nogc has no C++ counterpart at all), and it reaches the same
-// converged root as the D copy — measured directly: brent's beta for
-// VinokurFunction(40,0.01,0.02) is 1.952162467438211 on both sides and for
-// VinokurFunction(100,0.001,0.01) 2.9183965017079974 on both sides, and the two brent
-// failure messages print the same f(x1)=1.66667e-07 / f(x2)=1.80649e+84. So the copy's
-// one removed attribute is not what made those numbers what they are.
+// nm/brent.d (where @nogc has no C++ counterpart at all), and where brent's iteration
+// does not step on a differing transcendental it lands on exactly the D copy's root —
+// measured directly: beta for VinokurFunction(40,0.01,0.02) is 1.952162467438211 on
+// both sides, for VinokurFunction(100,0.001,0.01) 2.9183965017079974 on both sides, and
+// for VinokurGeomHybridFunction(20,0.02,2,1.5,0.02,3,0.8) 2.7314110761533215 on both
+// sides; the two brent failure messages print the same f(x1)=1.66667e-07 and
+// f(x2)=1.80649e+84. So the copy's one removed attribute is not what made those numbers
+// what they are. (4 of the 7 brackets do land 1 ULP apart; the substrate note below
+// attributes that to sinh, the function brent iterates on, not to the attribute.)
 //
 // KNOWN SUBSTRATE GAP (42 of 857 lines; the summary line prints the live counts).
 // D's std.math.exp/tanh/sinh/cosh are Phobos' own implementations, NOT libm calls.

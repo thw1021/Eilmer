@@ -174,6 +174,16 @@
   Wave 2 共 **31 处 iota**，其中 29 处在 `geom/surface/beziertrianglepatch.d`
   （降指标遍历），另有浮点扫描在 sgrid 与该文件里。
 
+- **`exp/sinh/cosh/tanh` 与 glibc 差 ≤1 ULP，属既有"超越函数分歧"，不是移植错误**。
+  实测 `probes/substrate/probe_phobos_transcendentals.d`（6 个来自 Vinokur/Roberts
+  迭代的自变量 × 4 个函数）：**24 个 (函数,自变量) 组合里 6 个不同，且全部恰差 1 ULP**
+  （exp 1/6、sinh 2/6、cosh 1/6、tanh 2/6）。
+  相对量级 ~1e-16，远小于本项目 1e-13 的场量门禁；**不要**为它们加包装函数——
+  包装改不了 glibc 的舍入方向，只会掩盖真实转写错误。
+  geom/misc 重放里 42/857 行的 1 ULP 偏差即由此而来（已在该测试头部注明）。
+  Wave 3 的 `gas/` 大量用 `exp`（CEA LUT、Arrhenius 型反应率），会再次遇到，
+  届时按同样口径处置：报"多少行逐位相同、多少行 1 ULP 且归因到哪个函数"。
+
 （待补：数组切片越界文本）
 
 ## 6. D 探针与对照流程（必须可复现）
