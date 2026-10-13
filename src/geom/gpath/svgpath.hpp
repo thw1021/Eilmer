@@ -43,7 +43,11 @@
 //     implements the subset svgpath.d uses ("%g" conversions, the literal ',' and the
 //     whitespace-skipping ' '), including Phobos' three error texts verbatim, because
 //     those strings are observable through the exception message. Every rule it follows
-//     is measured in the fmt.* rows of the same baseline.
+//     is measured in the fmt.* rows of the same baseline. The two argument-count
+//     mismatches a probe can produce but no svgpath.d call site can (a conversion with
+//     no pointer -> 'Trailing characters in formattedRead format string', fmt.litafterinput;
+//     a pointer with no conversion -> keep reading as %g, fmt.orphans.*) are reproduced
+//     as messages rather than assertions, for the same reason.
 //   * D's `throw new Exception("Unknown SVG command: " ~ cmd)` (D:197) is an Exception;
 //     the Polyline guard that D:38 reaches is an Error. Siblings, so the port's catch
 //     clauses distinguish them exactly as D does.
@@ -62,9 +66,10 @@ namespace eil {
 namespace geom {
 
 // The %g input reader standing in for std.format.formattedRead (see the header note).
-// `targets` must be the same length as the number of %g conversions in `fmt`; D's call
-// sites always pass exactly that (svgpath.d:113-186). A FormatException-equivalent in D
-// becomes eil::ExceptionBase carrying the same message text.
+// D's call sites pass exactly one pointer per %g conversion (svgpath.d:113-186); the
+// two mismatch shapes a probe can build are handled the way Phobos does, so the count
+// of `targets` is observable. A FormatException-equivalent in D becomes
+// eil::ExceptionBase carrying the same message text.
 namespace svgpath_detail {
 
 void formatted_read_g(const std::string& in, const char* fmt,

@@ -185,10 +185,19 @@ void formatted_read_g(const std::string& in, const char* fmt,
             // it uses is %g and literals, so anything else is a porting mistake.
             eil_assert(f + 1 < nf && fmt[f + 1] == 'g');
             f += 2;
-            // D reports 'Trailing characters in formattedRead format string' when the
-            // format has more conversions than the call has arguments; every svgpath.d
-            // site matches them, so this is an assertion, not a message to reproduce.
-            eil_assert(ti < targets.size());
+            // The format has a conversion but the call has no argument for it. Measured
+            // on the fmt.litafterinput row of geom_gpath_svgpath.txt: Phobos reports
+            // 'Trailing characters in formattedRead format string' as a FormatException
+            // (an Exception, not an Error) BEFORE it touches the input, since
+            // "1.0" with "%g,x" and no arguments does not report 'no digits seen'. No
+            // svgpath.d call site can reach this (D:113-186 always hand over exactly one
+            // pointer per %g), but the probe measures it, so it is a message and not an
+            // assertion.
+            if (ti >= targets.size()) {
+                throw eil::ExceptionBase("Trailing characters in formattedRead format "
+                                         "string",
+                                         __FILE__, __LINE__);
+            }
             if (pos >= in.size()) return; // D stops silently at end of input (fmt.empty)
             double v = 0.0;
             scan_number(in, pos, v);
@@ -207,8 +216,21 @@ void formatted_read_g(const std::string& in, const char* fmt,
             ++f;
         }
     }
-    // Trailing input is ignored (fmt.trailing_input: an 'L' with extra coordinates
-    // uses only the first pair).
+    // D keeps pulling input for arguments that have no conversion left in the format
+    // (the shape of fmt_case_orphans in the probe). Measured: with six pointers and
+    // "%g,%g", "3.0,3.0" fills two and stops silently at end of input, leaving the
+    // other four at .init (fmt.orphans.M), while "2.0,2.0 3.0,4.0" goes on to report
+    // 'no digits seen for input " 3.0,4.0".' — an orphan is read as a %g at the
+    // current position, with no whitespace skipped, exactly like a conversion.
+    while (ti < targets.size()) {
+        if (pos >= in.size()) return;
+        double v = 0.0;
+        scan_number(in, pos, v);
+        *(targets[ti]) = v;
+        ++ti;
+    }
+    // Trailing input past the last argument is ignored (fmt.trailing_input: an 'L'
+    // with extra coordinates uses only the first pair).
 } // end formatted_read_g()
 
 } // namespace svgpath_detail
