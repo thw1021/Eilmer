@@ -175,3 +175,46 @@
 - **新遗留**：Phobos `Random/uniform` 未移植（`geom/misc/kdtree.d:175` 用
   `Random(19920829)` 生成 100 个测试点）→ 决策见 T-013 简报：抓 D 的点集回放，不搬 MT19937；
   `demo_equiv_*` 只 glob `demo_nm_*`，本轮补的 `demo_nm_nelmin` 因此自动注册。
+
+## T-014 — Wave 2：`gasdyn/` 非 CEA 部分  (2026-10-13)
+
+- **范围**：`gasdyn/gasflowexception.d`(13)、`gasdyn/idealgasflow.d`(952)、
+  `gasdyn/idealgasflow_demo.d`(93) ＝ **1,058 D 行** → 846 行库代码 + 1,094 行测试。
+  子代理在 150 轮上限处被打断，本节由主线程接手完成。
+- **范围修正**：`gasflow.d`(1595) 与 `gasflow_demo.d`(202) **不在 Wave 2**：
+  函数签名普遍是 `ref const(GasState)`/`GasModel gm`，并有 `cast(CEAGas) gm`
+  动态下行转换（`gasflow.d:85`），demo 还要 `init_gas_model(".../cea-lut-air-version-test.lua")`。
+  `gas/` 非 Lua 部分 23,281 行＝Wave 3，Lua 绑定＝Wave 7 ⇒ 新 ID **T-018**。
+- **做了什么**：等熵储气、面积-马赫、正激波、Rayleigh、Prandtl-Meyer、
+  斜激波（马赫角/弱支/分离/强支）、皮托压力，以及用 nm 求根反解的
+  `M_Rayleigh / PM2 / beta_obl / beta_cone / beta_cone2`；
+  反解问题的**函数求值次数**进了语料（同一个根、不同步数＝bracketing 已分叉）。
+- **验证**（基准是 D 侧 12,190 行语料，主线程用 probe 头部记录的**同一条命令**重跑并
+  `diff` 为空 ⇒ 基准真实可复现；注意必须用显式文件列表编译，`-i` 会因
+  `bbla.d:709` 在 `@nogc` 里 `new` 而失败，与 wave-01 记的 brent/newton 同一缺陷）：
+  - **39,778 / 40,451 个量逐位相同**；673 个量落在各自容差带内、**0 个越带**；
+    最坏 STRICT 残差 `7.8e-15` 相对（`dtan_theta.v`，64 ULP，来自相消放大）。
+  - D 的 6 个 `unittest` 块共 **59/59** 条断言复现参考侧判定。
+  - `idealgasflow_demo` stdout 与 D **字节相同**。
+  - `ctest -R gasdyn` 2/2 通过。
+- **本轮由我修的三处**（都不是算法问题，是语言差异）：
+  1. 测试把 `int` 传给 `%.17g`。D 的 `std.format` 对整型 `%g` 打印十进制整数
+     （substrate 既有规则），C 里这是**未定义行为**，会把 `cone_trace` 行每个字段错位；
+     改成 `%d` 后文本与 D 一致。
+  2. `trace_cone_f` 作为模板实参在定义之前被使用 ⇒ 前向声明。
+  3. **唯一真实分歧已定位而非掩盖**：`cone_trace` 步数 D=13 / 端口=11，
+     但两侧收敛到同一个 17 位根 `0.73397862905965938`。
+     用 `probes/gasdyn/probe_ds_cv.d` 拆开 `ds_Cv` 的链条证明：
+     `t1/t2/pow/prod` 全部与 D 逐位相同，只有 `log`/`pow` 本身差 1 ULP；
+     锥角路径上第 7 步残差 D 为 `+1.0269562977782698e-15`、端口为 `-1.2628786905111156e-15`，
+     **符号在噪声底翻面** ⇒ Ridder 选择哪半边区间随之不同。
+     这是 phase-0 记录的 Phobos/glibc 超越函数分歧经求根器放大，不是转写误差；
+     因此逐步 trace 行不参与门禁、步数按"计数"记录，两处判定都写在测试里并带实测数字。
+- **产出**：`src/gasdyn/{gasflowexception.hpp,idealgasflow.hpp,idealgasflow.cpp}`、
+  `tests/{test_gasdyn_idealgasflow,demo_gasdyn_idealgasflow}.cpp`、
+  `probes/gasdyn/{probe_idealgasflow,probe_ds_cv,probe_real_print,probe_tol}.d`、
+  `baselines/e587b235/probes/gasdyn_idealgasflow{,_demo}.txt`、`cmake/wave2_gasdyn.cmake`。
+  提交 `c4cd448`。
+- **新遗留**：T-018（`gasflow.d` 随 Wave 3）；
+  子代理 150 轮上限被打断两次（nm/gasdyn），**后续波次应按每代理 ≤800 D 行拆分**，
+  并让代理在早得多的位置开始写探针基线，避免"实现完成、验证未完"的状态。
