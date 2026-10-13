@@ -64,10 +64,24 @@ struct constraint : std::integral_constant<bool,
  *
  * Returns:
  *    b, a point near the root.
+ *
+ * That is D's own doc comment for solve(); the two solve() overloads at the bottom of
+ * this file are the entry points it describes, and they share the body below.
  */
-template <auto f, typename T,
-          typename = typename std::enable_if<detail::constraint<f>::value>::type>
-T solve(T x1, T x2, double tol = 1.0e-9)
+/**
+ * The Brent iteration itself, spelled once.
+ *
+ * D's nm/brent.d declares one `solve` whose objective is a template parameter
+ * (`solve!(zeroFun, double)`), and geom/misc/univariatefunctions.d:603 passes a
+ * *nested function* that closes over the caller's B. A C++ non-type template parameter
+ * can only name an object with linkage, so that shape needs a callable entry point.
+ * Both spellings below forward to this function, exactly as
+ * eil::nm::linesearch::minimize and its callable overload share minimize_fn
+ * (wave-02-brief section 4b.5), so the root-finding arithmetic exists once and the two
+ * doors cannot drift apart.
+ */
+template <typename F, typename T>
+T solve_fn(F f, T x1, T x2, double tol = 1.0e-9)
 {
     const int ITMAX = 100;           // maximum allowed number of iterations
     // Machine floating-point precision
@@ -164,6 +178,22 @@ T solve(T x1, T x2, double tol = 1.0e-9)
     }
     throw eil::ExceptionBase("Maximum number of iterations exceeded in brent.solve()",
                              __FILE__, __LINE__);
+} // end solve_fn()
+
+template <auto f, typename T,
+          typename = typename std::enable_if<detail::constraint<f>::value>::type>
+T solve(T x1, T x2, double tol = 1.0e-9)
+{
+    return solve_fn(f, x1, x2, tol);
+} // end solve()
+
+/**
+ * Overload for stateful callables (lambdas, closures over a member). See solve_fn.
+ */
+template <typename F, typename T>
+T solve(F f, T x1, T x2, double tol = 1.0e-9)
+{
+    return solve_fn(f, x1, x2, tol);
 } // end solve()
 
 } // namespace eil::nm::brent

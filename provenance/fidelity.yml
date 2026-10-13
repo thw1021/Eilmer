@@ -58,3 +58,20 @@ src/util/msg_service.hpp: {fidelity: exact, verified_by: [ctest:util_msg_service
 src/util/msg_service.cpp: {fidelity: exact, verified_by: [ctest:util_msg_service]}
 src/util/time_utils.hpp:  {fidelity: exact, verified_by: [ctest:util_time_utils, 26 timeStringToSeconds inputs]}
 src/util/time_utils.cpp:  {fidelity: exact, verified_by: [ctest:util_time_utils]}
+
+# --- geom: exception + elements (wave 2, stage: geom/elements) ---
+# geometry_exception.d is 16 lines of a single Exception-derived class; the file pair
+# is split header + a TU that only proves the header is self-contained.
+src/geom/geometry_exception.hpp:  {fidelity: exact, verified_by: [ctest:geom_elements_projection, throw-site file/line == D]}
+src/geom/geometry_exception.cpp:  {fidelity: exact, verified_by: [ctest:geom_elements_projection]}
+# nomenclature.d has no unittest block, so it is verified by the ldc2 probe corpus.
+src/geom/elements/nomenclature.hpp: {fidelity: exact, variants: [], verified_by: [ctest:geom_elements_nomenclature, 97 of 97 probe quantities bit-identical]}
+src/geom/elements/nomenclature.cpp: {fidelity: exact, verified_by: [ctest:geom_elements_nomenclature]}
+# properties.d is free functions only (no D classes), so no shared_ptr handles.
+src/geom/elements/properties.hpp:  {fidelity: adapted-arrays, verified_by: [ctest:geom_elements_properties, 39 unittest assertions, 366 of 366 probe quantities bit-identical]}
+src/geom/elements/properties.cpp:  {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_properties]}
+# projection.d: `out double t` -> double& initialised to double.init (NaN); the
+# number[3]/number[4] returns -> std::array; D's @nogc+new GeometryException pair
+# (projection.d:136/154) is not representable in C++ and is documented in the header.
+src/geom/elements/projection.hpp:  {fidelity: exact, verified_by: [ctest:geom_elements_projection, 88 of 88 probe quantities bit-identical]}
+src/geom/elements/projection.cpp:  {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_projection]}

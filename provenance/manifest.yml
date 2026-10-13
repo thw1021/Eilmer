@@ -2,6 +2,126 @@
 # gdtk reference HEAD: e587b2351e075f309f4877fe180b2cb5a55c7e5b
 # generated for: Eilmer
 files:
+- cpp: src/extern/gzip/gzip.cpp
+  d: src/extern/gzip/gzip.d
+  d_blob: 8b0b0e44feadb03ea547972d1d7f7f1bbc5cfe12
+  d_lines: 147
+  cpp_lines: 332
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/extern/gzip/gzip.hpp
+  d: src/extern/gzip/gzip.d
+  d_blob: 8b0b0e44feadb03ea547972d1d7f7f1bbc5cfe12
+  d_lines: 147
+  cpp_lines: 228
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/gasdyn/gasflowexception.hpp
+  d: src/gasdyn/gasflowexception.d
+  d_blob: 062e61be13c0f151d25ffcd7c59654b4db103583
+  d_lines: 13
+  cpp_lines: 46
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/gasdyn/idealgasflow.cpp
+  d: src/gasdyn/idealgasflow.d
+  d_blob: d238123a0357bb845636ebecfdb669eb2ac0686d
+  d_lines: 952
+  cpp_lines: 638
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/gasdyn/idealgasflow.hpp
+  d: src/gasdyn/idealgasflow.d
+  d_blob: d238123a0357bb845636ebecfdb669eb2ac0686d
+  d_lines: 952
+  cpp_lines: 187
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/elements/nomenclature.cpp
+  d: src/geom/elements/nomenclature.d
+  d_blob: 16b65b3e912537799344b9abaeb63b17b2041619
+  d_lines: 68
+  cpp_lines: 49
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_elements_nomenclature]
+- cpp: src/geom/elements/nomenclature.hpp
+  d: src/geom/elements/nomenclature.d
+  d_blob: 16b65b3e912537799344b9abaeb63b17b2041619
+  d_lines: 68
+  cpp_lines: 99
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_elements_nomenclature, 97 of 97 probe quantities bit-identical]
+- cpp: src/geom/elements/projection.cpp
+  d: src/geom/elements/projection.d
+  d_blob: cbefc588e4acd6926affcabffc713f25b53ac881
+  d_lines: 309
+  cpp_lines: 179
+  fidelity: exact
+  variants: [complex_numbers]
+  verified_by: [ctest:geom_elements_projection]
+- cpp: src/geom/elements/projection.hpp
+  d: src/geom/elements/projection.d
+  d_blob: cbefc588e4acd6926affcabffc713f25b53ac881
+  d_lines: 309
+  cpp_lines: 86
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_elements_projection, 88 of 88 probe quantities bit-identical]
+- cpp: src/geom/elements/properties.cpp
+  d: src/geom/elements/properties.d
+  d_blob: 4794d8a3e408f7368bd3fc18b46f913d3b323086
+  d_lines: 1168
+  cpp_lines: 777
+  fidelity: exact
+  variants: [complex_numbers]
+  verified_by: [ctest:geom_elements_properties]
+- cpp: src/geom/elements/properties.hpp
+  d: src/geom/elements/properties.d
+  d_blob: 4794d8a3e408f7368bd3fc18b46f913d3b323086
+  d_lines: 1168
+  cpp_lines: 268
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_elements_properties, 39 unittest assertions, 366 of 366 probe quantities bit-identical]
+- cpp: src/geom/elements/vector3.cpp
+  d: src/geom/elements/vector3.d
+  d_blob: 9d5b6ceb9c03d954ba56efc21eb69fb3e7c4e5f0
+  d_lines: 812
+  cpp_lines: 427
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/elements/vector3.hpp
+  d: src/geom/elements/vector3.d
+  d_blob: 9d5b6ceb9c03d954ba56efc21eb69fb3e7c4e5f0
+  d_lines: 812
+  cpp_lines: 149
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/geometry_exception.cpp
+  d: src/geom/geometry_exception.d
+  d_blob: 11b8fb0f896ee456b8a3aad58c7a7698c996e808
+  d_lines: 16
+  cpp_lines: 8
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_elements_projection]
+- cpp: src/geom/geometry_exception.hpp
+  d: src/geom/geometry_exception.d
+  d_blob: 11b8fb0f896ee456b8a3aad58c7a7698c996e808
+  d_lines: 16
+  cpp_lines: 47
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_elements_projection, throw-site file/line == D]
 - cpp: src/nm/bbla.cpp
   d: src/nm/bbla.d
   d_blob: 39501edc2d4d501ce7408503ace383e73ab8be5c
@@ -94,10 +214,26 @@ files:
   d: src/nm/linesearch.d
   d_blob: bb56b2c9d67dfbdf89b36aad93207d9cc63294e1
   d_lines: 68
-  cpp_lines: 74
+  cpp_lines: 101
   fidelity: exact
   variants: []
   verified_by: [demo_nm_linesearch stdout == D]
+- cpp: src/nm/nelmin.cpp
+  d: src/nm/nelmin.d
+  d_blob: 043dda8ecbdf28134974889ce7fc14bbc415f0cf
+  d_lines: 432
+  cpp_lines: 23
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/nm/nelmin.hpp
+  d: src/nm/nelmin.d
+  d_blob: 043dda8ecbdf28134974889ce7fc14bbc415f0cf
+  d_lines: 432
+  cpp_lines: 426
+  fidelity: exact
+  variants: []
+  verified_by: []
 - cpp: src/nm/newton.cpp
   d: src/nm/newton.d
   d_blob: 0bbf6e0ecfda3e786ebc57507851f9e6a8ffd9de
@@ -258,6 +394,38 @@ files:
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:nm_smla, gmres/ilu paths bit-identical]
+- cpp: src/nm/spline.cpp
+  d: src/nm/spline.d
+  d_blob: cda778cfa6c799f27249f7438e850e771d042759
+  d_lines: 120
+  cpp_lines: 76
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/nm/spline.hpp
+  d: src/nm/spline.d
+  d_blob: cda778cfa6c799f27249f7438e850e771d042759
+  d_lines: 120
+  cpp_lines: 74
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/nm/splinelsq.cpp
+  d: src/nm/splinelsq.d
+  d_blob: bca41f131d824ff5efcb4198e611b8003b0e02f5
+  d_lines: 161
+  cpp_lines: 112
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/nm/splinelsq.hpp
+  d: src/nm/splinelsq.d
+  d_blob: bca41f131d824ff5efcb4198e611b8003b0e02f5
+  d_lines: 161
+  cpp_lines: 86
+  fidelity: exact
+  variants: []
+  verified_by: []
 - cpp: src/nm/stmatrix.cpp
   d: src/nm/stmatrix.d
   d_blob: d70036d2cc6bfe0a38cc9e8e8f56540b92196ca4
