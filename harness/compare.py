@@ -141,7 +141,10 @@ def compare_logs(dpath, cpath):
 
 # Files the harness itself writes into a capture directory. Comparing these would
 # make every gate compare fail against a baseline captured by an older harness.
-METADATA = {"case-dir", "judgement", "diff.md", "INVALID", "run.log"}
+# SHA256SUMS.txt belongs here: it is the baseline's own integrity manifest, written
+# after the capture, so a fresh candidate run never has one and the gate would
+# otherwise report "MISSING IN C++" for a file the solver did not produce.
+METADATA = {"case-dir", "judgement", "diff.md", "INVALID", "run.log", "SHA256SUMS.txt"}
 # Python bytecode caches and mktemp scratch directories record when and where
 # they were made; they are not solver output and never will be comparable.
 IGNORE_DIRS = {"__pycache__"}
