@@ -93,6 +93,11 @@ Lua C API，因此可以独立编译、独立对照，是验证"逐函数语法�
 
 ## 3. 待完成
 
+> **注意**：自 2026-10-13 起，待办统一由 `reports/backlog.md` 维护（唯一权威清单）。
+> 以下列表保留作为当时的原始记录，其中的项已在 backlog 里获得任务 ID；
+> 两处若有出入，以 `backlog.md` 为准。
+
+
 1. `nm` 剩余：`nelmin`(432)、`spline`(120)、`splinelsq`(161)、`bdfLU`(118)、
    `tree_patch`(996)、`univariate_lut`(101)、`power_benchmark`(89) —— 各按消费波次移入
    （nelmin/spline 跟气体 LUT、tree_patch/univariate_lut 跟插值/场求解、bdfLU 跟 CHT）。

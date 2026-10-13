@@ -100,6 +100,11 @@ Phobos 在本机只有预编译产物（无 `import/std/math.d`），因此**所
 
 ## 2. 待完成（后续阶段）
 
+> **注意**：自 2026-10-13 起，待办统一由 `reports/backlog.md` 维护（唯一权威清单）。
+> 以下列表保留作为当时的原始记录，其中的项已在 backlog 里获得任务 ID；
+> 两处若有出入，以 `backlog.md` 为准。
+
+
 1. **Wave 2–12 主体迁移**（见计划文件波次表）。下一波是 `geom`（~30k 行）+
    `grid_utils` + `gasdyn` 非 Lua 部分。
 2. **补齐 Tier-A**：需要 `WITH_NK=1` 构建 `e4-nk-shared`（覆盖 nk_accelerator 20 站点、
