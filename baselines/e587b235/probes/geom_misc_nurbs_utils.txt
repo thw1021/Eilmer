@@ -1,0 +1,121 @@
+vec ex p=2 n=8 m=10 U=[0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5]
+span ex u=0 i=2
+span ex u=0.5 i=2
+span ex u=1 i=3
+span ex u=1.5 i=3
+span ex u=2 i=4
+span ex u=2.5 i=4
+span ex u=3 i=5
+span ex u=3.5 i=5
+span ex u=4 i=7
+span ex u=4.5 i=7
+span ex u=5 i=8
+span ex u=1e-13 i=2
+span ex u=-1e-13 i=2
+span ex u=5.0000000000001004 i=8
+span ex u=4.9999999999998996 i=7
+span ex u=9.9999999999999995e-07 i=2
+span ex u=-9.9999999999999995e-07 EXC isError=0 isException=1 msg=[Error in FindSpan.\nThe parameter value is not compatible with the chosen knot vector.\nSupplied parameter value: -9.999999999999999547e-07\nValid parameter range: [0.000000000000000000e+00, 5.000000000000000000e+00]]
+span ex u=5.0000010000000001 EXC isError=0 isException=1 msg=[Error in FindSpan.\nThe parameter value is not compatible with the chosen knot vector.\nSupplied parameter value: 5.000001000000000140e+00\nValid parameter range: [0.000000000000000000e+00, 5.000000000000000000e+00]]
+span ex u=4.9999999999998996 i=7
+span ex u=2.5000000000000999 i=4
+vec cubic1span p=3 n=4 m=7 U=[0, 0, 0, 0, 1, 1, 1, 1]
+span cubic1span u=0 i=3
+span cubic1span u=0.25 i=3
+span cubic1span u=0.5 i=3
+span cubic1span u=0.75 i=3
+span cubic1span u=1 i=4
+span cubic1span u=1e-13 i=3
+span cubic1span u=-1e-13 i=3
+vec repeated p=2 n=7 m=9 U=[0, 0, 0, 1, 1, 2, 2, 3, 3, 3]
+span repeated u=0 i=2
+span repeated u=0.5 i=2
+span repeated u=1 i=4
+span repeated u=1.5 i=4
+span repeated u=2 i=6
+span repeated u=2.5 i=6
+span repeated u=3 i=7
+vec quintic p=5 n=10 m=15 U=[0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5]
+span quintic u=0 i=5
+span quintic u=0.5 i=5
+span quintic u=1 i=6
+span quintic u=1.5 i=6
+span quintic u=2 i=7
+span quintic u=2.5 i=7
+span quintic u=3 i=8
+span quintic u=3.5 i=8
+span quintic u=4 i=9
+span quintic u=5 i=10
+vec linear p=1 n=5 m=6 U=[0, 0, 0.25, 0.5, 0.75, 1, 1]
+span linear u=0 i=1
+span linear u=0.10000000000000001 i=1
+span linear u=0.25 i=2
+span linear u=0.29999999999999999 i=2
+span linear u=0.5 i=3
+span linear u=0.75 i=4
+span linear u=1 i=5
+early u=5
+early u=1
+early u=3
+basis ex u=0 i=2 N=[1,0,0] sum=1 left=[nan,0,0] right=[nan,1,2]
+basis ex u=0.5 i=2 N=[0.25,0.625,0.125] sum=1 left=[nan,0.5,0.5] right=[nan,0.5,1.5]
+basis ex u=1 i=3 N=[0.5,0.5,0] sum=1 left=[nan,0,1] right=[nan,1,2]
+basis ex u=1.5 i=3 N=[0.125,0.75,0.125] sum=1 left=[nan,0.5,1.5] right=[nan,0.5,1.5]
+basis ex u=2 i=4 N=[0.5,0.5,0] sum=1 left=[nan,0,1] right=[nan,1,2]
+basis ex u=2.5 i=4 N=[0.125,0.75,0.125] sum=1 left=[nan,0.5,1.5] right=[nan,0.5,1.5]
+basis ex u=3 i=5 N=[0.5,0.5,0] sum=1 left=[nan,0,1] right=[nan,1,1]
+basis ex u=3.5 i=5 N=[0.125,0.625,0.25] sum=1 left=[nan,0.5,1.5] right=[nan,0.5,0.5]
+basis ex u=4 i=7 N=[1,0,0] sum=1 left=[nan,0,0] right=[nan,1,1]
+basis ex u=4.5 i=7 N=[0.25,0.5,0.25] sum=1 left=[nan,0.5,0.5] right=[nan,0.5,0.5]
+basis ex u=5 i=8 N=[-nan,-nan,-nan] sum=-nan left=[nan,0,1] right=[nan,0,0]
+basis cubic1span u=0 i=3 N=[1,0,0,0] sum=1 left=[nan,0,0,0] right=[nan,1,1,1]
+basis cubic1span u=0.25 i=3 N=[0.421875,0.421875,0.140625,0.015625] sum=1 left=[nan,0.25,0.25,0.25] right=[nan,0.75,0.75,0.75]
+basis cubic1span u=0.5 i=3 N=[0.125,0.375,0.375,0.125] sum=1 left=[nan,0.5,0.5,0.5] right=[nan,0.5,0.5,0.5]
+basis cubic1span u=0.75 i=3 N=[0.015625,0.140625,0.421875,0.421875] sum=1 left=[nan,0.75,0.75,0.75] right=[nan,0.25,0.25,0.25]
+basis cubic1span u=1 i=4 N=[-nan,-nan,-nan,-nan] sum=-nan left=[nan,0,1,1] right=[nan,0,0,0]
+basis repeated u=0 i=2 N=[1,0,0] sum=1 left=[nan,0,0] right=[nan,1,1]
+basis repeated u=0.5 i=2 N=[0.25,0.5,0.25] sum=1 left=[nan,0.5,0.5] right=[nan,0.5,0.5]
+basis repeated u=1 i=4 N=[1,0,0] sum=1 left=[nan,0,0] right=[nan,1,1]
+basis repeated u=1.5 i=4 N=[0.25,0.5,0.25] sum=1 left=[nan,0.5,0.5] right=[nan,0.5,0.5]
+basis repeated u=2 i=6 N=[1,0,0] sum=1 left=[nan,0,0] right=[nan,1,1]
+basis repeated u=2.5 i=6 N=[0.25,0.5,0.25] sum=1 left=[nan,0.5,0.5] right=[nan,0.5,0.5]
+basis repeated u=3 i=7 N=[-nan,-nan,-nan] sum=-nan left=[nan,0,1] right=[nan,0,0]
+basis linear u=0 i=1 N=[1,0] sum=1 left=[nan,0] right=[nan,0.25]
+basis linear u=0.10000000000000001 i=1 N=[0.59999999999999998,0.40000000000000002] sum=1 left=[nan,0.10000000000000001] right=[nan,0.14999999999999999]
+basis linear u=0.25 i=2 N=[1,0] sum=1 left=[nan,0] right=[nan,0.25]
+basis linear u=0.5 i=3 N=[1,0] sum=1 left=[nan,0] right=[nan,0.25]
+basis linear u=0.75 i=4 N=[1,0] sum=1 left=[nan,0] right=[nan,0.25]
+basis linear u=1 i=5 N=[-nan,-nan] sum=-nan left=[nan,0] right=[nan,0]
+basis unittest row=0.125,0.75,0.125 len=3
+ws p=1 left=[nan, nan] right=[nan, nan]
+ws p=2 left=[nan, nan, nan] right=[nan, nan, nan]
+ws p=3 left=[nan, nan, nan, nan] right=[nan, nan, nan, nan]
+ws p=5 left=[nan, nan, nan, nan, nan, nan] right=[nan, nan, nan, nan, nan, nan]
+knots N=4 p=3 len=8 U=[0,0,0,0,1,1,1,1]
+knots N=5 p=2 len=8 U=[0,0,0,0.33333333333333331,0.66666666666666663,1,1,1]
+knots N=4 p=1 len=6 U=[0,0,0.33333333333333331,0.66666666666666663,1,1]
+knots N=2 p=1 len=4 U=[0,0,1,1]
+knots N=7 p=3 len=11 U=[0,0,0,0,0.25,0.5,0.75,1,1,1,1]
+knots N=10 p=5 len=16 U=[0,0,0,0,0,0,0.20000000000000001,0.40000000000000002,0.59999999999999998,0.80000000000000004,1,1,1,1,1,1]
+knots N=3 p=2 len=6 U=[0,0,0,1,1,1]
+knots N=6 p=4 len=11 U=[0,0,0,0,0,0.5,1,1,1,1,1]
+knots N=4 p=4 built=0 isError=1 msg=[Number of control points is not compatible with degree (1<=p<=N+1).]
+knots N=4 p=0 built=0 isError=1 msg=[Number of control points is not compatible with degree (1<=p<=N+1).]
+knots N=2 p=5 built=0 isError=1 msg=[Number of control points is not compatible with degree (1<=p<=N+1).]
+knots N=1 p=1 built=0 isError=1 msg=[Number of control points is not compatible with degree (1<=p<=N+1).]
+knots N=4 p=-1 built=0 isError=1 msg=[Number of control points is not compatible with degree (1<=p<=N+1).]
+pwtest 3 built=1
+pwtest 1 built=0 isError=1 msg=[NURBS() A NURBS path requires at least two control points.\nSupplied number of control points: 1]
+pwtest 0 built=0 isError=1 msg=[NURBS() A NURBS path requires at least two control points.\nSupplied number of control points: 0]
+dup dims 2 2 2
+dup orig[0][0][0]=0,0.5,-0.25,1 copy=0,0.5,-0.25,1 same=true
+dup orig[0][0][1]=1,1.5,0.75,1 copy=1,1.5,0.75,1 same=true
+dup orig[0][1][0]=2,2.5,1.75,1 copy=2,2.5,1.75,1 same=true
+dup orig[0][1][1]=3,3.5,2.75,1 copy=3,3.5,2.75,1 same=true
+dup orig[1][0][0]=4,4.5,3.75,1 copy=4,4.5,3.75,1 same=true
+dup orig[1][0][1]=5,5.5,4.75,1 copy=5,5.5,4.75,1 same=true
+dup orig[1][1][0]=6,6.5,5.75,1 copy=6,6.5,5.75,1 same=true
+dup orig[1][1][1]=7,7.5,6.75,1 copy=7,7.5,6.75,1 same=true
+dup afterMutate orig=0 copy=-99
+dup empty len=0
+done=1

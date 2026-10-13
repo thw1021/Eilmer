@@ -1,0 +1,12 @@
+Begin demonstration of the clustering functions.
+x= 0 roberts_y= 0 linear_y= 1
+x= 0.1 roberts_y= 0.166167 linear_y= 0.9
+x= 0.2 roberts_y= 0.32492 linear_y= 0.8
+x= 0.3 roberts_y= 0.47011 linear_y= 0.7
+x= 0.4 roberts_y= 0.597691 linear_y= 0.6
+x= 0.5 roberts_y= 0.705917 linear_y= 0.5
+x= 0.6 roberts_y= 0.795013 linear_y= 0.4
+x= 0.7 roberts_y= 0.86657 linear_y= 0.3
+x= 0.8 roberts_y= 0.922907 linear_y= 0.2
+x= 0.9 roberts_y= 0.96657 linear_y= 0.1
+x= 1 roberts_y= 1 linear_y= 0
