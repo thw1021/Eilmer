@@ -1,0 +1,29 @@
+psf.unit.default nr=10 ns=10 area x=0 y=0 z=1.0000000000000007
+psf.unit.sqr nr=1 ns=1 area x=0 y=0 z=1
+psf.unit.sqr nr=2 ns=2 area x=0 y=0 z=1
+psf.unit.sqr nr=3 ns=3 area x=0 y=0 z=1.0000000000000002
+psf.unit.sqr nr=5 ns=5 area x=0 y=0 z=1.0000000000000004
+psf.unit.sqr nr=10 ns=10 area x=0 y=0 z=1.0000000000000007
+psf.unit.sqr nr=100 ns=100 area x=0 y=0 z=0.99999999999990619
+psf.unit.r1s7 nr=1 ns=7 area x=0 y=0 z=1
+psf.unit.r7s1 nr=7 ns=1 area x=0 y=0 z=1
+psf.skew.default nr=10 ns=10 area x=1.66875 y=-0.38750000000000001 z=3.7187499999999996
+psf.skew.sqr nr=1 ns=1 area x=1.6687500000000002 y=-0.38750000000000007 z=3.71875
+psf.skew.sqr nr=2 ns=2 area x=1.6687500000000002 y=-0.38750000000000018 z=3.71875
+psf.skew.sqr nr=3 ns=3 area x=1.66875 y=-0.38749999999999996 z=3.71875
+psf.skew.sqr nr=4 ns=4 area x=1.66875 y=-0.38749999999999996 z=3.71875
+psf.skew.sqr nr=8 ns=8 area x=1.66875 y=-0.38750000000000029 z=3.71875
+psf.skew.sqr nr=17 ns=17 area x=1.6687499999999995 y=-0.38749999999999979 z=3.7187499999999987
+psf.skew.sqr nr=64 ns=64 area x=1.66875 y=-0.38750000000000034 z=3.71875
+psf.skew.r3s11 nr=3 ns=11 area x=1.66875 y=-0.3874999999999999 z=3.7187499999999996
+psf.skew.r11s3 nr=11 ns=3 area x=1.6687500000000006 y=-0.38750000000000007 z=3.71875
+psf.point.default nr=10 ns=10 area x=0 y=0 z=0
+psf.dup str=ProbeSurface(Vector3(0.5, -0.25, 0.1), Vector3(2, 0.75, -0.3), Vector3(-0.5, 1.5, 0.9), Vector3(1.25, 2.5, 0.05))
+psf.dup opCall r=0 s=1 x=-0.5 y=1.5 z=0.90000000000000002
+psf.dup opCall r=0.25 s=0.75 x=0.171875 y=1.3125 z=0.515625
+psf.dup opCall r=0.5 s=0.5 x=0.8125 y=1.125 z=0.18750000000000003
+psf.dup opCall r=1 s=0 x=2 y=0.75 z=-0.30000000000000004
+psf.vtk.unit len=1240
+psf.vtk.unit.body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 2 0 3 0 0"><newline>    <Piece Extent="0 2 0 3 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       5.0000000000000000e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 3.3333333333333331e-01 0.0000000000000000e+00<newline>       5.0000000000000000e-01 3.3333333333333331e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 3.3333333333333331e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 6.6666666666666663e-01 0.0000000000000000e+00<newline>       5.0000000000000000e-01 6.6666666666666663e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 6.6666666666666663e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>       5.0000000000000000e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+psf.vtk.skew.body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 1 0 1 0 0"><newline>    <Piece Extent="0 1 0 1 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       5.0000000000000000e-01 -2.5000000000000000e-01 1.0000000000000001e-01<newline>       2.0000000000000000e+00 7.5000000000000000e-01 -3.0000000000000004e-01<newline>       -5.0000000000000000e-01 1.5000000000000000e+00 9.0000000000000002e-01<newline>       1.2500000000000000e+00 2.5000000000000000e+00 5.0000000000000044e-02<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+psf.vtk.one.body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 0 0 0 0 0"><newline>    <Piece Extent="0 0 0 0 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>                       -nan                 -nan                 -nan<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
