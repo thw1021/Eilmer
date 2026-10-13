@@ -43,9 +43,13 @@ struct constraint : std::integral_constant<bool,
  *     tol: the final size of the bracket.
  *          It should not be set too small.
  */
-template <auto f, typename T,
-          typename = typename std::enable_if<detail::constraint<f>::value>::type>
-void minimize(T& a, T& b, double tol = 1.0e-4)
+/**
+ * The golden-section bracket search itself, spelled once. Statement order follows
+ * nm/linesearch.d:43-64 — `r` is the literal 0.618034 D uses (not the exact golden
+ * ratio), and the bracket updates are assignments in this order.
+ */
+template <typename F, typename T>
+void minimize_fn(F f, T& a, T& b, double tol)
 {
     T r = 0.618034;
     T xL = a + (1-r)*(b-a);
@@ -69,6 +73,29 @@ void minimize(T& a, T& b, double tol = 1.0e-4)
     }
     a = xL;
     b = xR;
+} // end minimize_fn()
+
+template <auto f, typename T,
+          typename = typename std::enable_if<detail::constraint<f>::value>::type>
+void minimize(T& a, T& b, double tol = 1.0e-4)
+{
+    minimize_fn(f, a, b, tol);
+} // end minimize()
+
+/**
+ * Overload for stateful callables.
+ *
+ * D writes the objective as a nested function, e.g. geom/gpath/path.d:154
+ * `double distanceToPoint(double t) { return distance_between(p, opCall(t)); }`,
+ * which closes over `this` and `p`. A C++ non-type template parameter can only name
+ * a linkage object, so the NTTP form above cannot take it. The two forms share
+ * minimize_fn() so the golden-section arithmetic exists in exactly one place —
+ * duplicating the body would let the two entry points drift apart.
+ */
+template <typename F, typename T>
+void minimize(F f, T& a, T& b, double tol = 1.0e-4)
+{
+    minimize_fn(f, a, b, tol);
 } // end minimize()
 
 } // namespace eil::nm::linesearch

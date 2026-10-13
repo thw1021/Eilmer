@@ -95,6 +95,35 @@
    若因此暴露 D 侧的循环依赖，写进 `fidelity.yml` 而不是造前向声明泥球。
 6. `geom/luawrap/`(9,876 行)：Wave 7，本轮不碰。
 
+## 4b. geom 的三条多态层级（转写前定了这些，别各写一套）
+
+实测层级（`grep '^class' geom`）：
+
+| D 基类 | 站点 | 子类数（实测 `grep -c 'class X : Base'`） | 关键契约 |
+|---|---|---|---|
+| `Path` | `geom/gpath/path.d:30` | 直接 12，gpath 内类共 20（含 4 层深链 `ReParameterizedPath→SubRangedPath→ReversedPath`） | `abstract Path dup() const`、`abstract Vector3 opCall(double t) const`、`abstract override string toString()`、`abstract string classString()` |
+| `ParametricSurface` | `geom/surface/parametricsurface.d:34` | 15 | 同上形状（`opCall(u,v)` 二参） |
+| `ParametricVolume` | `geom/volume/parametricvolume.d:63` | 8 | 同上形状（`opCall(u,v,w)` 三参） |
+| `UnivariateFunction` | `geom/misc/univariatefunctions.d:17` | 9 | `f(t)`、`fprime(t)`、`inverse(y)` |
+| `Grid` | `geom/grid/grid.d` | 2（`StructuredGrid`、`UnstructuredGrid`） | stage 3 用 |
+
+统一写法（`Path` 为例，另两条同构）：
+
+1. 基类 = 抽象类 + `virtual ~Path() = default`；
+   `virtual std::shared_ptr<Path> dup() const = 0`（D 的 `Path dup()` 返回基类句柄，
+   C++ 协变返回类型只能到裸指针，所以统一返回 `shared_ptr<Base>`，头注释标
+   `adapted-handles`）。
+2. `opCall` → `virtual Vector3 operator()(double t) const`。
+3. `abstract override string toString()` → `virtual std::string toString() const = 0`；
+   `classString()` 同样纯虚——D 用它打印类名，日志比对依赖它，**不要**省。
+4. `cast(Line)this !is null`（`path.d:136`）→ `dynamic_cast<const Line*>(this) != nullptr`，
+   需要 RTTI，别改成虚函数标志位（那会把 D 的"运行期类型判断"变成另一套逻辑）。
+5. D 的**嵌套函数**（如 `path.d:154 double distanceToPoint(double t)` 闭包 `this` 与 `p`）
+   → C++ 捕获型 lambda。为此 `eil::nm::linesearch::minimize` 加了可调用对象重载
+   （`minimize(F f, T& a, T& b, double tol)`，与原 NTTP 版共用同一个 `minimize_fn` 体，
+   已实测两条入口给出**逐位相同**的区间 `[0.300000173, 0.300000838]`）。
+   凡 D 用嵌套函数当被最小化/被求根目标，一律走这个重载，不要手写第二份黄金分割。
+
 ## 5. 实测钉死的语义（逐条来自本仓探针，新结论继续追加）
 
 - `to!string(double)` 是 `%.6g`，不是最短往返：`3.141592653589793` → `3.14159`。
