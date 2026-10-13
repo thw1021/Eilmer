@@ -364,3 +364,77 @@
   backlog 的 T-011/T-012/T-013/T-015 更正与新 ID T-019。提交 `e564688`。
 - **新遗留**：T-019（sketch，从 T-013 更正出来）；gmopatch/meshpatch 改挂 T-011；
   T-015 保持 `[~]` 直到 Wave 5 产出候选 `e4shared`。
+
+## T-013 续 / T-012 stage B / T-913 — gpath 回放补齐、15 个曲面/体模块、`to!double` 规则重建  (2026-10-14)
+
+- **范围**：`geom/gpath/{nurbs,svgpath,gpath_utils}` 三个缺失的回放测试 +
+  `gpath_utils_demo`；`geom/surface/` 11 个模块 + `geom/volume/` 4 个模块；
+  `substrate/include/eil/conv.hpp` 的 `to!double`。
+  D 侧输入：gpath 三模块 117 D 行、surface/volume **2,542 D 行**、
+  语料合计 **19,995 行**（surface/volume）+ **1,597 行**（gpath 三模块）。
+- **做了什么**：
+  1. **T-013 余量闭合**：三个代理各写一个回放测试，全部对着**已入库**的 D 语料回放，
+     不新建基线。nurbs 的静态字段串扰（`mN` 被后一个构造器 `p+1` 缩小）按 D 原样复现，
+     包括 `nurbs.static.keep5` 那条 RangeError 文本。
+  2. **T-913（新发现并已修）**：两个代理各自独立测到 `to!double("#c")` 的错误文本错——
+     D 给 `no digits seen for input "#c".`，端口给 `error converting input to floating
+     point ...`。该分支当初是**从一条语料行（"not a number"）推广出来的**。
+     没有只补 `#c`，而是按 **443 个操作数**重测规则后重写。测出的 7 条 D 特有语义
+     全写进头注释并被语料钉住：`+nan` 可转但 **`+inf` 不可**（`-inf` 可）；
+     Phobos 只匹配三字母 `inf`，故 `infinity`→unexpected `i`；`1e` 是
+     `Unexpected end of input` 而 `1e+` 是 `No digits seen.`；`_` 只在紧跟数字时
+     才是分隔符（`1_2`/`1_`/`1_e5`/`0x1_p1` 可，`1__2`/`1._5`/`_1`/`1e5_` 不可）；
+     hex 尾数遇 `p` 即停（故 `0x1p1p1` 报 unexpected `p`）；`0x1.2.3p1` 报的是
+     `exponent is required` 而不是 unexpected `.`；溢出才是 Range error，下溢只是 0。
+     操作数与结果一律 **hex 编码**（`tests/test_data/conv_inputs.hex`），因为多个操作数
+     含换行/制表符，而 D 的消息里**只有 `\n` 被转义成两字符 `\n`、`\t` 原样**——
+     明文列表会让语料"按行"变得偶然并把行错配给错误的操作数。
+  3. **T-012 stage B**：15 个模块并行转写。两个**我写错、由实测纠正**的简报条目：
+     - 我把 `classString()` 写进 surface/volume 的虚函数契约。它**只存在于 `geom/gpath`**
+       （`grep -c classString gdtk/src/geom/{surface,volume}/*.d` 全 0），标 `override`
+       编不过。简报已更正；相关头注释把它标成"非 D 符号"的 helper。
+     - 我说 `beziertrianglepatch.d` 是 `^^` 大户。它只有 3 处且全是**整数臂**
+       （`typeof(3^^2)==int`），其 26 个模块内 `iota` 全是整数降序，
+       累加写法恰好同值；浮点 `iota` 的判别语料在 `substrate_iota`。
+  4. **保留而不"修正"的 D 行为**（都带 file:line）：`bezierpatch.d:40` 复制时
+     `m = other.n` 而 `dup()` 重算；负数组长度要在 `size_t` 转换**之前**捕获成
+     D 的 `Error "Memory allocation failed"`；CoonsPatch 角点检查只报第一个开角；
+     `channelpatch` 零叉乘情形得 `[pA,pA,pB,pB]` 而非 NaN（`vector3.d:362-370`
+     下溢置零）；`twosurfacevolume.d:110` 用字面量 `1.0-1` 缩放 face0，"i" 支因此丢弃它。
+  5. **`SlabVolume` 拷贝构造删除而非转写**：D:32 在 super()（D:33）赋值成员之前
+     调用继承的 `face0123(0.0,0.0)`，实测 **SIGSEGV、exit 139、无可捕获对象**；
+     且 `grep -rn "new SlabVolume" gdtk/src` 三处命中全是双参构造，无一处用拷贝构造。
+     判据与复跑命令记在 `src/geom/volume/slabvolume.hpp:45-50`。
+- **验证**（基准全是 ldc2 1.40.0 现编 D；三配置 Release / Debug / `-DEIL_SLICE_CHECK=ON`）：
+  - `substrate_conv_failtext`：**443/443 行字节相同**。
+  - `geom_gpath_nurbs` **195/195 行、655/655 量逐位相同、0 行用容差带**、1/1 断言；
+    `geom_gpath_svgpath` **818/818 行、2802/2802 量**、3/3 断言；
+    `geom_gpath_gpath_utils` **564/564 行、957/957 量**；其 demo **43 行字节相同**
+    （507 字节，两侧 md5 `e0fa70ef7cfe03ec6fe1e37bcef59569`，`cmp` 无差异字节）。
+  - surface/volume 15 模块逐模块行数**全部 N of N 字节相同、0 行用容差带**：
+    bezierpatch 310、coonspatch 333、channelpatch 820、cubepatch 1604、
+    sweptpathpatch 724、beziertrianglepatch 268、subrangedsurface 273、
+    ruledsurface 598、nozzleexpansionpatch 354、nurbssurface 200、
+    meshvolume 2167、subrangedvolume 5202、slabvolume 2227、twosurfacevolume 6608
+    ＝ **19,995 行中 0 行差异**。
+  - 门禁可信度自检（beziertrianglepatch 代理做的"故意改坏"实验）：删掉 D:104 的
+    `if (w<0.0) w=0.0` → **21/268 行变红**；把 D:112 的远端边界 `-1` 放宽成 `0` →
+    未捕获异常 exit 134。即该语料**确有判别力**，不是"怎么改都过"。
+  - 全树：Release **77/77**、Debug **76/76**、slice-check **76/76**（76 时是
+    slabvolume 的注册还等 sweptsurfacevolume 落地，现已 77）。
+  - `tools/check_staleness.sh` → `no drift`；`gdtk` 树零写入
+    （`find gdtk/src/geom/surface -newermt '-2 hours'` → 0 files）。
+- **产出**：`src/geom/{surface,volume}/*`（15 模块）、
+  `tests/{test_geom_gpath_nurbs,test_geom_gpath_svgpath,test_geom_gpath_gpath_utils,
+  demo_geom_gpath_gpath_utils,test_substrate_conv_failtext,test_geom_surface_*,
+  test_geom_volume_*}.cpp`、`probes/substrate/probe_conv_failtext.d`、
+  `probes/geom/{surface,volume}/*.d`、`tests/test_data/conv_inputs.hex`（443 操作数）、
+  对应 `baselines/e587b235/probes/*`、`substrate/include/eil/conv.hpp`（重写）、
+  `cmake/wave2_{t910,geom_surfvol,btp_surf2,vol2,nurbsvol}.cmake`、
+  `reports/wave-02-surfvol-brief.md`（含两处更正）。提交 `1c4cd04 199c8fd`。
+- **新遗留**：T-913（已完成，登记于此）；**T-914** `eil::Array::set_length(size_t)`
+  表达不了 D 的有符号 `arr.length = L`（代理在 `bezierpatch.cpp:26-39` 本地绕开，
+  需 substrate 侧定形）；**T-915** `sweptpathpatch.d` 的
+  `new SweptPathPatch(null, cB)` 在 D 侧 SIGSEGV（exit 139，不可捕获），
+  端口不加防护、语料无该行；**T-012 余量** spherepatch/aopatch/controlpointpatch/
+  surface_demo/sweptsurfacevolume/wedgevolume/tfivolume/volume_demo/nurbsvolume。

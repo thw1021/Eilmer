@@ -63,7 +63,11 @@
   就没有 sketch；余量条目也写明它未转）→ 拆出 **T-019**。
   `misc/libplot.d` 428 属 `with_libplot` 变体，仍推迟；
   `misc/rotating_a.d` 49 与 `misc/drifting_eye.d` 65 是 sketch 的配套小程序，随 T-019。
-  gpath 的 `nurbs`/`svgpath`/`gpath_utils` 三个**回放测试**在 2026-10-14 补做（见 T-013 节续）
+  gpath 的 `nurbs`/`svgpath`/`gpath_utils` 三个**回放测试已补齐 2026-10-14**：
+  nurbs **195/195 行字节相同、655/655 量逐位相同、0 行走容差带**；
+  svgpath **818/818 行、2802/2802 量**；gpath_utils **564/564 行、957/957 量**，
+  其 demo **43 行字节相同（507 字节，两侧 md5 `e0fa70ef…59569`）**。
+  gpath_utils 曾差 1 行，根因是 substrate 的 `to!double` 错误文本分支 → 见 **T-913**
 - [x] **T-014** `gasdyn/`：`gasflowexception.d` 13、`idealgasflow.d` 952、`idealgasflow_demo.d` 93 —— **完成 2026-10-13**，见 `task-log.md` T-014 节（39,778/40,451 量逐位相同、0 越带、59/59 断言、demo 字节相同）。
   **范围修正（本轮核实）**：`gasflow.d`(1595) 与 `gasflow_demo.d`(202) 移出 Wave 2 → 新 ID **T-018**。
   依据：`gasflow.d` 的激波关系式签名普遍是 `ref const(GasState)`/`GasModel gm`，并做
@@ -193,6 +197,18 @@
   修法：Phobos arc-tangent 上移 substrate 成 `eil::atan/atan2`，三个站点全改；
   **`modifiedpath` 84 条容差带 → 0，10794/10794 量逐位相同**，三配置 58/58。
   顺带修门禁自身的 `snprintf` 少参 bug（曾打印 `D 9.8e+252` 这样的栈垃圾）。
+- [ ] **T-914** substrate 缺口：`eil::Array::set_length(size_t)` 表达不了 D 的
+  **有符号** `arr.length = L`。D 里 `L<0` 抛 `Error "Memory allocation failed"`；
+  C++ 侧若先转 `size_t` 就会变成试图分配 2^64 个元素。本波代理在
+  `src/geom/surface/bezierpatch.cpp:26-39` 用本地 `set_length_checked` 三个重载绕开，
+  同一需求在 volume/grid 还会再出现 → 应在 `substrate/include/eil/array.hpp` 定形
+  （加 `set_length_signed(long)`），然后删掉本地绕行 → **Wave 3**
+- [ ] **T-915** D 侧真实崩溃，端口不加防护：`sweptpathpatch.d` 的
+  `new SweptPathPatch(null, cB)` 实测 **SIGSEGV、exit 139、无可捕获对象**
+  （`probes/geom/surface/probe_sweptpathpatch.d` 组 H，语料里没有该行）。
+  同样 `slabvolume.d:32` 在 `super()` 之前调继承的 `face0123(0.0,0.0)` 也是 SIGSEGV。
+  记录以免将来把它误当移植缺陷；若 Wave 7 的 `geom/luawrap` 允许 Lua 传 null 进来，
+  那时"崩溃"就是用户可见行为，须按 D 原样保留（不做空指针检查）→ **Wave 7 复核**
 - [ ] **T-911** Phobos 的 `exp/sin/cos/tanh/sinh` 同样是**纯源码实现**
   （`std/math/{trigonometry,exponential,algebraic}.d`），不是 C 库转发。T-910 已经证明
   "D 的标准库函数名 == C 的同名函数"这个默认假设是**错的**，而
@@ -202,6 +218,17 @@
   （照 `probe_mp_rot_chain.d` 的形状：同一自变量两侧各算一遍、打印 `bits=`），
   统计差 1 ULP 的**比例**，再决定是否转写 `expImpl`/`sinImpl`/`cosImpl`。
   在实测之前，现有 1e-13 门禁口径不变 → **Wave 3 开波前**
+- [x] **T-913** substrate 缺陷（两个代理各自独立实测到同一处）：
+  `substrate/include/eil/conv.hpp` 里 `to!double` 选择错误文本的分支是**从一条语料行
+  （"not a number"）推广出来的**，对 `#c` 错了——D 给 `no digits seen for input "#c".`，
+  端口给 `error converting input to floating point ...`。`svgpath.d`/`gpath_utils.d`
+  会把 `e.msg` 打进用户终端，这是用户可见契约。**完成 2026-10-14**：按 443 个操作数
+  重测规则后重写（`probes/substrate/probe_conv_failtext.d` +
+  `tests/test_data/conv_inputs.hex` + `tests/test_substrate_conv_failtext.cpp`，
+  **443/443 行字节相同**），实测出 7 条 D 特有语义（`+nan` 可转但 `+inf` 不可；
+  Phobos 只匹配三个字母 `inf`，故 `infinity` 是 unexpected `i`；`1e` 与 `1e+` 文本不同；
+  `_` 只在数字之后才是分隔符；hex 尾数遇 `p` 即停；溢出才是 Range error 而下溢只是 0）。
+  `geom_gpath_gpath_utils` 因此从 563/564 → **564/564**，全树三配置 76/76
 - [ ] **T-912** 转写纪律（T-910 的教训，须写进每个子代理简报）：D 侧凡调用
   `std.math` 的函数，**必须先确认它在 Phobos 里是转发 C 库还是自带实现**，
   再决定 C++ 侧写 `std::xxx` 还是 `eil::xxx`。已知清单：
