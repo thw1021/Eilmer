@@ -47,10 +47,23 @@
   根因实测为两次 `exp` 各差 1 ULP
 - [ ] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
   — 结构化/非结构网格核心。依赖 T-010、T-017
+  **范围追加（2026-10-14 实测）**：`surface/gmopatch.d`(171) 与 `surface/meshpatch.d`(100)
+  **不能进 T-012**：前者 `import geom.grid.sgrid` 且在 :87 `new StructuredGrid(...)`，
+  后者 :23 的构造入参就是 `ref StructuredGrid grid`。两者改挂 **T-011**，随 sgrid 一起做完
+  （否则在 Wave 2 里必须凭空造一个 StructuredGrid 桩，那就是改行为，同 T-018 的理由）
 - [ ] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
-- [x] **T-013** `geom/misc/`（`univariatefunctions.d` 833、`sketch.d` 964、`svg.d` 364）与
-  `geom/gpath/`（`modifiedpath.d` 394）。注意 `misc/libplot.d` 428 属 `with_libplot` 变体，推迟
+  **实际范围（2026-10-14 实测）**：surface 2,899 − gmopatch/meshpatch 271 = **2,628 D 行**，
+  volume **1,588 D 行**，合计 **4,216**，分 4 批并行；
+  两个抽象基类（`parametricsurface.d` 94、`parametricvolume.d` 304）由主线程先写，
+  因为 15＋8 个子类覆写的是同一套虚函数契约，交给 5 个代理各写各的会把它分叉
+- [~] **T-013** `geom/misc/`（`univariatefunctions.d` 833、`svg.d` 364、`kdtree.d` 197、
+  `nurbs_utils.d` 172）与 `geom/gpath/`（13 模块 2,573）。
+  **清单更正**：本条原写作"含 `sketch.d` 964"，实际**未做**（task-log T-013 节的范围里
+  就没有 sketch；余量条目也写明它未转）→ 拆出 **T-019**。
+  `misc/libplot.d` 428 属 `with_libplot` 变体，仍推迟；
+  `misc/rotating_a.d` 49 与 `misc/drifting_eye.d` 65 是 sketch 的配套小程序，随 T-019。
+  gpath 的 `nurbs`/`svgpath`/`gpath_utils` 三个**回放测试**在 2026-10-14 补做（见 T-013 节续）
 - [x] **T-014** `gasdyn/`：`gasflowexception.d` 13、`idealgasflow.d` 952、`idealgasflow_demo.d` 93 —— **完成 2026-10-13**，见 `task-log.md` T-014 节（39,778/40,451 量逐位相同、0 越带、59/59 断言、demo 字节相同）。
   **范围修正（本轮核实）**：`gasflow.d`(1595) 与 `gasflow_demo.d`(202) 移出 Wave 2 → 新 ID **T-018**。
   依据：`gasflow.d` 的激波关系式签名普遍是 `ref const(GasState)`/`GasModel gm`，并做
@@ -60,11 +73,23 @@
   在 Wave 2 做它必须凭空造一个 gas/ 桩，那就是改行为
 - [ ] **T-018** `gasdyn/gasflow.d`(1595) + `gasflow_demo.d`(202)：随 **Wave 3** 的 `gas/`
   一起做（依赖 `GasState`/`GasModel`/`CEAGas` 真实体与 `init_gas_model`）
-- [ ] **T-015** Wave 2 门禁扩充：新增基线 `3D/sod-shock-tube/usg`（`sod-usg-test.rb` 已注册于
+- [~] **T-015** Wave 2 门禁扩充：新增基线 `3D/sod-shock-tube/usg`（`sod-usg-test.rb` 已注册于
   `test-names.txt:21`，走非结构网格，正是 T-011 的检验对象）；并确认 `3D/sod-shock-tube/sg`
   与 `usg` 两条链在 C++ 侧可跑
   （usg 基线已抓取并 D-vs-D 自测通过：75 步、`final-t= 0.000600988`、17 个可比产物全 PASS，
   含 `.flow/.grid` gzip payload 180,631/181,024/145,581 字节与两个 probe 读数）
+  — **第一半完成 2026-10-14**：`gate.sh` 以参考侧 D 二进制当候选跑两条链，
+  **各 17 个可比产物、onlyD=0、onlyC=0、全 PASS**；
+  sg `final-t= 0.00060314`、usg `final-t= 0.000600988`；gzip 只比解压后的 payload
+  （容器字节含 mtime，D 自己两次运行都不相同）：sg `flow 181,027 / grid 68,303` 字节、
+  usg `flow 181,024 / grid 145,581` 字节。
+  **第二半受阻，不假装完成**："在 C++ 侧可跑"需要候选 `e4shared`，那是 **Wave 5** 的产物；
+  Wave 2 无论怎么做都造不出这条证据 → 保持 `[~]`，随 Wave 5 复核
+- [ ] **T-019** `geom/misc/sketch.d`(964) + 配套 `rotating_a.d`(49) + `drifting_eye.d`(65) +
+  `sketch_demo.d`(83) — 从 T-013 拆出（原清单误记为已做）。
+  依赖 `geom.surface`/`geom.volume`/`geom.grid` 的具体子类（sketch 把曲面/体画成图），
+  故排在 **T-012 与 T-011 之后**；`libplot.d` 支仍按 `with_libplot` 变体推迟
+
 - [ ] **T-016** Wave 2 收尾报告 `wave-02.md` + `wave-02` tag + 本清单更新
 
 **Wave 2 执行约束**（源自 wave-01 集成的 3 类返工，必须写进每个子代理简报）：

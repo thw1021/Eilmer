@@ -315,3 +315,52 @@
   **T-912**（本轮教训入规：D 侧 `std.math` 的函数**不能默认等于同名 C 函数**，
   每个新转写的超越函数调用点都要先做位型级探针）。
 
+## T-015 / T-012 stage A / T-011 范围 — 门禁复核、两个抽象基类、两处清单更正  (2026-10-14)
+
+- **范围**：`gate.sh` 在 `3D/sod-shock-tube/{sg,usg}` 两条链上的自检；
+  `geom/surface/parametricsurface.d`(94) + `geom/volume/parametricvolume.d`(304) 两个抽象基类；
+  backlog 中 T-011/T-012/T-013 三条的范围核对。
+- **做了什么**：
+  - **T-015 第一半**：`bash harness/gate.sh /home/tang/packages/gdtk/build/bin
+    3D-sod-shock-tube-sg 3D-sod-shock-tube-usg` → 两条链 **PASS**。可比产物
+    **各 17 个，onlyD=0、onlyC=0**（用 `compare.py` 的 `list_artifacts()` 数出来的，
+    不是只看汇总行）。gzip 只比**解压后的 payload**（容器含 mtime，D 自己两次运行都不同）：
+    sg `flow 181,027` / `grid 68,303` 字节，usg `flow 181,024` / `grid 145,581` 字节；
+    `final-t` sg `0.00060314`、usg `0.000600988`。
+  - **T-015 第二半不做**："两条链在 C++ 侧可跑"需要候选 `e4shared`，那是 Wave 5 的产物；
+    Wave 2 无论怎么折腾都产生不了这条证据 → 该条保持 `[~]`，不标完成。
+  - **T-012 stage A**：两个抽象基类由主线程写，理由是 surface 有 **15** 个、volume 有 **8**
+    个子类覆写同一套 `dup()/opCall()/toString()/classString()` 契约，让并行代理各定各义
+    就是把它分叉（Wave 1 集成返工的同类问题）。九个差分**逐条转写、不合并**：
+    混合偏导的远端单侧支（D:214/:235/:256 用 `(f0-f-1)/d`）与纯二阶导的三点支
+    （D:144 用 `(f0-2f-1+f-2)/(d*d)`）**结构不同**，合并成一个带阶数的 helper 就是改行为。
+  - **两处清单更正**（读 import 实测得出，不是推测）：
+    1. `surface/gmopatch.d`(171) 与 `surface/meshpatch.d`(100) 移出 T-012 → 挂 **T-011**。
+       前者 `import geom.grid.sgrid` 且 :87 `new StructuredGrid(...)`，
+       后者 :23 构造入参就是 `ref StructuredGrid grid`；在 Wave 2 做它们必须凭空造
+       StructuredGrid 桩 —— 与 T-018 移出 `gasflow.d` 同一条理由。
+       T-012 实范围因此是 **4,216 D 行**（surface 2,628 + volume 1,588）。
+    2. T-013 原写作"含 `sketch.d` 964"是**错的**：task-log 的 T-013 节范围里从来没有 sketch，
+       余量条目也写明它未转 → 拆出 **T-019**（sketch 964 + `rotating_a.d` 49 +
+       `drifting_eye.d` 65 + `sketch_demo.d` 83），T-013 从 `[x]` 降为 `[~]`。
+       这是"同一件事在两处表述不同"的实例，正是把 backlog 定为唯一清单所要防的。
+- **验证**：
+  - `geom_surface_parametricsurface`：**29 of 29 行字节相同、0 differ**
+    （`area()` 在 9 组 (nr,ns) × 3 种退化/歪斜补丁、`dup()` 后求值、VTK 文件**全文**，
+    含 `ntPts=1` 时 `1.0/(nrPts-1)` 产生的 inf/NaN 行）。
+  - `geom_volume_parametricvolume`：**2165 of 2165 行字节相同**。语料是
+    6 个扫掠值（`0, 0.001, 0.5, 0.999, 0.9995, 1`）的三点笛卡尔积 × 9 个差分访问器
+    = 216 点 × 9，**故意冗余**：混合偏导调用一阶导、后者自己又分支，
+    只有这样才能让 D:144 与 D:214 两种不同模板**可观测地**不同，而不是"看起来合理"；
+    外加 216 点本体与两份 VTK 全文。
+  - Release 下 `ctest -R "parametricsurface|parametricvolume"` **2/2**；
+    `gdtk` 树全程只读（D 探针一律编 `/tmp/gdtk_shadow` 副本）。
+- **产出**：`src/geom/{surface/parametricsurface,volume/parametricvolume}.{hpp,cpp}`、
+  `probes/geom/{surface, volume}/probe_parametric*.d`、
+  `baselines/e587b235/probes/geom_surface_parametricsurface.txt`（29 行，
+  sha256 `bd616e42…160378`）与 `geom_volume_parametricvolume.txt`（2,165 行）、
+  `tests/test_geom_{surface_parametricsurface,volume_parametricvolume}.cpp`、
+  `cmake/wave2_geom_surfvol.cmake`、`reports/wave-02-surfvol-brief.md`、
+  backlog 的 T-011/T-012/T-013/T-015 更正与新 ID T-019。提交 `e564688`。
+- **新遗留**：T-019（sketch，从 T-013 更正出来）；gmopatch/meshpatch 改挂 T-011；
+  T-015 保持 `[~]` 直到 Wave 5 产出候选 `e4shared`。
