@@ -74,12 +74,15 @@ class Arc : public Path {
 // (y,x) pairs, including the four special-case branches, and the arc test replays
 // it; the arc probe replay then shows it working through the geometry.
 //
-// SUBSTRATE GAP (T-9xx candidate, reported to the main thread): this belongs in
-// substrate/include/eil/math.hpp next to eil::pow/eil::sqrt as eil::atan2, because
-// geom/elements/vector3.cpp:313 (rotate_about_zaxis), geom/gpath/helix.cpp:44 and
-// the asin replica in src/gasdyn/idealgasflow.cpp all call std::atan2 directly and
-// carry the same latent 1 ULP divergence. It is declared here, in the one module
-// that is measurably affected, until the substrate owns it.
+// The implementation now lives in the substrate as eil::atan2 / eil::atan
+// (substrate/include/eil/math.hpp); these names are aliases kept for the arcsteps
+// test. T-910 is what moved it there: geom/elements/vector3.d:523
+// (rotate_about_zaxis) and geom/gpath/helix.d:59 call the same Phobos function, and
+// with glibc's version the pi/2 zero crossing of cos(theta) turned a 1 ULP angle
+// difference into the 8.88e-10 residual that reports/backlog.md T-910 could not
+// account for. src/gasdyn/idealgasflow.cpp:86 deliberately does NOT use this: D's
+// asin is atan2(x, sqrt(1-x*x)) evaluated in 80-bit real, which the double-precision
+// replica here would not reproduce.
 // ---------------------------------------------------------------------------
 double phobos_atan2(double y, double x);
 double phobos_atan(double x);

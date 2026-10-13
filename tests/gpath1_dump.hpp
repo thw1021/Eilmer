@@ -256,6 +256,7 @@ inline int report(const char* module, const char* baseline_path, bool dump = fal
     size_t quantities = 0, identical = 0;
     long long worst_ulp = 0;
     double worst_abs = 0.0;
+    double worst_dval = 0.0;
     std::string worst_where;
 
     double ref_scale = 0.0;
@@ -309,6 +310,7 @@ inline int report(const char* module, const char* baseline_path, bool dump = fal
                 if (gap > worst_ulp) {
                     worst_ulp = gap;
                     worst_abs = std::fabs(a[k].value - b[k].value);
+                    worst_dval = a[k].value;
                     worst_where =
                         expected[i].substr(0, expected[i].find(' ')) + "." + a[k].key;
                 }
@@ -328,8 +330,9 @@ inline int report(const char* module, const char* baseline_path, bool dump = fal
                               : "");
     if (worst_ulp > 0) {
         char res[256];
-        std::snprintf(res, sizeof res, ", worst residual %.6g (%lld ULP) on quantity %s (D %.17g)",
-                      worst_abs, static_cast<long long>(worst_ulp), worst_where.c_str());
+        std::snprintf(res, sizeof res,
+                      ", worst residual %.6g (%lld ULP) on quantity %s (D %.17g)", worst_abs,
+                      static_cast<long long>(worst_ulp), worst_where.c_str(), worst_dval);
         std::cout << res;
     }
     std::cout << "\n";

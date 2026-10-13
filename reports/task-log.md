@@ -247,3 +247,71 @@
 - **新遗留**：T-910（上）；`geom_gpath_{nurbs,svgpath,gpath_utils}` 的测试文件与
   `demo_geom_gpath_gpath_utils.cpp` **尚未写**（语料已在库里，可离线回放）；
   Wave 2 余量：`geom/surface/`＋`geom/volume/`（T-012）、`geom/grid/`＋`openfoam`＋`sketch`（T-011/T-013）。
+
+## T-910 — `modifiedpath` 验证缺口闭合：根因是 atan2 库替换，不是容差带  (2026-10-14)
+
+- **范围**：`geom/gpath/modifiedpath` 重放中 84 条靠绝对容差带放行的行；
+  追查链 `RotatedAboutZAxisPath::apply_transform` → `Vector3::rotate_about_zaxis`
+  （`src/geom/elements/vector3.cpp:312-318`，D 的 `geom/elements/vector3.d:521-528`）。
+- **做了什么**：
+  - 按 backlog 要求"拆链条逐级比 `%17g`"，新写 D 探针
+    `probes/geom/gpath/probe_mp_rot_chain.d`（324 行语料，**每行同时打印 `%.17g` 与
+    16 位十六进制 IEEE-754 位型**），把 rotate_about_zaxis 的 5 个中间量
+    （`atan2` → `+dtheta` → `x*x+y*y` → `sqrt` → `r*cos`/`r*sin`）逐个打印，
+    并附两条控制：`wrapper`（真走 `Vector3::rotate_about_zaxis`）与
+    `path`（真走 `RotatedAboutZAxisPath::operator()`），使手抄链不可能与被测代码走偏。
+  - C++ 侧镜像 `tests/test_geom_gpath_mp_rot_chain.cpp` **一次生成两份语料**
+    （`eil::atan2` 与 `std::atan2`），各自与 D 基线做整行 diff。
+  - **判据结果**：`eil::atan2` 0 行差异；`std::atan2` **29 行差异**；
+    第一处不同即 `mp.chain.atan2`
+    D `0.78539824050373475` bits `3fe921fb7da9955e`
+    glibc `0.78539824050373463` bits `3fe921fb7da9955d`（1 ULP）。
+    ⇒ **`modifiedpath` 里确有未发现的转写偏差**，而容差带的尺度是**对的**：
+    这条偏差不是"1 ULP ÷ dt^阶"能解释的，因为它根本不是同一 ULP 尺度的量。
+  - **放大机理（实测，非推理）**：theta 落在 `PI/2` 零点附近，`cos(theta)≈-7.71e-08`，
+    1 ULP 的角度误差（2.22e-16）在该点几乎**不改变** `cos` 的绝对量级，于是
+    相对变化达 `2.88e-09`；`x = r*cos` 的绝对残差 `6.28e-16` 再被
+    `d2pdt2` 的 `dt=1e-3` 二阶差分放大 `1e6` 倍 → 观测到的 `8.88e-10`。
+    探针的 `ctl.model.*` 行把这条定量关系钉住：theta 前进 1 ULP 后
+    `cos` 的变号量与观测残差同量级。
+  - **修法**：把 Phobos 的 `atan2Impl!double`/`atanImpl!double` 从 `arc.cpp` 的匿名
+    命名空间**上移到 substrate**（`substrate/include/eil/math.hpp` 新增 `eil::atan`/
+    `eil::atan2`，逐语句转写 `std/math/trigonometry.d` 753-846 与 990-1035，
+    系数仍按 D 的 80 位 `real` 字面量写成 `long double` 再窄化）。
+    `arc.cpp` 的 `phobos_atan/phobos_atan2` 改为**别名**（`test_geom_gpath_arcsteps.cpp`
+    仍按原名调用）；三个 D 侧 `atan2` 站点全部改走 `eil::atan2`：
+    `vector3.d:523`→`vector3.cpp:313`、`helix.d:59`→`helix.cpp:53`、`arc.d:92`（已在用）。
+  - **`src/gasdyn/idealgasflow.cpp:86` 的 `d_asin` 故意不改**：D 的
+    `asin(double)` 是 `atan2(x, sqrt(1-x*x))` **在 80 位 real 里算完再截断**，
+    与 double 版 `atan2Impl` 不是同一实现；改它会破坏已实测 0 差异的 40 条
+    `beta_obl2`（`v=-nan`）语料。
+- **验证**（ldc2 1.40.0 现编 D 为基准；三配置 Release / Debug / `-DEIL_SLICE_CHECK=ON`
+  各 **58/58 CTest 全通过**）：
+  - `geom_gpath_modifiedpath`：**84 条容差带行 → 0 条**；
+    **10794 of 10794 个量逐位相同**，2288 D 行 / 2288 C++ 行 **0 行差异**、11/11 断言。
+    这是本轮最硬的证据：修的是**移植侧**，参考侧一个字没动。
+  - 全树容差带使用面：**只剩 1 处**（`geom_gpath_arc` 2 行，worst `7/8` ULP 行尺度、
+    绝对残差 `2.22045e-16`＝1 ULP，落在已实测的 Phobos/glibc 超越函数分歧内）。
+    其余 20 个带数值报告的测试全部 `N of N bit-identical`。
+  - `geom_gpath_mp_rot_chain` 新测试：**324/324 行 bit-identical**（含位型列）。
+  - helix 改走 `eil::atan2` 后仍 **1603/1603 逐位相同**（说明它的自变量恰好两侧一致，
+    替换无副作用）；arc/arcsteps/bezier/line/path/polynomial/polyline/xspline/
+    xsplinelsq 全部维持 0 行差异。
+  - `bash tools/check_staleness.sh` → `no drift`。
+- **顺带修掉的门禁自身缺陷**：`tests/gpath1_dump.hpp:331` 的 `snprintf` 格式串有
+  **4 个转换符却只传 3 个实参**，最后一个 `(D %.17g)` 打印的是栈垃圾——
+  arc 报告里那句 `arc3.skew.L (D 9.8167635725638538e+252)` 就是它。
+  现在补 `worst_dval` 传递，实测打印 `arc3.skew.L (D 1.2650977300272355)`。
+  **报告里一个编造出来的数字比不报数字更坏**，因为它看起来像证据。
+- **产出**：`probes/geom/gpath/probe_mp_rot_chain.d`、
+  `baselines/e587b235/probes/geom_gpath_mp_rot_chain.txt`（324 行，
+  sha256 `98078c84…394cfb`）、`tests/test_geom_gpath_mp_rot_chain.cpp`、
+  `cmake/wave2_t910.cmake`、`substrate/include/eil/math.hpp`（`eil::atan`/`eil::atan2`）、
+  `src/geom/gpath/arc.{hpp,cpp}`（改为别名）、`src/geom/elements/vector3.cpp`、
+  `src/geom/gpath/helix.cpp`、`tests/gpath1_dump.hpp`。
+- **新遗留**：**T-911**（Phobos 的 `exp/sin/cos/tanh/sinh` 同样是纯源码实现，
+  `univariatefunctions` 那 42 行 1 ULP 分歧未必"不可消除"，Wave 3 的 `gas/` 大量用
+  `exp`，须先实测再决定是否为它们建 replica）；
+  **T-912**（本轮教训入规：D 侧 `std.math` 的函数**不能默认等于同名 C 函数**，
+  每个新转写的超越函数调用点都要先做位型级探针）。
+

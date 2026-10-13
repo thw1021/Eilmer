@@ -148,7 +148,7 @@
   教训：先前那条"grep 模块级 const 声明命中 0"的检索**漏掉了函数体内的字面量除法**，
   Wave 3+ 要用"任意位置的 `字面量 / 字面量`、`*`、`+`"来查，不能只看声明处
 
-- [ ] **T-910** **本轮遗留的验证缺口（必须优先处理，属于门禁可信度问题）**：
+- [x] **T-910** **本轮遗留的验证缺口（必须优先处理，属于门禁可信度问题）**：
   `geom/gpath/modifiedpath` 的重放有 **84 行**是靠 `tests/gpath3_dump.hpp` 的
   `verdict_line` 绝对容差带被放行的，其中最大一条 `mp.rot` 的残差 8.88e-10，
   打印出的比值是 **24072691/8 ≈ 3.0e6 ULP（按行内尺度）**——这个量级**无法**用
@@ -160,6 +160,33 @@
   逐级与 ldc2 现编的 D 比 %17g，指出第一处不同位的算子。
   在它澄清之前，**`geom_gpath_modifiedpath` 的 PASS 不能算作已验证**。
   `geom_gpath_arc` 的 2 行（worst 7/8 ULP）在同一模型内，可以算通过。
+  — **完成 2026-10-14**，见 `task-log.md` T-910 节。**是转写偏差，不是尺度取错**：
+  `vector3.cpp:313` 用了 glibc `atan2`，而 D 的 `vector3.d:523` 是 Phobos 的
+  `atan2Impl!double`；新探针 `probe_mp_rot_chain.d`（324 行，带 IEEE-754 位型列）实测
+  `eil::atan2` **0 行差异** / `std::atan2` **29 行差异**，第一处不同就是 `atan2` 本身
+  （1 ULP，经 `PI/2` 处 `cos` 零点放大成 2.88e-09 相对，再被 d2pdt2 的 `dt²` 抬到 8.88e-10）。
+  修法：Phobos arc-tangent 上移 substrate 成 `eil::atan/atan2`，三个站点全改；
+  **`modifiedpath` 84 条容差带 → 0，10794/10794 量逐位相同**，三配置 58/58。
+  顺带修门禁自身的 `snprintf` 少参 bug（曾打印 `D 9.8e+252` 这样的栈垃圾）。
+- [ ] **T-911** Phobos 的 `exp/sin/cos/tanh/sinh` 同样是**纯源码实现**
+  （`std/math/{trigonometry,exponential,algebraic}.d`），不是 C 库转发。T-910 已经证明
+  "D 的标准库函数名 == C 的同名函数"这个默认假设是**错的**，而
+  `geom/misc/univariatefunctions` 那 **42 行 1 ULP** 现在有了另一个解释：也许可以像
+  `atan2` 那样用 replica 消掉，而不是当作不可消除的本底。Wave 3 的 `gas/` 大量用 `exp`
+  （CEA LUT、Arrhenius 反应率），代价与收益都在那里。**先做位型级探针实测**
+  （照 `probe_mp_rot_chain.d` 的形状：同一自变量两侧各算一遍、打印 `bits=`），
+  统计差 1 ULP 的**比例**，再决定是否转写 `expImpl`/`sinImpl`/`cosImpl`。
+  在实测之前，现有 1e-13 门禁口径不变 → **Wave 3 开波前**
+- [ ] **T-912** 转写纪律（T-910 的教训，须写进每个子代理简报）：D 侧凡调用
+  `std.math` 的函数，**必须先确认它在 Phobos 里是转发 C 库还是自带实现**，
+  再决定 C++ 侧写 `std::xxx` 还是 `eil::xxx`。已知清单：
+  `atan2`/`atan` = Phobos 自带（`trigonometry.d:945 → atan2Impl`）→ `eil::atan2`；
+  `asin`/`acos` = D 定义为 `atan2(x, sqrt(1-x*x))` 且**在 80 位 real 里算**
+  （`trigonometry.d:620-628`）→ 既不是 `std::asin` 也不是 double 版 replica，
+  须逐点镜像该公式（见 `src/gasdyn/idealgasflow.cpp:86` 的 `d_asin`）；
+  `pow` = 实测与 `std::pow` 逐位相同（语料 26 行）→ `eil::pow` 只是拼写。
+  判据一律是**位型**（`bits=%016x`），不是 `%.17g` 文本
+
 
 ---
 

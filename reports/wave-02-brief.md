@@ -186,6 +186,29 @@
 
 （待补：数组切片越界文本）
 
+- **D 的 `atan2`/`atan` 不是 C 库的同名函数** — 写 `std::atan2` 就是改行为。
+  `std/math/trigonometry.d:945` 把 `atan2(double,double)` 转发到 Phobos 自己的
+  `atan2Impl!double` → `atanImpl!double`（CEPHES/fdlibm 有理逼近），glibc 用的是
+  IBM Accurate Mathematical Engine。实测（`probes/geom/gpath/probe_mp_rot_chain.d`
+  → `baselines/e587b235/probes/geom_gpath_mp_rot_chain.txt`，324 行、每行带
+  `bits=%016x` 位型列）：`eil::atan2` **0 行差异**、`std::atan2` **29 行差异**，
+  首例 `atan2(2.0, 1.9999996915748783)` D 给 `...475`/`3fe921fb7da9955e`，
+  glibc 给 `...463`/`3fe921fb7da9955d`。
+  **为什么 1 ULP 会炸**：`theta` 落在 `PI/2` 附近时 `cos(theta)≈-7.7e-08`，
+  1 ULP 角度误差几乎不变地进到 `cos` 的绝对值上 → 相对变化 `2.88e-09`，
+  `x = r*cos` 的 `6.28e-16` 残差再被 `d2pdt2` 的 `dt²`(=1e-6) 抬到 `8.88e-10`。
+  这正是 T-910 那 84 条容差带行的根因，**修法在移植侧，不在容差常数**。
+  ⇒ 一律 `eil::atan2` / `eil::atan`（`substrate/include/eil/math.hpp`）。
+  已知的 D 侧 `atan2` 站点只有 3 个，Wave 3+ 每遇到一个都走这里，不要就地 `std::`。
+- **`asin`/`acos` 两者都不是**。D 定义 `asin(real x) = atan2(x, sqrt(1-x*x))`，
+  而 `asin(double x)` 是 `asin(cast(real) x)` —— **在 80 位里算完再截断一次**
+  （`trigonometry.d:620-628`），域错误的 NaN 还是**负**的（`-nan`），
+  与 `eil::asin` 的正 NaN 规范化相反。要镜像公式，不要换函数
+  （范例：`src/gasdyn/idealgasflow.cpp:86` 的 `d_asin`）。
+- **新规则（T-912）：D 侧调用任何 `std.math` 函数前，先查它是转发 C 库还是自带实现。**
+  判据用**位型**而不是文本 —— 探针里每个观测值都同时打 `%.17g` 与 `bits=%016x`，
+  因为 `%.17g` 虽能往返正常值，却分不清 `+0.0/-0.0` 和两个不同的 NaN。
+
 ## 6. D 探针与对照流程（必须可复现）
 
 ```bash

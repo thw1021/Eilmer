@@ -50,7 +50,7 @@ Helix::Helix(const Vector3& point_start, const Vector3& point_end,
     // quantities); the divergence shows up in Vector3::rotate_about_zaxis, where the
     // angle is then cancelled against PI/2. Once eil::atan2 mirrors Phobos, this line
     // should call it.
-    theta01 = std::atan2(eil::re(a1c.y), eil::re(a1c.x));
+    theta01 = eil::atan2(eil::re(a1c.y), eil::re(a1c.x));
 }
 
 // D:61-67

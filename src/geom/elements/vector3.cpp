@@ -310,7 +310,7 @@ Vector3& Vector3::mirror_image(const Vector3& point, const Vector3& normal) {
 }
 
 Vector3& Vector3::rotate_about_zaxis(double dtheta) {
-    double theta = std::atan2(re(y), re(x)) + dtheta;
+    double theta = eil::atan2(re(y), re(x)) + dtheta;
     double r = eil::sqrt(re(x) * re(x) + re(y) * re(y));
     x = r * std::cos(theta);
     y = r * std::sin(theta);

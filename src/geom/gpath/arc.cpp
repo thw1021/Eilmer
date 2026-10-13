@@ -17,126 +17,18 @@ namespace eil {
 namespace geom {
 
 // ---------------------------------------------------------------------------
-// phobos_atan / phobos_atan2 — see the declaration in arc.hpp for why Arc needs
-// D's own arc tangent rather than libm's. Translated statement for statement from
-// std/math/trigonometry.d: atan2Impl (990-1035) and the `realFormat ==
-// RealFormat.ieeeDouble` branch of atanImpl (694-846), with T = double.
+// phobos_atan / phobos_atan2 — thin aliases for the substrate's eil::atan and
+// eil::atan2, which own Phobos' arc tangent (substrate/include/eil/math.hpp).
+//
+// Arc was the first consumer that needed it, and this module carried the replica
+// until T-910 showed geom/elements/vector3.d:523 (rotate_about_zaxis) needs it just
+// as much: a 1 ULP difference in the angle becomes a 2.9e-09 relative change in
+// cos(theta) where theta sits on the pi/2 zero crossing, and r multiplies that into
+// the coordinate. Two copies of a transcendental would drift, so there is now one.
+// The names stay because tests/test_geom_gpath_arcsteps.cpp calls them.
 // ---------------------------------------------------------------------------
-namespace {
-
-// D's constants are 80-bit `real` and reach a `double` only through the casts the
-// Phobos source writes, so the wide value is computed here and rounded on store
-// (wave-02-brief section 5).
-constexpr double kPI = static_cast<double>(EIL_PI);
-constexpr double kPI_2 = static_cast<double>(EIL_PI / 2.0L);
-constexpr double kPI_4 = static_cast<double>(EIL_PI / 4.0L);
-
-// atanImpl!double coefficients (trigonometry.d:753-766). Written as long-double
-// literals because that is how D spells them; the narrow to double is D's too.
-const double kP[5] = {
-    -6.485021904942025371773E1L, -1.228866684490136173410E2L, -7.500855792314704667340E1L,
-    -1.615753718733365076637E1L, -8.750608600031904122785E-1L,
-};
-const double kQ[6] = {
-    1.945506571482613964425E2L,  4.853903996359136964868E2L, 4.328810604912902668951E2L,
-    1.650270098316988542046E2L,  2.485846490142306297962E1L, 1.000000000000000000000E0L,
-};
-constexpr double kMOREBITS = static_cast<double>(6.123233995736765886130E-17L);
-// tan(PI/8) and tan(3*PI/8), as D spells them (trigonometry.d:779-782).
-constexpr double kTAN_PI_8 = static_cast<double>(0.414213562373095048801688724209698078569672L);
-constexpr double kTAN3_PI_8 = static_cast<double>(2.414213562373095048801688724209698078569672L);
-
-// std.math.algebraic.poly with the statically unrolled `ref const T[N]` overload
-// (algebraic.d:557-566): Horner from the highest coefficient down.
-template <size_t N> double poly(double x, const double (&A)[N]) {
-    double r = A[N - 1];
-    for (size_t i = 1; i < N; ++i) {
-        r *= x;
-        r += A[N - 1 - i];
-    }
-    return r;
-}
-
-} // namespace
-
-double phobos_atan(double x) {
-    // Special cases. (trigonometry.d:785-789)
-    if (x == 0.0) return x;
-    if (std::isinf(x)) return std::copysign(kPI_2, x);
-
-    // Make argument positive but save the sign. (trigonometry.d:791-795)
-    bool sign = false;
-    if (std::signbit(x)) {
-        sign = true;
-        x = -x;
-    }
-
-    // The double-precision branch (trigonometry.d:797-825).
-    short flag = 0;
-    double y;
-    if (x > kTAN3_PI_8) {
-        y = kPI_2;
-        flag = 1;
-        x = -(1.0 / x);
-    } else if (x <= 0.66) {
-        y = 0.0;
-    } else {
-        y = kPI_4;
-        flag = 2;
-        x = (x - 1.0) / (x + 1.0);
-    }
-
-    double z = x * x;
-    z = z * poly(z, kP) / poly(z, kQ);
-    z = x * z + x;
-    if (flag == 2)
-        z += 0.5 * kMOREBITS;
-    else if (flag == 1)
-        z += kMOREBITS;
-    y = y + z;
-
-    return sign ? -y : y;
-}
-
-double phobos_atan2(double y, double x) {
-    // atan2Impl!double (trigonometry.d:990-1035), special cases first.
-    if (std::isnan(x) || std::isnan(y)) return std::numeric_limits<double>::quiet_NaN();
-    if (y == 0.0) {
-        if (x >= 0 && !std::signbit(x))
-            return std::copysign(0.0, y);
-        else
-            return std::copysign(kPI, y);
-    }
-    if (x == 0.0) return std::copysign(kPI_2, y);
-    if (std::isinf(x)) {
-        if (std::signbit(x)) {
-            if (std::isinf(y))
-                return std::copysign(3 * kPI_4, y);
-            else
-                return std::copysign(kPI, y);
-        } else {
-            if (std::isinf(y))
-                return std::copysign(kPI_4, y);
-            else
-                return std::copysign(0.0, y);
-        }
-    }
-    if (std::isinf(y)) return std::copysign(kPI_2, y);
-
-    // Call atan and determine the quadrant.
-    double z = phobos_atan(y / x);
-
-    if (std::signbit(x)) {
-        if (std::signbit(y))
-            z = z - kPI;
-        else
-            z = z + kPI;
-    }
-
-    if (z == 0.0) return std::copysign(z, y);
-
-    return z;
-}
+double phobos_atan(double x) { return eil::atan(x); }
+double phobos_atan2(double y, double x) { return eil::atan2(y, x); }
 
 // D:22-25
 Arc::Arc(const Vector3& va, const Vector3& vb, const Vector3& vc) : a(va), b(vb), c(vc) {}
