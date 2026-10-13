@@ -49,7 +49,7 @@
   — 结构化/非结构网格核心。依赖 T-010、T-017
 - [ ] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
-- [ ] **T-013** `geom/misc/`（`univariatefunctions.d` 833、`sketch.d` 964、`svg.d` 364）与
+- [x] **T-013** `geom/misc/`（`univariatefunctions.d` 833、`sketch.d` 964、`svg.d` 364）与
   `geom/gpath/`（`modifiedpath.d` 394）。注意 `misc/libplot.d` 428 属 `with_libplot` 变体，推迟
 - [x] **T-014** `gasdyn/`：`gasflowexception.d` 13、`idealgasflow.d` 952、`idealgasflow_demo.d` 93 —— **完成 2026-10-13**，见 `task-log.md` T-014 节（39,778/40,451 量逐位相同、0 越带、59/59 断言、demo 字节相同）。
   **范围修正（本轮核实）**：`gasflow.d`(1595) 与 `gasflow_demo.d`(202) 移出 Wave 2 → 新 ID **T-018**。

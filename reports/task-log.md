@@ -218,3 +218,32 @@
 - **新遗留**：T-018（`gasflow.d` 随 Wave 3）；
   子代理 150 轮上限被打断两次（nm/gasdyn），**后续波次应按每代理 ≤800 D 行拆分**，
   并让代理在早得多的位置开始写探针基线，避免"实现完成、验证未完"的状态。
+
+## T-013 / T-010（gpath 部分）— Wave 2 中段，含一个未闭合的验证缺口  (2026-10-14)
+
+- **范围**：`geom/misc/`（univariatefunctions 833、svg 364、kdtree 197、nurbs_utils 172
+  ＝1,566 D 行）与 `geom/gpath/`（13 个模块 2,573 D 行）。
+- **做了什么**：六个子代理全部在 **150 轮**处被打断（四个在**第一次编译之前**就断了），
+  余下的绿由主线程完成。修掉的真实缺陷：
+  `gpath_utils.cpp` 两处把 `nelmin::minimize` 写在不带命名空间的 `eil::geom` 里；
+  gpath2 代理注册了三个它从未写的测试文件，导致整棵树无法 configure（挡住所有并行阶段）；
+  `demo_geom_gpath_gpathd.cpp` 漏掉 D 的 `writeln("a = ", a, ", b = ", b)`（gpath_demo.d:19），
+  字节比对把它抓住；`svg.cpp` 的 mm 换算见下方实测条目。
+- **验证**（ldc2 现编 D 为基准，Release 全树 **0 编译错误、ctest 57/57**）：
+  path 224 行/799 量、line 376/1381、bezier 486/1759、polynomial 548/1892、
+  helix 438/1603 全部 **0 差异且数值逐位相同**；
+  arc 529 行、1884/1886，2 行走绝对容差带（worst 7/8 ULP）；
+  misc 四模块与其两个 demo 亦通过。
+- **本轮唯一未闭合的可信度问题（已登记 T-910）**：`modifiedpath` 的 2288 行里有
+  **84 行**靠容差带放行，最大一条残差 8.88e-10、打印比值 3.0e6 ULP（按行内尺度），
+  比我用实测确立的"1 ULP 点坐标 ÷ dt^阶"模型（opCall/dpdt/d2pdt2 三阶比值均为 **1.000**，
+  dt=1.0e-3 取自 `path.d:37,60`）**高出六个数量级**。
+  要么带的尺度取错，要么 modifiedpath 真有转写偏差。**不靠调常数决定这件事**：
+  在该链条按 `ds_Cv` 的先例拆开定位之前，`geom_gpath_modifiedpath` 的 PASS 不作为已验证。
+- **产出**：`src/geom/{misc,gpath}/*`、`tests/{test_geom_gpath_*,demo_geom_gpath_gpathd,
+  gpath1_dump.hpp,gpath3_dump.hpp,test_geom_misc_*}`、
+  `baselines/e587b235/probes/geom_gpath_*.txt`（8,649 行）、`probes/geom/{misc,gpath}/*.d`。
+  提交 `256c6df 509e256 e0af8e6`。
+- **新遗留**：T-910（上）；`geom_gpath_{nurbs,svgpath,gpath_utils}` 的测试文件与
+  `demo_geom_gpath_gpath_utils.cpp` **尚未写**（语料已在库里，可离线回放）；
+  Wave 2 余量：`geom/surface/`＋`geom/volume/`（T-012）、`geom/grid/`＋`openfoam`＋`sketch`（T-011/T-013）。
