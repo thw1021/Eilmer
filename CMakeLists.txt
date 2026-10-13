@@ -6,9 +6,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Floating point: the port is judged against D output at 1e-13, so nothing here
-# may reorder or re-associate arithmetic. Default g++ already conforms, and these
-# make an accidental -ffast-math in a parent toolchain impossible.
-add_compile_options(-fno-fast-math -fno-unsafe-math-optimizations -ffp-conform=off)
+# may reorder or re-associate arithmetic.
+# g++ has no -ffp-conform (that is clang). The flag that actually matters here is
+# -ffp-contract=off: g++ defaults to 'fast', so at -O2 it rewrites a*b+c into an
+# FMA, which changes the last bits of a result relative to the two-instruction
+# sequence ldc2 emits for the same D source at -O0. Measured divergence between
+# Phobos and glibc transcendentals is already <=1 ULP, so contraction on top of
+# that would push the residuals further from the reference.
+add_compile_options(-fno-fast-math -fno-unsafe-math-optimizations -ffp-contract=off)
 add_compile_options(-Wall -Wextra -Wno-unused-parameter)
 
 include(cmake/EilmerVariant.cmake)
@@ -59,8 +64,10 @@ set(EIL_UTIL_SOURCES
     src/util/lua.cpp
     src/util/lua_service.cpp
     src/util/time_utils.cpp
-    src/util/json_helper.cpp
 )
+# src/util/json_helper.cpp is deliberately absent: it wraps std.json, and no JSON
+# library is installed here. Its float round-trip and error text need their own
+# corpus probe first (see reports/wave-01.md, pending items).
 add_library(eil_util STATIC ${EIL_UTIL_SOURCES})
 target_include_directories(eil_util PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(eil_util PUBLIC eil_substrate eil_lua)
@@ -74,6 +81,10 @@ target_link_libraries(test_format_corpus PRIVATE eil_substrate)
 add_test(NAME format_corpus
          COMMAND test_format_corpus ${CMAKE_CURRENT_SOURCE_DIR}/tools/fmt_corpus.txt)
 
+add_executable(test_abi tests/test_abi.cpp)
+target_link_libraries(test_abi PRIVATE eil_substrate)
+add_test(NAME abi_guard COMMAND test_abi)
+
 add_executable(test_array tests/test_array.cpp)
 target_link_libraries(test_array PRIVATE eil_substrate)
 add_test(NAME array_semantics COMMAND test_array)
@@ -81,3 +92,46 @@ add_test(NAME array_semantics COMMAND test_array)
 add_executable(test_aa tests/test_aa.cpp)
 target_link_libraries(test_aa PRIVATE eil_substrate)
 add_test(NAME associative_arrays COMMAND test_aa)
+
+# --- Wave 1: nm --------------------------------------------------------------------------------
+foreach(_m IN ITEMS bracketing brent ridder secant linesearch newton bbla rsla schedule
+                    newtoncotes gaussquad rungekutta)
+  add_executable(test_nm_${_m} tests/test_nm_${_m}.cpp)
+  target_link_libraries(test_nm_${_m} PRIVATE eil_nm eil_substrate)
+  add_test(NAME nm_${_m} COMMAND test_nm_${_m})
+endforeach()
+# smla and stmatrix replay the D unittests against nm/test_data/b1_ss.mtx, so they
+# take the matrix file as argv[1] and fail without it.
+foreach(_m IN ITEMS smla stmatrix)
+  add_executable(test_nm_${_m} tests/test_nm_${_m}.cpp)
+  target_link_libraries(test_nm_${_m} PRIVATE eil_nm eil_substrate)
+  add_test(NAME nm_${_m} COMMAND test_nm_${_m} ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_data/b1_ss.mtx)
+endforeach()
+
+foreach(_d IN ITEMS ridder linesearch bbla newtoncotes gaussquad rungekutta)
+  add_executable(demo_nm_${_d} tests/demo_nm_${_d}.cpp)
+  target_link_libraries(demo_nm_${_d} PRIVATE eil_nm eil_substrate)
+endforeach()
+
+# --- Wave 1: util ------------------------------------------------------------------------------
+foreach(_u IN ITEMS lua lua_service lua_roundtrip msg_service time_utils)
+  add_executable(test_util_${_u} tests/test_util_${_u}.cpp)
+  target_link_libraries(test_util_${_u} PRIVATE eil_util eil_substrate)
+  add_test(NAME util_${_u} COMMAND test_util_${_u})
+endforeach()
+
+# --- Demo equivalence against the D reference --------------------------------------------------
+# Each demo's stdout is compared to the byte-identical D binary's stdout, captured by
+# harness/capture_d_demos.sh into baselines/<rev>/demos/.
+find_program(BASH_PROGRAM bash)
+if(BASH_PROGRAM AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/baselines)
+  file(GLOB _demo_baselines ${CMAKE_CURRENT_SOURCE_DIR}/baselines/*/demos/*.txt)
+  foreach(_b ${_demo_baselines})
+    get_filename_component(_name ${_b} NAME_WE)
+    if(TARGET demo_nm_${_name})
+      add_test(NAME demo_equiv_${_name}
+               COMMAND ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/harness/compare_text.sh
+                       ${_b} $<TARGET_FILE:demo_nm_${_name}>)
+    endif()
+  endforeach()
+endif()

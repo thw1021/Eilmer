@@ -748,3 +748,39 @@ aa_values [1, 2]
 aa_missing Range violation
 aa_int_key seven
 aa_nested value
+real_sizes 16 8 18 64
+ct_pi 0x1.921fb54442d18p+1
+ct_two_pi 0x1.921fb54442d18p+2
+ct_quarter_pi 0x1.921fb54442d18p-1
+ct_third 0x1.5555555555555p-2
+ct_e 0x1.5bf0a8b145769p+1
+rt_pi 0x1.921fb54442d18p+1
+rt_two_pi 0x1.921fb54442d18p+2
+rt_quarter_pi 0x1.921fb54442d18p-1
+rt_third 0x1.5555555555555p-2
+rt_hypot 0x1.4p+2 0x1.6a09e667f3bcdp+0
+sub 0x0p+0
+to_int_err Unexpected 'x' when converting from type string to type int
+to_int_partial Unexpected 'x' when converting from type string to type int
+to_dbl_none error converting input to floating point for input "not a number".
+to_dbl_junk no digits seen for input " 12x".
+to_dbl_empty Floating point conversion error for input "".
+to_int_empty Unexpected end of input when converting from type string to type int
+to_int_junk Unexpected 'x' when converting from type string to type int
+to_int_sign_only Unexpected end of input when converting from type string to type int
+to_int_ok_a 42
+to_int_ok_b -7
+to_int_trailing_space Unexpected ' ' when converting from type string to type int
+to_int_space_both Unexpected ' ' when converting from type string to type int
+dbl_parse 12x => ERR Unexpected 'x' when converting from type string to type double
+dbl_parse 12  => ERR Unexpected ' ' when converting from type string to type double
+dbl_parse 12 => 0x1.8p+3
+dbl_parse +1e5 => 0x1.86ap+16
+dbl_parse nan => nan
+dbl_parse inf => inf
+dbl_parse -inf => -inf
+dbl_parse 1.5e => ERR Unexpected end of input
+dbl_parse 0x10 => ERR Floating point parsing: exponent is required for input "0x10".
+dbl_parse . => ERR no digits seen for input ".".
+dbl_parse - => ERR Floating point conversion error for input "-".
+bool_specs 1 1 1 true false

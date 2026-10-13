@@ -164,7 +164,20 @@ template <typename T>
 std::string emit(char spec, const std::string& flags, int width, int prec, const T& v) {
     std::string body;
     constexpr bool is_float = std::is_floating_point_v<T>;
-    constexpr bool is_int = std::is_integral_v<T> && !std::is_same_v<T, bool>;
+    constexpr bool is_bool = std::is_same_v<std::decay_t<T>, bool>;
+    // Measured: %d/%g/%x on a bool print 1/0 ("%s" still prints true/false).
+    constexpr bool as_int_spec = std::is_integral_v<T> && !is_bool;
+    if constexpr (is_bool) {
+        const int b = v ? 1 : 0;
+        switch (spec) {
+          case 's': return to_string(v);
+          case 'd': case 'g': case 'e': case 'f': case 'G': case 'E': case 'F':
+            return integral_to_string(b);
+          case 'x': return integral_to_string(b);
+          default: throw format_error(std::string("unimplemented conversion spec ") + spec);
+        }
+    }
+    constexpr bool is_int = as_int_spec;
     switch (spec) {
       case 's':
         body = td::to_string(v);

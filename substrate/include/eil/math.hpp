@@ -54,14 +54,19 @@ inline bool isInfinite(number x) { return std::isinf(x); }
 // with `<=` on both terms (the abs rows at exact equality decide that).
 // This matters: nm/number.d:approxEqualNumbers is defined through isClose, and
 // the port's tolerance gates call it.
-inline bool isClose(number x, number y, number maxRelDiff = 1.0e-8,
-                    number maxAbsDiff = 0.0) {
+// D declares the tolerances as `real` and computes the difference in `real`, so
+// the subtraction is not rounded the way a double subtraction would be. Match
+// that width: number arguments are widened, and the comparison happens in
+// extended precision.
+inline bool isClose(number x, number y, real maxRelDiff = static_cast<real>(1.0e-8),
+                    real maxAbsDiff = static_cast<real>(0.0)) {
     if (x == y) return true;                       // so inf vs inf is close
     if (isInfinite(x) || isInfinite(y)) return false;
     if (isNaN(x) || isNaN(y)) return false;
-    const number diff = std::fabs(x - y);
+    const real diff = std::fabs(static_cast<real>(x) - static_cast<real>(y));
     if (diff <= maxAbsDiff) return true;
-    const number scale = std::fmax(std::fabs(x), std::fabs(y));
+    const real scale = std::fmax(static_cast<real>(std::fabs(x)),
+                                 static_cast<real>(std::fabs(y)));
     return diff <= maxRelDiff * scale;
 }
 

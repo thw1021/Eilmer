@@ -1,4 +1,6 @@
 #pragma once
+#include <cfloat>
+#include <limits>
 // eil/number.hpp — the scalar type of the ported solver.
 //
 // Mirrors gdtk src/nm/number.d:11-15, which selects the scalar through a D
@@ -19,6 +21,22 @@
 // arithmetic expects a complex aggregate.
 
 namespace eil {
+
+// D's `real` is 80-bit extended on this toolchain, measured: sizeof(real)==16,
+// real.mant_dig==64, and std.math.PI prints 0x1.921fb54442d1846ap+1 (18 hex
+// mantissa digits). That matters even though src/eilmer declares no `real`
+// variables: any expression touching a Phobos constant is computed in extended
+// precision first and only rounded when stored, so `2.0*PI` is not `2.0*M_PI`.
+// long double here is the same 80-bit format, so ports write eil::real and
+// eil::PI and let the assignment do the rounding, exactly as D does.
+using real = long double;
+static_assert(sizeof(real) == 16, "expected 16-byte 80-bit long double");
+static_assert(std::numeric_limits<real>::has_infinity, "long double must be IEEE");
+
+inline constexpr real PI_v = 3.141592653589793238462643383279502884197L;
+inline constexpr real E_v = 2.718281828459045235360287471352662497757L;
+#define EIL_PI ::eil::PI_v
+#define EIL_E ::eil::E_v
 
 // Trunk build of ntypes/complex.d: the re/im carrier only, no arithmetic.
 // Field names are load-bearing — generated accessors in celldata.d write

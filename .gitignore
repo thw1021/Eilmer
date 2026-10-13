@@ -7,3 +7,8 @@ cmake-build*/
 __pycache__/
 *.pyc
 scratch/
+
+# Baseline artifact trees are reproducible from the D reference with
+# harness/run_case.sh; only the normalized log, the case mapping and a checksum
+# manifest are kept in git (13 MB of restart files does not belong in history).
+baselines/*/tree/

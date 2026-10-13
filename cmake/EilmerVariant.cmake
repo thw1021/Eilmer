@@ -90,7 +90,7 @@ target_compile_definitions(
     $<$<CONFIG:Debug>:EIL_DEBUG_BUILD>
     "EIL_ABI_STRING=\"${EIL_ACTIVE_VARIANTS_STR}\""
     "EIL_CAPABILITY_STRING=\"${EIL_CAPABILITY_TOKENS_STR}\"")
-target_include_directories(eil_variants INTERFACE "${EIL_GENERATED}")
+target_include_directories(eil_variants INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 message(STATUS "Eilmer variant set (D version identifiers): ${EIL_ACTIVE_VARIANTS_STR}")
 message(STATUS "Eilmer capabilities banner text: ${EIL_CAPABILITY_TOKENS_STR}")

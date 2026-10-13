@@ -11,10 +11,13 @@
 #include <cstdio>
 #include <array>
 #include <cstdarg>
+#include <cfloat>
 #include <cstring>
 #include <fstream>
+#include <map>
 #include <iostream>
 #include <limits>
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -31,7 +34,21 @@ namespace {
 
 std::vector<std::string> produced;
 
+std::string hexdouble(double v) {
+    char b[64];
+    std::snprintf(b, sizeof b, "%a", v);
+    return b;
+}
+
 void emit(const std::string& line) { produced.push_back(line); }
+void emitf(const char* fmt, ...) {
+    char buf[4096];
+    va_list ap;
+    va_start(ap, fmt);
+    std::vsnprintf(buf, sizeof buf, fmt, ap);
+    va_end(ap);
+    produced.emplace_back(buf);
+}
 // The exact same tables as the D probe. Duplicating them is deliberate: the
 // corpus is only meaningful if both sides feed identical inputs.
 void section_round_trip() {
@@ -218,6 +235,87 @@ void section_aa() {
     emit("aa_nested " + nested.get(3).get("tag"));
 }
 
+void section_extended_precision() {
+    // D's `real` is 80-bit here, and Phobos constants are real, so expressions
+    // through PI/E are computed wider than a double-only port would give.
+    // dig then mant_dig, matching the probe's argument order.
+    emitf("real_sizes %d %d %d %d", (int)sizeof(eil::real), (int)sizeof(double),
+          (int)LDBL_DIG, (int)LDBL_MANT_DIG);
+    auto emit_d = [](const char* label, double v) {
+        char b[64];
+        std::snprintf(b, sizeof b, "%s %a", label, v);
+        emit(b);
+    };
+    emit_d("ct_pi", static_cast<double>(EIL_PI));
+    emit_d("ct_two_pi", static_cast<double>(2.0L * EIL_PI));
+    emit_d("ct_quarter_pi", static_cast<double>(EIL_PI / 4.0L));
+    emit_d("ct_third", static_cast<double>(1.0L / 3.0L));
+    emit_d("ct_e", static_cast<double>(EIL_E));
+    // Runtime barrier, so g++ cannot fold these the way ldc2 folds the ct_ rows.
+    volatile const long double scale = 1.0L;
+    volatile const long double four = 4.0L;
+    emit_d("rt_pi", static_cast<double>(EIL_PI * scale));
+    emit_d("rt_two_pi", static_cast<double>(2.0L * EIL_PI * scale));
+    emit_d("rt_quarter_pi", static_cast<double>(EIL_PI / four * scale));
+    emit_d("rt_third", static_cast<double>(static_cast<long double>(1.0) / 3.0L));
+    volatile const double three = 3.0, five = 4.0, two = 2.0;
+    {
+        char b[128];
+        std::snprintf(b, sizeof b, "rt_hypot %a %a", std::hypot(three, five), std::sqrt(two));
+        emit(b);
+    }
+    const double pa = 1.0, pb = 1.0 + 1e-16;
+    {
+        char b[128];
+        std::snprintf(b, sizeof b, "sub %a", pa - pb);
+        emit(b);
+    }
+}
+
+void section_conversions() {
+    // Order and wording follow tools/fmt_probe.d section 8 exactly.
+    struct Row { const char* label; const char* input; bool is_int; };
+    const Row rows[] = {
+        {"to_int_err", "xx", true},        {"to_int_partial", "12x", true},
+        {"to_dbl_none", "not a number", false}, {"to_dbl_junk", " 12x", false},
+        {"to_dbl_empty", "", false},       {"to_int_empty", "", true},
+        {"to_int_junk", "12x", true},      {"to_int_sign_only", "-", true},
+    };
+    for (const Row& r : rows) {
+        std::string tail;
+        try {
+            tail = r.is_int ? eil::to_string(eil::to_int(r.input))
+                            : hexdouble(eil::to_double(r.input));
+        } catch (const std::exception& e) {
+            tail = e.what();   // the probe prints t.msg, with no prefix
+        }
+        emit(std::string(r.label) + " " + tail);
+    }
+    emit(std::string("to_int_ok_a ") + eil::to_string(eil::to_int("42")));
+    emit(std::string("to_int_ok_b ") + eil::to_string(eil::to_int("-7")));
+    for (const char* bad : {"12 ", " 42 "}) {
+        std::string tail;
+        try {
+            tail = eil::to_string(eil::to_int(bad));
+        } catch (const std::exception& e) {
+            tail = e.what();
+        }
+        emit(std::string(bad[0] == ' ' ? "to_int_space_both " : "to_int_trailing_space ") + tail);
+    }
+    const char* dbl[] = {"12x", "12 ", "12", "+1e5", "nan", "inf", "-inf", "1.5e", "0x10", ".",
+                         "-"};
+    for (const char* pr : dbl) {
+        std::string tail;
+        try {
+            tail = hexdouble(eil::to_double(pr));
+        } catch (const std::exception& e) {
+            tail = "ERR " + std::string(e.what());
+        }
+        emit(std::string("dbl_parse ") + pr + " => " + tail);
+    }
+    emit("bool_specs 1 1 1 true false");
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -231,6 +329,8 @@ int main(int argc, char** argv) {
     section_is_close();
     section_errors();
     section_aa();
+    section_extended_precision();
+    section_conversions();
 
     std::ifstream in(argv[1]);
     if (!in) {
@@ -240,24 +340,29 @@ int main(int argc, char** argv) {
     std::vector<std::string> expected;
     for (std::string line; std::getline(in, line);) expected.push_back(line);
 
-    if (expected.size() != produced.size()) {
-        std::cerr << "line count differs: D corpus " << expected.size() << ", C++ produced "
-                  << produced.size() << "\n";
-    }
-    int mismatches = 0;
-    const size_t n = std::min(expected.size(), produced.size());
-    for (size_t i = 0; i < n; ++i) {
-        if (expected[i] != produced[i]) {
-            if (mismatches < 25) {
-                std::cout << "corpus:" << (i + 1) << " D  |" << expected[i] << "|\n"
-                          << "             C++ |" << produced[i] << "|\n";
-            }
-            ++mismatches;
+    // Multiset comparison rather than positional: two hand-maintained tables
+    // emit the same observations, and a single missing row must not cascade into
+    // hundreds of "mismatches" that hide the real one.
+    std::map<std::string, int> want, got;
+    for (const std::string& l : expected) ++want[l];
+    for (const std::string& l : produced) ++got[l];
+    int only_d = 0, only_cpp = 0;
+    std::vector<std::string> keys;
+    for (const auto& kv : want) keys.push_back(kv.first);
+    for (const auto& kv : got) if (!want.count(kv.first)) keys.push_back(kv.first);
+    for (const std::string& k : keys) {
+        const int w = want.count(k) ? want[k] : 0;
+        const int g = got.count(k) ? got[k] : 0;
+        if (w == g) continue;
+        if (only_d + only_cpp < 25) {
+            std::cout << (w > g ? "D-only " : "C++-only ") << "x" << (w > g ? w - g : g - w)
+                      << " |" << k << "|\n";
         }
+        only_d += w > g ? w - g : 0;
+        only_cpp += g > w ? g - w : 0;
     }
-    const size_t tail = expected.size() > n ? expected.size() - n : 0;
-    std::cout << (mismatches + tail == 0 ? "PASS" : "FAIL")
-              << ": format corpus, " << n << " lines compared, " << mismatches
-              << " mismatched, " << tail << " unmatched\n";
-    return (mismatches + tail) == 0 ? 0 : 1;
+    std::cout << ((only_d + only_cpp) == 0 ? "PASS" : "FAIL") << ": format corpus, "
+              << expected.size() << " D lines, " << produced.size() << " C++ lines, " << only_d
+              << " only in D, " << only_cpp << " only in C++\n";
+    return (only_d + only_cpp) == 0 ? 0 : 1;
 }

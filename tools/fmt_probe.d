@@ -177,4 +177,56 @@ void main()
     string[string][size_t] nested;
     nested[3]["tag"] = "value";
     writefln("aa_nested %s", nested[3]["tag"]);
+
+    // ------------------------------------------------------------------
+    // 7. Extended precision: D's `real` and the Phobos constants built from it.
+    //    Even though src/eilmer declares no `real` variables, every expression
+    //    that touches std.math.PI is evaluated in `real` before being stored.
+    // ------------------------------------------------------------------
+    writefln("real_sizes %d %d %d %d", real.sizeof, double.sizeof, real.dig, real.mant_dig);
+    // What a ported assignment actually consumes. D evaluates an expression
+    // through PI in `real`, then rounds once when storing to double; ldc2 also
+    // constant-folds, so both the folded and the runtime form are pinned here.
+    // Only the double results are compared: glibc renders the 80-bit %a with
+    // x87's explicit integer bit ("0xc.90f...p-2" for the same number Phobos
+    // prints as "0x1.921fb...p+1"), which is a formatting difference, not a
+    // value difference.
+    writefln("ct_pi %a", cast(double)PI);
+    writefln("ct_two_pi %a", cast(double)(2.0 * PI));
+    writefln("ct_quarter_pi %a", cast(double)(PI / 4.0));
+    writefln("ct_third %a", cast(double)(1.0L / 3.0L));
+    writefln("ct_e %a", cast(double)E);
+    import core.stdc.stdlib : atoi;
+    const real scale = cast(real)atoi("1");
+    const real unit = cast(real)atoi("1");
+    const real four = cast(real)atoi("4");
+    writefln("rt_pi %a", cast(double)(PI * scale));
+    writefln("rt_two_pi %a", cast(double)(2.0 * PI * scale));
+    writefln("rt_quarter_pi %a", cast(double)(PI / four * scale));
+    writefln("rt_third %a", cast(double)(unit / 3.0L));
+    writefln("rt_hypot %a %a", cast(double)hypot(3.0 * unit, 4.0 * unit),
+             cast(double)sqrt(2.0 * unit));
+    double pa = 1.0, pb = 1.0 + 1e-16;
+    writefln("sub %a", pa - pb);
+
+    // ------------------------------------------------------------------
+    // 8. Conversion error texts, by failure mode, and bool under each spec.
+    // ------------------------------------------------------------------
+    try to!int("xx"); catch (Exception e) writefln("to_int_err %s", e.msg);
+    try to!int("12x"); catch (Exception e) writefln("to_int_partial %s", e.msg);
+    try to!double("not a number"); catch (Exception e) writefln("to_dbl_none %s", e.msg);
+    try to!double(" 12x"); catch (Exception e) writefln("to_dbl_junk %s", e.msg);
+    try to!double(""); catch (Exception e) writefln("to_dbl_empty %s", e.msg);
+    try to!int(""); catch (Exception e) writefln("to_int_empty %s", e.msg);
+    try to!int("12x"); catch (Exception e) writefln("to_int_junk %s", e.msg);
+    try to!int("-"); catch (Exception e) writefln("to_int_sign_only %s", e.msg);
+    writefln("to_int_ok_a %d", to!int("42"));
+    writefln("to_int_ok_b %d", to!int("-7"));
+    try to!int("12 "); catch (Exception e) writefln("to_int_trailing_space %s", e.msg);
+    try to!int(" 42 "); catch (Exception e) writefln("to_int_space_both %s", e.msg);
+    foreach (probe; ["12x", "12 ", "12", "+1e5", "nan", "inf", "-inf", "1.5e", "0x10", ".", "-"]) {
+        try writefln("dbl_parse %s => %a", probe, to!double(probe));
+        catch (Exception e) writefln("dbl_parse %s => ERR %s", probe, e.msg);
+    }
+    writefln("bool_specs %d %g %x %s %s", true, true, true, true, false);
 }

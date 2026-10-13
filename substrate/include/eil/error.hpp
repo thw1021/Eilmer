@@ -22,14 +22,12 @@
 
 namespace eil {
 
-// Base for everything the solver throws. D distinguishes Exception (catchable by
-// `catch (Exception e)`) from Error/Throwable (caught only by `catch (Throwable)`),
-// and both appear in the solver, so the split is preserved.
-class ExceptionBase : public std::runtime_error {
+// Common root: D's Throwable carries .msg/.file/.line for *both* branches, so
+// ported code that prints e.msg works for Exceptions and Errors alike.
+class ThrowableBase : public std::runtime_error {
   public:
-    explicit ExceptionBase(const std::string& msg, const char* file = "", size_t line = 0)
+    explicit ThrowableBase(const std::string& msg, const char* file = "", size_t line = 0)
         : std::runtime_error(msg), file_(file), line_(line) {}
-    // std::runtime_error::what() is the message; D calls it .msg.
     std::string msg() const { return std::string(what()); }
     const char* file() const { return file_.c_str(); }
     size_t line() const { return line_; }
@@ -44,9 +42,18 @@ class ExceptionBase : public std::runtime_error {
     size_t line_;
 };
 
-class ErrorBase : public ExceptionBase {
+// D splits Throwable into Exception and Error, and `catch (Exception e)` does not
+// catch an Error (RangeError, OutOfMemoryError, assert failures). Deriving
+// ErrorBase from ExceptionBase would silently turn a reference-solver abort into
+// a recovered error in the port, so the two stay siblings.
+class ExceptionBase : public ThrowableBase {
   public:
-    using ExceptionBase::ExceptionBase;
+    using ThrowableBase::ThrowableBase;
+};
+
+class ErrorBase : public ThrowableBase {
+  public:
+    using ThrowableBase::ThrowableBase;
 };
 
 // globalconfig.d:70
@@ -87,12 +94,13 @@ class SliceError : public ErrorBase {
         : ErrorBase(m, file, line) {}
 };
 
-// std.conv.ConvException text for numeric parsing.
+// std.conv.ConvException. The message arrives already in Phobos' wording — the
+// taxonomy has five distinct shapes (see eil/conv.hpp), so this class must not
+// re-wrap it in a template.
 class ConversionException : public ExceptionBase {
   public:
-    explicit ConversionException(const std::string& input, const char* file = "", size_t line = 0)
-        : ExceptionBase("error converting input to floating point for input \"" + input + "\".",
-                        file, line) {}
+    explicit ConversionException(const std::string& message, const char* file = "", size_t line = 0)
+        : ExceptionBase(message, file, line) {}
 };
 
 // std.exception.enforce. Message text is the raw first argument (see header note).

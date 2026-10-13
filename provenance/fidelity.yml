@@ -1,0 +1,60 @@
+# Qualitative port records, keyed by C++ path. Consumed by tools/gen_manifest.py.
+#
+# fidelity vocabulary:
+#   exact            - statement-for-statement, same arithmetic order
+#   adapted-handles  - D class references ported as shared_ptr/owning handles
+#   adapted-arrays   - D slice/GC aliasing replaced by Array+Slice with checks
+#   adapted-callback - D delegate/alias-this mechanism replaced by fn ptr + context
+#   partial          - some behaviour not reproducible yet (see notes)
+#
+# variants: D version identifiers whose branch this file carries.
+
+# --- nm: scalars and root finding (wave 1, cluster A) ---
+src/nm/number.hpp:        {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:nm_ridder, approxEqualNumbers probe vs D]}
+src/nm/nm_exception.hpp:  {fidelity: exact, verified_by: [ctest:nm_newton]}
+src/nm/nm_exception.cpp:  {fidelity: exact, verified_by: [ctest:nm_newton]}
+src/nm/package.hpp:       {fidelity: exact, verified_by: []}
+src/nm/limiters.hpp:      {fidelity: exact, verified_by: [35 values bit-identical vs D]}
+src/nm/limiters.cpp:      {fidelity: exact, verified_by: [35 values bit-identical vs D]}
+src/nm/bracketing.hpp:    {fidelity: exact, verified_by: [ctest:nm_bracketing]}
+src/nm/bracketing.cpp:    {fidelity: exact, verified_by: [ctest:nm_bracketing]}
+src/nm/brent.hpp:         {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:nm_brent, 1 ULP on brent_3]}
+src/nm/brent.cpp:         {fidelity: exact, verified_by: [ctest:nm_brent]}
+src/nm/ridder.hpp:        {fidelity: exact, verified_by: [ctest:nm_ridder, demo_nm_ridder stdout == D]}
+src/nm/ridder.cpp:        {fidelity: exact, verified_by: [ctest:nm_ridder]}
+src/nm/secant.hpp:        {fidelity: exact, verified_by: [ctest:nm_secant]}
+src/nm/secant.cpp:        {fidelity: exact, verified_by: [ctest:nm_secant]}
+src/nm/linesearch.hpp:    {fidelity: exact, verified_by: [demo_nm_linesearch stdout == D]}
+src/nm/linesearch.cpp:    {fidelity: exact, verified_by: [ctest:nm_linesearch]}
+src/nm/newton.hpp:        {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:nm_newton, 2 ULP on newton_3]}
+src/nm/newton.cpp:        {fidelity: exact, verified_by: [ctest:nm_newton]}
+
+# --- nm: linear algebra (wave 1, cluster B) ---
+src/nm/bbla.hpp:          {fidelity: adapted-handles, variants: [complex_numbers], verified_by: [ctest:nm_bbla, 467 quantities bit-identical vs D]}
+src/nm/bbla.cpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_bbla]}
+src/nm/stmatrix.hpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix]}
+src/nm/stmatrix.cpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix]}
+src/nm/smla.hpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_smla, gmres/ilu paths bit-identical]}
+src/nm/smla.cpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_smla]}
+src/nm/rsla.hpp:          {fidelity: exact, verified_by: [ctest:nm_rsla at N=2,3,4]}
+src/nm/rsla.cpp:          {fidelity: exact, verified_by: [ctest:nm_rsla]}
+src/nm/schedule.hpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_schedule, toString == D]}
+src/nm/schedule.cpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_schedule]}
+
+# --- nm: quadrature and time marching (wave 1, cluster C) ---
+src/nm/newtoncotes.hpp:   {fidelity: exact, verified_by: [ctest:nm_newtoncotes, demo stdout == D]}
+src/nm/newtoncotes.cpp:   {fidelity: exact, verified_by: [ctest:nm_newtoncotes]}
+src/nm/gaussquad.hpp:     {fidelity: exact, verified_by: [ctest:nm_gaussquad, node weights bit-identical]}
+src/nm/gaussquad.cpp:     {fidelity: exact, verified_by: [ctest:nm_gaussquad]}
+src/nm/rungekutta.hpp:    {fidelity: exact, verified_by: [ctest:nm_rungekutta, every stepper output bit-identical]}
+src/nm/rungekutta.cpp:    {fidelity: exact, verified_by: [ctest:nm_rungekutta]}
+
+# --- util: Lua host layer (wave 1, cluster D) ---
+src/util/lua.hpp:         {fidelity: exact, verified_by: [ctest:util_lua, ASan clean]}
+src/util/lua.cpp:         {fidelity: exact, verified_by: [ctest:util_lua]}
+src/util/lua_service.hpp: {fidelity: adapted-callback, verified_by: [ctest:util_lua_roundtrip, 226-line transcript == D]}
+src/util/lua_service.cpp: {fidelity: adapted-callback, verified_by: [ctest:util_lua_service]}
+src/util/msg_service.hpp: {fidelity: exact, verified_by: [ctest:util_msg_service]}
+src/util/msg_service.cpp: {fidelity: exact, verified_by: [ctest:util_msg_service]}
+src/util/time_utils.hpp:  {fidelity: exact, verified_by: [ctest:util_time_utils, 26 timeStringToSeconds inputs]}
+src/util/time_utils.cpp:  {fidelity: exact, verified_by: [ctest:util_time_utils]}
