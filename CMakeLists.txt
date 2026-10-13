@@ -151,4 +151,5 @@ endif()
 # Included last: their add_test() calls must land after enable_testing().
 include(cmake/wave2_nm.cmake)
 include(cmake/wave2_geom.cmake)
+include(cmake/wave2_geom_core.cmake)
 include(cmake/wave2_gasdyn.cmake)

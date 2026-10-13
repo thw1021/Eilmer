@@ -116,7 +116,16 @@
 - `(-1.0)^^0.5`、`pow(-1,0.5)`、`sqrt(-1)`、`log(-1)` 四个域错误在 D 侧**全部打印 `nan`**
   （正 NaN），与 `eil/math.hpp` 的包装一致。
 
-（待补：struct 拷贝/别名、`.init`、数组切片越界文本）
+- **`Vector3 v;` / `Vector3()` 是 NaN 而不是 0**。实测 `probes/geom/elements/probe_vector3.d`
+  的 `str_init` 行：D 打印 `Vector3(nan, nan, nan)`。D 的 `double.init` 是 quiet NaN
+  （与 wave-1 语料一致），struct 逐字段继承 `.init`。C++ 侧用 `eil::d_init<number>()`
+  给成员做默认值（`substrate/include/eil/number.hpp`），**不要**写 `= 0.0`：
+  写成 0 会把参考求解器会传播下去的 NaN 藏起来，日志与数值都会分叉。
+  注意 `Vector3(1.0)`、`set(x,y)`、`clear()` 这些显式路径仍是 0，与 D 一致。
+- `eil::geom::Vector3` 与 D 的逐位对照结果：**53 行 `%17g`/`%.6g` 观测 diff 为空**
+  （`ctest -R geom_elements_vector3_equiv`，基线 `baselines/e587b235/probes/geom_elements_vector3.txt`）。
+
+（待补：数组切片越界文本）
 
 ## 6. D 探针与对照流程（必须可复现）
 

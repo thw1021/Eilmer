@@ -23,7 +23,11 @@ namespace eil {
 namespace geom {
 
 struct Vector3 {
-    number x = 0.0, y = 0.0, z = 0.0;
+    // D's `Vector3 v;` and `Vector3()` are Vector3.init, whose number fields are
+    // double.init == quiet NaN, not zero (measured: probe line str_init prints
+    // "Vector3(nan, nan, nan)"). Zero-filling here would hide a NaN that the
+    // reference solver carries into its arithmetic and its logs.
+    number x = d_init<number>(), y = d_init<number>(), z = d_init<number>();
 
     Vector3() = default;
     explicit Vector3(Slice<number> p);

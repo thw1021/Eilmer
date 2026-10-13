@@ -1,6 +1,7 @@
 #pragma once
 #include <cfloat>
 #include <limits>
+#include <type_traits>
 // eil/number.hpp — the scalar type of the ported solver.
 //
 // Mirrors gdtk src/nm/number.d:11-15, which selects the scalar through a D
@@ -45,6 +46,28 @@ template <typename T> struct Complex {
     T re = T(0);
     T im = T(0);
 };
+
+// D's `T.init`, which is what an uninitialized declaration and a `T()` both yield.
+// Measured, not assumed: `double.init` is a quiet NaN, `int.init` is 0, `bool.init`
+// is false (captured in tools/fmt_corpus.txt and replayed by the wave-1 util tests),
+// and a struct inherits it field by field — which is why `Vector3 v;` prints
+// "Vector3(nan, nan, nan)" and not zeros (probes/geom/elements/probe_vector3.d,
+// line str_init). Ports give members `= eil::d_init<number>()` rather than 0.0,
+// because a zero here would silently hide a NaN that the reference solver propagates.
+template <typename T>
+inline typename std::enable_if<std::is_floating_point<T>::value, T>::type d_init() {
+    return std::numeric_limits<T>::quiet_NaN();
+}
+template <typename T>
+inline typename std::enable_if<std::is_same<T, bool>::value, T>::type d_init() {
+    return false;
+}
+template <typename T>
+inline typename std::enable_if<std::is_integral<T>::value && !std::is_same<T, bool>::value,
+                                T>::type
+d_init() {
+    return T(0);
+}
 
 #ifdef EIL_COMPLEX_NUMBERS
 #error "EIL_COMPLEX_NUMBERS is wave 12 work: number becomes Complex<double> only once ntypes/complex.d is ported in full (see reports/phase-0.md)"
