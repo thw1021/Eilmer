@@ -47,6 +47,12 @@ class CubicSplineLsq {
     eil::Array<double> xs;     // x-coordinates of the spline knots
     int nseg = 0;              // Number of segments in the underlying spline.
 
+    // splinelsq.d:24 `class CubicSplineLsq` — a D field of this type is a null
+    // handle until a constructor body assigns it (geom/gpath/xsplinelsq.d:28
+    // declares `CubicSplineLsq spl;` and fills it at :32 and :65). Same treatment
+    // as nm/spline.hpp gives CubicSpline.
+    CubicSplineLsq() = default;
+
     // splinelsq.d:25-93 Construct a spline of nseg segments to approximate the
     // xd, yd points. wd is the array of weights for the data points, for use when
     // computing the sum-square error. The xs array may be used to set the
