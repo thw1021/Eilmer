@@ -1,0 +1,60 @@
+== Face enumerators, both spellings ==
+west=0 iminus=0
+east=1 iplus=1
+south=2 jminus=2
+north=3 jplus=3
+bottom=4 kminus=4
+top=5 kplus=5
+== face_index over all 12 accepted names ==
+face_index(west)=0
+face_index(iminus)=0
+face_index(east)=1
+face_index(iplus)=1
+face_index(south)=2
+face_index(jminus)=2
+face_index(north)=3
+face_index(jplus)=3
+face_index(bottom)=4
+face_index(kminus)=4
+face_index(top)=5
+face_index(kplus)=5
+== face_name global ==
+length=6
+face_name[0]=west
+face_name[1]=east
+face_name[2]=south
+face_name[3]=north
+face_name[4]=bottom
+face_name[5]=top
+array=["west", "east", "south", "north", "bottom", "top"]
+roundtrip=0 1 2 3 4 5
+== face_index failure path: which catch clause fires ==
+bad[northwest] asException=false asError=true msg=Invalid face name: northwest
+bad[] asException=false asError=true msg=Invalid face name: 
+bad[West] asException=false asError=true msg=Invalid face name: West
+== radians: 80-bit PI, rounded on return ==
+rad 0 d17=0 narrow17=0 same=true d6=0 tostr=0
+rad 30 d17=0.52359877559829893 narrow17=0.52359877559829882 same=false d6=0.523599 tostr=0.523599
+rad 45 d17=0.78539816339744828 narrow17=0.78539816339744828 same=true d6=0.785398 tostr=0.785398
+rad 60 d17=1.0471975511965979 narrow17=1.0471975511965976 same=false d6=1.0472 tostr=1.0472
+rad 90 d17=1.5707963267948966 narrow17=1.5707963267948966 same=true d6=1.5708 tostr=1.5708
+rad 180 d17=3.1415926535897931 narrow17=3.1415926535897931 same=true d6=3.14159 tostr=3.14159
+rad 270 d17=4.7123889803846897 narrow17=4.7123889803846897 same=true d6=4.71239 tostr=4.71239
+rad 360 d17=6.2831853071795862 narrow17=6.2831853071795862 same=true d6=6.28319 tostr=6.28319
+rad 0.10000000000000001 d17=0.0017453292519943296 narrow17=0.0017453292519943296 same=true d6=0.00174533 tostr=0.00174533
+rad 0.33333333333333331 d17=0.0058177641733144318 narrow17=0.005817764173314431 same=false d6=0.00581776 tostr=0.00581776
+rad 123.456 d17=2.1547136813421197 narrow17=2.1547136813421197 same=true d6=2.15471 tostr=2.15471
+rad 1e-08 d17=1.7453292519943295e-10 narrow17=1.7453292519943295e-10 same=true d6=1.74533e-10 tostr=1.74533e-10
+rad 100000000 d17=1745329.2519943295 narrow17=1745329.2519943293 same=false d6=1.74533e+06 tostr=1.74533e+06
+rad 7 d17=0.12217304763960307 narrow17=0.12217304763960307 same=true d6=0.122173 tostr=0.122173
+PI_bits 3.1415926535897932 3.1415926535897931
+PI4 0.78539816339744828 0.78539816339744828
+== VTKElement values ==
+vertex=1 polyvertex=2 line=3 polyline=4
+triangle=5 triangle_strip=6 polygon=7 pixel=8
+quad=9 tetra=10 voxel=11 hexahedron=12
+wedge=13 pyramid=14
+== Quaternion is a static double[4] ==
+quaternion_init=[nan,nan]
+default_local=[nan, nan, nan, nan]
+assigned=[1, 2, 3, 4] len=4

@@ -113,6 +113,28 @@
   `util/zip.d`(1801) 随 gzip 变体(Wave 12)
 - [ ] **T-906** `util/test_runner.d`(256)：**决定不移植** — C++ 侧由 CTest 承担，D 的
   `unittest` 已逐个转为测试。留此记录以免将来重复讨论
+- [ ] **T-907** substrate 缺口（geom/elements 实测）：`eil::Slice<const T>` 不能由
+  `eil::Array<T>`/`eil::Slice<T>` 隐式得到，故 D 的 `ref const(Vector3)[] p` 数组形参
+  （properties.d:142/319/348/432/492/531/583/676、734、776）在 C++ 侧只能用带 SFINAE 的
+  模板容器形参承接。补一个 `as_const()`/转换构造器后可把这些模板收敛回普通重载 → Wave 3
+- [x] **T-908** 构建缺口：顶层只把 `-DEIL_SLICE_CHECK=ON` 存进 CMake cache，**没有**任何
+  `add_compile_definitions(EIL_SLICE_CHECK)`，所以该选项目前是空操作（`/tmp/w2_elements_sc`
+  的 `CXX_FLAGS` 里没有 `-DEIL_SLICE_CHECK`）。本阶段改为手工加宏编译并跑通
+  nomenclature/properties/projection/demo（结果与常规构建一致）。需在
+  `CMakeLists.txt`/`cmake/EilmerVariant.cmake` 接线 → **已接线**（`option(EIL_SLICE_CHECK ...)`
+  + `add_compile_definitions`，2026-10-13）。这条同时说明：Phase 0/Wave 1 报告里
+  "`-DEIL_SLICE_CHECK` 开/关均通过"那句**当时并没有真的开启**该宏
+- [ ] **T-909** ldc2 常量折叠语义（跨全树风险）：编译期折叠的浮点常量表达式**不是**
+  正确舍入的 double 结果，与同一表达式在运行期的值差 1 ULP。实测 ldc2 1.40.0：
+  `0.2 + 1.0e-10` 折叠=0.20000000009999999 / 运行=0.20000000010000002，
+  `0.2 * 1.0e-10` 折叠=1.9999999999999999e-11 / 运行=2.0000000000000002e-11；g++ 两侧都与
+  运行期一致。后果：D 源里写成算式的常量（阈值、系数）与 C++ 折叠结果可能差 1 ULP，
+  在相消除法/开方处会被放大。本阶段的做法是让探针与测试两侧都写十进制字面量
+  （`probes/geom/elements/probe_properties.d` 的 sliver 三角形注释）。后续波次遇到
+  `= a*b + c` 形式的模块级常量需逐个实测 → Wave 3 起持续。
+  **Wave 2 暴露面已实测为 0**：`grep -rE "(const|immutable) (double|real|number) \w+ = [0-9.]+ [-+*/] [0-9]"`
+  在 geom(去 luawrap)+gasdyn 全树命中 **0 处**——本风险来自探针/测试自己写的算式字面量，
+  不来自求解器源码；Wave 3+ 的 gas/ 与求解器主干要各自重测这条，不能假定仍为 0
 
 ---
 

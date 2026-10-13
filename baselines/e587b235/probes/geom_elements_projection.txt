@@ -1,0 +1,47 @@
+== intersect2D, the unittest case ==
+cross.found=true t17=0.5 t6=0.5
+== intersect2D, parallel: is t reset, and to what? ==
+parallel.found=false t17=nan isNaN=true
+parallel.zeroed t17=nan isNaN=true
+== intersect2D, more crossings and near-parallel ==
+cross2 k=0 q=0.25 found=true t=0.125
+cross2 k=1 q=0.75 found=true t=0.375
+cross2 k=2 q=1.25 found=true t=0.625
+cross2 k=3 q=1.75 found=true t=0.875
+cross2 k=4 q=2.25 found=true t=1.125
+tol.tinyseg found=true t=5000000000000000
+== project_onto_plane, all three return codes ==
+plane.flag=0 qx=1 qy=1 qz=0 qs=Vector3(1, 1, 0)
+plane.flag1=1 q1=0.75 0 0
+plane.flag2=2 q2=0.75 0 3
+plane.flag3=2 q3=0 0 1
+== map_neutral_plane_to_cylinder ==
+cyl h=1 x=1 y=0.8414709848078965 z=0.54030230586813977 s=Vector3(1, 0.841471, 0.540302)
+cyl h=2 x=1 y=0.47942553860420301 z=0.87758256189037276 s=Vector3(1, 0.479426, 0.877583)
+cyl h=0 x=1 y=1 z=1 s=Vector3(1, 1, 1)
+cyl h=-1 x=1 y=1 z=1 s=Vector3(1, 1, 1)
+cyl.off x=0.5 y=-0.22732435670642043 z=0.1040367091367856
+cyl.ref sin1=0.8414709848078965 cos1=0.54030230586813977
+== barycentricCoords, triangle (3-point) ==
+bary3.mid l0=0.33333333333333331 l1=0.33333333333333331 l2=0.33333333333333343 sum=1 outside=false
+bary3.edge l0=0.5 l1=0.5 l2=0 sum=1 outside=false outside_tol=1e-10
+bary3.outside l0=0.50577350269189625 l1=0.50577350269189625 l2=-0.011547005383792497 outside=true
+bary3.tol outside_1e-3=true outside_0=true
+bary3.denomzero l0=0.333333 l1=0.5 l2=-0.011547
+bary3.degenerate l0=0.5 l1=0.21132486540518713 l2=0.28867513459481287 outside=false
+== barycentricCoords, quad (4-point, Floater mean-value) ==
+bary4.mid l0=0.25 l1=0.25 l2=0.25 l3=0.25 sum=1 outside=false
+bary4.edge l0=0.5 l1=0.5 l2=0 l3=0 outside=false
+bary4.outside l0=0.50499999999999978 l1=0.505 l2=-0.0049999999999999984 l3=-0.0049999999999999958 outside=true
+bary4.tol outside_1e-3=true outside_0=true
+bary4.skew l0=0.13707399736396164 l1=0.09301449821125965 l2=0.31124082093767647 l3=0.45867068348710233 sum=1 outside=false
+bary4.concave geom hasfile=true hasline=true class=geom.geometry_exception.GeometryException msg=Quadrilateral is not convex.
+bary4.concave caught=true class=geom.geometry_exception.GeometryException msg=Quadrilateral is not convex.
+bary4.concave siteshape throwInLibrary=true
+== GeometryException file/line default at the call site ==
+geomthrow asException=true msg=explicit throw site hasfile=true hasline=true sitename=true
+geomthrow derivedFromException=true
+== Error vs Exception reachability ==
+face_index.caughtAsException=false caughtAsError=true msg=Invalid face name: up
+== Quaternion renders as a static array ==
+quat=[0, 1, 2, 3] len=4

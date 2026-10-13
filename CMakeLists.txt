@@ -16,6 +16,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-fno-fast-math -fno-unsafe-math-optimizations -ffp-contract=off)
 add_compile_options(-Wall -Wextra -Wno-unused-parameter)
 
+# Slices carrying a generation counter fail loudly when their owning Array
+# reallocated underneath them. Off by default (it changes what operator[] costs);
+# -DEIL_SLICE_CHECK=ON used to be a cache-only no-op, so the gate never ran.
+option(EIL_SLICE_CHECK "Check every Slice dereference against its owner's generation" OFF)
+if(EIL_SLICE_CHECK)
+  add_compile_definitions(EIL_SLICE_CHECK)
+endif()
+
 include(cmake/EilmerVariant.cmake)
 
 # Vendored Lua 5.4.3 from the gdtk tree (headers + liblua.a), reused rather than

@@ -33,6 +33,11 @@ struct Vector3 {
     explicit Vector3(Slice<number> p);
     Vector3(number x, number y = 0.0, number z = number(0.0));
     Vector3(const Vector3& other);
+    // D struct assignment is a memberwise copy, and the user-declared copy
+    // constructor above would otherwise make the implicit one deprecated in every
+    // geom consumer that writes `v = Vector3(...)` (-Wdeprecated-copy). Defaulting it
+    // keeps the value semantics identical.
+    Vector3& operator=(const Vector3&) = default;
 
 #ifdef EIL_COMPLEX_NUMBERS
     explicit Vector3(Slice<double> p);

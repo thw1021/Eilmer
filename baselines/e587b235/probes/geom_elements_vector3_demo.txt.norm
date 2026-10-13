@@ -1,0 +1,16 @@
+Begin demonstration of the geometric primitives.
+a = Vector3(1, 2.2, 3), b = Vector3(1, 0, 0)
+c = a + b = Vector3(2, 2.2, 3)
+a = Vector3(1, 99, 3), d = Vector3(1, 2.2, 3)
+e = Vector3(2, 198, 6) f = Vector3(3, 6.6, 9)
+g = Vector3(0.333333, 0.733333, 1)
+g += f -> Vector3(3.33333, 7.33333, 10)
+g /= 2.0 -> Vector3(1.66667, 3.66667, 5)
+unit(g*2) = Vector3(0.259587, 0.571092, 0.778761) magnitude = 1
+z = Vector3(0, 0, 1)
+original h = Vector3(1, 0, 1)
+in local frame h = Vector3(0.707107, -0.707107, 1)
+back to global frame h = Vector3(1, 0, 1)
+Try out geometric functions that build on Vector3 objects.
+projected point q = Vector3(1, 1, 0)
+Done.
