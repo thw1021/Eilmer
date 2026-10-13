@@ -1,0 +1,12 @@
+structured_grid 1.1
+label: wave2 gzip probe payload
+dimensions: 3
+niv: 4
+njv: 2
+nkv: 1
+-1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+-1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+tabbed line	with a literal tab and trailing spaces   
+final line, file ends with a newline

@@ -1,0 +1,8 @@
+x = [0.811295, -0.584636] fx = -67.1077
+convergence-flag = true
+number-of-fn-evaluations = 86
+number-of-restarts =0
+x = [1.80105, -1.84177, -0.463388, -1.20508] fx = 0.000908953
+convergence-flag = true
+number-of-fn-evaluations = 503
+number-of-restarts = 0

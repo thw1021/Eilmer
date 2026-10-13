@@ -1,0 +1,66 @@
+payload file=gzip_payload.txt len=386
+roundtrip line 0 len=19|structured_grid 1.1
+roundtrip line 1 len=31|label: wave2 gzip probe payload
+roundtrip line 2 len=13|dimensions: 3
+roundtrip line 3 len=6|niv: 4
+roundtrip line 4 len=6|njv: 2
+roundtrip line 5 len=6|nkv: 1
+roundtrip line 6 len=52|-1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+roundtrip line 7 len=51|1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+roundtrip line 8 len=50|1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+roundtrip line 9 len=51|-1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+roundtrip line 10 len=53|tabbed line	with a literal tab and trailing spaces   
+roundtrip line 11 len=36|final line, file ends with a newline
+roundtrip nlines=12 chars=374
+one_shot line 0 len=19|structured_grid 1.1
+one_shot line 1 len=31|label: wave2 gzip probe payload
+one_shot line 2 len=13|dimensions: 3
+one_shot line 3 len=6|niv: 4
+one_shot line 4 len=6|njv: 2
+one_shot line 5 len=6|nkv: 1
+one_shot line 6 len=52|-1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+one_shot line 7 len=51|1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+one_shot line 8 len=50|1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+one_shot line 9 len=51|-1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+one_shot line 10 len=53|tabbed line	with a literal tab and trailing spaces   
+one_shot line 11 len=36|final line, file ends with a newline
+one_shot nlines=12 chars=374
+empty_readback nlines=0 chars=0
+no_trailing_newline line 0 len=5|alpha
+no_trailing_newline line 1 len=5|bravo
+no_trailing_newline line 2 len=7|charlie
+no_trailing_newline nlines=3 chars=17
+trailing_newline line 0 len=5|alpha
+trailing_newline line 1 len=5|bravo
+trailing_newline line 2 len=7|charlie
+trailing_newline nlines=3 chars=17
+crlf line 0 len=4|one
+crlf line 1 len=4|two
+crlf nlines=2 chars=8
+blank_line line 0 len=5|first
+blank_line nlines=1 chars=5
+big nlines=1000 chars=59000 longest=59 crc=d7c29bdc
+big_raw_range chars=60000 digest=238267 head=abcdefghijkl
+huge nlines=1 chars=100000 longest=100000 crc=e189f274
+huge_raw_range chars=100000 digest=149991 head=ZZZZZZZZ
+roundtrip_raw_range chars=386 digest=951606 head=structured_grid 1.1
+labe
+truncated line 0 len=19|structured_grid 1.1
+truncated line 1 len=31|label: wave2 gzip probe payload
+truncated line 2 len=9|dimension
+truncated nlines=3 chars=59
+corrupt threw Exception msg=data error
+zlib_autodetect line 0 len=19|structured_grid 1.1
+zlib_autodetect line 1 len=31|label: wave2 gzip probe payload
+zlib_autodetect line 2 len=13|dimensions: 3
+zlib_autodetect line 3 len=6|niv: 4
+zlib_autodetect line 4 len=6|njv: 2
+zlib_autodetect line 5 len=6|nkv: 1
+zlib_autodetect line 6 len=52|-1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+zlib_autodetect line 7 len=51|1.0000000000E+00 -1.0000000000E+00 0.0000000000E+00
+zlib_autodetect line 8 len=50|1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+zlib_autodetect line 9 len=51|-1.0000000000E+00 1.0000000000E+00 0.0000000000E+00
+zlib_autodetect line 10 len=53|tabbed line	with a literal tab and trailing spaces   
+zlib_autodetect line 11 len=36|final line, file ends with a newline
+zlib_autodetect nlines=12 chars=374
+missing_file threw Exception msg=Cannot open file `no_such_file.gz' in mode `r' (No such file or directory)

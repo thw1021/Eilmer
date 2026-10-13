@@ -1,0 +1,22 @@
+Begin nelmin demostration...
+---------------------------------------------------
+test 1: simple quadratic with zero at (1,1,...)
+x = [1.00002, 1.00001, 1.00003, 0.999992] fx = 1.5214e-09
+convergence-flag = true
+number-of-fn-evaluations = 428
+number-of-restarts = 5
+---------------------------------------------------
+test 2: Example 3.3 in Olsson and Nelson f(0.811,-0.585)=-67.1
+x = [0.811295, -0.584636] fx = -67.1077
+convergence-flag = true
+number-of-fn-evaluations = 86
+number-of-restarts =0
+---------------------------------------------------
+test 3: Example 3.5 in Olsson and Nelson, nonlinear least-squares
+f(1.801, -1.842, -0.463, -1.205)=0.0009
+x = [1.80078, -1.8415, -0.463359, -1.20518] fx = 0.000908953
+convergence-flag = true
+number-of-fn-evaluations = 547
+number-of-restarts = 0
+---------------------------------------------------
+Done.
