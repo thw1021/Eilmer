@@ -1,0 +1,1604 @@
+cubp.f.north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=north, which_part=)
+cubp.f.north classname=CubePatch
+cubp.f.north a=1 centre x=0 y=0 z=0 face=north which_part= which_part.len=0
+cubp.f.north opCall r=0 s=0 x=-1 y=1 z=-1
+cubp.f.north opCall r=0 s=0.25 x=-1 y=1 z=-0.5
+cubp.f.north opCall r=0 s=0.5 x=-1 y=1 z=0
+cubp.f.north opCall r=0 s=0.75 x=-1 y=1 z=0.5
+cubp.f.north opCall r=0 s=1 x=-1 y=1 z=1
+cubp.f.north opCall r=0.25 s=0 x=-0.5 y=1 z=-1
+cubp.f.north opCall r=0.25 s=0.25 x=-0.5 y=1 z=-0.5
+cubp.f.north opCall r=0.25 s=0.5 x=-0.5 y=1 z=0
+cubp.f.north opCall r=0.25 s=0.75 x=-0.5 y=1 z=0.5
+cubp.f.north opCall r=0.25 s=1 x=-0.5 y=1 z=1
+cubp.f.north opCall r=0.5 s=0 x=0 y=1 z=-1
+cubp.f.north opCall r=0.5 s=0.25 x=0 y=1 z=-0.5
+cubp.f.north opCall r=0.5 s=0.5 x=0 y=1 z=0
+cubp.f.north opCall r=0.5 s=0.75 x=0 y=1 z=0.5
+cubp.f.north opCall r=0.5 s=1 x=0 y=1 z=1
+cubp.f.north opCall r=0.75 s=0 x=0.5 y=1 z=-1
+cubp.f.north opCall r=0.75 s=0.25 x=0.5 y=1 z=-0.5
+cubp.f.north opCall r=0.75 s=0.5 x=0.5 y=1 z=0
+cubp.f.north opCall r=0.75 s=0.75 x=0.5 y=1 z=0.5
+cubp.f.north opCall r=0.75 s=1 x=0.5 y=1 z=1
+cubp.f.north opCall r=1 s=0 x=1 y=1 z=-1
+cubp.f.north opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.f.north opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.f.north opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.f.north opCall r=1 s=1 x=1 y=1 z=1
+cubp.f.north area nr=10 ns=10 x=0 y=-4.0000000000000027 z=0
+cubp.f.north area nr=3 ns=7 x=0 y=-4.0000000000000009 z=0
+cubp.f.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=)
+cubp.f.east classname=CubePatch
+cubp.f.east a=1 centre x=0 y=0 z=0 face=east which_part= which_part.len=0
+cubp.f.east opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.f.east opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.f.east opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.f.east opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.f.east opCall r=0 s=1 x=1 y=-1 z=1
+cubp.f.east opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.f.east opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.f.east opCall r=0.25 s=0.5 x=1 y=-0.5 z=0
+cubp.f.east opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.5
+cubp.f.east opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.f.east opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.f.east opCall r=0.5 s=0.25 x=1 y=0 z=-0.5
+cubp.f.east opCall r=0.5 s=0.5 x=1 y=0 z=0
+cubp.f.east opCall r=0.5 s=0.75 x=1 y=0 z=0.5
+cubp.f.east opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.f.east opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.f.east opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.5
+cubp.f.east opCall r=0.75 s=0.5 x=1 y=0.5 z=0
+cubp.f.east opCall r=0.75 s=0.75 x=1 y=0.5 z=0.5
+cubp.f.east opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.f.east opCall r=1 s=0 x=1 y=1 z=-1
+cubp.f.east opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.f.east opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.f.east opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.f.east opCall r=1 s=1 x=1 y=1 z=1
+cubp.f.east area nr=10 ns=10 x=4.0000000000000027 y=0 z=0
+cubp.f.east area nr=3 ns=7 x=4.0000000000000009 y=0 z=0
+cubp.f.south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=)
+cubp.f.south classname=CubePatch
+cubp.f.south a=1 centre x=0 y=0 z=0 face=south which_part= which_part.len=0
+cubp.f.south opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.f.south opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.f.south opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.f.south opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.f.south opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.f.south opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.f.south opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.f.south opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.f.south opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.f.south opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.f.south opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.f.south opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.f.south opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.f.south opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.f.south opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.f.south opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.f.south opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.f.south opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.f.south opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.f.south opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.f.south opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.f.south opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.f.south opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.f.south opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.f.south opCall r=1 s=1 x=1 y=-1 z=1
+cubp.f.south area nr=10 ns=10 x=0 y=-4.0000000000000027 z=0
+cubp.f.south area nr=3 ns=7 x=0 y=-4.0000000000000009 z=0
+cubp.f.west str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=west, which_part=)
+cubp.f.west classname=CubePatch
+cubp.f.west a=1 centre x=0 y=0 z=0 face=west which_part= which_part.len=0
+cubp.f.west opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.f.west opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.f.west opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.f.west opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.f.west opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.f.west opCall r=0.25 s=0 x=-1 y=-0.5 z=-1
+cubp.f.west opCall r=0.25 s=0.25 x=-1 y=-0.5 z=-0.5
+cubp.f.west opCall r=0.25 s=0.5 x=-1 y=-0.5 z=0
+cubp.f.west opCall r=0.25 s=0.75 x=-1 y=-0.5 z=0.5
+cubp.f.west opCall r=0.25 s=1 x=-1 y=-0.5 z=1
+cubp.f.west opCall r=0.5 s=0 x=-1 y=0 z=-1
+cubp.f.west opCall r=0.5 s=0.25 x=-1 y=0 z=-0.5
+cubp.f.west opCall r=0.5 s=0.5 x=-1 y=0 z=0
+cubp.f.west opCall r=0.5 s=0.75 x=-1 y=0 z=0.5
+cubp.f.west opCall r=0.5 s=1 x=-1 y=0 z=1
+cubp.f.west opCall r=0.75 s=0 x=-1 y=0.5 z=-1
+cubp.f.west opCall r=0.75 s=0.25 x=-1 y=0.5 z=-0.5
+cubp.f.west opCall r=0.75 s=0.5 x=-1 y=0.5 z=0
+cubp.f.west opCall r=0.75 s=0.75 x=-1 y=0.5 z=0.5
+cubp.f.west opCall r=0.75 s=1 x=-1 y=0.5 z=1
+cubp.f.west opCall r=1 s=0 x=-1 y=1 z=-1
+cubp.f.west opCall r=1 s=0.25 x=-1 y=1 z=-0.5
+cubp.f.west opCall r=1 s=0.5 x=-1 y=1 z=0
+cubp.f.west opCall r=1 s=0.75 x=-1 y=1 z=0.5
+cubp.f.west opCall r=1 s=1 x=-1 y=1 z=1
+cubp.f.west area nr=10 ns=10 x=4.0000000000000027 y=0 z=0
+cubp.f.west area nr=3 ns=7 x=4.0000000000000009 y=0 z=0
+cubp.f.bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=)
+cubp.f.bottom classname=CubePatch
+cubp.f.bottom a=1 centre x=0 y=0 z=0 face=bottom which_part= which_part.len=0
+cubp.f.bottom opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.f.bottom opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.f.bottom opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.f.bottom opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.f.bottom opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.f.bottom opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.f.bottom opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.f.bottom opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.f.bottom opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.f.bottom opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.f.bottom opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.f.bottom opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.f.bottom opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.f.bottom opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.f.bottom opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.f.bottom opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.f.bottom opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.f.bottom opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.f.bottom opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.f.bottom opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.f.bottom opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.f.bottom opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.f.bottom opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.f.bottom opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.f.bottom opCall r=1 s=1 x=1 y=1 z=-1
+cubp.f.bottom area nr=10 ns=10 x=0 y=0 z=4.0000000000000027
+cubp.f.bottom area nr=3 ns=7 x=0 y=0 z=4.0000000000000009
+cubp.f.top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=top, which_part=)
+cubp.f.top classname=CubePatch
+cubp.f.top a=1 centre x=0 y=0 z=0 face=top which_part= which_part.len=0
+cubp.f.top opCall r=0 s=0 x=-1 y=-1 z=1
+cubp.f.top opCall r=0 s=0.25 x=-1 y=-0.5 z=1
+cubp.f.top opCall r=0 s=0.5 x=-1 y=0 z=1
+cubp.f.top opCall r=0 s=0.75 x=-1 y=0.5 z=1
+cubp.f.top opCall r=0 s=1 x=-1 y=1 z=1
+cubp.f.top opCall r=0.25 s=0 x=-0.5 y=-1 z=1
+cubp.f.top opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=1
+cubp.f.top opCall r=0.25 s=0.5 x=-0.5 y=0 z=1
+cubp.f.top opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=1
+cubp.f.top opCall r=0.25 s=1 x=-0.5 y=1 z=1
+cubp.f.top opCall r=0.5 s=0 x=0 y=-1 z=1
+cubp.f.top opCall r=0.5 s=0.25 x=0 y=-0.5 z=1
+cubp.f.top opCall r=0.5 s=0.5 x=0 y=0 z=1
+cubp.f.top opCall r=0.5 s=0.75 x=0 y=0.5 z=1
+cubp.f.top opCall r=0.5 s=1 x=0 y=1 z=1
+cubp.f.top opCall r=0.75 s=0 x=0.5 y=-1 z=1
+cubp.f.top opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=1
+cubp.f.top opCall r=0.75 s=0.5 x=0.5 y=0 z=1
+cubp.f.top opCall r=0.75 s=0.75 x=0.5 y=0.5 z=1
+cubp.f.top opCall r=0.75 s=1 x=0.5 y=1 z=1
+cubp.f.top opCall r=1 s=0 x=1 y=-1 z=1
+cubp.f.top opCall r=1 s=0.25 x=1 y=-0.5 z=1
+cubp.f.top opCall r=1 s=0.5 x=1 y=0 z=1
+cubp.f.top opCall r=1 s=0.75 x=1 y=0.5 z=1
+cubp.f.top opCall r=1 s=1 x=1 y=1 z=1
+cubp.f.top area nr=10 ns=10 x=0 y=0 z=4.0000000000000027
+cubp.f.top area nr=3 ns=7 x=0 y=0 z=4.0000000000000009
+cubp.big str=CubePatch(a=2.5, centre=Vector3(0.5, -1.25, 3), face=east, which_part=)
+cubp.big classname=CubePatch
+cubp.big a=2.5 centre x=0.5 y=-1.25 z=3 face=east which_part= which_part.len=0
+cubp.big opCall r=0 s=0 x=3 y=-3.75 z=0.5
+cubp.big opCall r=0 s=0.25 x=3 y=-3.75 z=1.75
+cubp.big opCall r=0 s=0.5 x=3 y=-3.75 z=3
+cubp.big opCall r=0 s=0.75 x=3 y=-3.75 z=4.25
+cubp.big opCall r=0 s=1 x=3 y=-3.75 z=5.5
+cubp.big opCall r=0.25 s=0 x=3 y=-2.5 z=0.5
+cubp.big opCall r=0.25 s=0.25 x=3 y=-2.5 z=1.75
+cubp.big opCall r=0.25 s=0.5 x=3 y=-2.5 z=3
+cubp.big opCall r=0.25 s=0.75 x=3 y=-2.5 z=4.25
+cubp.big opCall r=0.25 s=1 x=3 y=-2.5 z=5.5
+cubp.big opCall r=0.5 s=0 x=3 y=-1.25 z=0.5
+cubp.big opCall r=0.5 s=0.25 x=3 y=-1.25 z=1.75
+cubp.big opCall r=0.5 s=0.5 x=3 y=-1.25 z=3
+cubp.big opCall r=0.5 s=0.75 x=3 y=-1.25 z=4.25
+cubp.big opCall r=0.5 s=1 x=3 y=-1.25 z=5.5
+cubp.big opCall r=0.75 s=0 x=3 y=0 z=0.5
+cubp.big opCall r=0.75 s=0.25 x=3 y=0 z=1.75
+cubp.big opCall r=0.75 s=0.5 x=3 y=0 z=3
+cubp.big opCall r=0.75 s=0.75 x=3 y=0 z=4.25
+cubp.big opCall r=0.75 s=1 x=3 y=0 z=5.5
+cubp.big opCall r=1 s=0 x=3 y=1.25 z=0.5
+cubp.big opCall r=1 s=0.25 x=3 y=1.25 z=1.75
+cubp.big opCall r=1 s=0.5 x=3 y=1.25 z=3
+cubp.big opCall r=1 s=0.75 x=3 y=1.25 z=4.25
+cubp.big opCall r=1 s=1 x=3 y=1.25 z=5.5
+cubp.big area nr=10 ns=10 x=25 y=0 z=0
+cubp.big area nr=3 ns=7 x=24.999999999999989 y=0 z=0
+cubp.big.west str=CubePatch(a=2.5, centre=Vector3(0.5, -1.25, 3), face=west, which_part=)
+cubp.big.west classname=CubePatch
+cubp.big.west a=2.5 centre x=0.5 y=-1.25 z=3 face=west which_part= which_part.len=0
+cubp.big.west opCall r=0 s=0 x=-2 y=-3.75 z=0.5
+cubp.big.west opCall r=0 s=0.25 x=-2 y=-3.75 z=1.75
+cubp.big.west opCall r=0 s=0.5 x=-2 y=-3.75 z=3
+cubp.big.west opCall r=0 s=0.75 x=-2 y=-3.75 z=4.25
+cubp.big.west opCall r=0 s=1 x=-2 y=-3.75 z=5.5
+cubp.big.west opCall r=0.25 s=0 x=-2 y=-2.5 z=0.5
+cubp.big.west opCall r=0.25 s=0.25 x=-2 y=-2.5 z=1.75
+cubp.big.west opCall r=0.25 s=0.5 x=-2 y=-2.5 z=3
+cubp.big.west opCall r=0.25 s=0.75 x=-2 y=-2.5 z=4.25
+cubp.big.west opCall r=0.25 s=1 x=-2 y=-2.5 z=5.5
+cubp.big.west opCall r=0.5 s=0 x=-2 y=-1.25 z=0.5
+cubp.big.west opCall r=0.5 s=0.25 x=-2 y=-1.25 z=1.75
+cubp.big.west opCall r=0.5 s=0.5 x=-2 y=-1.25 z=3
+cubp.big.west opCall r=0.5 s=0.75 x=-2 y=-1.25 z=4.25
+cubp.big.west opCall r=0.5 s=1 x=-2 y=-1.25 z=5.5
+cubp.big.west opCall r=0.75 s=0 x=-2 y=0 z=0.5
+cubp.big.west opCall r=0.75 s=0.25 x=-2 y=0 z=1.75
+cubp.big.west opCall r=0.75 s=0.5 x=-2 y=0 z=3
+cubp.big.west opCall r=0.75 s=0.75 x=-2 y=0 z=4.25
+cubp.big.west opCall r=0.75 s=1 x=-2 y=0 z=5.5
+cubp.big.west opCall r=1 s=0 x=-2 y=1.25 z=0.5
+cubp.big.west opCall r=1 s=0.25 x=-2 y=1.25 z=1.75
+cubp.big.west opCall r=1 s=0.5 x=-2 y=1.25 z=3
+cubp.big.west opCall r=1 s=0.75 x=-2 y=1.25 z=4.25
+cubp.big.west opCall r=1 s=1 x=-2 y=1.25 z=5.5
+cubp.big.west area nr=10 ns=10 x=25 y=0 z=0
+cubp.frac str=CubePatch(a=0.333333, centre=Vector3(0, 0, 0), face=top, which_part=)
+cubp.frac classname=CubePatch
+cubp.frac a=0.33333333333333331 centre x=0 y=0 z=0 face=top which_part= which_part.len=0
+cubp.frac opCall r=0 s=0 x=-0.33333333333333331 y=-0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0 s=0.25 x=-0.33333333333333331 y=-0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0 s=0.5 x=-0.33333333333333331 y=0 z=0.33333333333333331
+cubp.frac opCall r=0 s=0.75 x=-0.33333333333333331 y=0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0 s=1 x=-0.33333333333333331 y=0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.25 s=0 x=-0.16666666666666666 y=-0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.25 s=0.25 x=-0.16666666666666666 y=-0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.25 s=0.5 x=-0.16666666666666666 y=0 z=0.33333333333333331
+cubp.frac opCall r=0.25 s=0.75 x=-0.16666666666666666 y=0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.25 s=1 x=-0.16666666666666666 y=0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.5 s=0 x=0 y=-0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.5 s=0.25 x=0 y=-0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.5 s=0.5 x=0 y=0 z=0.33333333333333331
+cubp.frac opCall r=0.5 s=0.75 x=0 y=0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.5 s=1 x=0 y=0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.75 s=0 x=0.16666666666666666 y=-0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=0.75 s=0.25 x=0.16666666666666666 y=-0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.75 s=0.5 x=0.16666666666666666 y=0 z=0.33333333333333331
+cubp.frac opCall r=0.75 s=0.75 x=0.16666666666666666 y=0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=0.75 s=1 x=0.16666666666666666 y=0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=1 s=0 x=0.33333333333333331 y=-0.33333333333333331 z=0.33333333333333331
+cubp.frac opCall r=1 s=0.25 x=0.33333333333333331 y=-0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=1 s=0.5 x=0.33333333333333331 y=0 z=0.33333333333333331
+cubp.frac opCall r=1 s=0.75 x=0.33333333333333331 y=0.16666666666666666 z=0.33333333333333331
+cubp.frac opCall r=1 s=1 x=0.33333333333333331 y=0.33333333333333331 z=0.33333333333333331
+cubp.frac area nr=10 ns=10 x=0 y=0 z=0.4444444444444437
+cubp.big.dup str=CubePatch(a=2.5, centre=Vector3(0.5, -1.25, 3), face=east, which_part=)
+cubp.big.dup classname=CubePatch
+cubp.big.dup a=2.5 centre x=0.5 y=-1.25 z=3 face=east which_part= which_part.len=0
+cubp.big.dup opCall r=0 s=0 x=3 y=-3.75 z=0.5
+cubp.big.dup opCall r=0 s=0.25 x=3 y=-3.75 z=1.75
+cubp.big.dup opCall r=0 s=0.5 x=3 y=-3.75 z=3
+cubp.big.dup opCall r=0 s=0.75 x=3 y=-3.75 z=4.25
+cubp.big.dup opCall r=0 s=1 x=3 y=-3.75 z=5.5
+cubp.big.dup opCall r=0.25 s=0 x=3 y=-2.5 z=0.5
+cubp.big.dup opCall r=0.25 s=0.25 x=3 y=-2.5 z=1.75
+cubp.big.dup opCall r=0.25 s=0.5 x=3 y=-2.5 z=3
+cubp.big.dup opCall r=0.25 s=0.75 x=3 y=-2.5 z=4.25
+cubp.big.dup opCall r=0.25 s=1 x=3 y=-2.5 z=5.5
+cubp.big.dup opCall r=0.5 s=0 x=3 y=-1.25 z=0.5
+cubp.big.dup opCall r=0.5 s=0.25 x=3 y=-1.25 z=1.75
+cubp.big.dup opCall r=0.5 s=0.5 x=3 y=-1.25 z=3
+cubp.big.dup opCall r=0.5 s=0.75 x=3 y=-1.25 z=4.25
+cubp.big.dup opCall r=0.5 s=1 x=3 y=-1.25 z=5.5
+cubp.big.dup opCall r=0.75 s=0 x=3 y=0 z=0.5
+cubp.big.dup opCall r=0.75 s=0.25 x=3 y=0 z=1.75
+cubp.big.dup opCall r=0.75 s=0.5 x=3 y=0 z=3
+cubp.big.dup opCall r=0.75 s=0.75 x=3 y=0 z=4.25
+cubp.big.dup opCall r=0.75 s=1 x=3 y=0 z=5.5
+cubp.big.dup opCall r=1 s=0 x=3 y=1.25 z=0.5
+cubp.big.dup opCall r=1 s=0.25 x=3 y=1.25 z=1.75
+cubp.big.dup opCall r=1 s=0.5 x=3 y=1.25 z=3
+cubp.big.dup opCall r=1 s=0.75 x=3 y=1.25 z=4.25
+cubp.big.dup opCall r=1 s=1 x=3 y=1.25 z=5.5
+cubp.big.dup area nr=10 ns=10 x=25 y=0 z=0
+cubp.big.copy str=CubePatch(a=2.5, centre=Vector3(0.5, -1.25, 3), face=east, which_part=)
+cubp.big.copy classname=CubePatch
+cubp.big.copy a=2.5 centre x=0.5 y=-1.25 z=3 face=east which_part= which_part.len=0
+cubp.big.copy opCall r=0 s=0 x=3 y=-3.75 z=0.5
+cubp.big.copy opCall r=0 s=0.25 x=3 y=-3.75 z=1.75
+cubp.big.copy opCall r=0 s=0.5 x=3 y=-3.75 z=3
+cubp.big.copy opCall r=0 s=0.75 x=3 y=-3.75 z=4.25
+cubp.big.copy opCall r=0 s=1 x=3 y=-3.75 z=5.5
+cubp.big.copy opCall r=0.25 s=0 x=3 y=-2.5 z=0.5
+cubp.big.copy opCall r=0.25 s=0.25 x=3 y=-2.5 z=1.75
+cubp.big.copy opCall r=0.25 s=0.5 x=3 y=-2.5 z=3
+cubp.big.copy opCall r=0.25 s=0.75 x=3 y=-2.5 z=4.25
+cubp.big.copy opCall r=0.25 s=1 x=3 y=-2.5 z=5.5
+cubp.big.copy opCall r=0.5 s=0 x=3 y=-1.25 z=0.5
+cubp.big.copy opCall r=0.5 s=0.25 x=3 y=-1.25 z=1.75
+cubp.big.copy opCall r=0.5 s=0.5 x=3 y=-1.25 z=3
+cubp.big.copy opCall r=0.5 s=0.75 x=3 y=-1.25 z=4.25
+cubp.big.copy opCall r=0.5 s=1 x=3 y=-1.25 z=5.5
+cubp.big.copy opCall r=0.75 s=0 x=3 y=0 z=0.5
+cubp.big.copy opCall r=0.75 s=0.25 x=3 y=0 z=1.75
+cubp.big.copy opCall r=0.75 s=0.5 x=3 y=0 z=3
+cubp.big.copy opCall r=0.75 s=0.75 x=3 y=0 z=4.25
+cubp.big.copy opCall r=0.75 s=1 x=3 y=0 z=5.5
+cubp.big.copy opCall r=1 s=0 x=3 y=1.25 z=0.5
+cubp.big.copy opCall r=1 s=0.25 x=3 y=1.25 z=1.75
+cubp.big.copy opCall r=1 s=0.5 x=3 y=1.25 z=3
+cubp.big.copy opCall r=1 s=0.75 x=3 y=1.25 z=4.25
+cubp.big.copy opCall r=1 s=1 x=3 y=1.25 z=5.5
+cubp.big.copy area nr=3 ns=7 x=24.999999999999989 y=0 z=0
+cubp.part.east.empty str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=)
+cubp.part.east.empty classname=CubePatch
+cubp.part.east.empty a=1 centre x=0 y=0 z=0 face=east which_part= which_part.len=0
+cubp.part.east.empty opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.empty opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.east.empty opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.part.east.empty opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.part.east.empty opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.empty opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.empty opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.part.east.empty opCall r=0.25 s=0.5 x=1 y=-0.5 z=0
+cubp.part.east.empty opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.5
+cubp.part.east.empty opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.empty opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.part.east.empty opCall r=0.5 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.empty opCall r=0.5 s=0.5 x=1 y=0 z=0
+cubp.part.east.empty opCall r=0.5 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.empty opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.empty opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.part.east.empty opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.empty opCall r=0.75 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.empty opCall r=0.75 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.empty opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.empty opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.empty opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.empty opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.empty opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.empty opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.empty str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=)
+cubp.part.south.empty classname=CubePatch
+cubp.part.south.empty a=1 centre x=0 y=0 z=0 face=south which_part= which_part.len=0
+cubp.part.south.empty opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.empty opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.part.south.empty opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.part.south.empty opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.part.south.empty opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.empty opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.empty opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.part.south.empty opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.part.south.empty opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.part.south.empty opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.empty opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.empty opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.empty opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.part.south.empty opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.empty opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.empty opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.empty opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.empty opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.empty opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.empty opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.empty opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.empty opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.empty opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.empty opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.empty opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.empty str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=)
+cubp.part.bottom.empty classname=CubePatch
+cubp.part.bottom.empty a=1 centre x=0 y=0 z=0 face=bottom which_part= which_part.len=0
+cubp.part.bottom.empty opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.empty opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.part.bottom.empty opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.part.bottom.empty opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.part.bottom.empty opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.empty opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.empty opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.empty opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.part.bottom.empty opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.empty opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.empty opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.empty opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.empty opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.empty opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.empty opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.empty opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.empty opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.empty opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.empty opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.empty opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.empty opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.empty opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.empty opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.empty opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.empty opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=south)
+cubp.part.east.south classname=CubePatch
+cubp.part.east.south a=1 centre x=0 y=0 z=0 face=east which_part=south which_part.len=5
+cubp.part.east.south opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.south opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.east.south opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.part.east.south opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.part.east.south opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.south opCall r=0.25 s=0 x=1 y=-0.75 z=-1
+cubp.part.east.south opCall r=0.25 s=0.25 x=1 y=-0.75 z=-0.5
+cubp.part.east.south opCall r=0.25 s=0.5 x=1 y=-0.75 z=0
+cubp.part.east.south opCall r=0.25 s=0.75 x=1 y=-0.75 z=0.5
+cubp.part.east.south opCall r=0.25 s=1 x=1 y=-0.75 z=1
+cubp.part.east.south opCall r=0.5 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.south opCall r=0.5 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.part.east.south opCall r=0.5 s=0.5 x=1 y=-0.5 z=0
+cubp.part.east.south opCall r=0.5 s=0.75 x=1 y=-0.5 z=0.5
+cubp.part.east.south opCall r=0.5 s=1 x=1 y=-0.5 z=1
+cubp.part.east.south opCall r=0.75 s=0 x=1 y=-0.25 z=-1
+cubp.part.east.south opCall r=0.75 s=0.25 x=1 y=-0.25 z=-0.5
+cubp.part.east.south opCall r=0.75 s=0.5 x=1 y=-0.25 z=0
+cubp.part.east.south opCall r=0.75 s=0.75 x=1 y=-0.25 z=0.5
+cubp.part.east.south opCall r=0.75 s=1 x=1 y=-0.25 z=1
+cubp.part.east.south opCall r=1 s=0 x=1 y=0 z=-1
+cubp.part.east.south opCall r=1 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.south opCall r=1 s=0.5 x=1 y=0 z=0
+cubp.part.east.south opCall r=1 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.south opCall r=1 s=1 x=1 y=0 z=1
+cubp.part.south.south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=south)
+cubp.part.south.south classname=CubePatch
+cubp.part.south.south a=1 centre x=0 y=0 z=0 face=south which_part=south which_part.len=5
+cubp.part.south.south opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.south opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.part.south.south opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.part.south.south opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.part.south.south opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.south opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.south opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.part.south.south opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.part.south.south opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.part.south.south opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.south opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.south opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.south opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.part.south.south opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.south opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.south opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.south opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.south opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.south opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.south opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.south opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.south opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.south opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.south opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.south opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=south)
+cubp.part.bottom.south classname=CubePatch
+cubp.part.bottom.south a=1 centre x=0 y=0 z=0 face=bottom which_part=south which_part.len=5
+cubp.part.bottom.south opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.south opCall r=0 s=0.25 x=-1 y=-0.75 z=-1
+cubp.part.bottom.south opCall r=0 s=0.5 x=-1 y=-0.5 z=-1
+cubp.part.bottom.south opCall r=0 s=0.75 x=-1 y=-0.25 z=-1
+cubp.part.bottom.south opCall r=0 s=1 x=-1 y=0 z=-1
+cubp.part.bottom.south opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.south opCall r=0.25 s=0.25 x=-0.5 y=-0.75 z=-1
+cubp.part.bottom.south opCall r=0.25 s=0.5 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.south opCall r=0.25 s=0.75 x=-0.5 y=-0.25 z=-1
+cubp.part.bottom.south opCall r=0.25 s=1 x=-0.5 y=0 z=-1
+cubp.part.bottom.south opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.south opCall r=0.5 s=0.25 x=0 y=-0.75 z=-1
+cubp.part.bottom.south opCall r=0.5 s=0.5 x=0 y=-0.5 z=-1
+cubp.part.bottom.south opCall r=0.5 s=0.75 x=0 y=-0.25 z=-1
+cubp.part.bottom.south opCall r=0.5 s=1 x=0 y=0 z=-1
+cubp.part.bottom.south opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.south opCall r=0.75 s=0.25 x=0.5 y=-0.75 z=-1
+cubp.part.bottom.south opCall r=0.75 s=0.5 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.south opCall r=0.75 s=0.75 x=0.5 y=-0.25 z=-1
+cubp.part.bottom.south opCall r=0.75 s=1 x=0.5 y=0 z=-1
+cubp.part.bottom.south opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.south opCall r=1 s=0.25 x=1 y=-0.75 z=-1
+cubp.part.bottom.south opCall r=1 s=0.5 x=1 y=-0.5 z=-1
+cubp.part.bottom.south opCall r=1 s=0.75 x=1 y=-0.25 z=-1
+cubp.part.bottom.south opCall r=1 s=1 x=1 y=0 z=-1
+cubp.part.east.north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=north)
+cubp.part.east.north classname=CubePatch
+cubp.part.east.north a=1 centre x=0 y=0 z=0 face=east which_part=north which_part.len=5
+cubp.part.east.north opCall r=0 s=0 x=1 y=0 z=-1
+cubp.part.east.north opCall r=0 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.north opCall r=0 s=0.5 x=1 y=0 z=0
+cubp.part.east.north opCall r=0 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.north opCall r=0 s=1 x=1 y=0 z=1
+cubp.part.east.north opCall r=0.25 s=0 x=1 y=0.25 z=-1
+cubp.part.east.north opCall r=0.25 s=0.25 x=1 y=0.25 z=-0.5
+cubp.part.east.north opCall r=0.25 s=0.5 x=1 y=0.25 z=0
+cubp.part.east.north opCall r=0.25 s=0.75 x=1 y=0.25 z=0.5
+cubp.part.east.north opCall r=0.25 s=1 x=1 y=0.25 z=1
+cubp.part.east.north opCall r=0.5 s=0 x=1 y=0.5 z=-1
+cubp.part.east.north opCall r=0.5 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.north opCall r=0.5 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.north opCall r=0.5 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.north opCall r=0.5 s=1 x=1 y=0.5 z=1
+cubp.part.east.north opCall r=0.75 s=0 x=1 y=0.75 z=-1
+cubp.part.east.north opCall r=0.75 s=0.25 x=1 y=0.75 z=-0.5
+cubp.part.east.north opCall r=0.75 s=0.5 x=1 y=0.75 z=0
+cubp.part.east.north opCall r=0.75 s=0.75 x=1 y=0.75 z=0.5
+cubp.part.east.north opCall r=0.75 s=1 x=1 y=0.75 z=1
+cubp.part.east.north opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.north opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.north opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.north opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.north opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=north)
+cubp.part.south.north classname=CubePatch
+cubp.part.south.north a=1 centre x=0 y=0 z=0 face=south which_part=north which_part.len=5
+cubp.part.south.north opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.north opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.part.south.north opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.part.south.north opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.part.south.north opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.north opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.north opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.part.south.north opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.part.south.north opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.part.south.north opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.north opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.north opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.north opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.part.south.north opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.north opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.north opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.north opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.north opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.north opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.north opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.north opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.north opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.north opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.north opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.north opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=north)
+cubp.part.bottom.north classname=CubePatch
+cubp.part.bottom.north a=1 centre x=0 y=0 z=0 face=bottom which_part=north which_part.len=5
+cubp.part.bottom.north opCall r=0 s=0 x=-1 y=0 z=-1
+cubp.part.bottom.north opCall r=0 s=0.25 x=-1 y=0.25 z=-1
+cubp.part.bottom.north opCall r=0 s=0.5 x=-1 y=0.5 z=-1
+cubp.part.bottom.north opCall r=0 s=0.75 x=-1 y=0.75 z=-1
+cubp.part.bottom.north opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.north opCall r=0.25 s=0 x=-0.5 y=0 z=-1
+cubp.part.bottom.north opCall r=0.25 s=0.25 x=-0.5 y=0.25 z=-1
+cubp.part.bottom.north opCall r=0.25 s=0.5 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.north opCall r=0.25 s=0.75 x=-0.5 y=0.75 z=-1
+cubp.part.bottom.north opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.north opCall r=0.5 s=0 x=0 y=0 z=-1
+cubp.part.bottom.north opCall r=0.5 s=0.25 x=0 y=0.25 z=-1
+cubp.part.bottom.north opCall r=0.5 s=0.5 x=0 y=0.5 z=-1
+cubp.part.bottom.north opCall r=0.5 s=0.75 x=0 y=0.75 z=-1
+cubp.part.bottom.north opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.north opCall r=0.75 s=0 x=0.5 y=0 z=-1
+cubp.part.bottom.north opCall r=0.75 s=0.25 x=0.5 y=0.25 z=-1
+cubp.part.bottom.north opCall r=0.75 s=0.5 x=0.5 y=0.5 z=-1
+cubp.part.bottom.north opCall r=0.75 s=0.75 x=0.5 y=0.75 z=-1
+cubp.part.bottom.north opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.north opCall r=1 s=0 x=1 y=0 z=-1
+cubp.part.bottom.north opCall r=1 s=0.25 x=1 y=0.25 z=-1
+cubp.part.bottom.north opCall r=1 s=0.5 x=1 y=0.5 z=-1
+cubp.part.bottom.north opCall r=1 s=0.75 x=1 y=0.75 z=-1
+cubp.part.bottom.north opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=bottom)
+cubp.part.east.bottom classname=CubePatch
+cubp.part.east.bottom a=1 centre x=0 y=0 z=0 face=east which_part=bottom which_part.len=6
+cubp.part.east.bottom opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.bottom opCall r=0 s=0.25 x=1 y=-1 z=-0.75
+cubp.part.east.bottom opCall r=0 s=0.5 x=1 y=-1 z=-0.5
+cubp.part.east.bottom opCall r=0 s=0.75 x=1 y=-1 z=-0.25
+cubp.part.east.bottom opCall r=0 s=1 x=1 y=-1 z=0
+cubp.part.east.bottom opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.bottom opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.75
+cubp.part.east.bottom opCall r=0.25 s=0.5 x=1 y=-0.5 z=-0.5
+cubp.part.east.bottom opCall r=0.25 s=0.75 x=1 y=-0.5 z=-0.25
+cubp.part.east.bottom opCall r=0.25 s=1 x=1 y=-0.5 z=0
+cubp.part.east.bottom opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.part.east.bottom opCall r=0.5 s=0.25 x=1 y=0 z=-0.75
+cubp.part.east.bottom opCall r=0.5 s=0.5 x=1 y=0 z=-0.5
+cubp.part.east.bottom opCall r=0.5 s=0.75 x=1 y=0 z=-0.25
+cubp.part.east.bottom opCall r=0.5 s=1 x=1 y=0 z=0
+cubp.part.east.bottom opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.part.east.bottom opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.75
+cubp.part.east.bottom opCall r=0.75 s=0.5 x=1 y=0.5 z=-0.5
+cubp.part.east.bottom opCall r=0.75 s=0.75 x=1 y=0.5 z=-0.25
+cubp.part.east.bottom opCall r=0.75 s=1 x=1 y=0.5 z=0
+cubp.part.east.bottom opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.bottom opCall r=1 s=0.25 x=1 y=1 z=-0.75
+cubp.part.east.bottom opCall r=1 s=0.5 x=1 y=1 z=-0.5
+cubp.part.east.bottom opCall r=1 s=0.75 x=1 y=1 z=-0.25
+cubp.part.east.bottom opCall r=1 s=1 x=1 y=1 z=0
+cubp.part.south.bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=bottom)
+cubp.part.south.bottom classname=CubePatch
+cubp.part.south.bottom a=1 centre x=0 y=0 z=0 face=south which_part=bottom which_part.len=6
+cubp.part.south.bottom opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.bottom opCall r=0 s=0.25 x=-1 y=-1 z=-0.75
+cubp.part.south.bottom opCall r=0 s=0.5 x=-1 y=-1 z=-0.5
+cubp.part.south.bottom opCall r=0 s=0.75 x=-1 y=-1 z=-0.25
+cubp.part.south.bottom opCall r=0 s=1 x=-1 y=-1 z=0
+cubp.part.south.bottom opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.bottom opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.75
+cubp.part.south.bottom opCall r=0.25 s=0.5 x=-0.5 y=-1 z=-0.5
+cubp.part.south.bottom opCall r=0.25 s=0.75 x=-0.5 y=-1 z=-0.25
+cubp.part.south.bottom opCall r=0.25 s=1 x=-0.5 y=-1 z=0
+cubp.part.south.bottom opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.bottom opCall r=0.5 s=0.25 x=0 y=-1 z=-0.75
+cubp.part.south.bottom opCall r=0.5 s=0.5 x=0 y=-1 z=-0.5
+cubp.part.south.bottom opCall r=0.5 s=0.75 x=0 y=-1 z=-0.25
+cubp.part.south.bottom opCall r=0.5 s=1 x=0 y=-1 z=0
+cubp.part.south.bottom opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.bottom opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.75
+cubp.part.south.bottom opCall r=0.75 s=0.5 x=0.5 y=-1 z=-0.5
+cubp.part.south.bottom opCall r=0.75 s=0.75 x=0.5 y=-1 z=-0.25
+cubp.part.south.bottom opCall r=0.75 s=1 x=0.5 y=-1 z=0
+cubp.part.south.bottom opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.bottom opCall r=1 s=0.25 x=1 y=-1 z=-0.75
+cubp.part.south.bottom opCall r=1 s=0.5 x=1 y=-1 z=-0.5
+cubp.part.south.bottom opCall r=1 s=0.75 x=1 y=-1 z=-0.25
+cubp.part.south.bottom opCall r=1 s=1 x=1 y=-1 z=0
+cubp.part.bottom.bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=bottom)
+cubp.part.bottom.bottom classname=CubePatch
+cubp.part.bottom.bottom a=1 centre x=0 y=0 z=0 face=bottom which_part=bottom which_part.len=6
+cubp.part.bottom.bottom opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.bottom opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.part.bottom.bottom opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.part.bottom.bottom opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.part.bottom.bottom opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.bottom opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.bottom opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.part.bottom.bottom opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.bottom opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.bottom opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.bottom opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.bottom opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.bottom opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.bottom opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.bottom opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.bottom opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.bottom opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.bottom opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.bottom opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.bottom opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=top)
+cubp.part.east.top classname=CubePatch
+cubp.part.east.top a=1 centre x=0 y=0 z=0 face=east which_part=top which_part.len=3
+cubp.part.east.top opCall r=0 s=0 x=1 y=-1 z=0
+cubp.part.east.top opCall r=0 s=0.25 x=1 y=-1 z=0.25
+cubp.part.east.top opCall r=0 s=0.5 x=1 y=-1 z=0.5
+cubp.part.east.top opCall r=0 s=0.75 x=1 y=-1 z=0.75
+cubp.part.east.top opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.top opCall r=0.25 s=0 x=1 y=-0.5 z=0
+cubp.part.east.top opCall r=0.25 s=0.25 x=1 y=-0.5 z=0.25
+cubp.part.east.top opCall r=0.25 s=0.5 x=1 y=-0.5 z=0.5
+cubp.part.east.top opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.75
+cubp.part.east.top opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.top opCall r=0.5 s=0 x=1 y=0 z=0
+cubp.part.east.top opCall r=0.5 s=0.25 x=1 y=0 z=0.25
+cubp.part.east.top opCall r=0.5 s=0.5 x=1 y=0 z=0.5
+cubp.part.east.top opCall r=0.5 s=0.75 x=1 y=0 z=0.75
+cubp.part.east.top opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.top opCall r=0.75 s=0 x=1 y=0.5 z=0
+cubp.part.east.top opCall r=0.75 s=0.25 x=1 y=0.5 z=0.25
+cubp.part.east.top opCall r=0.75 s=0.5 x=1 y=0.5 z=0.5
+cubp.part.east.top opCall r=0.75 s=0.75 x=1 y=0.5 z=0.75
+cubp.part.east.top opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.top opCall r=1 s=0 x=1 y=1 z=0
+cubp.part.east.top opCall r=1 s=0.25 x=1 y=1 z=0.25
+cubp.part.east.top opCall r=1 s=0.5 x=1 y=1 z=0.5
+cubp.part.east.top opCall r=1 s=0.75 x=1 y=1 z=0.75
+cubp.part.east.top opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=top)
+cubp.part.south.top classname=CubePatch
+cubp.part.south.top a=1 centre x=0 y=0 z=0 face=south which_part=top which_part.len=3
+cubp.part.south.top opCall r=0 s=0 x=-1 y=-1 z=0
+cubp.part.south.top opCall r=0 s=0.25 x=-1 y=-1 z=0.25
+cubp.part.south.top opCall r=0 s=0.5 x=-1 y=-1 z=0.5
+cubp.part.south.top opCall r=0 s=0.75 x=-1 y=-1 z=0.75
+cubp.part.south.top opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.top opCall r=0.25 s=0 x=-0.5 y=-1 z=0
+cubp.part.south.top opCall r=0.25 s=0.25 x=-0.5 y=-1 z=0.25
+cubp.part.south.top opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0.5
+cubp.part.south.top opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.75
+cubp.part.south.top opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.top opCall r=0.5 s=0 x=0 y=-1 z=0
+cubp.part.south.top opCall r=0.5 s=0.25 x=0 y=-1 z=0.25
+cubp.part.south.top opCall r=0.5 s=0.5 x=0 y=-1 z=0.5
+cubp.part.south.top opCall r=0.5 s=0.75 x=0 y=-1 z=0.75
+cubp.part.south.top opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.top opCall r=0.75 s=0 x=0.5 y=-1 z=0
+cubp.part.south.top opCall r=0.75 s=0.25 x=0.5 y=-1 z=0.25
+cubp.part.south.top opCall r=0.75 s=0.5 x=0.5 y=-1 z=0.5
+cubp.part.south.top opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.75
+cubp.part.south.top opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.top opCall r=1 s=0 x=1 y=-1 z=0
+cubp.part.south.top opCall r=1 s=0.25 x=1 y=-1 z=0.25
+cubp.part.south.top opCall r=1 s=0.5 x=1 y=-1 z=0.5
+cubp.part.south.top opCall r=1 s=0.75 x=1 y=-1 z=0.75
+cubp.part.south.top opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=top)
+cubp.part.bottom.top classname=CubePatch
+cubp.part.bottom.top a=1 centre x=0 y=0 z=0 face=bottom which_part=top which_part.len=3
+cubp.part.bottom.top opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.top opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.part.bottom.top opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.part.bottom.top opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.part.bottom.top opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.top opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.top opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.top opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.part.bottom.top opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.top opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.top opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.top opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.top opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.top opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.top opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.top opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.top opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.top opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.top opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.top opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.top opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.top opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.top opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.top opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.top opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=south-top)
+cubp.part.east.south-top classname=CubePatch
+cubp.part.east.south-top a=1 centre x=0 y=0 z=0 face=east which_part=south-top which_part.len=9
+cubp.part.east.south-top opCall r=0 s=0 x=1 y=-1 z=0
+cubp.part.east.south-top opCall r=0 s=0.25 x=1 y=-1 z=0.25
+cubp.part.east.south-top opCall r=0 s=0.5 x=1 y=-1 z=0.5
+cubp.part.east.south-top opCall r=0 s=0.75 x=1 y=-1 z=0.75
+cubp.part.east.south-top opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.south-top opCall r=0.25 s=0 x=1 y=-0.75 z=0
+cubp.part.east.south-top opCall r=0.25 s=0.25 x=1 y=-0.75 z=0.25
+cubp.part.east.south-top opCall r=0.25 s=0.5 x=1 y=-0.75 z=0.5
+cubp.part.east.south-top opCall r=0.25 s=0.75 x=1 y=-0.75 z=0.75
+cubp.part.east.south-top opCall r=0.25 s=1 x=1 y=-0.75 z=1
+cubp.part.east.south-top opCall r=0.5 s=0 x=1 y=-0.5 z=0
+cubp.part.east.south-top opCall r=0.5 s=0.25 x=1 y=-0.5 z=0.25
+cubp.part.east.south-top opCall r=0.5 s=0.5 x=1 y=-0.5 z=0.5
+cubp.part.east.south-top opCall r=0.5 s=0.75 x=1 y=-0.5 z=0.75
+cubp.part.east.south-top opCall r=0.5 s=1 x=1 y=-0.5 z=1
+cubp.part.east.south-top opCall r=0.75 s=0 x=1 y=-0.25 z=0
+cubp.part.east.south-top opCall r=0.75 s=0.25 x=1 y=-0.25 z=0.25
+cubp.part.east.south-top opCall r=0.75 s=0.5 x=1 y=-0.25 z=0.5
+cubp.part.east.south-top opCall r=0.75 s=0.75 x=1 y=-0.25 z=0.75
+cubp.part.east.south-top opCall r=0.75 s=1 x=1 y=-0.25 z=1
+cubp.part.east.south-top opCall r=1 s=0 x=1 y=0 z=0
+cubp.part.east.south-top opCall r=1 s=0.25 x=1 y=0 z=0.25
+cubp.part.east.south-top opCall r=1 s=0.5 x=1 y=0 z=0.5
+cubp.part.east.south-top opCall r=1 s=0.75 x=1 y=0 z=0.75
+cubp.part.east.south-top opCall r=1 s=1 x=1 y=0 z=1
+cubp.part.south.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=south-top)
+cubp.part.south.south-top classname=CubePatch
+cubp.part.south.south-top a=1 centre x=0 y=0 z=0 face=south which_part=south-top which_part.len=9
+cubp.part.south.south-top opCall r=0 s=0 x=-1 y=-1 z=0
+cubp.part.south.south-top opCall r=0 s=0.25 x=-1 y=-1 z=0.25
+cubp.part.south.south-top opCall r=0 s=0.5 x=-1 y=-1 z=0.5
+cubp.part.south.south-top opCall r=0 s=0.75 x=-1 y=-1 z=0.75
+cubp.part.south.south-top opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.south-top opCall r=0.25 s=0 x=-0.5 y=-1 z=0
+cubp.part.south.south-top opCall r=0.25 s=0.25 x=-0.5 y=-1 z=0.25
+cubp.part.south.south-top opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0.5
+cubp.part.south.south-top opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.75
+cubp.part.south.south-top opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.south-top opCall r=0.5 s=0 x=0 y=-1 z=0
+cubp.part.south.south-top opCall r=0.5 s=0.25 x=0 y=-1 z=0.25
+cubp.part.south.south-top opCall r=0.5 s=0.5 x=0 y=-1 z=0.5
+cubp.part.south.south-top opCall r=0.5 s=0.75 x=0 y=-1 z=0.75
+cubp.part.south.south-top opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.south-top opCall r=0.75 s=0 x=0.5 y=-1 z=0
+cubp.part.south.south-top opCall r=0.75 s=0.25 x=0.5 y=-1 z=0.25
+cubp.part.south.south-top opCall r=0.75 s=0.5 x=0.5 y=-1 z=0.5
+cubp.part.south.south-top opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.75
+cubp.part.south.south-top opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.south-top opCall r=1 s=0 x=1 y=-1 z=0
+cubp.part.south.south-top opCall r=1 s=0.25 x=1 y=-1 z=0.25
+cubp.part.south.south-top opCall r=1 s=0.5 x=1 y=-1 z=0.5
+cubp.part.south.south-top opCall r=1 s=0.75 x=1 y=-1 z=0.75
+cubp.part.south.south-top opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=south-top)
+cubp.part.bottom.south-top classname=CubePatch
+cubp.part.bottom.south-top a=1 centre x=0 y=0 z=0 face=bottom which_part=south-top which_part.len=9
+cubp.part.bottom.south-top opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.south-top opCall r=0 s=0.25 x=-1 y=-0.75 z=-1
+cubp.part.bottom.south-top opCall r=0 s=0.5 x=-1 y=-0.5 z=-1
+cubp.part.bottom.south-top opCall r=0 s=0.75 x=-1 y=-0.25 z=-1
+cubp.part.bottom.south-top opCall r=0 s=1 x=-1 y=0 z=-1
+cubp.part.bottom.south-top opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.south-top opCall r=0.25 s=0.25 x=-0.5 y=-0.75 z=-1
+cubp.part.bottom.south-top opCall r=0.25 s=0.5 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.south-top opCall r=0.25 s=0.75 x=-0.5 y=-0.25 z=-1
+cubp.part.bottom.south-top opCall r=0.25 s=1 x=-0.5 y=0 z=-1
+cubp.part.bottom.south-top opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.south-top opCall r=0.5 s=0.25 x=0 y=-0.75 z=-1
+cubp.part.bottom.south-top opCall r=0.5 s=0.5 x=0 y=-0.5 z=-1
+cubp.part.bottom.south-top opCall r=0.5 s=0.75 x=0 y=-0.25 z=-1
+cubp.part.bottom.south-top opCall r=0.5 s=1 x=0 y=0 z=-1
+cubp.part.bottom.south-top opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.south-top opCall r=0.75 s=0.25 x=0.5 y=-0.75 z=-1
+cubp.part.bottom.south-top opCall r=0.75 s=0.5 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.south-top opCall r=0.75 s=0.75 x=0.5 y=-0.25 z=-1
+cubp.part.bottom.south-top opCall r=0.75 s=1 x=0.5 y=0 z=-1
+cubp.part.bottom.south-top opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.south-top opCall r=1 s=0.25 x=1 y=-0.75 z=-1
+cubp.part.bottom.south-top opCall r=1 s=0.5 x=1 y=-0.5 z=-1
+cubp.part.bottom.south-top opCall r=1 s=0.75 x=1 y=-0.25 z=-1
+cubp.part.bottom.south-top opCall r=1 s=1 x=1 y=0 z=-1
+cubp.part.east.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=north-bottom)
+cubp.part.east.north-bottom classname=CubePatch
+cubp.part.east.north-bottom a=1 centre x=0 y=0 z=0 face=east which_part=north-bottom which_part.len=12
+cubp.part.east.north-bottom opCall r=0 s=0 x=1 y=0 z=-1
+cubp.part.east.north-bottom opCall r=0 s=0.25 x=1 y=0 z=-0.75
+cubp.part.east.north-bottom opCall r=0 s=0.5 x=1 y=0 z=-0.5
+cubp.part.east.north-bottom opCall r=0 s=0.75 x=1 y=0 z=-0.25
+cubp.part.east.north-bottom opCall r=0 s=1 x=1 y=0 z=0
+cubp.part.east.north-bottom opCall r=0.25 s=0 x=1 y=0.25 z=-1
+cubp.part.east.north-bottom opCall r=0.25 s=0.25 x=1 y=0.25 z=-0.75
+cubp.part.east.north-bottom opCall r=0.25 s=0.5 x=1 y=0.25 z=-0.5
+cubp.part.east.north-bottom opCall r=0.25 s=0.75 x=1 y=0.25 z=-0.25
+cubp.part.east.north-bottom opCall r=0.25 s=1 x=1 y=0.25 z=0
+cubp.part.east.north-bottom opCall r=0.5 s=0 x=1 y=0.5 z=-1
+cubp.part.east.north-bottom opCall r=0.5 s=0.25 x=1 y=0.5 z=-0.75
+cubp.part.east.north-bottom opCall r=0.5 s=0.5 x=1 y=0.5 z=-0.5
+cubp.part.east.north-bottom opCall r=0.5 s=0.75 x=1 y=0.5 z=-0.25
+cubp.part.east.north-bottom opCall r=0.5 s=1 x=1 y=0.5 z=0
+cubp.part.east.north-bottom opCall r=0.75 s=0 x=1 y=0.75 z=-1
+cubp.part.east.north-bottom opCall r=0.75 s=0.25 x=1 y=0.75 z=-0.75
+cubp.part.east.north-bottom opCall r=0.75 s=0.5 x=1 y=0.75 z=-0.5
+cubp.part.east.north-bottom opCall r=0.75 s=0.75 x=1 y=0.75 z=-0.25
+cubp.part.east.north-bottom opCall r=0.75 s=1 x=1 y=0.75 z=0
+cubp.part.east.north-bottom opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.north-bottom opCall r=1 s=0.25 x=1 y=1 z=-0.75
+cubp.part.east.north-bottom opCall r=1 s=0.5 x=1 y=1 z=-0.5
+cubp.part.east.north-bottom opCall r=1 s=0.75 x=1 y=1 z=-0.25
+cubp.part.east.north-bottom opCall r=1 s=1 x=1 y=1 z=0
+cubp.part.south.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=north-bottom)
+cubp.part.south.north-bottom classname=CubePatch
+cubp.part.south.north-bottom a=1 centre x=0 y=0 z=0 face=south which_part=north-bottom which_part.len=12
+cubp.part.south.north-bottom opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.north-bottom opCall r=0 s=0.25 x=-1 y=-1 z=-0.75
+cubp.part.south.north-bottom opCall r=0 s=0.5 x=-1 y=-1 z=-0.5
+cubp.part.south.north-bottom opCall r=0 s=0.75 x=-1 y=-1 z=-0.25
+cubp.part.south.north-bottom opCall r=0 s=1 x=-1 y=-1 z=0
+cubp.part.south.north-bottom opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.north-bottom opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.75
+cubp.part.south.north-bottom opCall r=0.25 s=0.5 x=-0.5 y=-1 z=-0.5
+cubp.part.south.north-bottom opCall r=0.25 s=0.75 x=-0.5 y=-1 z=-0.25
+cubp.part.south.north-bottom opCall r=0.25 s=1 x=-0.5 y=-1 z=0
+cubp.part.south.north-bottom opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.north-bottom opCall r=0.5 s=0.25 x=0 y=-1 z=-0.75
+cubp.part.south.north-bottom opCall r=0.5 s=0.5 x=0 y=-1 z=-0.5
+cubp.part.south.north-bottom opCall r=0.5 s=0.75 x=0 y=-1 z=-0.25
+cubp.part.south.north-bottom opCall r=0.5 s=1 x=0 y=-1 z=0
+cubp.part.south.north-bottom opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.north-bottom opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.75
+cubp.part.south.north-bottom opCall r=0.75 s=0.5 x=0.5 y=-1 z=-0.5
+cubp.part.south.north-bottom opCall r=0.75 s=0.75 x=0.5 y=-1 z=-0.25
+cubp.part.south.north-bottom opCall r=0.75 s=1 x=0.5 y=-1 z=0
+cubp.part.south.north-bottom opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.north-bottom opCall r=1 s=0.25 x=1 y=-1 z=-0.75
+cubp.part.south.north-bottom opCall r=1 s=0.5 x=1 y=-1 z=-0.5
+cubp.part.south.north-bottom opCall r=1 s=0.75 x=1 y=-1 z=-0.25
+cubp.part.south.north-bottom opCall r=1 s=1 x=1 y=-1 z=0
+cubp.part.bottom.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=north-bottom)
+cubp.part.bottom.north-bottom classname=CubePatch
+cubp.part.bottom.north-bottom a=1 centre x=0 y=0 z=0 face=bottom which_part=north-bottom which_part.len=12
+cubp.part.bottom.north-bottom opCall r=0 s=0 x=-1 y=0 z=-1
+cubp.part.bottom.north-bottom opCall r=0 s=0.25 x=-1 y=0.25 z=-1
+cubp.part.bottom.north-bottom opCall r=0 s=0.5 x=-1 y=0.5 z=-1
+cubp.part.bottom.north-bottom opCall r=0 s=0.75 x=-1 y=0.75 z=-1
+cubp.part.bottom.north-bottom opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.north-bottom opCall r=0.25 s=0 x=-0.5 y=0 z=-1
+cubp.part.bottom.north-bottom opCall r=0.25 s=0.25 x=-0.5 y=0.25 z=-1
+cubp.part.bottom.north-bottom opCall r=0.25 s=0.5 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.north-bottom opCall r=0.25 s=0.75 x=-0.5 y=0.75 z=-1
+cubp.part.bottom.north-bottom opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.north-bottom opCall r=0.5 s=0 x=0 y=0 z=-1
+cubp.part.bottom.north-bottom opCall r=0.5 s=0.25 x=0 y=0.25 z=-1
+cubp.part.bottom.north-bottom opCall r=0.5 s=0.5 x=0 y=0.5 z=-1
+cubp.part.bottom.north-bottom opCall r=0.5 s=0.75 x=0 y=0.75 z=-1
+cubp.part.bottom.north-bottom opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.north-bottom opCall r=0.75 s=0 x=0.5 y=0 z=-1
+cubp.part.bottom.north-bottom opCall r=0.75 s=0.25 x=0.5 y=0.25 z=-1
+cubp.part.bottom.north-bottom opCall r=0.75 s=0.5 x=0.5 y=0.5 z=-1
+cubp.part.bottom.north-bottom opCall r=0.75 s=0.75 x=0.5 y=0.75 z=-1
+cubp.part.bottom.north-bottom opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.north-bottom opCall r=1 s=0 x=1 y=0 z=-1
+cubp.part.bottom.north-bottom opCall r=1 s=0.25 x=1 y=0.25 z=-1
+cubp.part.bottom.north-bottom opCall r=1 s=0.5 x=1 y=0.5 z=-1
+cubp.part.bottom.north-bottom opCall r=1 s=0.75 x=1 y=0.75 z=-1
+cubp.part.bottom.north-bottom opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.west-east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=west-east)
+cubp.part.east.west-east classname=CubePatch
+cubp.part.east.west-east a=1 centre x=0 y=0 z=0 face=east which_part=west-east which_part.len=9
+cubp.part.east.west-east opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.west-east opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.east.west-east opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.part.east.west-east opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.part.east.west-east opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.west-east opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.west-east opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.part.east.west-east opCall r=0.25 s=0.5 x=1 y=-0.5 z=0
+cubp.part.east.west-east opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.5
+cubp.part.east.west-east opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.west-east opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.part.east.west-east opCall r=0.5 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.west-east opCall r=0.5 s=0.5 x=1 y=0 z=0
+cubp.part.east.west-east opCall r=0.5 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.west-east opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.west-east opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.part.east.west-east opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.west-east opCall r=0.75 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.west-east opCall r=0.75 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.west-east opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.west-east opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.west-east opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.west-east opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.west-east opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.west-east opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.west-east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=west-east)
+cubp.part.south.west-east classname=CubePatch
+cubp.part.south.west-east a=1 centre x=0 y=0 z=0 face=south which_part=west-east which_part.len=9
+cubp.part.south.west-east opCall r=0 s=0 x=0 y=-1 z=-1
+cubp.part.south.west-east opCall r=0 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.west-east opCall r=0 s=0.5 x=0 y=-1 z=0
+cubp.part.south.west-east opCall r=0 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.west-east opCall r=0 s=1 x=0 y=-1 z=1
+cubp.part.south.west-east opCall r=0.25 s=0 x=0.25 y=-1 z=-1
+cubp.part.south.west-east opCall r=0.25 s=0.25 x=0.25 y=-1 z=-0.5
+cubp.part.south.west-east opCall r=0.25 s=0.5 x=0.25 y=-1 z=0
+cubp.part.south.west-east opCall r=0.25 s=0.75 x=0.25 y=-1 z=0.5
+cubp.part.south.west-east opCall r=0.25 s=1 x=0.25 y=-1 z=1
+cubp.part.south.west-east opCall r=0.5 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.west-east opCall r=0.5 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.west-east opCall r=0.5 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.west-east opCall r=0.5 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.west-east opCall r=0.5 s=1 x=0.5 y=-1 z=1
+cubp.part.south.west-east opCall r=0.75 s=0 x=0.75 y=-1 z=-1
+cubp.part.south.west-east opCall r=0.75 s=0.25 x=0.75 y=-1 z=-0.5
+cubp.part.south.west-east opCall r=0.75 s=0.5 x=0.75 y=-1 z=0
+cubp.part.south.west-east opCall r=0.75 s=0.75 x=0.75 y=-1 z=0.5
+cubp.part.south.west-east opCall r=0.75 s=1 x=0.75 y=-1 z=1
+cubp.part.south.west-east opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.west-east opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.west-east opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.west-east opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.west-east opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.west-east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=west-east)
+cubp.part.bottom.west-east classname=CubePatch
+cubp.part.bottom.west-east a=1 centre x=0 y=0 z=0 face=bottom which_part=west-east which_part.len=9
+cubp.part.bottom.west-east opCall r=0 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.west-east opCall r=0 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.west-east opCall r=0 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.west-east opCall r=0 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.west-east opCall r=0 s=1 x=0 y=1 z=-1
+cubp.part.bottom.west-east opCall r=0.25 s=0 x=0.25 y=-1 z=-1
+cubp.part.bottom.west-east opCall r=0.25 s=0.25 x=0.25 y=-0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.25 s=0.5 x=0.25 y=0 z=-1
+cubp.part.bottom.west-east opCall r=0.25 s=0.75 x=0.25 y=0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.25 s=1 x=0.25 y=1 z=-1
+cubp.part.bottom.west-east opCall r=0.5 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.west-east opCall r=0.5 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.5 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.west-east opCall r=0.5 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.5 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.west-east opCall r=0.75 s=0 x=0.75 y=-1 z=-1
+cubp.part.bottom.west-east opCall r=0.75 s=0.25 x=0.75 y=-0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.75 s=0.5 x=0.75 y=0 z=-1
+cubp.part.bottom.west-east opCall r=0.75 s=0.75 x=0.75 y=0.5 z=-1
+cubp.part.bottom.west-east opCall r=0.75 s=1 x=0.75 y=1 z=-1
+cubp.part.bottom.west-east opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.west-east opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.west-east opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.west-east opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.west-east opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.south-north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=south-north)
+cubp.part.east.south-north classname=CubePatch
+cubp.part.east.south-north a=1 centre x=0 y=0 z=0 face=east which_part=south-north which_part.len=11
+cubp.part.east.south-north opCall r=0 s=0 x=1 y=0 z=-1
+cubp.part.east.south-north opCall r=0 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.south-north opCall r=0 s=0.5 x=1 y=0 z=0
+cubp.part.east.south-north opCall r=0 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.south-north opCall r=0 s=1 x=1 y=0 z=1
+cubp.part.east.south-north opCall r=0.25 s=0 x=1 y=0.25 z=-1
+cubp.part.east.south-north opCall r=0.25 s=0.25 x=1 y=0.25 z=-0.5
+cubp.part.east.south-north opCall r=0.25 s=0.5 x=1 y=0.25 z=0
+cubp.part.east.south-north opCall r=0.25 s=0.75 x=1 y=0.25 z=0.5
+cubp.part.east.south-north opCall r=0.25 s=1 x=1 y=0.25 z=1
+cubp.part.east.south-north opCall r=0.5 s=0 x=1 y=0.5 z=-1
+cubp.part.east.south-north opCall r=0.5 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.south-north opCall r=0.5 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.south-north opCall r=0.5 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.south-north opCall r=0.5 s=1 x=1 y=0.5 z=1
+cubp.part.east.south-north opCall r=0.75 s=0 x=1 y=0.75 z=-1
+cubp.part.east.south-north opCall r=0.75 s=0.25 x=1 y=0.75 z=-0.5
+cubp.part.east.south-north opCall r=0.75 s=0.5 x=1 y=0.75 z=0
+cubp.part.east.south-north opCall r=0.75 s=0.75 x=1 y=0.75 z=0.5
+cubp.part.east.south-north opCall r=0.75 s=1 x=1 y=0.75 z=1
+cubp.part.east.south-north opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.south-north opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.south-north opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.south-north opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.south-north opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.south-north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=south-north)
+cubp.part.south.south-north classname=CubePatch
+cubp.part.south.south-north a=1 centre x=0 y=0 z=0 face=south which_part=south-north which_part.len=11
+cubp.part.south.south-north opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.south-north opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.part.south.south-north opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.part.south.south-north opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.part.south.south-north opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.south-north opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.south-north opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.part.south.south-north opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.part.south.south-north opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.part.south.south-north opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.south-north opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.south-north opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.south-north opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.part.south.south-north opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.south-north opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.south-north opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.south-north opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.south-north opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.south-north opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.south-north opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.south-north opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.south-north opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.south-north opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.south-north opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.south-north opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.south-north str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=south-north)
+cubp.part.bottom.south-north classname=CubePatch
+cubp.part.bottom.south-north a=1 centre x=0 y=0 z=0 face=bottom which_part=south-north which_part.len=11
+cubp.part.bottom.south-north opCall r=0 s=0 x=-1 y=0 z=-1
+cubp.part.bottom.south-north opCall r=0 s=0.25 x=-1 y=0.25 z=-1
+cubp.part.bottom.south-north opCall r=0 s=0.5 x=-1 y=0.5 z=-1
+cubp.part.bottom.south-north opCall r=0 s=0.75 x=-1 y=0.75 z=-1
+cubp.part.bottom.south-north opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.south-north opCall r=0.25 s=0 x=-0.5 y=0 z=-1
+cubp.part.bottom.south-north opCall r=0.25 s=0.25 x=-0.5 y=0.25 z=-1
+cubp.part.bottom.south-north opCall r=0.25 s=0.5 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.south-north opCall r=0.25 s=0.75 x=-0.5 y=0.75 z=-1
+cubp.part.bottom.south-north opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.south-north opCall r=0.5 s=0 x=0 y=0 z=-1
+cubp.part.bottom.south-north opCall r=0.5 s=0.25 x=0 y=0.25 z=-1
+cubp.part.bottom.south-north opCall r=0.5 s=0.5 x=0 y=0.5 z=-1
+cubp.part.bottom.south-north opCall r=0.5 s=0.75 x=0 y=0.75 z=-1
+cubp.part.bottom.south-north opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.south-north opCall r=0.75 s=0 x=0.5 y=0 z=-1
+cubp.part.bottom.south-north opCall r=0.75 s=0.25 x=0.5 y=0.25 z=-1
+cubp.part.bottom.south-north opCall r=0.75 s=0.5 x=0.5 y=0.5 z=-1
+cubp.part.bottom.south-north opCall r=0.75 s=0.75 x=0.5 y=0.75 z=-1
+cubp.part.bottom.south-north opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.south-north opCall r=1 s=0 x=1 y=0 z=-1
+cubp.part.bottom.south-north opCall r=1 s=0.25 x=1 y=0.25 z=-1
+cubp.part.bottom.south-north opCall r=1 s=0.5 x=1 y=0.5 z=-1
+cubp.part.bottom.south-north opCall r=1 s=0.75 x=1 y=0.75 z=-1
+cubp.part.bottom.south-north opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.bottom-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=bottom-top)
+cubp.part.east.bottom-top classname=CubePatch
+cubp.part.east.bottom-top a=1 centre x=0 y=0 z=0 face=east which_part=bottom-top which_part.len=10
+cubp.part.east.bottom-top opCall r=0 s=0 x=1 y=-1 z=0
+cubp.part.east.bottom-top opCall r=0 s=0.25 x=1 y=-1 z=0.25
+cubp.part.east.bottom-top opCall r=0 s=0.5 x=1 y=-1 z=0.5
+cubp.part.east.bottom-top opCall r=0 s=0.75 x=1 y=-1 z=0.75
+cubp.part.east.bottom-top opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.bottom-top opCall r=0.25 s=0 x=1 y=-0.5 z=0
+cubp.part.east.bottom-top opCall r=0.25 s=0.25 x=1 y=-0.5 z=0.25
+cubp.part.east.bottom-top opCall r=0.25 s=0.5 x=1 y=-0.5 z=0.5
+cubp.part.east.bottom-top opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.75
+cubp.part.east.bottom-top opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.bottom-top opCall r=0.5 s=0 x=1 y=0 z=0
+cubp.part.east.bottom-top opCall r=0.5 s=0.25 x=1 y=0 z=0.25
+cubp.part.east.bottom-top opCall r=0.5 s=0.5 x=1 y=0 z=0.5
+cubp.part.east.bottom-top opCall r=0.5 s=0.75 x=1 y=0 z=0.75
+cubp.part.east.bottom-top opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.bottom-top opCall r=0.75 s=0 x=1 y=0.5 z=0
+cubp.part.east.bottom-top opCall r=0.75 s=0.25 x=1 y=0.5 z=0.25
+cubp.part.east.bottom-top opCall r=0.75 s=0.5 x=1 y=0.5 z=0.5
+cubp.part.east.bottom-top opCall r=0.75 s=0.75 x=1 y=0.5 z=0.75
+cubp.part.east.bottom-top opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.bottom-top opCall r=1 s=0 x=1 y=1 z=0
+cubp.part.east.bottom-top opCall r=1 s=0.25 x=1 y=1 z=0.25
+cubp.part.east.bottom-top opCall r=1 s=0.5 x=1 y=1 z=0.5
+cubp.part.east.bottom-top opCall r=1 s=0.75 x=1 y=1 z=0.75
+cubp.part.east.bottom-top opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.bottom-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=bottom-top)
+cubp.part.south.bottom-top classname=CubePatch
+cubp.part.south.bottom-top a=1 centre x=0 y=0 z=0 face=south which_part=bottom-top which_part.len=10
+cubp.part.south.bottom-top opCall r=0 s=0 x=-1 y=-1 z=0
+cubp.part.south.bottom-top opCall r=0 s=0.25 x=-1 y=-1 z=0.25
+cubp.part.south.bottom-top opCall r=0 s=0.5 x=-1 y=-1 z=0.5
+cubp.part.south.bottom-top opCall r=0 s=0.75 x=-1 y=-1 z=0.75
+cubp.part.south.bottom-top opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.bottom-top opCall r=0.25 s=0 x=-0.5 y=-1 z=0
+cubp.part.south.bottom-top opCall r=0.25 s=0.25 x=-0.5 y=-1 z=0.25
+cubp.part.south.bottom-top opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0.5
+cubp.part.south.bottom-top opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.75
+cubp.part.south.bottom-top opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.bottom-top opCall r=0.5 s=0 x=0 y=-1 z=0
+cubp.part.south.bottom-top opCall r=0.5 s=0.25 x=0 y=-1 z=0.25
+cubp.part.south.bottom-top opCall r=0.5 s=0.5 x=0 y=-1 z=0.5
+cubp.part.south.bottom-top opCall r=0.5 s=0.75 x=0 y=-1 z=0.75
+cubp.part.south.bottom-top opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.bottom-top opCall r=0.75 s=0 x=0.5 y=-1 z=0
+cubp.part.south.bottom-top opCall r=0.75 s=0.25 x=0.5 y=-1 z=0.25
+cubp.part.south.bottom-top opCall r=0.75 s=0.5 x=0.5 y=-1 z=0.5
+cubp.part.south.bottom-top opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.75
+cubp.part.south.bottom-top opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.bottom-top opCall r=1 s=0 x=1 y=-1 z=0
+cubp.part.south.bottom-top opCall r=1 s=0.25 x=1 y=-1 z=0.25
+cubp.part.south.bottom-top opCall r=1 s=0.5 x=1 y=-1 z=0.5
+cubp.part.south.bottom-top opCall r=1 s=0.75 x=1 y=-1 z=0.75
+cubp.part.south.bottom-top opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.bottom-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=bottom-top)
+cubp.part.bottom.bottom-top classname=CubePatch
+cubp.part.bottom.bottom-top a=1 centre x=0 y=0 z=0 face=bottom which_part=bottom-top which_part.len=10
+cubp.part.bottom.bottom-top opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.bottom-top opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.part.bottom.bottom-top opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.part.bottom.bottom-top opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.bottom-top opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.bottom-top opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.bottom-top opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.bottom-top opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.bottom-top opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.bottom-top opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.bottom-top opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.xyz str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=xyz)
+cubp.part.east.xyz classname=CubePatch
+cubp.part.east.xyz a=1 centre x=0 y=0 z=0 face=east which_part=xyz which_part.len=3
+cubp.part.east.xyz opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.xyz opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.east.xyz opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.part.east.xyz opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.part.east.xyz opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.xyz opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.xyz opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.part.east.xyz opCall r=0.25 s=0.5 x=1 y=-0.5 z=0
+cubp.part.east.xyz opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.5
+cubp.part.east.xyz opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.xyz opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.part.east.xyz opCall r=0.5 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.xyz opCall r=0.5 s=0.5 x=1 y=0 z=0
+cubp.part.east.xyz opCall r=0.5 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.xyz opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.xyz opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.part.east.xyz opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.xyz opCall r=0.75 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.xyz opCall r=0.75 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.xyz opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.xyz opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.xyz opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.xyz opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.xyz opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.xyz opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.xyz str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=xyz)
+cubp.part.south.xyz classname=CubePatch
+cubp.part.south.xyz a=1 centre x=0 y=0 z=0 face=south which_part=xyz which_part.len=3
+cubp.part.south.xyz opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.south.xyz opCall r=0 s=0.25 x=-1 y=-1 z=-0.5
+cubp.part.south.xyz opCall r=0 s=0.5 x=-1 y=-1 z=0
+cubp.part.south.xyz opCall r=0 s=0.75 x=-1 y=-1 z=0.5
+cubp.part.south.xyz opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.xyz opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.south.xyz opCall r=0.25 s=0.25 x=-0.5 y=-1 z=-0.5
+cubp.part.south.xyz opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0
+cubp.part.south.xyz opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.5
+cubp.part.south.xyz opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.xyz opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.south.xyz opCall r=0.5 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.xyz opCall r=0.5 s=0.5 x=0 y=-1 z=0
+cubp.part.south.xyz opCall r=0.5 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.xyz opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.xyz opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.xyz opCall r=0.75 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.xyz opCall r=0.75 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.xyz opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.xyz opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.xyz opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.xyz opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.xyz opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.xyz opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.xyz opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.xyz str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=xyz)
+cubp.part.bottom.xyz classname=CubePatch
+cubp.part.bottom.xyz a=1 centre x=0 y=0 z=0 face=bottom which_part=xyz which_part.len=3
+cubp.part.bottom.xyz opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.xyz opCall r=0 s=0.25 x=-1 y=-0.5 z=-1
+cubp.part.bottom.xyz opCall r=0 s=0.5 x=-1 y=0 z=-1
+cubp.part.bottom.xyz opCall r=0 s=0.75 x=-1 y=0.5 z=-1
+cubp.part.bottom.xyz opCall r=0 s=1 x=-1 y=1 z=-1
+cubp.part.bottom.xyz opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.xyz opCall r=0.25 s=0.25 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.25 s=0.5 x=-0.5 y=0 z=-1
+cubp.part.bottom.xyz opCall r=0.25 s=0.75 x=-0.5 y=0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.25 s=1 x=-0.5 y=1 z=-1
+cubp.part.bottom.xyz opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.xyz opCall r=0.5 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.5 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.xyz opCall r=0.5 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.5 s=1 x=0 y=1 z=-1
+cubp.part.bottom.xyz opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.xyz opCall r=0.75 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.75 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.xyz opCall r=0.75 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.xyz opCall r=0.75 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.xyz opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.xyz opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.xyz opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.xyz opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.xyz opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=east)
+cubp.part.east.east classname=CubePatch
+cubp.part.east.east a=1 centre x=0 y=0 z=0 face=east which_part=east which_part.len=4
+cubp.part.east.east opCall r=0 s=0 x=1 y=-1 z=-1
+cubp.part.east.east opCall r=0 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.east.east opCall r=0 s=0.5 x=1 y=-1 z=0
+cubp.part.east.east opCall r=0 s=0.75 x=1 y=-1 z=0.5
+cubp.part.east.east opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.east opCall r=0.25 s=0 x=1 y=-0.5 z=-1
+cubp.part.east.east opCall r=0.25 s=0.25 x=1 y=-0.5 z=-0.5
+cubp.part.east.east opCall r=0.25 s=0.5 x=1 y=-0.5 z=0
+cubp.part.east.east opCall r=0.25 s=0.75 x=1 y=-0.5 z=0.5
+cubp.part.east.east opCall r=0.25 s=1 x=1 y=-0.5 z=1
+cubp.part.east.east opCall r=0.5 s=0 x=1 y=0 z=-1
+cubp.part.east.east opCall r=0.5 s=0.25 x=1 y=0 z=-0.5
+cubp.part.east.east opCall r=0.5 s=0.5 x=1 y=0 z=0
+cubp.part.east.east opCall r=0.5 s=0.75 x=1 y=0 z=0.5
+cubp.part.east.east opCall r=0.5 s=1 x=1 y=0 z=1
+cubp.part.east.east opCall r=0.75 s=0 x=1 y=0.5 z=-1
+cubp.part.east.east opCall r=0.75 s=0.25 x=1 y=0.5 z=-0.5
+cubp.part.east.east opCall r=0.75 s=0.5 x=1 y=0.5 z=0
+cubp.part.east.east opCall r=0.75 s=0.75 x=1 y=0.5 z=0.5
+cubp.part.east.east opCall r=0.75 s=1 x=1 y=0.5 z=1
+cubp.part.east.east opCall r=1 s=0 x=1 y=1 z=-1
+cubp.part.east.east opCall r=1 s=0.25 x=1 y=1 z=-0.5
+cubp.part.east.east opCall r=1 s=0.5 x=1 y=1 z=0
+cubp.part.east.east opCall r=1 s=0.75 x=1 y=1 z=0.5
+cubp.part.east.east opCall r=1 s=1 x=1 y=1 z=1
+cubp.part.south.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=east)
+cubp.part.south.east classname=CubePatch
+cubp.part.south.east a=1 centre x=0 y=0 z=0 face=south which_part=east which_part.len=4
+cubp.part.south.east opCall r=0 s=0 x=0 y=-1 z=-1
+cubp.part.south.east opCall r=0 s=0.25 x=0 y=-1 z=-0.5
+cubp.part.south.east opCall r=0 s=0.5 x=0 y=-1 z=0
+cubp.part.south.east opCall r=0 s=0.75 x=0 y=-1 z=0.5
+cubp.part.south.east opCall r=0 s=1 x=0 y=-1 z=1
+cubp.part.south.east opCall r=0.25 s=0 x=0.25 y=-1 z=-1
+cubp.part.south.east opCall r=0.25 s=0.25 x=0.25 y=-1 z=-0.5
+cubp.part.south.east opCall r=0.25 s=0.5 x=0.25 y=-1 z=0
+cubp.part.south.east opCall r=0.25 s=0.75 x=0.25 y=-1 z=0.5
+cubp.part.south.east opCall r=0.25 s=1 x=0.25 y=-1 z=1
+cubp.part.south.east opCall r=0.5 s=0 x=0.5 y=-1 z=-1
+cubp.part.south.east opCall r=0.5 s=0.25 x=0.5 y=-1 z=-0.5
+cubp.part.south.east opCall r=0.5 s=0.5 x=0.5 y=-1 z=0
+cubp.part.south.east opCall r=0.5 s=0.75 x=0.5 y=-1 z=0.5
+cubp.part.south.east opCall r=0.5 s=1 x=0.5 y=-1 z=1
+cubp.part.south.east opCall r=0.75 s=0 x=0.75 y=-1 z=-1
+cubp.part.south.east opCall r=0.75 s=0.25 x=0.75 y=-1 z=-0.5
+cubp.part.south.east opCall r=0.75 s=0.5 x=0.75 y=-1 z=0
+cubp.part.south.east opCall r=0.75 s=0.75 x=0.75 y=-1 z=0.5
+cubp.part.south.east opCall r=0.75 s=1 x=0.75 y=-1 z=1
+cubp.part.south.east opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.south.east opCall r=1 s=0.25 x=1 y=-1 z=-0.5
+cubp.part.south.east opCall r=1 s=0.5 x=1 y=-1 z=0
+cubp.part.south.east opCall r=1 s=0.75 x=1 y=-1 z=0.5
+cubp.part.south.east opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=east)
+cubp.part.bottom.east classname=CubePatch
+cubp.part.bottom.east a=1 centre x=0 y=0 z=0 face=bottom which_part=east which_part.len=4
+cubp.part.bottom.east opCall r=0 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.east opCall r=0 s=0.25 x=0 y=-0.5 z=-1
+cubp.part.bottom.east opCall r=0 s=0.5 x=0 y=0 z=-1
+cubp.part.bottom.east opCall r=0 s=0.75 x=0 y=0.5 z=-1
+cubp.part.bottom.east opCall r=0 s=1 x=0 y=1 z=-1
+cubp.part.bottom.east opCall r=0.25 s=0 x=0.25 y=-1 z=-1
+cubp.part.bottom.east opCall r=0.25 s=0.25 x=0.25 y=-0.5 z=-1
+cubp.part.bottom.east opCall r=0.25 s=0.5 x=0.25 y=0 z=-1
+cubp.part.bottom.east opCall r=0.25 s=0.75 x=0.25 y=0.5 z=-1
+cubp.part.bottom.east opCall r=0.25 s=1 x=0.25 y=1 z=-1
+cubp.part.bottom.east opCall r=0.5 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.east opCall r=0.5 s=0.25 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.east opCall r=0.5 s=0.5 x=0.5 y=0 z=-1
+cubp.part.bottom.east opCall r=0.5 s=0.75 x=0.5 y=0.5 z=-1
+cubp.part.bottom.east opCall r=0.5 s=1 x=0.5 y=1 z=-1
+cubp.part.bottom.east opCall r=0.75 s=0 x=0.75 y=-1 z=-1
+cubp.part.bottom.east opCall r=0.75 s=0.25 x=0.75 y=-0.5 z=-1
+cubp.part.bottom.east opCall r=0.75 s=0.5 x=0.75 y=0 z=-1
+cubp.part.bottom.east opCall r=0.75 s=0.75 x=0.75 y=0.5 z=-1
+cubp.part.bottom.east opCall r=0.75 s=1 x=0.75 y=1 z=-1
+cubp.part.bottom.east opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.east opCall r=1 s=0.25 x=1 y=-0.5 z=-1
+cubp.part.bottom.east opCall r=1 s=0.5 x=1 y=0 z=-1
+cubp.part.bottom.east opCall r=1 s=0.75 x=1 y=0.5 z=-1
+cubp.part.bottom.east opCall r=1 s=1 x=1 y=1 z=-1
+cubp.part.east.top-south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=east, which_part=top-south)
+cubp.part.east.top-south classname=CubePatch
+cubp.part.east.top-south a=1 centre x=0 y=0 z=0 face=east which_part=top-south which_part.len=9
+cubp.part.east.top-south opCall r=0 s=0 x=1 y=-1 z=0
+cubp.part.east.top-south opCall r=0 s=0.25 x=1 y=-1 z=0.25
+cubp.part.east.top-south opCall r=0 s=0.5 x=1 y=-1 z=0.5
+cubp.part.east.top-south opCall r=0 s=0.75 x=1 y=-1 z=0.75
+cubp.part.east.top-south opCall r=0 s=1 x=1 y=-1 z=1
+cubp.part.east.top-south opCall r=0.25 s=0 x=1 y=-0.75 z=0
+cubp.part.east.top-south opCall r=0.25 s=0.25 x=1 y=-0.75 z=0.25
+cubp.part.east.top-south opCall r=0.25 s=0.5 x=1 y=-0.75 z=0.5
+cubp.part.east.top-south opCall r=0.25 s=0.75 x=1 y=-0.75 z=0.75
+cubp.part.east.top-south opCall r=0.25 s=1 x=1 y=-0.75 z=1
+cubp.part.east.top-south opCall r=0.5 s=0 x=1 y=-0.5 z=0
+cubp.part.east.top-south opCall r=0.5 s=0.25 x=1 y=-0.5 z=0.25
+cubp.part.east.top-south opCall r=0.5 s=0.5 x=1 y=-0.5 z=0.5
+cubp.part.east.top-south opCall r=0.5 s=0.75 x=1 y=-0.5 z=0.75
+cubp.part.east.top-south opCall r=0.5 s=1 x=1 y=-0.5 z=1
+cubp.part.east.top-south opCall r=0.75 s=0 x=1 y=-0.25 z=0
+cubp.part.east.top-south opCall r=0.75 s=0.25 x=1 y=-0.25 z=0.25
+cubp.part.east.top-south opCall r=0.75 s=0.5 x=1 y=-0.25 z=0.5
+cubp.part.east.top-south opCall r=0.75 s=0.75 x=1 y=-0.25 z=0.75
+cubp.part.east.top-south opCall r=0.75 s=1 x=1 y=-0.25 z=1
+cubp.part.east.top-south opCall r=1 s=0 x=1 y=0 z=0
+cubp.part.east.top-south opCall r=1 s=0.25 x=1 y=0 z=0.25
+cubp.part.east.top-south opCall r=1 s=0.5 x=1 y=0 z=0.5
+cubp.part.east.top-south opCall r=1 s=0.75 x=1 y=0 z=0.75
+cubp.part.east.top-south opCall r=1 s=1 x=1 y=0 z=1
+cubp.part.south.top-south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=south, which_part=top-south)
+cubp.part.south.top-south classname=CubePatch
+cubp.part.south.top-south a=1 centre x=0 y=0 z=0 face=south which_part=top-south which_part.len=9
+cubp.part.south.top-south opCall r=0 s=0 x=-1 y=-1 z=0
+cubp.part.south.top-south opCall r=0 s=0.25 x=-1 y=-1 z=0.25
+cubp.part.south.top-south opCall r=0 s=0.5 x=-1 y=-1 z=0.5
+cubp.part.south.top-south opCall r=0 s=0.75 x=-1 y=-1 z=0.75
+cubp.part.south.top-south opCall r=0 s=1 x=-1 y=-1 z=1
+cubp.part.south.top-south opCall r=0.25 s=0 x=-0.5 y=-1 z=0
+cubp.part.south.top-south opCall r=0.25 s=0.25 x=-0.5 y=-1 z=0.25
+cubp.part.south.top-south opCall r=0.25 s=0.5 x=-0.5 y=-1 z=0.5
+cubp.part.south.top-south opCall r=0.25 s=0.75 x=-0.5 y=-1 z=0.75
+cubp.part.south.top-south opCall r=0.25 s=1 x=-0.5 y=-1 z=1
+cubp.part.south.top-south opCall r=0.5 s=0 x=0 y=-1 z=0
+cubp.part.south.top-south opCall r=0.5 s=0.25 x=0 y=-1 z=0.25
+cubp.part.south.top-south opCall r=0.5 s=0.5 x=0 y=-1 z=0.5
+cubp.part.south.top-south opCall r=0.5 s=0.75 x=0 y=-1 z=0.75
+cubp.part.south.top-south opCall r=0.5 s=1 x=0 y=-1 z=1
+cubp.part.south.top-south opCall r=0.75 s=0 x=0.5 y=-1 z=0
+cubp.part.south.top-south opCall r=0.75 s=0.25 x=0.5 y=-1 z=0.25
+cubp.part.south.top-south opCall r=0.75 s=0.5 x=0.5 y=-1 z=0.5
+cubp.part.south.top-south opCall r=0.75 s=0.75 x=0.5 y=-1 z=0.75
+cubp.part.south.top-south opCall r=0.75 s=1 x=0.5 y=-1 z=1
+cubp.part.south.top-south opCall r=1 s=0 x=1 y=-1 z=0
+cubp.part.south.top-south opCall r=1 s=0.25 x=1 y=-1 z=0.25
+cubp.part.south.top-south opCall r=1 s=0.5 x=1 y=-1 z=0.5
+cubp.part.south.top-south opCall r=1 s=0.75 x=1 y=-1 z=0.75
+cubp.part.south.top-south opCall r=1 s=1 x=1 y=-1 z=1
+cubp.part.bottom.top-south str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bottom, which_part=top-south)
+cubp.part.bottom.top-south classname=CubePatch
+cubp.part.bottom.top-south a=1 centre x=0 y=0 z=0 face=bottom which_part=top-south which_part.len=9
+cubp.part.bottom.top-south opCall r=0 s=0 x=-1 y=-1 z=-1
+cubp.part.bottom.top-south opCall r=0 s=0.25 x=-1 y=-0.75 z=-1
+cubp.part.bottom.top-south opCall r=0 s=0.5 x=-1 y=-0.5 z=-1
+cubp.part.bottom.top-south opCall r=0 s=0.75 x=-1 y=-0.25 z=-1
+cubp.part.bottom.top-south opCall r=0 s=1 x=-1 y=0 z=-1
+cubp.part.bottom.top-south opCall r=0.25 s=0 x=-0.5 y=-1 z=-1
+cubp.part.bottom.top-south opCall r=0.25 s=0.25 x=-0.5 y=-0.75 z=-1
+cubp.part.bottom.top-south opCall r=0.25 s=0.5 x=-0.5 y=-0.5 z=-1
+cubp.part.bottom.top-south opCall r=0.25 s=0.75 x=-0.5 y=-0.25 z=-1
+cubp.part.bottom.top-south opCall r=0.25 s=1 x=-0.5 y=0 z=-1
+cubp.part.bottom.top-south opCall r=0.5 s=0 x=0 y=-1 z=-1
+cubp.part.bottom.top-south opCall r=0.5 s=0.25 x=0 y=-0.75 z=-1
+cubp.part.bottom.top-south opCall r=0.5 s=0.5 x=0 y=-0.5 z=-1
+cubp.part.bottom.top-south opCall r=0.5 s=0.75 x=0 y=-0.25 z=-1
+cubp.part.bottom.top-south opCall r=0.5 s=1 x=0 y=0 z=-1
+cubp.part.bottom.top-south opCall r=0.75 s=0 x=0.5 y=-1 z=-1
+cubp.part.bottom.top-south opCall r=0.75 s=0.25 x=0.5 y=-0.75 z=-1
+cubp.part.bottom.top-south opCall r=0.75 s=0.5 x=0.5 y=-0.5 z=-1
+cubp.part.bottom.top-south opCall r=0.75 s=0.75 x=0.5 y=-0.25 z=-1
+cubp.part.bottom.top-south opCall r=0.75 s=1 x=0.5 y=0 z=-1
+cubp.part.bottom.top-south opCall r=1 s=0 x=1 y=-1 z=-1
+cubp.part.bottom.top-south opCall r=1 s=0.25 x=1 y=-0.75 z=-1
+cubp.part.bottom.top-south opCall r=1 s=0.5 x=1 y=-0.5 z=-1
+cubp.part.bottom.top-south opCall r=1 s=0.75 x=1 y=-0.25 z=-1
+cubp.part.bottom.top-south opCall r=1 s=1 x=1 y=0 z=-1
+cubp.part2.west.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=west, which_part=south-top)
+cubp.part2.west.south-top classname=CubePatch
+cubp.part2.west.south-top a=1 centre x=0 y=0 z=0 face=west which_part=south-top which_part.len=9
+cubp.part2.west.south-top corner r=0 s=0 x=-1 y=-1 z=0
+cubp.part2.west.south-top corner r=1 s=1 x=-1 y=0 z=1
+cubp.part2.west.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=west, which_part=north-bottom)
+cubp.part2.west.north-bottom classname=CubePatch
+cubp.part2.west.north-bottom a=1 centre x=0 y=0 z=0 face=west which_part=north-bottom which_part.len=12
+cubp.part2.west.north-bottom corner r=0 s=0 x=-1 y=0 z=-1
+cubp.part2.west.north-bottom corner r=1 s=1 x=-1 y=1 z=0
+cubp.part2.west.west str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=west, which_part=west)
+cubp.part2.west.west classname=CubePatch
+cubp.part2.west.west a=1 centre x=0 y=0 z=0 face=west which_part=west which_part.len=4
+cubp.part2.west.west corner r=0 s=0 x=-1 y=-1 z=-1
+cubp.part2.west.west corner r=1 s=1 x=-1 y=1 z=1
+cubp.part2.west.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=west, which_part=east)
+cubp.part2.west.east classname=CubePatch
+cubp.part2.west.east a=1 centre x=0 y=0 z=0 face=west which_part=east which_part.len=4
+cubp.part2.west.east corner r=0 s=0 x=-1 y=-1 z=-1
+cubp.part2.west.east corner r=1 s=1 x=-1 y=1 z=1
+cubp.part2.north.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=north, which_part=south-top)
+cubp.part2.north.south-top classname=CubePatch
+cubp.part2.north.south-top a=1 centre x=0 y=0 z=0 face=north which_part=south-top which_part.len=9
+cubp.part2.north.south-top corner r=0 s=0 x=-1 y=1 z=0
+cubp.part2.north.south-top corner r=1 s=1 x=1 y=1 z=1
+cubp.part2.north.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=north, which_part=north-bottom)
+cubp.part2.north.north-bottom classname=CubePatch
+cubp.part2.north.north-bottom a=1 centre x=0 y=0 z=0 face=north which_part=north-bottom which_part.len=12
+cubp.part2.north.north-bottom corner r=0 s=0 x=-1 y=1 z=-1
+cubp.part2.north.north-bottom corner r=1 s=1 x=1 y=1 z=0
+cubp.part2.north.west str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=north, which_part=west)
+cubp.part2.north.west classname=CubePatch
+cubp.part2.north.west a=1 centre x=0 y=0 z=0 face=north which_part=west which_part.len=4
+cubp.part2.north.west corner r=0 s=0 x=-1 y=1 z=-1
+cubp.part2.north.west corner r=1 s=1 x=0 y=1 z=1
+cubp.part2.north.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=north, which_part=east)
+cubp.part2.north.east classname=CubePatch
+cubp.part2.north.east a=1 centre x=0 y=0 z=0 face=north which_part=east which_part.len=4
+cubp.part2.north.east corner r=0 s=0 x=0 y=1 z=-1
+cubp.part2.north.east corner r=1 s=1 x=1 y=1 z=1
+cubp.part2.top.south-top str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=top, which_part=south-top)
+cubp.part2.top.south-top classname=CubePatch
+cubp.part2.top.south-top a=1 centre x=0 y=0 z=0 face=top which_part=south-top which_part.len=9
+cubp.part2.top.south-top corner r=0 s=0 x=-1 y=-1 z=1
+cubp.part2.top.south-top corner r=1 s=1 x=1 y=0 z=1
+cubp.part2.top.north-bottom str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=top, which_part=north-bottom)
+cubp.part2.top.north-bottom classname=CubePatch
+cubp.part2.top.north-bottom a=1 centre x=0 y=0 z=0 face=top which_part=north-bottom which_part.len=12
+cubp.part2.top.north-bottom corner r=0 s=0 x=-1 y=0 z=1
+cubp.part2.top.north-bottom corner r=1 s=1 x=1 y=1 z=1
+cubp.part2.top.west str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=top, which_part=west)
+cubp.part2.top.west classname=CubePatch
+cubp.part2.top.west a=1 centre x=0 y=0 z=0 face=top which_part=west which_part.len=4
+cubp.part2.top.west corner r=0 s=0 x=-1 y=-1 z=1
+cubp.part2.top.west corner r=1 s=1 x=0 y=1 z=1
+cubp.part2.top.east str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=top, which_part=east)
+cubp.part2.top.east classname=CubePatch
+cubp.part2.top.east a=1 centre x=0 y=0 z=0 face=top which_part=east which_part.len=4
+cubp.part2.top.east corner r=0 s=0 x=0 y=-1 z=1
+cubp.part2.top.east corner r=1 s=1 x=1 y=1 z=1
+cubp.badname.empty threw=Exception msg=Invalid face name: 
+cubp.badname.  threw=Exception msg=Invalid face name:  
+cubp.badname.East threw=Exception msg=Invalid face name: East
+cubp.badname.EAST threw=Exception msg=Invalid face name: EAST
+cubp.badname.east-west threw=Exception msg=Invalid face name: east-west
+cubp.badname.east  threw=Exception msg=Invalid face name: east 
+cubp.badname. east threw=Exception msg=Invalid face name:  east
+cubp.badname.n threw=Exception msg=Invalid face name: n
+cubp.badname.north-south threw=Exception msg=Invalid face name: north-south
+cubp.badname.side threw=Exception msg=Invalid face name: side
+cubp.goodname.north threw=none
+cubp.goodname.east threw=none
+cubp.goodname.south threw=none
+cubp.goodname.west threw=none
+cubp.goodname.bottom threw=none
+cubp.goodname.top threw=none
+cubp.mutated str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=sideways, which_part=)
+cubp.mutated classname=CubePatch
+cubp.mutated a=1 centre x=0 y=0 z=0 face=sideways which_part= which_part.len=0
+cubp.mutated.opCall threw=Exception msg=Invalid face: sideways
+cubp.mutated.area threw=Exception msg=Invalid face: sideways
+cubp.mutated.dup threw=Exception msg=Invalid face name: sideways
+cubp.mutated2.opCall threw=Exception msg=Invalid face: bogus
+cubp.copy.invalid str=CubePatch(a=1, centre=Vector3(0, 0, 0), face=bogus, which_part=south)
+cubp.copy.invalid classname=CubePatch
+cubp.copy.invalid a=1 centre x=0 y=0 z=0 face=bogus which_part=south which_part.len=5
+cubp.copy.invalid.opCall threw=Exception msg=Invalid face: bogus
+cubp.unittest mid_e_line=mid_e=Vector3(1, 0, 0)
+cubp.unittest mid_e x=1 y=0 z=0
+cubp.unittest p5_east x=1 y=-1 z=1
+cubp.unittest p6_east x=1 y=1 z=1
+cubp.unittest mid_t_line=mid_t=Vector3(0, 0, 1)
+cubp.unittest mid_t x=0 y=0 z=1
+cubp.unittest p5_top x=1 y=-1 z=1
+cubp.unittest p6_top x=1 y=1 z=1
+cubp.unittest abs_p6_top=1.7320508075688772 sqrt3a=1.7320508075688772 isClose=true
+cubp.unittest mid_s x=0 y=-1 z=0
+cubp.unittest p5_south x=1 y=-1 z=1
+cubp.unittest mid_n x=0 y=1 z=0
+cubp.unittest p6_north x=1 y=1 z=1
+cubp.nan.centre str=CubePatch(a=1, centre=Vector3(nan, nan, nan), face=east, which_part=)
+cubp.nan.centre classname=CubePatch
+cubp.nan.centre a=1 centre x=nan y=nan z=nan face=east which_part= which_part.len=0
+cubp.nan.centre opCall r=0 s=0 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0 s=0.25 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0 s=0.5 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0 s=0.75 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0 s=1 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.25 s=0 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.25 s=0.25 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.25 s=0.5 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.25 s=0.75 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.25 s=1 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.5 s=0 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.5 s=0.25 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.5 s=0.5 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.5 s=0.75 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.5 s=1 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.75 s=0 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.75 s=0.25 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.75 s=0.5 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.75 s=0.75 x=nan y=nan z=nan
+cubp.nan.centre opCall r=0.75 s=1 x=nan y=nan z=nan
+cubp.nan.centre opCall r=1 s=0 x=nan y=nan z=nan
+cubp.nan.centre opCall r=1 s=0.25 x=nan y=nan z=nan
+cubp.nan.centre opCall r=1 s=0.5 x=nan y=nan z=nan
+cubp.nan.centre opCall r=1 s=0.75 x=nan y=nan z=nan
+cubp.nan.centre opCall r=1 s=1 x=nan y=nan z=nan
+cubp.nan.centre area nr=10 ns=10 x=nan y=nan z=nan
+cubp.nan.a str=CubePatch(a=nan, centre=Vector3(0, 0, 0), face=top, which_part=)
+cubp.nan.a classname=CubePatch
+cubp.nan.a a=nan centre x=0 y=0 z=0 face=top which_part= which_part.len=0
+cubp.nan.a opCall r=0 s=0 x=nan y=nan z=nan
+cubp.nan.a opCall r=0 s=0.25 x=nan y=nan z=nan
+cubp.nan.a opCall r=0 s=0.5 x=nan y=nan z=nan
+cubp.nan.a opCall r=0 s=0.75 x=nan y=nan z=nan
+cubp.nan.a opCall r=0 s=1 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.25 s=0 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.25 s=0.25 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.25 s=0.5 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.25 s=0.75 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.25 s=1 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.5 s=0 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.5 s=0.25 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.5 s=0.5 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.5 s=0.75 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.5 s=1 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.75 s=0 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.75 s=0.25 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.75 s=0.5 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.75 s=0.75 x=nan y=nan z=nan
+cubp.nan.a opCall r=0.75 s=1 x=nan y=nan z=nan
+cubp.nan.a opCall r=1 s=0 x=nan y=nan z=nan
+cubp.nan.a opCall r=1 s=0.25 x=nan y=nan z=nan
+cubp.nan.a opCall r=1 s=0.5 x=nan y=nan z=nan
+cubp.nan.a opCall r=1 s=0.75 x=nan y=nan z=nan
+cubp.nan.a opCall r=1 s=1 x=nan y=nan z=nan
+cubp.zero.a str=CubePatch(a=0, centre=Vector3(0, 0, 0), face=bottom, which_part=)
+cubp.zero.a classname=CubePatch
+cubp.zero.a a=0 centre x=0 y=0 z=0 face=bottom which_part= which_part.len=0
+cubp.zero.a opCall r=0 s=0 x=0 y=0 z=0
+cubp.zero.a opCall r=0 s=0.25 x=0 y=0 z=0
+cubp.zero.a opCall r=0 s=0.5 x=0 y=0 z=0
+cubp.zero.a opCall r=0 s=0.75 x=0 y=0 z=0
+cubp.zero.a opCall r=0 s=1 x=0 y=0 z=0
+cubp.zero.a opCall r=0.25 s=0 x=0 y=0 z=0
+cubp.zero.a opCall r=0.25 s=0.25 x=0 y=0 z=0
+cubp.zero.a opCall r=0.25 s=0.5 x=0 y=0 z=0
+cubp.zero.a opCall r=0.25 s=0.75 x=0 y=0 z=0
+cubp.zero.a opCall r=0.25 s=1 x=0 y=0 z=0
+cubp.zero.a opCall r=0.5 s=0 x=0 y=0 z=0
+cubp.zero.a opCall r=0.5 s=0.25 x=0 y=0 z=0
+cubp.zero.a opCall r=0.5 s=0.5 x=0 y=0 z=0
+cubp.zero.a opCall r=0.5 s=0.75 x=0 y=0 z=0
+cubp.zero.a opCall r=0.5 s=1 x=0 y=0 z=0
+cubp.zero.a opCall r=0.75 s=0 x=0 y=0 z=0
+cubp.zero.a opCall r=0.75 s=0.25 x=0 y=0 z=0
+cubp.zero.a opCall r=0.75 s=0.5 x=0 y=0 z=0
+cubp.zero.a opCall r=0.75 s=0.75 x=0 y=0 z=0
+cubp.zero.a opCall r=0.75 s=1 x=0 y=0 z=0
+cubp.zero.a opCall r=1 s=0 x=0 y=0 z=0
+cubp.zero.a opCall r=1 s=0.25 x=0 y=0 z=0
+cubp.zero.a opCall r=1 s=0.5 x=0 y=0 z=0
+cubp.zero.a opCall r=1 s=0.75 x=0 y=0 z=0
+cubp.zero.a opCall r=1 s=1 x=0 y=0 z=0
+cubp.zero.a area nr=10 ns=10 x=0 y=0 z=0

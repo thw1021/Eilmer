@@ -1,0 +1,354 @@
+nep.kern atan(m=0)=0 abits=0000000000000000 tan(that)=0 tbits=0000000000000000
+nep.kern atan(m=0.001)=0.00099999966666686679 abits=3f50624d77516e16 tan(that)=0.001 tbits=3f50624dd2f1a9fc
+nep.kern atan(m=0.01)=0.0099996666866652376 abits=3f847ab48b1efb5d tan(that)=0.01 tbits=3f847ae147ae147b
+nep.kern atan(m=0.050000000000000003)=0.049958395721942765 abits=3fa9942597929f27 tan(that)=0.050000000000000003 tbits=3fa999999999999a
+nep.kern atan(m=0.10000000000000001)=0.099668652491162038 abits=3fb983e282e2cc4d tan(that)=0.10000000000000001 tbits=3fb999999999999a
+nep.kern atan(m=0.20000000000000001)=0.19739555984988078 abits=3fc94441f8f7260c tan(that)=0.20000000000000001 tbits=3fc999999999999a
+nep.kern atan(m=0.29999999999999999)=0.2914567944778671 abits=3fd2a73a661eaf06 tan(that)=0.29999999999999999 tbits=3fd3333333333333
+nep.kern atan(m=0.40000000000000002)=0.3805063771123649 abits=3fd85a376b677dc0 tan(that)=0.40000000000000002 tbits=3fd999999999999a
+nep.kern atan(m=0.5)=0.46364760900080609 abits=3fddac670561bb4f tan(that)=0.5 tbits=3fe0000000000000
+nep.kern atan(m=0.59999999999999998)=0.54041950027058416 abits=3fe14b1dd5f90ce1 tan(that)=0.59999999999999998 tbits=3fe3333333333333
+nep.kern atan(m=0.69999999999999996)=0.61072596438920856 abits=3fe38b112d7bd4ad tan(that)=0.69999999999999996 tbits=3fe6666666666666
+nep.kern atan(m=0.80000000000000004)=0.67474094222355263 abits=3fe5977a5103ea92 tan(that)=0.79999999999999993 tbits=3fe9999999999999
+nep.kern atan(m=0.90000000000000002)=0.73281510178650655 abits=3fe77338a80603be tan(that)=0.89999999999999991 tbits=3feccccccccccccc
+nep.kern atan(m=1)=0.78539816339744828 abits=3fe921fb54442d18 tan(that)=1 tbits=3ff0000000000000
+nep.kern atan(m=1.1000000000000001)=0.83298126667443173 abits=3feaa7c8545183cd tan(that)=1.0999999999999999 tbits=3ff1999999999999
+nep.kern atan(m=1.26)=0.89993886019412961 abits=3feccc4c949ddd9e tan(that)=1.2599999999999998 tbits=3ff428f5c28f5c28
+nep.kern atan(m=1.5)=0.98279372324732905 abits=3fef730bd281f69b tan(that)=1.4999999999999998 tbits=3ff7ffffffffffff
+nep.kern atan(m=2)=1.1071487177940904 abits=3ff1b6e192ebbe44 tan(that)=1.9999999999999996 tbits=3ffffffffffffffe
+nep.kern atan(m=3)=1.2490457723982544 abits=3ff3fc176b7a8560 tan(that)=3 tbits=4008000000000000
+nep.kern atan(m=5)=1.3734007669450159 abits=3ff5f97315254857 tan(that)=5.0000000000000009 tbits=4014000000000001
+nep.kern atan(m=10)=1.4711276743037345 abits=3ff789bd2c160053 tan(that)=9.9999999999999893 tbits=4023fffffffffffa
+nep.kern atan(m=100)=1.5607966601082315 abits=3ff8f905eb2def22 tan(that)=100.00000000000101 tbits=4059000000000047
+nep.kern atan(m=-0.10000000000000001)=-0.099668652491162038 abits=bfb983e282e2cc4d tan(that)=-0.10000000000000001 tbits=bfb999999999999a
+nep.kern atan(m=-0.5)=-0.46364760900080609 abits=bfddac670561bb4f tan(that)=-0.5 tbits=bfe0000000000000
+nep.kern atan(m=-1.26)=-0.89993886019412961 abits=bfeccc4c949ddd9e tan(that)=-1.2599999999999998 tbits=bff428f5c28f5c28
+nep.kern atan(m=-3)=-1.2490457723982544 abits=bff3fc176b7a8560 tan(that)=-3 tbits=c008000000000000
+nep.kern2 tan(0)=0 bits=0000000000000000
+nep.kern2 tan(0.050000000000000003)=0.050041708375538792 bits=3fa99f1119d15c71
+nep.kern2 tan(0.25)=0.25534192122103627 bits=3fd05785a43c4c56
+nep.kern2 tan(0.5)=0.54630248984379048 bits=3fe17b4f5bf3474a
+nep.kern2 tan(0.75)=0.93159645994407247 bits=3fedcfa36110eeec
+nep.kern2 tan(0.90000000000000002)=1.260158217550339 bits=3ff4299ba9c2a137
+nep.kern2 tan(1)=1.5574077246549021 bits=3ff8eb245cbee3a5
+nep.kern2 tan(1.2)=2.5721516221263188 bits=400493c43acb164d
+nep.kern2 tan(1.3999999999999999)=5.7978837154828868 bits=401731086dc00a35
+nep.kern2 tan(1.5707963267948966)=16331239353195370 bits=434d02967c31cdb5
+nep.kern2 tan(-0.90000000000000002)=-1.260158217550339 bits=bff4299ba9c2a137
+nep.kern2 tan(3)=-0.1425465430742778 bits=bfc23ef71254b86f
+nep.kern2 tan(6)=-0.29100619138474915 bits=bfd29fd86ebb95be
+nep.kern2 tan(inf)=nan bits=7ff8000000000000
+nep.kern2 tan(-nan)=-nan bits=fff8000000000000
+nep.bez str=NozzleExpansionPatch(cNorth=Bezier(B=[Vector3(1, 0.2, 0), Vector3(2, 0.25, 0), Vector3(3, 0.9, 0), Vector3(4.5, 2.2, 0)]))
+nep.bez cNorth=Bezier(B=[Vector3(1, 0.2, 0), Vector3(2, 0.25, 0), Vector3(3, 0.9, 0), Vector3(4.5, 2.2, 0)])
+nep.bez.opCall r=0 s=0 x=1 y=0 z=0
+nep.bez.opCall r=0 s=0.25 x=1 y=0.050000000000000003 z=0
+nep.bez.opCall r=0 s=0.5 x=1 y=0.10000000000000001 z=0
+nep.bez.opCall r=0 s=1 x=1 y=0.20000000000000001 z=0
+nep.bez.opCall r=1.0000000000000001e-09 s=0 x=1.0000000032143637 y=0 z=0
+nep.bez.opCall r=1.0000000000000001e-09 s=0.25 x=1.0000000032009659 y=0.050000000037500006 z=0
+nep.bez.opCall r=1.0000000000000001e-09 s=0.5 x=1.0000000031607725 y=0.10000000007500001 z=0
+nep.bez.opCall r=1.0000000000000001e-09 s=1 x=1.0000000029999998 y=0.20000000015000002 z=0
+nep.bez.opCall r=0.00020000000000000001 s=0 x=1.0006430331582259 y=0 z=0
+nep.bez.opCall r=0.00020000000000000001 s=0.25 x=1.0006403435860869 y=0.050007518000100011 z=0
+nep.bez.opCall r=0.00020000000000000001 s=0.5 x=1.0006322748696694 y=0.10001503600020002 z=0
+nep.bez.opCall r=0.00020000000000000001 s=1 x=1.0006000000040001 y=0.20003007200040004 z=0
+nep.bez.opCall r=0.25 s=0 x=1.8178705018252093 y=0 z=0
+nep.bez.opCall r=0.25 s=0.25 x=1.8141168767111338 y=0.087695312500000011 z=0
+nep.bez.opCall r=0.25 s=0.5 x=1.802856001368907 y=0.17539062500000002 z=0
+nep.bez.opCall r=0.25 s=1 x=1.7578125 y=0.35078125000000004 z=0
+nep.bez.opCall r=0.5 s=0 x=2.7778124997351576 y=0 z=0
+nep.bez.opCall r=0.5 s=0.25 x=2.7643554685017104 y=0.18281249999999999 z=0
+nep.bez.opCall r=0.5 s=0.5 x=2.7239843748013683 y=0.36562499999999998 z=0
+nep.bez.opCall r=0.5 s=1 x=2.5625 y=0.73124999999999996 z=0
+nep.bez.opCall r=0.75 s=0 x=3.9747513332602673 y=0 z=0
+nep.bez.opCall r=0.75 s=0.25 x=3.9426379686815007 y=0.33652343750000002 z=0
+nep.bez.opCall r=0.75 s=0.5 x=3.8462978749452006 y=0.67304687500000004 z=0
+nep.bez.opCall r=0.75 s=1 x=3.4609375 y=1.3460937500000001 z=0
+nep.bez.opCall r=0.99980000000000002 s=0 x=4.5091949064058232 y=0 z=0
+nep.bez.opCall r=0.99980000000000002 s=0.25 x=4.508563978505209 y=0.54980501949990013 z=0
+nep.bez.opCall r=0.99980000000000002 s=0.5 x=4.5066711948033671 y=1.0996100389998003 z=0
+nep.bez.opCall r=0.99980000000000002 s=1 x=4.4991000599960005 y=2.1992200779996005 z=0
+nep.bez.opCall r=0.99999999900000003 s=0 x=4.5000000459958072 y=0 z=0
+nep.bez.opCall r=0.99999999900000003 s=0.25 x=4.5000000428398197 y=0.5499999990250003 z=0
+nep.bez.opCall r=0.99999999900000003 s=0.5 x=4.5000000333718555 y=1.0999999980500006 z=0
+nep.bez.opCall r=0.99999999900000003 s=1 x=4.4999999955000023 y=2.1999999961000012 z=0
+nep.bez.opCall r=1 s=0 x=4.5 y=0 z=0
+nep.bez.opCall r=1 s=0.25 x=4.5 y=0.55000000000000004 z=0
+nep.bez.opCall r=1 s=0.5 x=4.5 y=1.1000000000000001 z=0
+nep.bez.opCall r=1 s=1 x=4.5 y=2.2000000000000002 z=0
+nep.line str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(0.5, 0.1, 0), p1=Vector3(3, 1.6, 0)))
+nep.line.opCall r=0 s=0 x=0.5 y=0 z=0
+nep.line.opCall r=0 s=0.25 x=0.5 y=0.025000000000000001 z=0
+nep.line.opCall r=0 s=0.5 x=0.5 y=0.050000000000000003 z=0
+nep.line.opCall r=0 s=1 x=0.5 y=0.10000000000000001 z=0
+nep.line.opCall r=1.0000000000000001e-09 s=0 x=0.5000000038510487 y=0 z=0
+nep.line.opCall r=1.0000000000000001e-09 s=0.25 x=0.50000000376660814 y=0.025000000375000001 z=0
+nep.line.opCall r=1.0000000000000001e-09 s=0.5 x=0.50000000351328655 y=0.050000000750000002 z=0
+nep.line.opCall r=1.0000000000000001e-09 s=1 x=0.50000000249999998 y=0.1000000015 z=0
+nep.line.opCall r=0.00020000000000000001 s=0 x=0.50077102301782916 y=0 z=0
+nep.line.opCall r=0.00020000000000000001 s=0.25 x=0.50075408407921485 y=0.025075000000000004 z=0
+nep.line.opCall r=0.00020000000000000001 s=0.5 x=0.50070326726337189 y=0.050150000000000007 z=0
+nep.line.opCall r=0.00020000000000000001 s=1 x=0.50050000000000006 y=0.10030000000000001 z=0
+nep.line.opCall r=0.25 s=0 x=1.2675000000000634 y=0 z=0
+nep.line.opCall r=0.25 s=0.25 x=1.2585937500000595 y=0.11875000000000001 z=0
+nep.line.opCall r=0.25 s=0.5 x=1.2318750000000476 y=0.23750000000000002 z=0
+nep.line.opCall r=0.25 s=1 x=1.125 y=0.47500000000000003 z=0
+nep.line.opCall r=0.5 s=0 x=2.005000000000019 y=0 z=0
+nep.line.opCall r=0.5 s=0.25 x=1.9890625000000179 y=0.21250000000000002 z=0
+nep.line.opCall r=0.5 s=0.5 x=1.9412500000000144 y=0.42500000000000004 z=0
+nep.line.opCall r=0.5 s=1 x=1.75 y=0.85000000000000009 z=0
+nep.line.opCall r=0.75 s=0 x=2.7424999999997826 y=0 z=0
+nep.line.opCall r=0.75 s=0.25 x=2.7195312499997959 y=0.30625000000000002 z=0
+nep.line.opCall r=0.75 s=0.5 x=2.6506249999998368 y=0.61250000000000004 z=0
+nep.line.opCall r=0.75 s=1 x=2.375 y=1.2250000000000001 z=0
+nep.line.opCall r=0.99980000000000002 s=0 x=3.0038225874538567 y=0 z=0
+nep.line.opCall r=0.99980000000000002 s=0.25 x=3.0035524257379906 y=0.39992500000000003 z=0
+nep.line.opCall r=0.99980000000000002 s=0.5 x=3.0027419405903926 y=0.79985000000000006 z=0
+nep.line.opCall r=0.99980000000000002 s=1 x=2.9995000000000003 y=1.5997000000000001 z=0
+nep.line.opCall r=0.99999999900000003 s=0 x=3.0000000191167784 y=0 z=0
+nep.line.opCall r=0.99999999900000003 s=0.25 x=3.0000000177657293 y=0.39999999962500005 z=0
+nep.line.opCall r=0.99999999900000003 s=0.5 x=3.0000000137125835 y=0.79999999925000009 z=0
+nep.line.opCall r=0.99999999900000003 s=1 x=2.9999999975000002 y=1.5999999985000002 z=0
+nep.line.opCall r=1 s=0 x=3 y=0 z=0
+nep.line.opCall r=1 s=0.25 x=3 y=0.40000000000000002 z=0
+nep.line.opCall r=1 s=0.5 x=3 y=0.80000000000000004 z=0
+nep.line.opCall r=1 s=1 x=3 y=1.6000000000000001 z=0
+nep.steep str=NozzleExpansionPatch(cNorth=Bezier(B=[Vector3(0, 0, 0), Vector3(0.2, 0.9, 0), Vector3(0.5, 1.8, 0), Vector3(0.8, 2.6, 0)]))
+nep.steep.opCall r=0 s=0 x=0 y=0 z=0
+nep.steep.opCall r=0 s=0.25 x=0 y=0 z=0
+nep.steep.opCall r=0 s=0.5 x=0 y=0 z=0
+nep.steep.opCall r=0 s=1 x=0 y=0 z=0
+nep.steep.opCall r=1.0000000000000001e-09 s=0 x=6.0000006875091292e-10 y=0 z=0
+nep.steep.opCall r=1.0000000000000001e-09 s=0.25 x=6.0000006447273086e-10 y=6.7500000000000005e-10 z=0
+nep.steep.opCall r=1.0000000000000001e-09 s=0.5 x=6.0000005163818469e-10 y=1.3500000000000001e-09 z=0
+nep.steep.opCall r=1.0000000000000001e-09 s=1 x=6.0000000030000021e-10 y=2.7000000000000002e-09 z=0
+nep.steep.opCall r=0.00020000000000000001 s=0 x=0.00012275033904749245 y=0 z=0
+nep.steep.opCall r=0.00020000000000000001 s=0.25 x=0.00012257919280702416 y=0.00013499999980000002 z=0
+nep.steep.opCall r=0.00020000000000000001 s=0.5 x=0.00012206575408561934 y=0.00026999999960000004 z=0
+nep.steep.opCall r=0.00020000000000000001 s=1 x=0.00012001199920000002 y=0.00053999999920000008 z=0
+nep.steep.opCall r=0.25 s=0 x=1.4018229178948836 y=0 z=0
+nep.steep.opCall r=0.25 s=0.25 x=1.3246582042764532 y=0.16835937500000001 z=0
+nep.steep.opCall r=0.25 s=0.5 x=1.0931640634211626 y=0.33671875000000001 z=0
+nep.steep.opCall r=0.25 s=1 x=0.16718749999999999 y=0.67343750000000002 z=0
+nep.steep.opCall r=0.5 s=0 x=2.4903409108599734 y=0 z=0
+nep.steep.opCall r=0.5 s=0.25 x=2.3573508539312247 y=0.33437500000000003 z=0
+nep.steep.opCall r=0.5 s=0.5 x=1.9583806831449799 y=0.66875000000000007 z=0
+nep.steep.opCall r=0.5 s=1 x=0.36249999999999999 y=1.3375000000000001 z=0
+nep.steep.opCall r=0.75 s=0 x=3.4242187521062815 y=0 z=0
+nep.steep.opCall r=0.75 s=0.25 x=3.2462402363496392 y=0.49570312500000013 z=0
+nep.steep.opCall r=0.75 s=0.5 x=2.7123046890797111 y=0.99140625000000027 z=0
+nep.steep.opCall r=0.75 s=1 x=0.57656250000000009 y=1.9828125000000005 z=0
+nep.steep.opCall r=0.99980000000000002 s=0 x=0.81754394145864984 y=0 z=0
+nep.steep.opCall r=0.99980000000000002 s=0.25 x=0.81643619511753429 y=0.64987999700020005 z=0
+nep.steep.opCall r=0.99980000000000002 s=0.5 x=0.81311295609418743 y=1.2997599940004001 z=0
+nep.steep.opCall r=0.99980000000000002 s=1 x=0.79982000000080022 y=2.5995199880008002 z=0
+nep.steep.opCall r=0.99999999900000003 s=0 x=0.8000000877296839 y=0 z=0
+nep.steep.opCall r=0.99999999900000003 s=0.25 x=0.8000000821903287 y=0.64999999940000031 z=0
+nep.steep.opCall r=0.99999999900000003 s=0.5 x=0.800000065572263 y=1.2999999988000006 z=0
+nep.steep.opCall r=0.99999999900000003 s=1 x=0.79999999909999997 y=2.5999999976000012 z=0
+nep.steep.opCall r=1 s=0 x=0.80000000000000004 y=0 z=0
+nep.steep.opCall r=1 s=0.25 x=0.80000000000000004 y=0.65000000000000002 z=0
+nep.steep.opCall r=1 s=0.5 x=0.80000000000000004 y=1.3 z=0
+nep.steep.opCall r=1 s=1 x=0.80000000000000004 y=2.6000000000000001 z=0
+nep.conv str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(1, 2, 0), p1=Vector3(4, 0.5, 0)))
+nep.conv.opCall r=0 s=0 x=1 y=0 z=0
+nep.conv.opCall r=0 s=0.25 x=1 y=0.5 z=0
+nep.conv.opCall r=0 s=0.5 x=1 y=1 z=0
+nep.conv.opCall r=0 s=1 x=1 y=2 z=0
+nep.conv.opCall r=1.0000000000000001e-09 s=0 x=0.99999997981761934 y=0 z=0
+nep.conv.opCall r=1.0000000000000001e-09 s=0.25 x=0.99999998126651812 y=0.49999999962500002 z=0
+nep.conv.opCall r=1.0000000000000001e-09 s=0.5 x=0.99999998561321446 y=0.99999999925000005 z=0
+nep.conv.opCall r=1.0000000000000001e-09 s=1 x=1.000000003 y=1.9999999985000001 z=0
+nep.conv.opCall r=0.00020000000000000001 s=0 x=0.99596418616280136 y=0 z=0
+nep.conv.opCall r=0.00020000000000000001 s=0.25 x=0.99625392452762618 y=0.49992500000000001 z=0
+nep.conv.opCall r=0.00020000000000000001 s=0.5 x=0.99712313962210097 y=0.99985000000000002 z=0
+nep.conv.opCall r=0.00020000000000000001 s=1 x=1.0005999999999999 y=1.9997 z=0
+nep.conv.opCall r=0.25 s=0 x=1.3437499999996994 y=0 z=0
+nep.conv.opCall r=0.25 s=0.25 x=1.369140624999718 y=0.40625 z=0
+nep.conv.opCall r=0.25 s=0.5 x=1.4453124999997744 y=0.8125 z=0
+nep.conv.opCall r=0.25 s=1 x=1.75 y=1.625 z=0
+nep.conv.opCall r=0.5 s=0 x=2.1875 y=0 z=0
+nep.conv.opCall r=0.5 s=0.25 x=2.20703125 y=0.3125 z=0
+nep.conv.opCall r=0.5 s=0.5 x=2.265625 y=0.625 z=0
+nep.conv.opCall r=0.5 s=1 x=2.5 y=1.25 z=0
+nep.conv.opCall r=0.75 s=0 x=3.0312500000001621 y=0 z=0
+nep.conv.opCall r=0.75 s=0.25 x=3.0449218750001519 y=0.21875 z=0
+nep.conv.opCall r=0.75 s=0.5 x=3.0859375000001217 y=0.4375 z=0
+nep.conv.opCall r=0.75 s=1 x=3.25 y=0.875 z=0
+nep.conv.opCall r=0.99980000000000002 s=0 x=3.998240177195203 y=0 z=0
+nep.conv.opCall r=0.99980000000000002 s=0.25 x=3.9983126661205026 y=0.12507499999999999 z=0
+nep.conv.opCall r=0.99980000000000002 s=0.5 x=3.998530132896402 y=0.25014999999999998 z=0
+nep.conv.opCall r=0.99980000000000002 s=1 x=3.9994000000000001 y=0.50029999999999997 z=0
+nep.conv.opCall r=0.99999999900000003 s=0 x=3.9999999912044055 y=0 z=0
+nep.conv.opCall r=0.99999999900000003 s=0.25 x=3.9999999915666304 y=0.12500000037499998 z=0
+nep.conv.opCall r=0.99999999900000003 s=0.5 x=3.9999999926533043 y=0.25000000074999995 z=0
+nep.conv.opCall r=0.99999999900000003 s=1 x=3.9999999970000002 y=0.5000000014999999 z=0
+nep.conv.opCall r=1 s=0 x=4 y=0 z=0
+nep.conv.opCall r=1 s=0.25 x=4 y=0.125 z=0
+nep.conv.opCall r=1 s=0.5 x=4 y=0.25 z=0
+nep.conv.opCall r=1 s=1 x=4 y=0.5 z=0
+nep.dup str=NozzleExpansionPatch(cNorth=Bezier(B=[Vector3(1, 0.2, 0), Vector3(2, 0.25, 0), Vector3(3, 0.9, 0), Vector3(4.5, 2.2, 0)]))
+nep.dup.opCall x=2.2066329604464117 y=0.31780516950000004 z=0
+nep.copy str=NozzleExpansionPatch(cNorth=Bezier(B=[Vector3(1, 0.2, 0), Vector3(2, 0.25, 0), Vector3(3, 0.9, 0), Vector3(4.5, 2.2, 0)]))
+nep.copy.opCall x=2.2066329604464117 y=0.31780516950000004 z=0
+nep.dup.dup str=NozzleExpansionPatch(cNorth=Bezier(B=[Vector3(1, 0.2, 0), Vector3(2, 0.25, 0), Vector3(3, 0.9, 0), Vector3(4.5, 2.2, 0)]))
+nep.bez.area.default nr=10 ns=10 area x=0 y=0 z=3.3789434999999992
+nep.bez.area.r3s7 nr=3 ns=7 area x=0 y=0 z=3.4574074074074086
+nep.bez.area.r7s3 nr=7 ns=3 area x=0 y=0 z=3.3869637650978754
+nep.line.area.default nr=10 ns=10 area x=0 y=0 z=2.1249999999999996
+nep.steep.area.r5s5 nr=5 ns=5 area x=0 y=0 z=1.1220032000000009
+nep.conv.area.r2s9 nr=2 ns=9 area x=0 y=0 z=3.7499999999999996
+nep.vert str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(1, 0, 0), p1=Vector3(1, 2, 0)))
+nep.vert.opCall r=0 s=0 x=1 y=0 z=0
+nep.vert.opCall r=0 s=0.25 x=1 y=0 z=0
+nep.vert.opCall r=0 s=0.5 x=1 y=0 z=0
+nep.vert.opCall r=0 s=1 x=1 y=0 z=0
+nep.vert.opCall r=1.0000000000000001e-09 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=1.0000000000000001e-09 s=0.25 x=-nan y=5.0000000000000003e-10 z=0
+nep.vert.opCall r=1.0000000000000001e-09 s=0.5 x=-nan y=1.0000000000000001e-09 z=0
+nep.vert.opCall r=1.0000000000000001e-09 s=1 x=1 y=2.0000000000000001e-09 z=0
+nep.vert.opCall r=0.00020000000000000001 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.00020000000000000001 s=0.25 x=-nan y=0.0001 z=0
+nep.vert.opCall r=0.00020000000000000001 s=0.5 x=-nan y=0.00020000000000000001 z=0
+nep.vert.opCall r=0.00020000000000000001 s=1 x=1 y=0.00040000000000000002 z=0
+nep.vert.opCall r=0.25 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.25 s=0.25 x=-nan y=0.125 z=0
+nep.vert.opCall r=0.25 s=0.5 x=-nan y=0.25 z=0
+nep.vert.opCall r=0.25 s=1 x=1 y=0.5 z=0
+nep.vert.opCall r=0.5 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.5 s=0.25 x=-nan y=0.25 z=0
+nep.vert.opCall r=0.5 s=0.5 x=-nan y=0.5 z=0
+nep.vert.opCall r=0.5 s=1 x=1 y=1 z=0
+nep.vert.opCall r=0.75 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.75 s=0.25 x=-nan y=0.375 z=0
+nep.vert.opCall r=0.75 s=0.5 x=-nan y=0.75 z=0
+nep.vert.opCall r=0.75 s=1 x=1 y=1.5 z=0
+nep.vert.opCall r=0.99980000000000002 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.99980000000000002 s=0.25 x=-nan y=0.49990000000000001 z=0
+nep.vert.opCall r=0.99980000000000002 s=0.5 x=-nan y=0.99980000000000002 z=0
+nep.vert.opCall r=0.99980000000000002 s=1 x=1 y=1.9996 z=0
+nep.vert.opCall r=0.99999999900000003 s=0 x=-nan y=0 z=0
+nep.vert.opCall r=0.99999999900000003 s=0.25 x=-nan y=0.49999999950000001 z=0
+nep.vert.opCall r=0.99999999900000003 s=0.5 x=-nan y=0.99999999900000003 z=0
+nep.vert.opCall r=0.99999999900000003 s=1 x=1 y=1.9999999980000001 z=0
+nep.vert.opCall r=1 s=0 x=1 y=0 z=0
+nep.vert.opCall r=1 s=0.25 x=1 y=0.5 z=0
+nep.vert.opCall r=1 s=0.5 x=1 y=1 z=0
+nep.vert.opCall r=1 s=1 x=1 y=2 z=0
+nep.flat str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(2, 0, 0), p1=Vector3(5, 0, 0)))
+nep.flat.opCall r=0 s=0 x=2 y=0 z=0
+nep.flat.opCall r=0 s=0.25 x=2 y=0 z=0
+nep.flat.opCall r=0 s=0.5 x=2 y=0 z=0
+nep.flat.opCall r=0 s=1 x=2 y=0 z=0
+nep.flat.opCall r=1.0000000000000001e-09 s=0 x=2.0000000030000002 y=0 z=0
+nep.flat.opCall r=1.0000000000000001e-09 s=0.25 x=2.0000000030000002 y=0 z=0
+nep.flat.opCall r=1.0000000000000001e-09 s=0.5 x=2.0000000030000002 y=0 z=0
+nep.flat.opCall r=1.0000000000000001e-09 s=1 x=2.0000000030000002 y=0 z=0
+nep.flat.opCall r=0.00020000000000000001 s=0 x=2.0005999999999999 y=0 z=0
+nep.flat.opCall r=0.00020000000000000001 s=0.25 x=2.0005999999999999 y=0 z=0
+nep.flat.opCall r=0.00020000000000000001 s=0.5 x=2.0005999999999999 y=0 z=0
+nep.flat.opCall r=0.00020000000000000001 s=1 x=2.0005999999999999 y=0 z=0
+nep.flat.opCall r=0.25 s=0 x=2.75 y=0 z=0
+nep.flat.opCall r=0.25 s=0.25 x=2.75 y=0 z=0
+nep.flat.opCall r=0.25 s=0.5 x=2.75 y=0 z=0
+nep.flat.opCall r=0.25 s=1 x=2.75 y=0 z=0
+nep.flat.opCall r=0.5 s=0 x=3.5 y=0 z=0
+nep.flat.opCall r=0.5 s=0.25 x=3.5 y=0 z=0
+nep.flat.opCall r=0.5 s=0.5 x=3.5 y=0 z=0
+nep.flat.opCall r=0.5 s=1 x=3.5 y=0 z=0
+nep.flat.opCall r=0.75 s=0 x=4.25 y=0 z=0
+nep.flat.opCall r=0.75 s=0.25 x=4.25 y=0 z=0
+nep.flat.opCall r=0.75 s=0.5 x=4.25 y=0 z=0
+nep.flat.opCall r=0.75 s=1 x=4.25 y=0 z=0
+nep.flat.opCall r=0.99980000000000002 s=0 x=4.9994000000000005 y=0 z=0
+nep.flat.opCall r=0.99980000000000002 s=0.25 x=4.9994000000000005 y=0 z=0
+nep.flat.opCall r=0.99980000000000002 s=0.5 x=4.9994000000000005 y=0 z=0
+nep.flat.opCall r=0.99980000000000002 s=1 x=4.9994000000000005 y=0 z=0
+nep.flat.opCall r=0.99999999900000003 s=0 x=4.9999999970000006 y=0 z=0
+nep.flat.opCall r=0.99999999900000003 s=0.25 x=4.9999999970000015 y=0 z=0
+nep.flat.opCall r=0.99999999900000003 s=0.5 x=4.9999999970000006 y=0 z=0
+nep.flat.opCall r=0.99999999900000003 s=1 x=4.9999999970000006 y=0 z=0
+nep.flat.opCall r=1 s=0 x=5 y=0 z=0
+nep.flat.opCall r=1 s=0.25 x=5 y=0 z=0
+nep.flat.opCall r=1 s=0.5 x=5 y=0 z=0
+nep.flat.opCall r=1 s=1 x=5 y=0 z=0
+nep.null-edge str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(1, 1, 0), p1=Vector3(1, 1, 0)))
+nep.nulledge.opCall r=0 s=0 x=1 y=0 z=0
+nep.nulledge.opCall r=0 s=0.25 x=1 y=0.25 z=0
+nep.nulledge.opCall r=0 s=0.5 x=1 y=0.5 z=0
+nep.nulledge.opCall r=0 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=1.0000000000000001e-09 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=1.0000000000000001e-09 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=1.0000000000000001e-09 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=1.0000000000000001e-09 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.00020000000000000001 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.00020000000000000001 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.00020000000000000001 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.00020000000000000001 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.25 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.25 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.25 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.25 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.5 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.5 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.5 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.5 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.75 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.75 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.75 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.75 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.99980000000000002 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.99980000000000002 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.99980000000000002 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.99980000000000002 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=0.99999999900000003 s=0 x=-nan y=0 z=0
+nep.nulledge.opCall r=0.99999999900000003 s=0.25 x=-nan y=0.25 z=0
+nep.nulledge.opCall r=0.99999999900000003 s=0.5 x=-nan y=0.5 z=0
+nep.nulledge.opCall r=0.99999999900000003 s=1 x=1 y=1 z=0
+nep.nulledge.opCall r=1 s=0 x=1 y=0 z=0
+nep.nulledge.opCall r=1 s=0.25 x=1 y=0.25 z=0
+nep.nulledge.opCall r=1 s=0.5 x=1 y=0.5 z=0
+nep.nulledge.opCall r=1 s=1 x=1 y=1 z=0
+nep.tiny str=NozzleExpansionPatch(cNorth=Line(p0=Vector3(0, 0, 0), p1=Vector3(1e-12, 1e-12, 0)))
+nep.tiny.opCall r=0 s=0 x=0 y=0 z=0
+nep.tiny.opCall r=0 s=0.25 x=0 y=0 z=0
+nep.tiny.opCall r=0 s=0.5 x=0 y=0 z=0
+nep.tiny.opCall r=0 s=1 x=0 y=0 z=0
+nep.tiny.opCall r=1.0000000000000001e-09 s=0 x=1.0000000196349542e-21 y=0 z=0
+nep.tiny.opCall r=1.0000000000000001e-09 s=0.25 x=1.0000000184077696e-21 y=2.5000000000000002e-22 z=0
+nep.tiny.opCall r=1.0000000000000001e-09 s=0.5 x=1.0000000147262157e-21 y=5.0000000000000005e-22 z=0
+nep.tiny.opCall r=1.0000000000000001e-09 s=1 x=1.0000000000000001e-21 y=1.0000000000000001e-21 z=0
+nep.tiny.opCall r=0.00020000000000000001 s=0 x=2.0078541431289835e-16 y=0 z=0
+nep.tiny.opCall r=0.00020000000000000001 s=0.25 x=2.0073632591834222e-16 y=4.9999999999999999e-17 z=0
+nep.tiny.opCall r=0.00020000000000000001 s=0.5 x=2.0058906073467377e-16 y=9.9999999999999998e-17 z=0
+nep.tiny.opCall r=0.00020000000000000001 s=1 x=2e-16 y=2e-16 z=0
+nep.tiny.opCall r=0.25 s=0 x=3.7500000000000002e-13 y=0 z=0
+nep.tiny.opCall r=0.25 s=0.25 x=3.6718749999999999e-13 y=6.2499999999999999e-14 z=0
+nep.tiny.opCall r=0.25 s=0.5 x=3.4375000000000002e-13 y=1.25e-13 z=0
+nep.tiny.opCall r=0.25 s=1 x=2.4999999999999999e-13 y=2.4999999999999999e-13 z=0
+nep.tiny.opCall r=0.5 s=0 x=7.5000000000000004e-13 y=0 z=0
+nep.tiny.opCall r=0.5 s=0.25 x=7.3437499999999999e-13 y=1.25e-13 z=0
+nep.tiny.opCall r=0.5 s=0.5 x=6.8750000000000005e-13 y=2.4999999999999999e-13 z=0
+nep.tiny.opCall r=0.5 s=1 x=4.9999999999999999e-13 y=4.9999999999999999e-13 z=0
+nep.tiny.opCall r=0.75 s=0 x=1.1250000000000002e-12 y=0 z=0
+nep.tiny.opCall r=0.75 s=0.25 x=1.1015625e-12 y=1.8750000000000001e-13 z=0
+nep.tiny.opCall r=0.75 s=0.5 x=1.0312500000000001e-12 y=3.7500000000000002e-13 z=0
+nep.tiny.opCall r=0.75 s=1 x=7.5000000000000004e-13 y=7.5000000000000004e-13 z=0
+nep.tiny.opCall r=0.99980000000000002 s=0 x=1.0037262861501776e-12 y=0 z=0
+nep.tiny.opCall r=0.99980000000000002 s=0.25 x=1.0034808932657916e-12 y=2.4995000000000001e-13 z=0
+nep.tiny.opCall r=0.99980000000000002 s=0.5 x=1.0027447146126331e-12 y=4.9990000000000002e-13 z=0
+nep.tiny.opCall r=0.99980000000000002 s=1 x=9.9980000000000004e-13 y=9.9980000000000004e-13 z=0
+nep.tiny.opCall r=0.99999999900000003 s=0 x=1.0000000186349534e-12 y=0 z=0
+nep.tiny.opCall r=0.99999999900000003 s=0.25 x=1.000000017407769e-12 y=2.4999999975e-13 z=0
+nep.tiny.opCall r=0.99999999900000003 s=0.5 x=1.0000000137262151e-12 y=4.9999999950000001e-13 z=0
+nep.tiny.opCall r=0.99999999900000003 s=1 x=9.9999999900000001e-13 y=9.9999999900000001e-13 z=0
+nep.tiny.opCall r=1 s=0 x=9.9999999999999998e-13 y=0 z=0
+nep.tiny.opCall r=1 s=0.25 x=9.9999999999999998e-13 y=2.4999999999999999e-13 z=0
+nep.tiny.opCall r=1 s=0.5 x=9.9999999999999998e-13 y=4.9999999999999999e-13 z=0
+nep.tiny.opCall r=1 s=1 x=9.9999999999999998e-13 y=9.9999999999999998e-13 z=0
+nep.bez.r=-0.5 x=-0.43941237796751453 y=0.28437500000000004 z=0
+nep.bez.r=2 x=2.9047917302652166 y=4.0500000000000007 z=0
+nep.bez.s=2 x=1.9165625007945266 y=1.4624999999999999 z=0
+nep.bez.nan x=-nan y=-nan z=0
+nep.bez.inf x=-nan y=-nan z=0

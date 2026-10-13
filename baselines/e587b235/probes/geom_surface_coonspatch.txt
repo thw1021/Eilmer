@@ -1,0 +1,333 @@
+cnp.corners str=CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)))
+cnp.corners classname=CoonsPatch
+cnp.corners p00 x=0 y=0.10000000000000001 z=3
+cnp.corners p10 x=1 y=0.10000000000000001 z=3
+cnp.corners p11 x=1 y=1.1000000000000001 z=3
+cnp.corners p01 x=0 y=1.1000000000000001 z=3
+cnp.corners south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+cnp.corners south t=0 x=0 y=0.10000000000000001 z=3
+cnp.corners south t=0.5 x=0.5 y=0.10000000000000001 z=3
+cnp.corners south t=1 x=1 y=0.10000000000000001 z=3
+cnp.corners north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.corners north t=0 x=0 y=1.1000000000000001 z=3
+cnp.corners north t=0.5 x=0.5 y=1.1000000000000001 z=3
+cnp.corners north t=1 x=1 y=1.1000000000000001 z=3
+cnp.corners west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+cnp.corners west t=0 x=0 y=0.10000000000000001 z=3
+cnp.corners west t=0.5 x=0 y=0.60000000000000009 z=3
+cnp.corners west t=1 x=0 y=1.1000000000000001 z=3
+cnp.corners east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.corners east t=0 x=1 y=0.10000000000000001 z=3
+cnp.corners east t=0.5 x=1 y=0.60000000000000009 z=3
+cnp.corners east t=1 x=1 y=1.1000000000000001 z=3
+cnp.corners opCall r=0 s=0 x=0 y=0.10000000000000001 z=3
+cnp.corners opCall r=0 s=0.25 x=0 y=0.35000000000000003 z=3
+cnp.corners opCall r=0 s=0.5 x=0 y=0.60000000000000009 z=3
+cnp.corners opCall r=0 s=0.75 x=0 y=0.85000000000000009 z=3
+cnp.corners opCall r=0 s=1 x=0 y=1.1000000000000001 z=3
+cnp.corners opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0.10000000000000005 z=2.9999999999999996
+cnp.corners opCall r=0.20000000000000001 s=0.25 x=0.20000000000000001 y=0.35000000000000014 z=2.9999999999999996
+cnp.corners opCall r=0.20000000000000001 s=0.5 x=0.20000000000000001 y=0.60000000000000009 z=3
+cnp.corners opCall r=0.20000000000000001 s=0.75 x=0.20000000000000001 y=0.84999999999999998 z=2.9999999999999996
+cnp.corners opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1.1000000000000001 z=2.9999999999999996
+cnp.corners opCall r=0.5 s=0 x=0.5 y=0.10000000000000001 z=3
+cnp.corners opCall r=0.5 s=0.25 x=0.5 y=0.35000000000000003 z=3
+cnp.corners opCall r=0.5 s=0.5 x=0.5 y=0.60000000000000009 z=3
+cnp.corners opCall r=0.5 s=0.75 x=0.5 y=0.85000000000000009 z=3
+cnp.corners opCall r=0.5 s=1 x=0.5 y=1.1000000000000001 z=3
+cnp.corners opCall r=0.75 s=0 x=0.75 y=0.10000000000000001 z=3
+cnp.corners opCall r=0.75 s=0.25 x=0.75 y=0.35000000000000003 z=3
+cnp.corners opCall r=0.75 s=0.5 x=0.75 y=0.60000000000000009 z=3
+cnp.corners opCall r=0.75 s=0.75 x=0.75 y=0.85000000000000009 z=3
+cnp.corners opCall r=0.75 s=1 x=0.75 y=1.1000000000000001 z=3
+cnp.corners opCall r=1 s=0 x=1 y=0.10000000000000001 z=3
+cnp.corners opCall r=1 s=0.25 x=1 y=0.35000000000000003 z=3
+cnp.corners opCall r=1 s=0.5 x=1 y=0.60000000000000009 z=3
+cnp.corners opCall r=1 s=0.75 x=1 y=0.85000000000000009 z=3
+cnp.corners opCall r=1 s=1 x=1 y=1.1000000000000001 z=3
+cnp.corners area nr=10 ns=10 x=-7.0874221953450279e-32 y=8.6281661508548166e-32 z=1.0000000000000007
+cnp.corners area nr=3 ns=7 x=6.1629758220391547e-33 y=0 z=1.0000000000000002
+cnp.corners area nr=1 ns=1 x=0 y=0 z=1
+cnp.dup str=CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)))
+cnp.dup classname=CoonsPatch
+cnp.dup p00 x=0 y=0.10000000000000001 z=3
+cnp.dup p10 x=1 y=0.10000000000000001 z=3
+cnp.dup p11 x=1 y=1.1000000000000001 z=3
+cnp.dup p01 x=0 y=1.1000000000000001 z=3
+cnp.dup south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+cnp.dup south t=0 x=0 y=0.10000000000000001 z=3
+cnp.dup south t=0.5 x=0.5 y=0.10000000000000001 z=3
+cnp.dup south t=1 x=1 y=0.10000000000000001 z=3
+cnp.dup north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.dup north t=0 x=0 y=1.1000000000000001 z=3
+cnp.dup north t=0.5 x=0.5 y=1.1000000000000001 z=3
+cnp.dup north t=1 x=1 y=1.1000000000000001 z=3
+cnp.dup west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+cnp.dup west t=0 x=0 y=0.10000000000000001 z=3
+cnp.dup west t=0.5 x=0 y=0.60000000000000009 z=3
+cnp.dup west t=1 x=0 y=1.1000000000000001 z=3
+cnp.dup east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.dup east t=0 x=1 y=0.10000000000000001 z=3
+cnp.dup east t=0.5 x=1 y=0.60000000000000009 z=3
+cnp.dup east t=1 x=1 y=1.1000000000000001 z=3
+cnp.dup opCall r=0 s=0 x=0 y=0.10000000000000001 z=3
+cnp.dup opCall r=0 s=0.25 x=0 y=0.35000000000000003 z=3
+cnp.dup opCall r=0 s=0.5 x=0 y=0.60000000000000009 z=3
+cnp.dup opCall r=0 s=0.75 x=0 y=0.85000000000000009 z=3
+cnp.dup opCall r=0 s=1 x=0 y=1.1000000000000001 z=3
+cnp.dup opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0.10000000000000005 z=2.9999999999999996
+cnp.dup opCall r=0.20000000000000001 s=0.25 x=0.20000000000000001 y=0.35000000000000014 z=2.9999999999999996
+cnp.dup opCall r=0.20000000000000001 s=0.5 x=0.20000000000000001 y=0.60000000000000009 z=3
+cnp.dup opCall r=0.20000000000000001 s=0.75 x=0.20000000000000001 y=0.84999999999999998 z=2.9999999999999996
+cnp.dup opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1.1000000000000001 z=2.9999999999999996
+cnp.dup opCall r=0.5 s=0 x=0.5 y=0.10000000000000001 z=3
+cnp.dup opCall r=0.5 s=0.25 x=0.5 y=0.35000000000000003 z=3
+cnp.dup opCall r=0.5 s=0.5 x=0.5 y=0.60000000000000009 z=3
+cnp.dup opCall r=0.5 s=0.75 x=0.5 y=0.85000000000000009 z=3
+cnp.dup opCall r=0.5 s=1 x=0.5 y=1.1000000000000001 z=3
+cnp.dup opCall r=0.75 s=0 x=0.75 y=0.10000000000000001 z=3
+cnp.dup opCall r=0.75 s=0.25 x=0.75 y=0.35000000000000003 z=3
+cnp.dup opCall r=0.75 s=0.5 x=0.75 y=0.60000000000000009 z=3
+cnp.dup opCall r=0.75 s=0.75 x=0.75 y=0.85000000000000009 z=3
+cnp.dup opCall r=0.75 s=1 x=0.75 y=1.1000000000000001 z=3
+cnp.dup opCall r=1 s=0 x=1 y=0.10000000000000001 z=3
+cnp.dup opCall r=1 s=0.25 x=1 y=0.35000000000000003 z=3
+cnp.dup opCall r=1 s=0.5 x=1 y=0.60000000000000009 z=3
+cnp.dup opCall r=1 s=0.75 x=1 y=0.85000000000000009 z=3
+cnp.dup opCall r=1 s=1 x=1 y=1.1000000000000001 z=3
+cnp.dup area nr=10 ns=10 x=-7.0874221953450279e-32 y=8.6281661508548166e-32 z=1.0000000000000007
+cnp.copy str=CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)))
+cnp.copy classname=CoonsPatch
+cnp.copy p00 x=0 y=0.10000000000000001 z=3
+cnp.copy p10 x=1 y=0.10000000000000001 z=3
+cnp.copy p11 x=1 y=1.1000000000000001 z=3
+cnp.copy p01 x=0 y=1.1000000000000001 z=3
+cnp.copy south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+cnp.copy south t=0 x=0 y=0.10000000000000001 z=3
+cnp.copy south t=0.5 x=0.5 y=0.10000000000000001 z=3
+cnp.copy south t=1 x=1 y=0.10000000000000001 z=3
+cnp.copy north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.copy north t=0 x=0 y=1.1000000000000001 z=3
+cnp.copy north t=0.5 x=0.5 y=1.1000000000000001 z=3
+cnp.copy north t=1 x=1 y=1.1000000000000001 z=3
+cnp.copy west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+cnp.copy west t=0 x=0 y=0.10000000000000001 z=3
+cnp.copy west t=0.5 x=0 y=0.60000000000000009 z=3
+cnp.copy west t=1 x=0 y=1.1000000000000001 z=3
+cnp.copy east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+cnp.copy east t=0 x=1 y=0.10000000000000001 z=3
+cnp.copy east t=0.5 x=1 y=0.60000000000000009 z=3
+cnp.copy east t=1 x=1 y=1.1000000000000001 z=3
+cnp.copy opCall r=0 s=0 x=0 y=0.10000000000000001 z=3
+cnp.copy opCall r=0 s=0.25 x=0 y=0.35000000000000003 z=3
+cnp.copy opCall r=0 s=0.5 x=0 y=0.60000000000000009 z=3
+cnp.copy opCall r=0 s=0.75 x=0 y=0.85000000000000009 z=3
+cnp.copy opCall r=0 s=1 x=0 y=1.1000000000000001 z=3
+cnp.copy opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0.10000000000000005 z=2.9999999999999996
+cnp.copy opCall r=0.20000000000000001 s=0.25 x=0.20000000000000001 y=0.35000000000000014 z=2.9999999999999996
+cnp.copy opCall r=0.20000000000000001 s=0.5 x=0.20000000000000001 y=0.60000000000000009 z=3
+cnp.copy opCall r=0.20000000000000001 s=0.75 x=0.20000000000000001 y=0.84999999999999998 z=2.9999999999999996
+cnp.copy opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1.1000000000000001 z=2.9999999999999996
+cnp.copy opCall r=0.5 s=0 x=0.5 y=0.10000000000000001 z=3
+cnp.copy opCall r=0.5 s=0.25 x=0.5 y=0.35000000000000003 z=3
+cnp.copy opCall r=0.5 s=0.5 x=0.5 y=0.60000000000000009 z=3
+cnp.copy opCall r=0.5 s=0.75 x=0.5 y=0.85000000000000009 z=3
+cnp.copy opCall r=0.5 s=1 x=0.5 y=1.1000000000000001 z=3
+cnp.copy opCall r=0.75 s=0 x=0.75 y=0.10000000000000001 z=3
+cnp.copy opCall r=0.75 s=0.25 x=0.75 y=0.35000000000000003 z=3
+cnp.copy opCall r=0.75 s=0.5 x=0.75 y=0.60000000000000009 z=3
+cnp.copy opCall r=0.75 s=0.75 x=0.75 y=0.85000000000000009 z=3
+cnp.copy opCall r=0.75 s=1 x=0.75 y=1.1000000000000001 z=3
+cnp.copy opCall r=1 s=0 x=1 y=0.10000000000000001 z=3
+cnp.copy opCall r=1 s=0.25 x=1 y=0.35000000000000003 z=3
+cnp.copy opCall r=1 s=0.5 x=1 y=0.60000000000000009 z=3
+cnp.copy opCall r=1 s=0.75 x=1 y=0.85000000000000009 z=3
+cnp.copy opCall r=1 s=1 x=1 y=1.1000000000000001 z=3
+cnp.copy area nr=10 ns=10 x=-7.0874221953450279e-32 y=8.6281661508548166e-32 z=1.0000000000000007
+cnp.bezier str=CoonsPatch(south=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)]), north=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)]), west=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)]), east=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)]))
+cnp.bezier classname=CoonsPatch
+cnp.bezier p00 x=0 y=0 z=0
+cnp.bezier p10 x=1 y=0 z=0
+cnp.bezier p11 x=1 y=1 z=0
+cnp.bezier p01 x=0 y=1 z=0
+cnp.bezier south class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+cnp.bezier south t=0 x=0 y=0 z=0
+cnp.bezier south t=0.5 x=0.5 y=-0.15000000000000002 z=0.075000000000000011
+cnp.bezier south t=1 x=1 y=0 z=0
+cnp.bezier north class=Bezier str=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)])
+cnp.bezier north t=0 x=0 y=1 z=0
+cnp.bezier north t=0.5 x=0.5 y=1.1499999999999999 z=0.075000000000000011
+cnp.bezier north t=1 x=1 y=1 z=0
+cnp.bezier west class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)])
+cnp.bezier west t=0 x=0 y=0 z=0
+cnp.bezier west t=0.5 x=-0.11249999999999999 y=0.5 z=0.075000000000000011
+cnp.bezier west t=1 x=0 y=1 z=0
+cnp.bezier east class=Bezier str=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)])
+cnp.bezier east t=0 x=1 y=0 z=0
+cnp.bezier east t=0.5 x=1.1124999999999998 y=0.5 z=0.075000000000000011
+cnp.bezier east t=1 x=1 y=1 z=0
+cnp.bezier opCall r=0 s=0 x=0 y=0 z=0
+cnp.bezier opCall r=0 s=0.25 x=-0.084374999999999992 y=0.24906250000000002 z=0.056250000000000008
+cnp.bezier opCall r=0 s=0.5 x=-0.11249999999999999 y=0.5 z=0.075000000000000011
+cnp.bezier opCall r=0 s=0.75 x=-0.084374999999999992 y=0.75093750000000004 z=0.056250000000000008
+cnp.bezier opCall r=0 s=1 x=0 y=1 z=0
+cnp.bezier opCall r=0.20000000000000001 s=0 x=0.19904000000000005 y=-0.09600000000000003 z=0.048000000000000015
+cnp.bezier opCall r=0.20000000000000001 s=0.25 x=0.14841500000000007 y=0.20106250000000003 z=0.10425000000000004
+cnp.bezier opCall r=0.20000000000000001 s=0.5 x=0.13153999999999999 y=0.5 z=0.12300000000000003
+cnp.bezier opCall r=0.20000000000000001 s=0.75 x=0.14841500000000007 y=0.79893749999999997 z=0.10425000000000004
+cnp.bezier opCall r=0.20000000000000001 s=1 x=0.19904000000000005 y=1.0960000000000001 z=0.048000000000000015
+cnp.bezier opCall r=0.5 s=0 x=0.5 y=-0.15000000000000002 z=0.075000000000000011
+cnp.bezier opCall r=0.5 s=0.25 x=0.5 y=0.17406250000000001 z=0.13125000000000003
+cnp.bezier opCall r=0.5 s=0.5 x=0.49999999999999989 y=0.5 z=0.15000000000000002
+cnp.bezier opCall r=0.5 s=0.75 x=0.5 y=0.82593749999999999 z=0.13125000000000003
+cnp.bezier opCall r=0.5 s=1 x=0.5 y=1.1499999999999999 z=0.075000000000000011
+cnp.bezier opCall r=0.75 s=0 x=0.75093750000000004 y=-0.11250000000000002 z=0.056250000000000008
+cnp.bezier opCall r=0.75 s=0.25 x=0.79312500000000008 y=0.19281250000000005 z=0.11250000000000002
+cnp.bezier opCall r=0.75 s=0.5 x=0.80718749999999995 y=0.5 z=0.13125000000000003
+cnp.bezier opCall r=0.75 s=0.75 x=0.79312500000000008 y=0.80718750000000017 z=0.11250000000000002
+cnp.bezier opCall r=0.75 s=1 x=0.75093750000000004 y=1.1124999999999998 z=0.056250000000000008
+cnp.bezier opCall r=1 s=0 x=1 y=0 z=0
+cnp.bezier opCall r=1 s=0.25 x=1.0843750000000001 y=0.24906250000000002 z=0.056250000000000008
+cnp.bezier opCall r=1 s=0.5 x=1.1124999999999998 y=0.5 z=0.075000000000000011
+cnp.bezier opCall r=1 s=0.75 x=1.0843750000000001 y=0.75093750000000004 z=0.056250000000000008
+cnp.bezier opCall r=1 s=1 x=1 y=1 z=0
+cnp.bezier area nr=10 ns=10 x=-4.8572257327350599e-17 y=-6.0715321659188248e-18 z=1.3471652799999998
+cnp.bezier area nr=3 ns=7 x=1.3877787807814457e-17 y=8.6736173798840355e-18 z=1.3251839716990348
+cnp.bezier.aftermut str=CoonsPatch(south=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)]), north=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)]), west=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)]), east=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)]))
+cnp.bezier.aftermut classname=CoonsPatch
+cnp.bezier.aftermut p00 x=0 y=0 z=0
+cnp.bezier.aftermut p10 x=1 y=0 z=0
+cnp.bezier.aftermut p11 x=1 y=1 z=0
+cnp.bezier.aftermut p01 x=0 y=1 z=0
+cnp.bezier.aftermut south class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+cnp.bezier.aftermut south t=0 x=0 y=0 z=0
+cnp.bezier.aftermut south t=0.5 x=0.5 y=-0.15000000000000002 z=0.075000000000000011
+cnp.bezier.aftermut south t=1 x=1 y=0 z=0
+cnp.bezier.aftermut north class=Bezier str=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)])
+cnp.bezier.aftermut north t=0 x=0 y=1 z=0
+cnp.bezier.aftermut north t=0.5 x=0.5 y=1.1499999999999999 z=0.075000000000000011
+cnp.bezier.aftermut north t=1 x=1 y=1 z=0
+cnp.bezier.aftermut west class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)])
+cnp.bezier.aftermut west t=0 x=0 y=0 z=0
+cnp.bezier.aftermut west t=0.5 x=-0.11249999999999999 y=0.5 z=0.075000000000000011
+cnp.bezier.aftermut west t=1 x=0 y=1 z=0
+cnp.bezier.aftermut east class=Bezier str=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)])
+cnp.bezier.aftermut east t=0 x=1 y=0 z=0
+cnp.bezier.aftermut east t=0.5 x=1.1124999999999998 y=0.5 z=0.075000000000000011
+cnp.bezier.aftermut east t=1 x=1 y=1 z=0
+cnp.bezier.callerstr str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 5), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+cnp.bezier str.as.base=CoonsPatch(south=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)]), north=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)]), west=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)]), east=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)]))
+cnp.open.p00 threw=Error msg=CoonsPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.1, 0, 0)
+cnp.open.p10 threw=Error msg=CoonsPatch open corner p10= Vector3(1, 0, 0) p10_alt= Vector3(1, 0.1, 0)
+cnp.open.p11 threw=Error msg=CoonsPatch open corner p11= Vector3(1, 0.9, 0) p11_alt= Vector3(1, 1, 0)
+cnp.open.p01 threw=Error msg=CoonsPatch open corner p01= Vector3(0.1, 1, 0) p01_alt= Vector3(0, 1, 0)
+cnp.open.all threw=Error msg=CoonsPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.3, 0.1, 0)
+cnp.tol.1e-3 threw=Error msg=CoonsPatch open corner p00= Vector3(0.001, 0, 0) p00_alt= Vector3(0, 0, 0)
+cnp.tol.1e-6 threw=none
+cnp.tol.1.5e-2 threw=Error msg=CoonsPatch open corner p00= Vector3(1, 0, 0) p00_alt= Vector3(0, 0, 0)
+cnp.reltol.5e-3 threw=none
+cnp.reltol.5e-3.p10 x=1 y=0 z=0
+cnp.reltol.5e-3.east t=0 x=1.0049999999999999 y=0 z=0
+cnp.reltol.1.5e-2 threw=Error msg=CoonsPatch open corner p10= Vector3(1, 0, 0) p10_alt= Vector3(1.015, 0, 0)
+cnp.nan.corners threw=Error msg=CoonsPatch open corner p00= Vector3(nan, nan, nan) p00_alt= Vector3(nan, nan, nan)
+cnp.point str=CoonsPatch(south=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), north=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), west=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), east=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)))
+cnp.point classname=CoonsPatch
+cnp.point p00 x=1 y=2 z=3
+cnp.point p10 x=1 y=2 z=3
+cnp.point p11 x=1 y=2 z=3
+cnp.point p01 x=1 y=2 z=3
+cnp.point south class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+cnp.point south t=0 x=1 y=2 z=3
+cnp.point south t=0.5 x=1 y=2 z=3
+cnp.point south t=1 x=1 y=2 z=3
+cnp.point north class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+cnp.point north t=0 x=1 y=2 z=3
+cnp.point north t=0.5 x=1 y=2 z=3
+cnp.point north t=1 x=1 y=2 z=3
+cnp.point west class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+cnp.point west t=0 x=1 y=2 z=3
+cnp.point west t=0.5 x=1 y=2 z=3
+cnp.point west t=1 x=1 y=2 z=3
+cnp.point east class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+cnp.point east t=0 x=1 y=2 z=3
+cnp.point east t=0.5 x=1 y=2 z=3
+cnp.point east t=1 x=1 y=2 z=3
+cnp.point opCall r=0 s=0 x=1 y=2 z=3
+cnp.point opCall r=0 s=0.25 x=1 y=2 z=3
+cnp.point opCall r=0 s=0.5 x=1 y=2 z=3
+cnp.point opCall r=0 s=0.75 x=1 y=2 z=3
+cnp.point opCall r=0 s=1 x=1 y=2 z=3
+cnp.point opCall r=0.20000000000000001 s=0 x=1 y=2 z=2.9999999999999996
+cnp.point opCall r=0.20000000000000001 s=0.25 x=1 y=2 z=2.9999999999999996
+cnp.point opCall r=0.20000000000000001 s=0.5 x=1 y=2 z=3
+cnp.point opCall r=0.20000000000000001 s=0.75 x=1 y=2 z=2.9999999999999996
+cnp.point opCall r=0.20000000000000001 s=1 x=1 y=2 z=2.9999999999999996
+cnp.point opCall r=0.5 s=0 x=1 y=2 z=3
+cnp.point opCall r=0.5 s=0.25 x=1 y=2 z=3
+cnp.point opCall r=0.5 s=0.5 x=1 y=2 z=3
+cnp.point opCall r=0.5 s=0.75 x=1 y=2 z=3
+cnp.point opCall r=0.5 s=1 x=1 y=2 z=3
+cnp.point opCall r=0.75 s=0 x=1 y=2 z=3
+cnp.point opCall r=0.75 s=0.25 x=1 y=2 z=3
+cnp.point opCall r=0.75 s=0.5 x=1 y=2 z=3
+cnp.point opCall r=0.75 s=0.75 x=1 y=2 z=3
+cnp.point opCall r=0.75 s=1 x=1 y=2 z=3
+cnp.point opCall r=1 s=0 x=1 y=2 z=3
+cnp.point opCall r=1 s=0.25 x=1 y=2 z=3
+cnp.point opCall r=1 s=0.5 x=1 y=2 z=3
+cnp.point opCall r=1 s=0.75 x=1 y=2 z=3
+cnp.point opCall r=1 s=1 x=1 y=2 z=3
+cnp.point area nr=10 ns=10 x=1.9844399349744764e-30 y=0 z=0
+cnp.skew str=CoonsPatch(south=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(2, 0.75, -0.3)), north=Line(p0=Vector3(-0.5, 1.5, 0.9), p1=Vector3(1.25, 2.5, 0.05)), west=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(-0.5, 1.5, 0.9)), east=Line(p0=Vector3(2, 0.75, -0.3), p1=Vector3(1.25, 2.5, 0.05)))
+cnp.skew classname=CoonsPatch
+cnp.skew p00 x=0.5 y=-0.25 z=0.10000000000000001
+cnp.skew p10 x=2 y=0.75 z=-0.29999999999999999
+cnp.skew p11 x=1.25 y=2.5 z=0.050000000000000003
+cnp.skew p01 x=-0.5 y=1.5 z=0.90000000000000002
+cnp.skew south class=Line str=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(2, 0.75, -0.3))
+cnp.skew south t=0 x=0.5 y=-0.25 z=0.10000000000000001
+cnp.skew south t=0.5 x=1.25 y=0.25 z=-0.099999999999999992
+cnp.skew south t=1 x=2 y=0.75 z=-0.29999999999999999
+cnp.skew north class=Line str=Line(p0=Vector3(-0.5, 1.5, 0.9), p1=Vector3(1.25, 2.5, 0.05))
+cnp.skew north t=0 x=-0.5 y=1.5 z=0.90000000000000002
+cnp.skew north t=0.5 x=0.375 y=2 z=0.47500000000000003
+cnp.skew north t=1 x=1.25 y=2.5 z=0.050000000000000003
+cnp.skew west class=Line str=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(-0.5, 1.5, 0.9))
+cnp.skew west t=0 x=0.5 y=-0.25 z=0.10000000000000001
+cnp.skew west t=0.5 x=0 y=0.625 z=0.5
+cnp.skew west t=1 x=-0.5 y=1.5 z=0.90000000000000002
+cnp.skew east class=Line str=Line(p0=Vector3(2, 0.75, -0.3), p1=Vector3(1.25, 2.5, 0.05))
+cnp.skew east t=0 x=2 y=0.75 z=-0.29999999999999999
+cnp.skew east t=0.5 x=1.625 y=1.625 z=-0.125
+cnp.skew east t=1 x=1.25 y=2.5 z=0.050000000000000003
+cnp.skew opCall r=0 s=0 x=0.5 y=-0.25 z=0.10000000000000001
+cnp.skew opCall r=0 s=0.25 x=0.25 y=0.1875 z=0.30000000000000004
+cnp.skew opCall r=0 s=0.5 x=0 y=0.625 z=0.5
+cnp.skew opCall r=0 s=0.75 x=-0.25 y=1.0625 z=0.70000000000000007
+cnp.skew opCall r=0 s=1 x=-0.5 y=1.5 z=0.90000000000000002
+cnp.skew opCall r=0.20000000000000001 s=0 x=0.80000000000000004 y=-0.049999999999999989 z=0.020000000000000018
+cnp.skew opCall r=0.20000000000000001 s=0.25 x=0.56250000000000011 y=0.38750000000000007 z=0.19750000000000009
+cnp.skew opCall r=0.20000000000000001 s=0.5 x=0.32500000000000001 y=0.82499999999999996 z=0.37500000000000011
+cnp.skew opCall r=0.20000000000000001 s=0.75 x=0.087500000000000022 y=1.2625000000000002 z=0.5525000000000001
+cnp.skew opCall r=0.20000000000000001 s=1 x=-0.15000000000000002 y=1.7000000000000002 z=0.73000000000000009
+cnp.skew opCall r=0.5 s=0 x=1.25 y=0.25 z=-0.099999999999999992
+cnp.skew opCall r=0.5 s=0.25 x=1.03125 y=0.6875 z=0.043750000000000018
+cnp.skew opCall r=0.5 s=0.5 x=0.8125 y=1.125 z=0.1875
+cnp.skew opCall r=0.5 s=0.75 x=0.59375 y=1.5625 z=0.33124999999999993
+cnp.skew opCall r=0.5 s=1 x=0.375 y=2 z=0.47500000000000003
+cnp.skew opCall r=0.75 s=0 x=1.625 y=0.5 z=-0.19999999999999998
+cnp.skew opCall r=0.75 s=0.25 x=1.421875 y=0.9375 z=-0.084374999999999978
+cnp.skew opCall r=0.75 s=0.5 x=1.21875 y=1.375 z=0.031249999999999986
+cnp.skew opCall r=0.75 s=0.75 x=1.015625 y=1.8125 z=0.14687499999999998
+cnp.skew opCall r=0.75 s=1 x=0.8125 y=2.25 z=0.26250000000000001
+cnp.skew opCall r=1 s=0 x=2 y=0.75 z=-0.29999999999999999
+cnp.skew opCall r=1 s=0.25 x=1.8125 y=1.1875 z=-0.21249999999999997
+cnp.skew opCall r=1 s=0.5 x=1.625 y=1.625 z=-0.125
+cnp.skew opCall r=1 s=0.75 x=1.4375 y=2.0625 z=-0.037499999999999992
+cnp.skew opCall r=1 s=1 x=1.25 y=2.5 z=0.050000000000000003
+cnp.skew area nr=10 ns=10 x=1.6687499999999995 y=-0.38749999999999996 z=3.7187499999999996
+cnp.skew area nr=3 ns=7 x=1.6687499999999997 y=-0.38749999999999979 z=3.7187499999999996
+cnp.demo head=CoonsPatch demo
+cnp.demo patch=my_patch= CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)))
+cnp.demo c=my_patch(0.1, 0.1)= Vector3(0.1, 0.2, 3)
+cnp.demo patch2=my_patch= CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.4, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.4, 3), p1=Vector3(1, 1.1, 3)))

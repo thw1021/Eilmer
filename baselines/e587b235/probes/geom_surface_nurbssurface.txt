@@ -1,0 +1,200 @@
+ns.e43 str=NURBSSurface(Pw=[[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 2, 4, 1], [0, 6, 4, 2], [0, 2, 0, 1], [0, 0, 0, 0]], [[0, 0, 0, 0], [4, 6, 8, 2], [12, 24, 12, 6], [4, 6, 0, 2], [0, 0, 0, 0]], [[0, 0, 0, 0], [4, 2, 4, 1], [8, 6, 4, 2], [4, 2, 0, 1], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]], U=[0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5], p=2, V=[0, 0, 0, 1, 2, 3, 3, 3], q=2)
+ns.e43.unittest u=2.5 v=1 x=2 y=3.6296296296296298 z=2.5185185185185186
+ns.e43.sweep u=0 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=0 v=1 x=-nan y=-nan z=-nan
+ns.e43.sweep u=0 v=2 x=-nan y=-nan z=-nan
+ns.e43.sweep u=0 v=2.5 x=-nan y=-nan z=-nan
+ns.e43.sweep u=0 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=1 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=1 v=1 x=0 y=2.6666666666666665 z=2.6666666666666665
+ns.e43.sweep u=1 v=2 x=0 y=2.6666666666666665 z=1.3333333333333333
+ns.e43.sweep u=1 v=2.5 x=0 y=2.2857142857142856 z=0.5714285714285714
+ns.e43.sweep u=1 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=2 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=2 v=1 x=1.4545454545454546 y=3.4545454545454546 z=2.5454545454545454
+ns.e43.sweep u=2 v=2 x=1.4545454545454546 y=3.4545454545454546 z=1.4545454545454546
+ns.e43.sweep u=2 v=2.5 x=1.3913043478260869 y=3.0434782608695654 z=0.69565217391304346
+ns.e43.sweep u=2 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=2.5 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=2.5 v=1 x=2 y=3.6296296296296298 z=2.5185185185185186
+ns.e43.sweep u=2.5 v=2 x=2 y=3.6296296296296298 z=1.4814814814814814
+ns.e43.sweep u=2.5 v=2.5 x=2 y=3.2363636363636363 z=0.72727272727272729
+ns.e43.sweep u=2.5 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=3.5 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=3.5 v=1 x=3.3043478260869565 y=3.0434782608695654 z=2.6086956521739131
+ns.e43.sweep u=3.5 v=2 x=3.3043478260869565 y=3.0434782608695654 z=1.3913043478260869
+ns.e43.sweep u=3.5 v=2.5 x=3.3725490196078431 y=2.6274509803921569 z=0.62745098039215685
+ns.e43.sweep u=3.5 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=4 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=4 v=1 x=-nan y=-nan z=-nan
+ns.e43.sweep u=4 v=2 x=-nan y=-nan z=-nan
+ns.e43.sweep u=4 v=2.5 x=-nan y=-nan z=-nan
+ns.e43.sweep u=4 v=3 x=-nan y=-nan z=-nan
+ns.e43.sweep u=5 v=0 x=-nan y=-nan z=-nan
+ns.e43.sweep u=5 v=1 x=-nan y=-nan z=-nan
+ns.e43.sweep u=5 v=2 x=-nan y=-nan z=-nan
+ns.e43.sweep u=5 v=2.5 x=-nan y=-nan z=-nan
+ns.e43.sweep u=5 v=3 x=-nan y=-nan z=-nan
+ns.grid str=NURBSSurface(Pw=[[[0, 0, 0, 1], [0, 1, 0.25, 1], [0, 2, 0.5, 1], [0, 3, 0.75, 1]], [[1, 0, 0.25, 1], [1, 1, 0.5, 1], [1, 2, 0.75, 1], [1, 3, 1, 1]], [[2, 0, 0.5, 1], [2, 1, 0.75, 1], [2, 2, 1, 1], [2, 3, 1.25, 1]], [[3, 0, 0.75, 1], [3, 1, 1, 1], [3, 2, 1.25, 1], [3, 3, 1.5, 1]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.grid.sweep u=0 v=0 x=0 y=0 z=0
+ns.grid.sweep u=0 v=0.25 x=0 y=0.875 z=0.21875
+ns.grid.sweep u=0 v=0.5 x=0 y=1.5 z=0.375
+ns.grid.sweep u=0 v=0.75 x=0 y=2.125 z=0.53125
+ns.grid.sweep u=0 v=1 x=0 y=3 z=0.75
+ns.grid.sweep u=0.25 v=0 x=0.875 y=0 z=0.21875
+ns.grid.sweep u=0.25 v=0.25 x=0.875 y=0.875 z=0.4375
+ns.grid.sweep u=0.25 v=0.5 x=0.875 y=1.5 z=0.59375
+ns.grid.sweep u=0.25 v=0.75 x=0.875 y=2.125 z=0.75
+ns.grid.sweep u=0.25 v=1 x=0.875 y=3 z=0.96875
+ns.grid.sweep u=0.5 v=0 x=1.5 y=0 z=0.375
+ns.grid.sweep u=0.5 v=0.25 x=1.5 y=0.875 z=0.59375
+ns.grid.sweep u=0.5 v=0.5 x=1.5 y=1.5 z=0.75
+ns.grid.sweep u=0.5 v=0.75 x=1.5 y=2.125 z=0.90625
+ns.grid.sweep u=0.5 v=1 x=1.5 y=3 z=1.125
+ns.grid.sweep u=0.75 v=0 x=2.125 y=0 z=0.53125
+ns.grid.sweep u=0.75 v=0.25 x=2.125 y=0.875 z=0.75
+ns.grid.sweep u=0.75 v=0.5 x=2.125 y=1.5 z=0.90625
+ns.grid.sweep u=0.75 v=0.75 x=2.125 y=2.125 z=1.0625
+ns.grid.sweep u=0.75 v=1 x=2.125 y=3 z=1.28125
+ns.grid.sweep u=1 v=0 x=3 y=0 z=0.75
+ns.grid.sweep u=1 v=0.25 x=3 y=0.875 z=0.96875
+ns.grid.sweep u=1 v=0.5 x=3 y=1.5 z=1.125
+ns.grid.sweep u=1 v=0.75 x=3 y=2.125 z=1.28125
+ns.grid.sweep u=1 v=1 x=3 y=3 z=1.5
+ns.grid.corner00 x=0 y=0 z=0
+ns.grid.corner10 x=3 y=0 z=0.75
+ns.grid.corner01 x=0 y=3 z=0.75
+ns.grid.corner11 x=3 y=3 z=1.5
+ns.gridw str=NURBSSurface(Pw=[[[0, 0, 0, 2.5], [0, 1, 0.25, 2.5], [0, 2, 0.5, 2.5], [0, 3, 0.75, 2.5]], [[1, 0, 0.25, 2.5], [1, 1, 0.5, 2.5], [1, 2, 0.75, 2.5], [1, 3, 1, 2.5]], [[2, 0, 0.5, 2.5], [2, 1, 0.75, 2.5], [2, 2, 1, 2.5], [2, 3, 1.25, 2.5]], [[3, 0, 0.75, 2.5], [3, 1, 1, 2.5], [3, 2, 1.25, 2.5], [3, 3, 1.5, 2.5]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.gridw.sweep u=0 v=0 x=0 y=0 z=0
+ns.gridw.sweep u=0 v=0.5 x=0 y=0.59999999999999998 z=0.14999999999999999
+ns.gridw.sweep u=0 v=1 x=0 y=1.2 z=0.29999999999999999
+ns.gridw.sweep u=0.5 v=0 x=0.59999999999999998 y=0 z=0.14999999999999999
+ns.gridw.sweep u=0.5 v=0.5 x=0.59999999999999998 y=0.59999999999999998 z=0.29999999999999999
+ns.gridw.sweep u=0.5 v=1 x=0.59999999999999998 y=1.2 z=0.45000000000000001
+ns.gridw.sweep u=1 v=0 x=1.2 y=0 z=0.29999999999999999
+ns.gridw.sweep u=1 v=0.5 x=1.2 y=0.59999999999999998 z=0.45000000000000001
+ns.gridw.sweep u=1 v=1 x=1.2 y=1.2 z=0.59999999999999998
+ns.gridz str=NURBSSurface(Pw=[[[0, 0, 0, 0], [0, 1, 0.25, 0], [0, 2, 0.5, 0], [0, 3, 0.75, 0]], [[1, 0, 0.25, 0], [1, 1, 0.5, 0], [1, 2, 0.75, 0], [1, 3, 1, 0]], [[2, 0, 0.5, 0], [2, 1, 0.75, 0], [2, 2, 1, 0], [2, 3, 1.25, 0]], [[3, 0, 0.75, 0], [3, 1, 1, 0], [3, 2, 1.25, 0], [3, 3, 1.5, 0]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.gridz.sweep u=0 v=0 x=-nan y=-nan z=-nan
+ns.gridz.sweep u=0 v=0.5 x=-nan y=inf z=inf
+ns.gridz.sweep u=0 v=1 x=-nan y=inf z=inf
+ns.gridz.sweep u=0.5 v=0 x=inf y=-nan z=inf
+ns.gridz.sweep u=0.5 v=0.5 x=inf y=inf z=inf
+ns.gridz.sweep u=0.5 v=1 x=inf y=inf z=inf
+ns.gridz.sweep u=1 v=0 x=inf y=-nan z=inf
+ns.gridz.sweep u=1 v=0.5 x=inf y=inf z=inf
+ns.gridz.sweep u=1 v=1 x=inf y=inf z=inf
+ns.guards.oneRow thrown type=object.Error msg=NURBSSurface() A NURBS surface requires at least two control points in each direction.<newline>Supplied number of control points in direction u: 1<newline>Supplied number of control points in direction v: 2
+ns.guards.oneCol thrown type=object.Error msg=NURBSSurface() A NURBS surface requires at least two control points in each direction.<newline>Supplied number of control points in direction u: 2<newline>Supplied number of control points in direction v: 1
+ns.guards.pTooBig thrown type=object.Error msg=NURBSSurface() Degree of NURBS surface in direction u is not compatible with given number of control points.<newline>Supplied degree in u direction: 4<newline>Maximum allowed degree in u direction: 3
+ns.guards.qTooBig thrown type=object.Error msg=NURBSSurface() Degree of NURBS surface in direction v is not compatible with given number of control points.<newline>Supplied degree in u direction: 5<newline>Maximum allowed degree in u direction: 3
+ns.guards.shortU thrown type=object.Error msg=NURBS() Knot vector in direction u is not compatible with given number control points and surface degree.<newline>Supplied number of knots in direction u: 5<newline>Required number of knots in direction u: 7
+ns.guards.shortV thrown type=object.Error msg=NURBS() Knot vector in direction u is not compatible with given number control points and surface degree.<newline>Supplied number of knots in direction v: 5<newline>Required number of knots in direction v: 7
+ns.guards.negP thrown type=object.Error msg=NURBSSurface() Degree of NURBS surface in direction u is not compatible with given number of control points.<newline>Supplied degree in u direction: -1<newline>Maximum allowed degree in u direction: 3
+ns.guards.negQ thrown type=object.Error msg=NURBSSurface() Degree of NURBS surface in direction v is not compatible with given number of control points.<newline>Supplied degree in u direction: -1<newline>Maximum allowed degree in u direction: 3
+ns.guards.zeroRows thrown type=core.exception.ArrayIndexError msg=index [0] is out of bounds for array of length 0
+ns.guards.deg0 thrown type=object.Error msg=NURBS() Knot vector in direction u is not compatible with given number control points and surface degree.<newline>Supplied number of knots in direction u: 6<newline>Required number of knots in direction u: 3
+ns.range.u.below thrown type=object.Exception msg=Error in FindSpan.<newline>The parameter value is not compatible with the chosen knot vector.<newline>Supplied parameter value: -1.000000000000000056e-01<newline>Valid parameter range: [0.000000000000000000e+00, 1.000000000000000000e+00]
+ns.range.u.above thrown type=object.Exception msg=Error in FindSpan.<newline>The parameter value is not compatible with the chosen knot vector.<newline>Supplied parameter value: 1.100000000000000089e+00<newline>Valid parameter range: [0.000000000000000000e+00, 1.000000000000000000e+00]
+ns.range.v.below thrown type=object.Exception msg=Error in FindSpan.<newline>The parameter value is not compatible with the chosen knot vector.<newline>Supplied parameter value: -2.500000000000000000e-01<newline>Valid parameter range: [0.000000000000000000e+00, 1.000000000000000000e+00]
+ns.range.v.above thrown type=object.Exception msg=Error in FindSpan.<newline>The parameter value is not compatible with the chosen knot vector.<newline>Supplied parameter value: 2.000000000000000000e+00<newline>Valid parameter range: [0.000000000000000000e+00, 1.000000000000000000e+00]
+ns.clamp.u.below x=-4.0000000000001995e-13 y=1.5 z=0.37499999999990002
+ns.clamp.u.above x=3.0000000000003997 y=1.5 z=1.1250000000000999
+ns.clamp.v.below x=1.5 y=-4.0000000000001995e-13 z=0.37499999999989997
+ns.clamp.v.above x=1.5 y=3.0000000000003997 z=1.1250000000000999
+ns.e43.outside thrown type=object.Exception msg=Error in FindSpan.<newline>The parameter value is not compatible with the chosen knot vector.<newline>Supplied parameter value: 5.500000000000000000e+00<newline>Valid parameter range: [0.000000000000000000e+00, 5.000000000000000000e+00]
+ns.ord.before x=0.875 y=2.125 z=0.75
+ns.ord.cub str=NURBSSurface(Pw=[[[0, 0, 0, 1], [0, 1, 0.25, 1]], [[1, 0, 0.25, 1], [1, 1, 0.5, 1]], [[2, 0, 0.5, 1], [2, 1, 0.75, 1]], [[3, 0, 0.75, 1], [3, 1, 1, 1]], [[4, 0, 1, 1], [4, 1, 1.25, 1]]], U=[0, 0, 0, 0, 0.5, 1, 1, 1, 1], p=3, V=[0, 0, 1, 1], q=1)
+ns.ord.cub.a x=0 y=0 z=0
+ns.ord.cub.b x=2 y=1 z=0.75
+ns.ord.afterBig thrown type=core.exception.ArrayIndexError msg=index [2] is out of bounds for array of length 2
+ns.ord.lin str=NURBSSurface(Pw=[[[0, 0, 0, 1], [0, 1, 0.25, 1]], [[1, 0, 0.25, 1], [1, 1, 0.5, 1]]], U=[0, 0, 1, 1], p=1, V=[0, 0, 1, 1], q=1)
+ns.ord.lin.a x=0 y=0.5 z=0.125
+ns.ord.afterSmall thrown type=core.exception.ArrayIndexError msg=index [2] is out of bounds for array of length 2
+ns.ord.afterSmall2 thrown type=core.exception.ArrayIndexError msg=index [2] is out of bounds for array of length 2
+ns.ord.rebuilt x=0.875 y=2.125 z=0.75
+ns.ord.old.afterRebuild x=0.875 y=2.125 z=0.75
+ns.cub.orig u=0 v=0 x=0 y=0 z=0
+ns.cub.dup u=0 v=0 x=0 y=0 z=0
+ns.cub.copy u=0 v=0 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.cub.orig u=0 v=1 x=0 y=1 z=0.25
+ns.cub.dup u=0 v=1 x=0 y=1 z=0.25
+ns.cub.copy u=0 v=1 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.cub.orig u=0.5 v=0 x=2 y=0 z=0.5
+ns.cub.dup u=0.5 v=0 x=2 y=0 z=0.5
+ns.cub.copy u=0.5 v=0 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.cub.orig u=0.5 v=1 x=2 y=1 z=0.75
+ns.cub.dup u=0.5 v=1 x=2 y=1 z=0.75
+ns.cub.copy u=0.5 v=1 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.cub.orig u=1 v=0 x=4 y=0 z=1
+ns.cub.dup u=1 v=0 x=4 y=0 z=1
+ns.cub.copy u=1 v=0 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.cub.orig u=1 v=1 x=4 y=1 z=1.25
+ns.cub.dup u=1 v=1 x=4 y=1 z=1.25
+ns.cub.copy u=1 v=1 thrown type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+ns.gp str=NURBSSurface(Pw=[[[0, 0, 0.2, 1], [0, 0.25, 0.4, 1], [0, 1, 0.6, 1], [0, 2.25, 0.8, 1]], [[0.5, -0.1, 0.4, 1], [0.6, 0.15, 0.8, 1.2], [0.7, 0.9, 1.2, 1.4], [0.8, 2.15, 1.6, 1.6]], [[1, -0.2, 0.6, 1], [1.2, 0.05, 1.2, 1.4], [1.4, 0.8, 1.8, 1.8], [1.6, 2.05, 2.4, 2.2]], [[1.5, -0.3, 0.8, 1], [1.8, -0.05, 1.6, 1.6], [2.1, 0.7, 2.4, 2.2], [2.4, 1.95, 3.2, 2.8]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.gp.dup str=NURBSSurface(Pw=[[[0, 0, 0.2, 1], [0, 0.25, 0.4, 1], [0, 1, 0.6, 1], [0, 2.25, 0.8, 1]], [[0.5, -0.1, 0.4, 1], [0.6, 0.15, 0.8, 1.2], [0.7, 0.9, 1.2, 1.4], [0.8, 2.15, 1.6, 1.6]], [[1, -0.2, 0.6, 1], [1.2, 0.05, 1.2, 1.4], [1.4, 0.8, 1.8, 1.8], [1.6, 2.05, 2.4, 2.2]], [[1.5, -0.3, 0.8, 1], [1.8, -0.05, 1.6, 1.6], [2.1, 0.7, 2.4, 2.2], [2.4, 1.95, 3.2, 2.8]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.gp.copy str=NURBSSurface(Pw=[[[0, 0, 0.2, 1], [0, 0.25, 0.4, 1], [0, 1, 0.6, 1], [0, 2.25, 0.8, 1]], [[0.5, -0.1, 0.4, 1], [0.6, 0.15, 0.8, 1.2], [0.7, 0.9, 1.2, 1.4], [0.8, 2.15, 1.6, 1.6]], [[1, -0.2, 0.6, 1], [1.2, 0.05, 1.2, 1.4], [1.4, 0.8, 1.8, 1.8], [1.6, 2.05, 2.4, 2.2]], [[1.5, -0.3, 0.8, 1], [1.8, -0.05, 1.6, 1.6], [2.1, 0.7, 2.4, 2.2], [2.4, 1.95, 3.2, 2.8]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.gp.orig u=0 v=0 x=0 y=0 z=0.20000000000000001
+ns.gp.dup u=0 v=0 x=0 y=0 z=0.20000000000000001
+ns.gp.copy u=0 v=0 x=0 y=0 z=0.20000000000000001
+ns.gp.orig u=0 v=0.25 x=0 y=0.28125 z=0.375
+ns.gp.dup u=0 v=0.25 x=0 y=0.28125 z=0.375
+ns.gp.copy u=0 v=0.25 x=0 y=0.28125 z=0.375
+ns.gp.orig u=0 v=0.5 x=0 y=0.625 z=0.5
+ns.gp.dup u=0 v=0.5 x=0 y=0.625 z=0.5
+ns.gp.copy u=0 v=0.5 x=0 y=0.625 z=0.5
+ns.gp.orig u=0.29999999999999999 v=0 x=0.51000000000000001 y=-0.10199999999999998 z=0.40400000000000003
+ns.gp.dup u=0.29999999999999999 v=0 x=0.51000000000000001 y=-0.10199999999999998 z=0.40400000000000003
+ns.gp.copy u=0.29999999999999999 v=0 x=0.51000000000000001 y=-0.10199999999999998 z=0.40400000000000003
+ns.gp.orig u=0.29999999999999999 v=0.25 x=0.5084853627492576 y=0.15210012728044128 z=0.64276622825625807
+ns.gp.dup u=0.29999999999999999 v=0.25 x=0.5084853627492576 y=0.15210012728044128 z=0.64276622825625807
+ns.gp.copy u=0.29999999999999999 v=0.25 x=0.5084853627492576 y=0.15210012728044128 z=0.64276622825625807
+ns.gp.orig u=0.29999999999999999 v=0.5 x=0.50765696784073511 y=0.40045941807044411 z=0.77335375191424216
+ns.gp.dup u=0.29999999999999999 v=0.5 x=0.50765696784073511 y=0.40045941807044411 z=0.77335375191424216
+ns.gp.copy u=0.29999999999999999 v=0.5 x=0.50765696784073511 y=0.40045941807044411 z=0.77335375191424216
+ns.gp.orig u=1 v=0 x=1.5 y=-0.30000000000000004 z=0.80000000000000004
+ns.gp.dup u=1 v=0 x=1.5 y=-0.30000000000000004 z=0.80000000000000004
+ns.gp.copy u=1 v=0 x=1.5 y=-0.30000000000000004 z=0.80000000000000004
+ns.gp.orig u=1 v=0.25 x=1.1557377049180328 y=-0.012295081967213144 z=0.98360655737704927
+ns.gp.dup u=1 v=0.25 x=1.1557377049180328 y=-0.012295081967213144 z=0.98360655737704927
+ns.gp.copy u=1 v=0.25 x=1.1557377049180328 y=-0.012295081967213144 z=0.98360655737704927
+ns.gp.orig u=1 v=0.5 x=1.0263157894736843 y=0.17105263157894735 z=1.0526315789473684
+ns.gp.dup u=1 v=0.5 x=1.0263157894736843 y=0.17105263157894735 z=1.0526315789473684
+ns.gp.copy u=1 v=0.5 x=1.0263157894736843 y=0.17105263157894735 z=1.0526315789473684
+ns.dup str=NURBSSurface(Pw=[[[0, 0, 0, 1], [0, 1, 0.25, 1], [0, 2, 0.5, 1], [0, 3, 0.75, 1]], [[1, 0, 0.25, 1], [1, 1, 0.5, 1], [1, 2, 0.75, 1], [1, 3, 1, 1]], [[2, 0, 0.5, 1], [2, 1, 0.75, 1], [2, 2, 1, 1], [2, 3, 1.25, 1]], [[3, 0, 0.75, 1], [3, 1, 1, 1], [3, 2, 1.25, 1], [3, 3, 1.5, 1]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.copy str=NURBSSurface(Pw=[[[0, 0, 0, 1], [0, 1, 0.25, 1], [0, 2, 0.5, 1], [0, 3, 0.75, 1]], [[1, 0, 0.25, 1], [1, 1, 0.5, 1], [1, 2, 0.75, 1], [1, 3, 1, 1]], [[2, 0, 0.5, 1], [2, 1, 0.75, 1], [2, 2, 1, 1], [2, 3, 1.25, 1]], [[3, 0, 0.75, 1], [3, 1, 1, 1], [3, 2, 1.25, 1], [3, 3, 1.5, 1]]], U=[0, 0, 0, 0.5, 1, 1, 1], p=2, V=[0, 0, 0, 0.5, 1, 1, 1], q=2)
+ns.orig u=0 v=0 x=0 y=0 z=0
+ns.dup u=0 v=0 x=0 y=0 z=0
+ns.copy u=0 v=0 x=0 y=0 z=0
+ns.orig u=0 v=0.5 x=0 y=1.5 z=0.375
+ns.dup u=0 v=0.5 x=0 y=1.5 z=0.375
+ns.copy u=0 v=0.5 x=0 y=1.5 z=0.375
+ns.orig u=0.25 v=0 x=0.875 y=0 z=0.21875
+ns.dup u=0.25 v=0 x=0.875 y=0 z=0.21875
+ns.copy u=0.25 v=0 x=0.875 y=0 z=0.21875
+ns.orig u=0.25 v=0.5 x=0.875 y=1.5 z=0.59375
+ns.dup u=0.25 v=0.5 x=0.875 y=1.5 z=0.59375
+ns.copy u=0.25 v=0.5 x=0.875 y=1.5 z=0.59375
+ns.orig u=0.5 v=0 x=1.5 y=0 z=0.375
+ns.dup u=0.5 v=0 x=1.5 y=0 z=0.375
+ns.copy u=0.5 v=0 x=1.5 y=0 z=0.375
+ns.orig u=0.5 v=0.5 x=1.5 y=1.5 z=0.75
+ns.dup u=0.5 v=0.5 x=1.5 y=1.5 z=0.75
+ns.copy u=0.5 v=0.5 x=1.5 y=1.5 z=0.75
+ns.orig u=1 v=0 x=3 y=0 z=0.75
+ns.dup u=1 v=0 x=3 y=0 z=0.75
+ns.copy u=1 v=0 x=3 y=0 z=0.75
+ns.orig u=1 v=0.5 x=3 y=1.5 z=1.125
+ns.dup u=1 v=0.5 x=3 y=1.5 z=1.125
+ns.copy u=1 v=0.5 x=3 y=1.5 z=1.125
+ns.orig.v1 u=0 x=0 y=3 z=0.75
+ns.dup.v1 u=0 x=0 y=3 z=0.75
+ns.orig.v1 u=0.5 x=1.5 y=3 z=1.125
+ns.dup.v1 u=0.5 x=1.5 y=3 z=1.125
+ns.orig.v1 u=1 x=3 y=3 z=1.5
+ns.dup.v1 u=1 x=3 y=3 z=1.5
+ns.area.default x=-2.2499999999999987 y=-2.25 z=9
+ns.area.r3s7 x=-2.25 y=-2.2500000000000004 z=9
+ns.area.e43r4s2 x=-nan y=-nan z=-nan

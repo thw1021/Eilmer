@@ -6,7 +6,7 @@ files:
   d: src/extern/gzip/gzip.d
   d_blob: 8b0b0e44feadb03ea547972d1d7f7f1bbc5cfe12
   d_lines: 147
-  cpp_lines: 332
+  cpp_lines: 338
   fidelity: exact
   variants: []
   verified_by: []
@@ -14,7 +14,7 @@ files:
   d: src/extern/gzip/gzip.d
   d_blob: 8b0b0e44feadb03ea547972d1d7f7f1bbc5cfe12
   d_lines: 147
-  cpp_lines: 228
+  cpp_lines: 231
   fidelity: exact
   variants: []
   verified_by: []
@@ -30,7 +30,7 @@ files:
   d: src/gasdyn/idealgasflow.d
   d_blob: d238123a0357bb845636ebecfdb669eb2ac0686d
   d_lines: 952
-  cpp_lines: 638
+  cpp_lines: 659
   fidelity: exact
   variants: []
   verified_by: []
@@ -122,6 +122,526 @@ files:
   fidelity: exact
   variants: []
   verified_by: [ctest:geom_elements_projection, throw-site file/line == D]
+- cpp: src/geom/gpath/arc.cpp
+  d: src/geom/gpath/arc.d
+  d_blob: 624e744488664e18de8750c833d22c3daa60a337
+  d_lines: 210
+  cpp_lines: 188
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/arc.hpp
+  d: src/geom/gpath/arc.d
+  d_blob: 624e744488664e18de8750c833d22c3daa60a337
+  d_lines: 210
+  cpp_lines: 116
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/bezier.cpp
+  d: src/geom/gpath/bezier.d
+  d_blob: 8182a8d1856eaa5bac5b2f5739beb40e645fdf7c
+  d_lines: 206
+  cpp_lines: 131
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/bezier.hpp
+  d: src/geom/gpath/bezier.d
+  d_blob: 8182a8d1856eaa5bac5b2f5739beb40e645fdf7c
+  d_lines: 206
+  cpp_lines: 74
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/gpath_utils.cpp
+  d: src/geom/gpath/gpath_utils.d
+  d_blob: 56d441b10e10794751b4df662496c0614455fb20
+  d_lines: 315
+  cpp_lines: 412
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/gpath_utils.hpp
+  d: src/geom/gpath/gpath_utils.d
+  d_blob: 56d441b10e10794751b4df662496c0614455fb20
+  d_lines: 315
+  cpp_lines: 116
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/helix.cpp
+  d: src/geom/gpath/helix.d
+  d_blob: d284c1d0a292bdc3c2938ac1bee38a3630c93597
+  d_lines: 112
+  cpp_lines: 89
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/helix.hpp
+  d: src/geom/gpath/helix.d
+  d_blob: d284c1d0a292bdc3c2938ac1bee38a3630c93597
+  d_lines: 112
+  cpp_lines: 55
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/line.cpp
+  d: src/geom/gpath/line.d
+  d_blob: a39c2cb7b72901850f44a6d35d1cb0916cb3d87c
+  d_lines: 106
+  cpp_lines: 56
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/line.hpp
+  d: src/geom/gpath/line.d
+  d_blob: a39c2cb7b72901850f44a6d35d1cb0916cb3d87c
+  d_lines: 106
+  cpp_lines: 48
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/modifiedpath.cpp
+  d: src/geom/gpath/modifiedpath.d
+  d_blob: 3976c80660d51512a555ea8f02de4e323179fd24
+  d_lines: 394
+  cpp_lines: 308
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/modifiedpath.hpp
+  d: src/geom/gpath/modifiedpath.d
+  d_blob: 3976c80660d51512a555ea8f02de4e323179fd24
+  d_lines: 394
+  cpp_lines: 185
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/nurbs.cpp
+  d: src/geom/gpath/nurbs.d
+  d_blob: 40be304fc95d5db6efc3f3657cbbcdebe64c0c5b
+  d_lines: 114
+  cpp_lines: 136
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/nurbs.hpp
+  d: src/geom/gpath/nurbs.d
+  d_blob: 40be304fc95d5db6efc3f3657cbbcdebe64c0c5b
+  d_lines: 114
+  cpp_lines: 94
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/path.cpp
+  d: src/geom/gpath/path.d
+  d_blob: e4a97f67bdafc3f3959f7e98832d5a215ae650d8
+  d_lines: 177
+  cpp_lines: 240
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/path.hpp
+  d: src/geom/gpath/path.d
+  d_blob: e4a97f67bdafc3f3959f7e98832d5a215ae650d8
+  d_lines: 177
+  cpp_lines: 175
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/polyline.cpp
+  d: src/geom/gpath/polyline.d
+  d_blob: bceac4934cdc10bd31cb1d41e52830dc30252107
+  d_lines: 327
+  cpp_lines: 303
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/polyline.hpp
+  d: src/geom/gpath/polyline.d
+  d_blob: bceac4934cdc10bd31cb1d41e52830dc30252107
+  d_lines: 327
+  cpp_lines: 88
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/polynomial.cpp
+  d: src/geom/gpath/polynomial.d
+  d_blob: 1e70d2ea317d4530e4f5679d04e29963f80c84ce
+  d_lines: 124
+  cpp_lines: 123
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/polynomial.hpp
+  d: src/geom/gpath/polynomial.d
+  d_blob: 1e70d2ea317d4530e4f5679d04e29963f80c84ce
+  d_lines: 124
+  cpp_lines: 68
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/svgpath.cpp
+  d: src/geom/gpath/svgpath.d
+  d_blob: bf3aed6d8f82f1cbe5a04cf6d88e273910d7adaa
+  d_lines: 228
+  cpp_lines: 457
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/svgpath.hpp
+  d: src/geom/gpath/svgpath.d
+  d_blob: bf3aed6d8f82f1cbe5a04cf6d88e273910d7adaa
+  d_lines: 228
+  cpp_lines: 121
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/xspline.cpp
+  d: src/geom/gpath/xspline.d
+  d_blob: 3fd56e734891a40803f433b4b8175dfc0fd71cb5
+  d_lines: 117
+  cpp_lines: 69
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/xspline.hpp
+  d: src/geom/gpath/xspline.d
+  d_blob: 3fd56e734891a40803f433b4b8175dfc0fd71cb5
+  d_lines: 117
+  cpp_lines: 67
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/xsplinelsq.cpp
+  d: src/geom/gpath/xsplinelsq.d
+  d_blob: a728d4686e877c8dc8600b244fc392e329a66b4c
+  d_lines: 143
+  cpp_lines: 97
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/gpath/xsplinelsq.hpp
+  d: src/geom/gpath/xsplinelsq.d
+  d_blob: a728d4686e877c8dc8600b244fc392e329a66b4c
+  d_lines: 143
+  cpp_lines: 68
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/kdtree.cpp
+  d: src/geom/misc/kdtree.d
+  d_blob: 5d98440f1bde04722810c4fa3002d8209c25472a
+  d_lines: 197
+  cpp_lines: 79
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/kdtree.hpp
+  d: src/geom/misc/kdtree.d
+  d_blob: 5d98440f1bde04722810c4fa3002d8209c25472a
+  d_lines: 197
+  cpp_lines: 138
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/nurbs_utils.cpp
+  d: src/geom/misc/nurbs_utils.d
+  d_blob: aa6160de704e963f415d2ac37441439666f5f773
+  d_lines: 172
+  cpp_lines: 148
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/nurbs_utils.hpp
+  d: src/geom/misc/nurbs_utils.d
+  d_blob: aa6160de704e963f415d2ac37441439666f5f773
+  d_lines: 172
+  cpp_lines: 97
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/svg.cpp
+  d: src/geom/misc/svg.d
+  d_blob: c57326fbd521c28832113515d8ca84d2b36cb24e
+  d_lines: 364
+  cpp_lines: 340
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/svg.hpp
+  d: src/geom/misc/svg.d
+  d_blob: c57326fbd521c28832113515d8ca84d2b36cb24e
+  d_lines: 364
+  cpp_lines: 138
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/univariatefunctions.cpp
+  d: src/geom/misc/univariatefunctions.d
+  d_blob: 97d8aa16fbcf15888038a10839dad705645022bc
+  d_lines: 833
+  cpp_lines: 691
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/misc/univariatefunctions.hpp
+  d: src/geom/misc/univariatefunctions.d
+  d_blob: 97d8aa16fbcf15888038a10839dad705645022bc
+  d_lines: 833
+  cpp_lines: 335
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/bezierpatch.cpp
+  d: src/geom/surface/bezierpatch.d
+  d_blob: f2f7fd296dd5a92a89f1df79daf5edcd5983db20
+  d_lines: 127
+  cpp_lines: 143
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_bezierpatch, throw type object.Error from geom/gpath/bezier.d:19, 22 at D:61, 74, RangeError at D:32, 85, Error "Memory allocation failed" at D:30, ErrnoException text at D:87]
+- cpp: src/geom/surface/bezierpatch.hpp
+  d: src/geom/surface/bezierpatch.d
+  d_blob: f2f7fd296dd5a92a89f1df79daf5edcd5983db20
+  d_lines: 127
+  cpp_lines: 90
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_bezierpatch, 310 of 310 probe rows byte-identical, 2 of 2 D unittest assertions]
+- cpp: src/geom/surface/beziertrianglepatch.cpp
+  d: src/geom/surface/beziertrianglepatch.d
+  d_blob: 52b4cb3f84ea7dc5c36b149571f08f1bf8e8cbfc
+  d_lines: 723
+  cpp_lines: 763
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_beziertrianglepatch, throw type object.Error at D:68 and D:521/524/527, object.Exception at D:198 and from nelmin replace_vertex]
+- cpp: src/geom/surface/beziertrianglepatch.hpp
+  d: src/geom/surface/beziertrianglepatch.d
+  d_blob: 52b4cb3f84ea7dc5c36b149571f08f1bf8e8cbfc
+  d_lines: 723
+  cpp_lines: 148
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_beziertrianglepatch, 268 of 268 probe rows byte-identical, 6 of 6 D unittest assertions]
+- cpp: src/geom/surface/channelpatch.cpp
+  d: src/geom/surface/channelpatch.d
+  d_blob: 4471dd04b081389b6c288866bf9b76ec1b93b2a1
+  d_lines: 105
+  cpp_lines: 121
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_channelpatch, throw type object.Error raised by geom/gpath boundaries, never by this module]
+- cpp: src/geom/surface/channelpatch.hpp
+  d: src/geom/surface/channelpatch.d
+  d_blob: 4471dd04b081389b6c288866bf9b76ec1b93b2a1
+  d_lines: 105
+  cpp_lines: 76
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_channelpatch, 820 of 820 probe rows byte-identical]
+- cpp: src/geom/surface/coonspatch.cpp
+  d: src/geom/surface/coonspatch.d
+  d_blob: eb43675413da86e6c4d1050ce827f311840f0a88
+  d_lines: 125
+  cpp_lines: 109
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_coonspatch, throw type object.Error at D:59, 63, 67, 71 with text() over Vector3]
+- cpp: src/geom/surface/coonspatch.hpp
+  d: src/geom/surface/coonspatch.d
+  d_blob: eb43675413da86e6c4d1050ce827f311840f0a88
+  d_lines: 125
+  cpp_lines: 74
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_coonspatch, 333 of 333 probe rows byte-identical, 2 of 2 D unittest assertions]
+- cpp: src/geom/surface/cubepatch.cpp
+  d: src/geom/surface/cubepatch.d
+  d_blob: f0c71569231fda705793b6ab4bc3fd6c2ae185b9
+  d_lines: 152
+  cpp_lines: 132
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_surface_cubepatch, throw type object.Exception at D:40, 70, 101]
+- cpp: src/geom/surface/cubepatch.hpp
+  d: src/geom/surface/cubepatch.d
+  d_blob: f0c71569231fda705793b6ab4bc3fd6c2ae185b9
+  d_lines: 152
+  cpp_lines: 86
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_surface_cubepatch, 1604 of 1604 probe rows byte-identical, 9 of 9 D unittest assertions]
+- cpp: src/geom/surface/nozzleexpansionpatch.cpp
+  d: src/geom/surface/nozzleexpansionpatch.d
+  d_blob: 4b45cbfcfe0f63bf3af7cedf724a211883f31af3
+  d_lines: 135
+  cpp_lines: 196
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/nozzleexpansionpatch.hpp
+  d: src/geom/surface/nozzleexpansionpatch.d
+  d_blob: 4b45cbfcfe0f63bf3af7cedf724a211883f31af3
+  d_lines: 135
+  cpp_lines: 83
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/nurbssurface.cpp
+  d: src/geom/surface/nurbssurface.d
+  d_blob: 3edb48e9cd151709638176f876895c507655de41
+  d_lines: 156
+  cpp_lines: 178
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/nurbssurface.hpp
+  d: src/geom/surface/nurbssurface.d
+  d_blob: 3edb48e9cd151709638176f876895c507655de41
+  d_lines: 156
+  cpp_lines: 116
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/parametricsurface.cpp
+  d: src/geom/surface/parametricsurface.d
+  d_blob: 4d5794f2df683d405e7a08a841917de7796e9abf
+  d_lines: 94
+  cpp_lines: 93
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/parametricsurface.hpp
+  d: src/geom/surface/parametricsurface.d
+  d_blob: 4d5794f2df683d405e7a08a841917de7796e9abf
+  d_lines: 94
+  cpp_lines: 76
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/ruledsurface.cpp
+  d: src/geom/surface/ruledsurface.d
+  d_blob: ab445a24951b9950c9c8cc36203dc445bfc3bf04
+  d_lines: 88
+  cpp_lines: 94
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/ruledsurface.hpp
+  d: src/geom/surface/ruledsurface.d
+  d_blob: ab445a24951b9950c9c8cc36203dc445bfc3bf04
+  d_lines: 88
+  cpp_lines: 80
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/subrangedsurface.cpp
+  d: src/geom/surface/subrangedsurface.d
+  d_blob: b11230695f5bc5b80058ac337bbed6cd3ed7fac7
+  d_lines: 45
+  cpp_lines: 54
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/subrangedsurface.hpp
+  d: src/geom/surface/subrangedsurface.d
+  d_blob: b11230695f5bc5b80058ac337bbed6cd3ed7fac7
+  d_lines: 45
+  cpp_lines: 77
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/sweptpathpatch.cpp
+  d: src/geom/surface/sweptpathpatch.d
+  d_blob: 8be600ce306c3c8d245eaad7f766ff0f4d78f829
+  d_lines: 54
+  cpp_lines: 63
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_sweptpathpatch, throw type object.Error raised by geom/gpath boundaries, never by this module]
+- cpp: src/geom/surface/sweptpathpatch.hpp
+  d: src/geom/surface/sweptpathpatch.d
+  d_blob: 8be600ce306c3c8d245eaad7f766ff0f4d78f829
+  d_lines: 54
+  cpp_lines: 75
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_sweptpathpatch, 724 of 724 probe rows byte-identical]
+- cpp: src/geom/volume/meshvolume.hpp
+  d: src/geom/volume/meshvolume.d
+  d_blob: 5f28a2bdd58274b6f77d5acbca1b0842de3810e0
+  d_lines: 14
+  cpp_lines: 41
+  fidelity: exact
+  variants: []
+  verified_by: [ctest:geom_volume_meshvolume, 2167 of 2167 probe rows byte-identical]
+- cpp: src/geom/volume/parametricvolume.cpp
+  d: src/geom/volume/parametricvolume.d
+  d_blob: 7183205e88782684dd4b8c7d6800771858c3d507
+  d_lines: 304
+  cpp_lines: 281
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/volume/parametricvolume.hpp
+  d: src/geom/volume/parametricvolume.d
+  d_blob: 7183205e88782684dd4b8c7d6800771858c3d507
+  d_lines: 304
+  cpp_lines: 79
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/volume/slabvolume.cpp
+  d: src/geom/volume/slabvolume.d
+  d_blob: 8c9f55c81bce6270d12ab0c83bcb5e4c70bdd9b7
+  d_lines: 65
+  cpp_lines: 66
+  fidelity: partial
+  variants: []
+  verified_by: [ctest:geom_volume_slabvolume]
+- cpp: src/geom/volume/slabvolume.hpp
+  d: src/geom/volume/slabvolume.d
+  d_blob: 8c9f55c81bce6270d12ab0c83bcb5e4c70bdd9b7
+  d_lines: 65
+  cpp_lines: 91
+  fidelity: partial
+  variants: []
+  verified_by: [ctest:geom_volume_slabvolume, 2227 of 2227 probe rows byte-identical, 1 of 1 D unittest assertions]
+- cpp: src/geom/volume/subrangedvolume.cpp
+  d: src/geom/volume/subrangedvolume.d
+  d_blob: 4fb64f5f87c2168c7732c02bd1ea5d139f25f2a2
+  d_lines: 56
+  cpp_lines: 64
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_volume_subrangedvolume]
+- cpp: src/geom/volume/subrangedvolume.hpp
+  d: src/geom/volume/subrangedvolume.d
+  d_blob: 4fb64f5f87c2168c7732c02bd1ea5d139f25f2a2
+  d_lines: 56
+  cpp_lines: 95
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_volume_subrangedvolume, 5202 of 5202 probe rows byte-identical]
+- cpp: src/geom/volume/twosurfacevolume.cpp
+  d: src/geom/volume/twosurfacevolume.d
+  d_blob: 153067fb9dd8572939d38accd04128a3697fafc6
+  d_lines: 153
+  cpp_lines: 132
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_volume_twosurfacevolume, throw type object.Exception at D:79 and D:121]
+- cpp: src/geom/volume/twosurfacevolume.hpp
+  d: src/geom/volume/twosurfacevolume.d
+  d_blob: 153067fb9dd8572939d38accd04128a3697fafc6
+  d_lines: 153
+  cpp_lines: 97
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_volume_twosurfacevolume, 6608 of 6608 probe rows byte-identical, 1 of 1 D unittest assertions]
 - cpp: src/nm/bbla.cpp
   d: src/nm/bbla.d
   d_blob: 39501edc2d4d501ce7408503ace383e73ab8be5c
@@ -166,7 +686,7 @@ files:
   d: src/nm/brent.d
   d_blob: b91e3cc1d83971ad51a249b39dc68cfefafe88cc
   d_lines: 145
-  cpp_lines: 169
+  cpp_lines: 199
   fidelity: exact
   variants: [complex_numbers]
   verified_by: [ctest:nm_brent, 1 ULP on brent_3]
@@ -230,7 +750,7 @@ files:
   d: src/nm/nelmin.d
   d_blob: 043dda8ecbdf28134974889ce7fc14bbc415f0cf
   d_lines: 432
-  cpp_lines: 426
+  cpp_lines: 729
   fidelity: exact
   variants: []
   verified_by: []
@@ -422,7 +942,7 @@ files:
   d: src/nm/splinelsq.d
   d_blob: bca41f131d824ff5efcb4198e611b8003b0e02f5
   d_lines: 161
-  cpp_lines: 86
+  cpp_lines: 92
   fidelity: exact
   variants: []
   verified_by: []

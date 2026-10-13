@@ -1,0 +1,310 @@
+bzp.unit str=BezierPatch()
+bzp.unit classname=BezierPatch
+bzp.unit n=3 m=4 Q.length=4
+bzp.unit Q[0].length=5
+bzp.unit Q[0][0] x=0 y=0 z=0
+bzp.unit Q[0][1] x=0 y=0.25 z=0
+bzp.unit Q[0][2] x=0 y=0.5 z=0
+bzp.unit Q[0][3] x=0 y=0.75 z=0
+bzp.unit Q[0][4] x=0 y=1 z=0
+bzp.unit Q[1].length=5
+bzp.unit Q[1][0] x=0.66666666666666663 y=0 z=0
+bzp.unit Q[1][1] x=0.66666666666666663 y=0.25 z=0
+bzp.unit Q[1][2] x=0.66666666666666663 y=0.5 z=0
+bzp.unit Q[1][3] x=0.66666666666666663 y=0.75 z=0
+bzp.unit Q[1][4] x=0.66666666666666663 y=1 z=0
+bzp.unit Q[2].length=5
+bzp.unit Q[2][0] x=1.3333333333333333 y=0 z=0
+bzp.unit Q[2][1] x=1.3333333333333333 y=0.25 z=0
+bzp.unit Q[2][2] x=1.3333333333333333 y=0.5 z=0
+bzp.unit Q[2][3] x=1.3333333333333333 y=0.75 z=0
+bzp.unit Q[2][4] x=1.3333333333333333 y=1 z=0
+bzp.unit Q[3].length=5
+bzp.unit Q[3][0] x=2 y=0 z=0
+bzp.unit Q[3][1] x=2 y=0.25 z=0
+bzp.unit Q[3][2] x=2 y=0.5 z=0
+bzp.unit Q[3][3] x=2 y=0.75 z=0
+bzp.unit Q[3][4] x=2 y=1 z=0
+bzp.unit opCall r=0 s=0 x=0 y=0 z=0
+bzp.unit opCall r=0 s=0.25 x=0 y=0.25 z=0
+bzp.unit opCall r=0 s=0.5 x=0 y=0.5 z=0
+bzp.unit opCall r=0 s=0.75 x=0 y=0.75 z=0
+bzp.unit opCall r=0 s=1 x=0 y=1 z=0
+bzp.unit opCall r=0.20000000000000001 s=0 x=0.40000000000000013 y=0 z=0
+bzp.unit opCall r=0.20000000000000001 s=0.25 x=0.40000000000000013 y=0.25 z=0
+bzp.unit opCall r=0.20000000000000001 s=0.5 x=0.40000000000000013 y=0.5 z=0
+bzp.unit opCall r=0.20000000000000001 s=0.75 x=0.40000000000000013 y=0.75000000000000011 z=0
+bzp.unit opCall r=0.20000000000000001 s=1 x=0.40000000000000013 y=1 z=0
+bzp.unit opCall r=0.5 s=0 x=1 y=0 z=0
+bzp.unit opCall r=0.5 s=0.25 x=1 y=0.25 z=0
+bzp.unit opCall r=0.5 s=0.5 x=1 y=0.5 z=0
+bzp.unit opCall r=0.5 s=0.75 x=1 y=0.75 z=0
+bzp.unit opCall r=0.5 s=1 x=1 y=1 z=0
+bzp.unit opCall r=0.90000000000000002 s=0 x=1.8 y=0 z=0
+bzp.unit opCall r=0.90000000000000002 s=0.25 x=1.8 y=0.25 z=0
+bzp.unit opCall r=0.90000000000000002 s=0.5 x=1.8 y=0.5 z=0
+bzp.unit opCall r=0.90000000000000002 s=0.75 x=1.8 y=0.75 z=0
+bzp.unit opCall r=0.90000000000000002 s=1 x=1.8 y=1 z=0
+bzp.unit opCall r=1 s=0 x=2 y=0 z=0
+bzp.unit opCall r=1 s=0.25 x=2 y=0.25 z=0
+bzp.unit opCall r=1 s=0.5 x=2 y=0.5 z=0
+bzp.unit opCall r=1 s=0.75 x=2 y=0.75 z=0
+bzp.unit opCall r=1 s=1 x=2 y=1 z=0
+bzp.unit area nr=10 ns=10 x=0 y=0 z=2.0000000000000013
+bzp.unit area nr=3 ns=7 x=0 y=0 z=2.0000000000000004
+bzp.copy str=BezierPatch()
+bzp.copy classname=BezierPatch
+bzp.copy n=3 m=3 Q.length=4
+bzp.copy Q[0].length=5
+bzp.copy Q[0][0] x=0 y=0 z=0
+bzp.copy Q[0][1] x=0 y=0.25 z=0
+bzp.copy Q[0][2] x=0 y=0.5 z=0
+bzp.copy Q[0][3] x=0 y=0.75 z=0
+bzp.copy Q[0][4] x=0 y=1 z=0
+bzp.copy Q[1].length=5
+bzp.copy Q[1][0] x=0.66666666666666663 y=0 z=0
+bzp.copy Q[1][1] x=0.66666666666666663 y=0.25 z=0
+bzp.copy Q[1][2] x=0.66666666666666663 y=0.5 z=0
+bzp.copy Q[1][3] x=0.66666666666666663 y=0.75 z=0
+bzp.copy Q[1][4] x=0.66666666666666663 y=1 z=0
+bzp.copy Q[2].length=5
+bzp.copy Q[2][0] x=1.3333333333333333 y=0 z=0
+bzp.copy Q[2][1] x=1.3333333333333333 y=0.25 z=0
+bzp.copy Q[2][2] x=1.3333333333333333 y=0.5 z=0
+bzp.copy Q[2][3] x=1.3333333333333333 y=0.75 z=0
+bzp.copy Q[2][4] x=1.3333333333333333 y=1 z=0
+bzp.copy Q[3].length=5
+bzp.copy Q[3][0] x=2 y=0 z=0
+bzp.copy Q[3][1] x=2 y=0.25 z=0
+bzp.copy Q[3][2] x=2 y=0.5 z=0
+bzp.copy Q[3][3] x=2 y=0.75 z=0
+bzp.copy Q[3][4] x=2 y=1 z=0
+bzp.copy opCall r=0 s=0 x=0 y=0 z=0
+bzp.copy opCall r=0 s=0.25 x=0 y=0.25 z=0
+bzp.copy opCall r=0 s=0.5 x=0 y=0.5 z=0
+bzp.copy opCall r=0 s=0.75 x=0 y=0.75 z=0
+bzp.copy opCall r=0 s=1 x=0 y=1 z=0
+bzp.copy opCall r=0.20000000000000001 s=0 x=0.40000000000000013 y=0 z=0
+bzp.copy opCall r=0.20000000000000001 s=0.25 x=0.40000000000000013 y=0.25 z=0
+bzp.copy opCall r=0.20000000000000001 s=0.5 x=0.40000000000000013 y=0.5 z=0
+bzp.copy opCall r=0.20000000000000001 s=0.75 x=0.40000000000000013 y=0.75000000000000011 z=0
+bzp.copy opCall r=0.20000000000000001 s=1 x=0.40000000000000013 y=1 z=0
+bzp.copy opCall r=0.5 s=0 x=1 y=0 z=0
+bzp.copy opCall r=0.5 s=0.25 x=1 y=0.25 z=0
+bzp.copy opCall r=0.5 s=0.5 x=1 y=0.5 z=0
+bzp.copy opCall r=0.5 s=0.75 x=1 y=0.75 z=0
+bzp.copy opCall r=0.5 s=1 x=1 y=1 z=0
+bzp.copy opCall r=0.90000000000000002 s=0 x=1.8 y=0 z=0
+bzp.copy opCall r=0.90000000000000002 s=0.25 x=1.8 y=0.25 z=0
+bzp.copy opCall r=0.90000000000000002 s=0.5 x=1.8 y=0.5 z=0
+bzp.copy opCall r=0.90000000000000002 s=0.75 x=1.8 y=0.75 z=0
+bzp.copy opCall r=0.90000000000000002 s=1 x=1.8 y=1 z=0
+bzp.copy opCall r=1 s=0 x=2 y=0 z=0
+bzp.copy opCall r=1 s=0.25 x=2 y=0.25 z=0
+bzp.copy opCall r=1 s=0.5 x=2 y=0.5 z=0
+bzp.copy opCall r=1 s=0.75 x=2 y=0.75 z=0
+bzp.copy opCall r=1 s=1 x=2 y=1 z=0
+bzp.copy area nr=10 ns=10 x=0 y=0 z=2.0000000000000013
+bzp.dup str=BezierPatch()
+bzp.dup classname=BezierPatch
+bzp.dup n=3 m=4 Q.length=4
+bzp.dup Q[0].length=5
+bzp.dup Q[0][0] x=0 y=0 z=0
+bzp.dup Q[0][1] x=0 y=0.25 z=0
+bzp.dup Q[0][2] x=0 y=0.5 z=0
+bzp.dup Q[0][3] x=0 y=0.75 z=0
+bzp.dup Q[0][4] x=0 y=1 z=0
+bzp.dup Q[1].length=5
+bzp.dup Q[1][0] x=0.66666666666666663 y=0 z=0
+bzp.dup Q[1][1] x=0.66666666666666663 y=0.25 z=0
+bzp.dup Q[1][2] x=0.66666666666666663 y=0.5 z=0
+bzp.dup Q[1][3] x=0.66666666666666663 y=0.75 z=0
+bzp.dup Q[1][4] x=0.66666666666666663 y=1 z=0
+bzp.dup Q[2].length=5
+bzp.dup Q[2][0] x=1.3333333333333333 y=0 z=0
+bzp.dup Q[2][1] x=1.3333333333333333 y=0.25 z=0
+bzp.dup Q[2][2] x=1.3333333333333333 y=0.5 z=0
+bzp.dup Q[2][3] x=1.3333333333333333 y=0.75 z=0
+bzp.dup Q[2][4] x=1.3333333333333333 y=1 z=0
+bzp.dup Q[3].length=5
+bzp.dup Q[3][0] x=2 y=0 z=0
+bzp.dup Q[3][1] x=2 y=0.25 z=0
+bzp.dup Q[3][2] x=2 y=0.5 z=0
+bzp.dup Q[3][3] x=2 y=0.75 z=0
+bzp.dup Q[3][4] x=2 y=1 z=0
+bzp.dup opCall r=0 s=0 x=0 y=0 z=0
+bzp.dup opCall r=0 s=0.25 x=0 y=0.25 z=0
+bzp.dup opCall r=0 s=0.5 x=0 y=0.5 z=0
+bzp.dup opCall r=0 s=0.75 x=0 y=0.75 z=0
+bzp.dup opCall r=0 s=1 x=0 y=1 z=0
+bzp.dup opCall r=0.20000000000000001 s=0 x=0.40000000000000013 y=0 z=0
+bzp.dup opCall r=0.20000000000000001 s=0.25 x=0.40000000000000013 y=0.25 z=0
+bzp.dup opCall r=0.20000000000000001 s=0.5 x=0.40000000000000013 y=0.5 z=0
+bzp.dup opCall r=0.20000000000000001 s=0.75 x=0.40000000000000013 y=0.75000000000000011 z=0
+bzp.dup opCall r=0.20000000000000001 s=1 x=0.40000000000000013 y=1 z=0
+bzp.dup opCall r=0.5 s=0 x=1 y=0 z=0
+bzp.dup opCall r=0.5 s=0.25 x=1 y=0.25 z=0
+bzp.dup opCall r=0.5 s=0.5 x=1 y=0.5 z=0
+bzp.dup opCall r=0.5 s=0.75 x=1 y=0.75 z=0
+bzp.dup opCall r=0.5 s=1 x=1 y=1 z=0
+bzp.dup opCall r=0.90000000000000002 s=0 x=1.8 y=0 z=0
+bzp.dup opCall r=0.90000000000000002 s=0.25 x=1.8 y=0.25 z=0
+bzp.dup opCall r=0.90000000000000002 s=0.5 x=1.8 y=0.5 z=0
+bzp.dup opCall r=0.90000000000000002 s=0.75 x=1.8 y=0.75 z=0
+bzp.dup opCall r=0.90000000000000002 s=1 x=1.8 y=1 z=0
+bzp.dup opCall r=1 s=0 x=2 y=0 z=0
+bzp.dup opCall r=1 s=0.25 x=2 y=0.25 z=0
+bzp.dup opCall r=1 s=0.5 x=2 y=0.5 z=0
+bzp.dup opCall r=1 s=0.75 x=2 y=0.75 z=0
+bzp.dup opCall r=1 s=1 x=2 y=1 z=0
+bzp.dup area nr=10 ns=10 x=0 y=0 z=2.0000000000000013
+bzp.aliaschk Q[0][0] x=0 y=0 z=0
+bzp.twist str=BezierPatch()
+bzp.twist classname=BezierPatch
+bzp.twist n=2 m=3 Q.length=3
+bzp.twist Q[0].length=4
+bzp.twist Q[0][0] x=0 y=0 z=0.02
+bzp.twist Q[0][1] x=-0.11 y=0.25 z=-0.030000000000000002
+bzp.twist Q[0][2] x=-0.22 y=0.5 z=-0.080000000000000002
+bzp.twist Q[0][3] x=-0.33000000000000002 y=0.75 z=-0.13000000000000003
+bzp.twist Q[1].length=4
+bzp.twist Q[1][0] x=0.29999999999999999 y=0.070000000000000007 z=-0.030000000000000002
+bzp.twist Q[1][1] x=0.19 y=0.32000000000000001 z=0.050000000000000003
+bzp.twist Q[1][2] x=0.079999999999999988 y=0.57000000000000006 z=0.12999999999999998
+bzp.twist Q[1][3] x=-0.030000000000000027 y=0.82000000000000006 z=0.20999999999999999
+bzp.twist Q[2].length=4
+bzp.twist Q[2][0] x=0.59999999999999998 y=0.14000000000000001 z=-0.080000000000000002
+bzp.twist Q[2][1] x=0.48999999999999999 y=0.39000000000000001 z=0.12999999999999998
+bzp.twist Q[2][2] x=0.38 y=0.64000000000000001 z=0.34000000000000002
+bzp.twist Q[2][3] x=0.26999999999999996 y=0.89000000000000001 z=0.55000000000000004
+bzp.twist opCall r=0 s=0 x=0 y=0 z=0.02
+bzp.twist opCall r=0 s=0.25 x=-0.082500000000000018 y=0.1875 z=-0.017500000000000002
+bzp.twist opCall r=0 s=0.5 x=-0.16500000000000001 y=0.375 z=-0.055
+bzp.twist opCall r=0 s=0.75 x=-0.24750000000000003 y=0.5625 z=-0.092500000000000013
+bzp.twist opCall r=0 s=1 x=-0.33000000000000002 y=0.75 z=-0.13000000000000003
+bzp.twist opCall r=0.20000000000000001 s=0 x=0.12 y=0.028000000000000008 z=-3.4694469519536142e-18
+bzp.twist opCall r=0.20000000000000001 s=0.25 x=0.037499999999999992 y=0.21550000000000002 z=0.0014999999999999987
+bzp.twist opCall r=0.20000000000000001 s=0.5 x=-0.045000000000000012 y=0.40300000000000014 z=0.0029999999999999957
+bzp.twist opCall r=0.20000000000000001 s=0.75 x=-0.12750000000000003 y=0.59050000000000002 z=0.0044999999999999971
+bzp.twist opCall r=0.20000000000000001 s=1 x=-0.21000000000000002 y=0.77800000000000025 z=0.0059999999999999776
+bzp.twist opCall r=0.5 s=0 x=0.29999999999999999 y=0.070000000000000007 z=-0.029999999999999999
+bzp.twist opCall r=0.5 s=0.25 x=0.21750000000000003 y=0.25750000000000001 z=0.029999999999999995
+bzp.twist opCall r=0.5 s=0.5 x=0.13500000000000001 y=0.44500000000000006 z=0.089999999999999983
+bzp.twist opCall r=0.5 s=0.75 x=0.052499999999999998 y=0.63250000000000006 z=0.15000000000000002
+bzp.twist opCall r=0.5 s=1 x=-0.030000000000000027 y=0.82000000000000006 z=0.20999999999999999
+bzp.twist opCall r=0.90000000000000002 s=0 x=0.54000000000000015 y=0.12600000000000003 z=-0.070000000000000021
+bzp.twist opCall r=0.90000000000000002 s=0.25 x=0.45750000000000002 y=0.31350000000000006 z=0.067999999999999991
+bzp.twist opCall r=0.90000000000000002 s=0.5 x=0.37500000000000006 y=0.501 z=0.20600000000000002
+bzp.twist opCall r=0.90000000000000002 s=0.75 x=0.29249999999999998 y=0.6885 z=0.34400000000000008
+bzp.twist opCall r=0.90000000000000002 s=1 x=0.20999999999999996 y=0.87600000000000011 z=0.48200000000000004
+bzp.twist opCall r=1 s=0 x=0.59999999999999998 y=0.14000000000000001 z=-0.080000000000000002
+bzp.twist opCall r=1 s=0.25 x=0.51750000000000007 y=0.32750000000000001 z=0.077499999999999986
+bzp.twist opCall r=1 s=0.5 x=0.435 y=0.51500000000000001 z=0.23499999999999999
+bzp.twist opCall r=1 s=0.75 x=0.35250000000000004 y=0.70250000000000001 z=0.39250000000000007
+bzp.twist opCall r=1 s=1 x=0.26999999999999996 y=0.89000000000000001 z=0.55000000000000004
+bzp.twist area nr=10 ns=10 x=-0.18389999999999998 y=-0.23970000000000011 z=0.4962000000000007
+bzp.twist area nr=3 ns=7 x=-0.18390000000000001 y=-0.23970000000000005 z=0.49620000000000014
+bzp.twist area nr=1 ns=1 x=-0.18390000000000001 y=-0.23970000000000002 z=0.49619999999999997
+bzp.twist str.as.base=BezierPatch()
+bzp.jagged str=BezierPatch()
+bzp.jagged classname=BezierPatch
+bzp.jagged n=2 m=3 Q.length=3
+bzp.jagged Q[0].length=4
+bzp.jagged Q[0][0] x=0 y=1 z=0
+bzp.jagged Q[0][1] x=0.25 y=1 z=0.10000000000000001
+bzp.jagged Q[0][2] x=0.5 y=1 z=0.20000000000000001
+bzp.jagged Q[0][3] x=0.75 y=1 z=0.30000000000000004
+bzp.jagged Q[1].length=2
+bzp.jagged Q[1][0] x=0.5 y=0.69999999999999996 z=-0.050000000000000003
+bzp.jagged Q[1][1] x=0.75 y=0.69999999999999996 z=0.050000000000000003
+bzp.jagged Q[2].length=3
+bzp.jagged Q[2][0] x=1 y=0.40000000000000002 z=-0.10000000000000001
+bzp.jagged Q[2][1] x=1.25 y=0.40000000000000002 z=0
+bzp.jagged Q[2][2] x=1.5 y=0.40000000000000002 z=0.10000000000000001
+bzp.jagged opCall r=0 s=0 x=0 y=1 z=0
+bzp.jagged opCall r=0 s=0.25 x=0.1875 y=1 z=0.075000000000000011
+bzp.jagged opCall r=0 s=0.5 x=0.375 y=1 z=0.15000000000000002
+bzp.jagged opCall r=0 s=0.75 x=0.5625 y=1 z=0.22500000000000001
+bzp.jagged opCall r=0 s=1 x=0.75 y=1 z=0.30000000000000004
+bzp.jagged opCall r=0.20000000000000001 s=0 x=0.20000000000000004 y=0.88000000000000012 z=-0.020000000000000004
+bzp.jagged opCall r=0.20000000000000001 s=0.25 x=0.34500000000000003 y=0.88000000000000012 z=0.038000000000000006
+bzp.jagged opCall r=0.20000000000000001 s=0.5 x=0.4900000000000001 y=0.88000000000000012 z=0.09600000000000003
+bzp.jagged opCall r=0.20000000000000001 s=0.75 x=0.63500000000000001 y=0.88000000000000012 z=0.15400000000000003
+bzp.jagged opCall r=0.20000000000000001 s=1 x=0.78000000000000014 y=0.88000000000000012 z=0.21200000000000008
+bzp.jagged opCall r=0.5 s=0 x=0.5 y=0.69999999999999996 z=-0.050000000000000003
+bzp.jagged opCall r=0.5 s=0.25 x=0.609375 y=0.69999999999999996 z=-0.0062500000000000021
+bzp.jagged opCall r=0.5 s=0.5 x=0.71875 y=0.69999999999999996 z=0.037500000000000006
+bzp.jagged opCall r=0.5 s=0.75 x=0.828125 y=0.69999999999999996 z=0.081250000000000003
+bzp.jagged opCall r=0.5 s=1 x=0.9375 y=0.69999999999999996 z=0.125
+bzp.jagged opCall r=0.90000000000000002 s=0 x=0.90000000000000002 y=0.46000000000000008 z=-0.090000000000000024
+bzp.jagged opCall r=0.90000000000000002 s=0.25 x=1.0143749999999998 y=0.46000000000000008 z=-0.044250000000000018
+bzp.jagged opCall r=0.90000000000000002 s=0.5 x=1.1287500000000001 y=0.46000000000000008 z=0.0014999999999999996
+bzp.jagged opCall r=0.90000000000000002 s=0.75 x=1.2431249999999998 y=0.46000000000000008 z=0.047250000000000014
+bzp.jagged opCall r=0.90000000000000002 s=1 x=1.3574999999999999 y=0.46000000000000008 z=0.093000000000000027
+bzp.jagged opCall r=1 s=0 x=1 y=0.40000000000000002 z=-0.10000000000000001
+bzp.jagged opCall r=1 s=0.25 x=1.125 y=0.40000000000000002 z=-0.05000000000000001
+bzp.jagged opCall r=1 s=0.5 x=1.25 y=0.40000000000000002 z=0
+bzp.jagged opCall r=1 s=0.75 x=1.375 y=0.40000000000000002 z=0.05000000000000001
+bzp.jagged opCall r=1 s=1 x=1.5 y=0.40000000000000002 z=0.10000000000000001
+bzp.jagged area nr=10 ns=10 x=-0.12030000000000005 y=-0.2506250000000001 z=0.30075000000000002
+bzp.n0 str=BezierPatch()
+bzp.n0 classname=BezierPatch
+bzp.n0 n=0 m=2 Q.length=1
+bzp.n0 Q[0].length=3
+bzp.n0 Q[0][0] x=0 y=0 z=0
+bzp.n0 Q[0][1] x=0.5 y=0.25 z=0
+bzp.n0 Q[0][2] x=1 y=0.5 z=0
+bzp.n0.opCall threw=Error msg=Bezier() Only one control point, not enough for a curve.
+bzp.n0.area threw=Error msg=Bezier() Only one control point, not enough for a curve.
+bzp.nm1.ctor threw=none
+bzp.nm1 str=BezierPatch()
+bzp.nm1 classname=BezierPatch
+bzp.nm1 n=-1 m=0 Q.length=0
+bzp.nm1.opCall threw=Error msg=Bezier() No control points present.
+bzp.nm1.area threw=Error msg=Bezier() No control points present.
+bzp.nm2.ctor threw=Error msg=Memory allocation failed
+bzp.inner1.ctor threw=Error msg=Bezier() Only one control point, not enough for a curve.
+bzp.inner0.ctor threw=Error msg=Bezier() No control points present.
+bzp.short.ctor threw=Error msg=index [2] is out of bounds for array of length 2
+bzp.mismatch str=BezierPatch()
+bzp.mismatch classname=BezierPatch
+bzp.mismatch n=1 m=9 Q.length=2
+bzp.mismatch Q[0].length=2
+bzp.mismatch Q[0][0] x=0 y=0 z=0
+bzp.mismatch Q[0][1] x=1 y=-1 z=0
+bzp.mismatch Q[1].length=2
+bzp.mismatch Q[1][0] x=1 y=1 z=0
+bzp.mismatch Q[1][1] x=2 y=0 z=0
+bzp.mismatch opCall r=0 s=0 x=0 y=0 z=0
+bzp.mismatch opCall r=0 s=0.25 x=0.25 y=-0.25 z=0
+bzp.mismatch opCall r=0 s=0.5 x=0.5 y=-0.5 z=0
+bzp.mismatch opCall r=0 s=0.75 x=0.75 y=-0.75 z=0
+bzp.mismatch opCall r=0 s=1 x=1 y=-1 z=0
+bzp.mismatch opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0.20000000000000001 z=0
+bzp.mismatch opCall r=0.20000000000000001 s=0.25 x=0.45000000000000001 y=-0.049999999999999989 z=0
+bzp.mismatch opCall r=0.20000000000000001 s=0.5 x=0.70000000000000007 y=-0.30000000000000004 z=0
+bzp.mismatch opCall r=0.20000000000000001 s=0.75 x=0.95000000000000018 y=-0.55000000000000004 z=0
+bzp.mismatch opCall r=0.20000000000000001 s=1 x=1.2000000000000002 y=-0.80000000000000004 z=0
+bzp.mismatch opCall r=0.5 s=0 x=0.5 y=0.5 z=0
+bzp.mismatch opCall r=0.5 s=0.25 x=0.75 y=0.25 z=0
+bzp.mismatch opCall r=0.5 s=0.5 x=1 y=0 z=0
+bzp.mismatch opCall r=0.5 s=0.75 x=1.25 y=-0.25 z=0
+bzp.mismatch opCall r=0.5 s=1 x=1.5 y=-0.5 z=0
+bzp.mismatch opCall r=0.90000000000000002 s=0 x=0.90000000000000002 y=0.90000000000000002 z=0
+bzp.mismatch opCall r=0.90000000000000002 s=0.25 x=1.1499999999999999 y=0.65000000000000002 z=0
+bzp.mismatch opCall r=0.90000000000000002 s=0.5 x=1.4000000000000001 y=0.40000000000000002 z=0
+bzp.mismatch opCall r=0.90000000000000002 s=0.75 x=1.6499999999999999 y=0.15000000000000002 z=0
+bzp.mismatch opCall r=0.90000000000000002 s=1 x=1.8999999999999999 y=-0.099999999999999978 z=0
+bzp.mismatch opCall r=1 s=0 x=1 y=1 z=0
+bzp.mismatch opCall r=1 s=0.25 x=1.25 y=0.75 z=0
+bzp.mismatch opCall r=1 s=0.5 x=1.5 y=0.5 z=0
+bzp.mismatch opCall r=1 s=0.75 x=1.75 y=0.25 z=0
+bzp.mismatch opCall r=1 s=1 x=2 y=0 z=0
+bzp.overlong.ctor threw=Error msg=index [2] is out of bounds for array of length 2
+bzp.vtk.unit len=1848
+bzp.vtk.unit.body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 3 0 4 0 0"><newline>    <Piece Extent="0 3 0 4 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       6.6666666666666663e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       1.3333333333333333e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       2.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 2.5000000000000000e-01 0.0000000000000000e+00<newline>       6.6666666666666663e-01 2.5000000000000000e-01 0.0000000000000000e+00<newline>       1.3333333333333333e+00 2.5000000000000000e-01 0.0000000000000000e+00<newline>       2.0000000000000000e+00 2.5000000000000000e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       6.6666666666666663e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       1.3333333333333333e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       2.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 7.5000000000000000e-01 0.0000000000000000e+00<newline>       6.6666666666666663e-01 7.5000000000000000e-01 0.0000000000000000e+00<newline>       1.3333333333333333e+00 7.5000000000000000e-01 0.0000000000000000e+00<newline>       2.0000000000000000e+00 7.5000000000000000e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>       6.6666666666666663e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       1.3333333333333333e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>       2.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+bzp.vtk.twist len=1249
+bzp.vtk.twist.body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 2 0 3 0 0"><newline>    <Piece Extent="0 2 0 3 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       0.0000000000000000e+00 0.0000000000000000e+00 2.0000000000000000e-02<newline>       2.9999999999999999e-01 7.0000000000000007e-02 -3.0000000000000002e-02<newline>       5.9999999999999998e-01 1.4000000000000001e-01 -8.0000000000000002e-02<newline>       -1.1000000000000000e-01 2.5000000000000000e-01 -3.0000000000000002e-02<newline>       1.9000000000000000e-01 3.2000000000000001e-01 5.0000000000000003e-02<newline>       4.8999999999999999e-01 3.9000000000000001e-01 1.2999999999999998e-01<newline>       -2.2000000000000000e-01 5.0000000000000000e-01 -8.0000000000000002e-02<newline>       7.9999999999999988e-02 5.7000000000000006e-01 1.2999999999999998e-01<newline>       3.8000000000000000e-01 6.4000000000000001e-01 3.4000000000000002e-01<newline>       -3.3000000000000002e-01 7.5000000000000000e-01 -1.3000000000000003e-01<newline>       -3.0000000000000027e-02 8.2000000000000006e-01 2.0999999999999999e-01<newline>       2.6999999999999996e-01 8.9000000000000001e-01 5.5000000000000004e-01<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+bzp.vtk.jagged threw=Error msg=index [2] is out of bounds for array of length 2
+bzp.vtk.empty threw=Error msg=index [0] is out of bounds for array of length 0
+bzp.vtk.badpath threw=Exception msg=Cannot open file `/nonexistent-dir-xyz/a.vtk' in mode `w' (No such file or directory)

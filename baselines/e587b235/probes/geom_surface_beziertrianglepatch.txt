@@ -1,0 +1,268 @@
+btp.tsi n=1 i=1 j=0 k=0 idx=0 u=0 v=1 w=2
+btp.tsi n=1 i=0 j=1 k=0 idx=1 u=1 v=3 w=4
+btp.tsi n=1 i=0 j=0 k=1 idx=2 u=2 v=4 w=5
+btp.tsi n=2 i=2 j=0 k=0 idx=0 u=0 v=1 w=2
+btp.tsi n=2 i=1 j=1 k=0 idx=1 u=1 v=3 w=4
+btp.tsi n=2 i=1 j=0 k=1 idx=2 u=2 v=4 w=5
+btp.tsi n=2 i=0 j=2 k=0 idx=3 u=3 v=6 w=7
+btp.tsi n=2 i=0 j=1 k=1 idx=4 u=4 v=7 w=8
+btp.tsi n=2 i=0 j=0 k=2 idx=5 u=5 v=8 w=9
+btp.tsi n=3 i=3 j=0 k=0 idx=0 u=0 v=1 w=2
+btp.tsi n=3 i=2 j=1 k=0 idx=1 u=1 v=3 w=4
+btp.tsi n=3 i=2 j=0 k=1 idx=2 u=2 v=4 w=5
+btp.tsi n=3 i=1 j=2 k=0 idx=3 u=3 v=6 w=7
+btp.tsi n=3 i=1 j=1 k=1 idx=4 u=4 v=7 w=8
+btp.tsi n=3 i=1 j=0 k=2 idx=5 u=5 v=8 w=9
+btp.tsi n=3 i=0 j=3 k=0 idx=6 u=6 v=10 w=11
+btp.tsi n=3 i=0 j=2 k=1 idx=7 u=7 v=11 w=12
+btp.tsi n=3 i=0 j=1 k=2 idx=8 u=8 v=12 w=13
+btp.tsi n=3 i=0 j=0 k=3 idx=9 u=9 v=13 w=14
+btp.tsi n=5 i=5 j=0 k=0 idx=0 u=0 v=1 w=2
+btp.tsi n=5 i=4 j=1 k=0 idx=1 u=1 v=3 w=4
+btp.tsi n=5 i=4 j=0 k=1 idx=2 u=2 v=4 w=5
+btp.tsi n=5 i=3 j=2 k=0 idx=3 u=3 v=6 w=7
+btp.tsi n=5 i=3 j=1 k=1 idx=4 u=4 v=7 w=8
+btp.tsi n=5 i=3 j=0 k=2 idx=5 u=5 v=8 w=9
+btp.tsi n=5 i=2 j=3 k=0 idx=6 u=6 v=10 w=11
+btp.tsi n=5 i=2 j=2 k=1 idx=7 u=7 v=11 w=12
+btp.tsi n=5 i=2 j=1 k=2 idx=8 u=8 v=12 w=13
+btp.tsi n=5 i=2 j=0 k=3 idx=9 u=9 v=13 w=14
+btp.tsi n=5 i=1 j=4 k=0 idx=10 u=10 v=15 w=16
+btp.tsi n=5 i=1 j=3 k=1 idx=11 u=11 v=16 w=17
+btp.tsi n=5 i=1 j=2 k=2 idx=12 u=12 v=17 w=18
+btp.tsi n=5 i=1 j=1 k=3 idx=13 u=13 v=18 w=19
+btp.tsi n=5 i=1 j=0 k=4 idx=14 u=14 v=19 w=20
+btp.tsi n=5 i=0 j=5 k=0 idx=15 u=15 v=21 w=22
+btp.tsi n=5 i=0 j=4 k=1 idx=16 u=16 v=22 w=23
+btp.tsi n=5 i=0 j=3 k=2 idx=17 u=17 v=23 w=24
+btp.tsi n=5 i=0 j=2 k=3 idx=18 u=18 v=24 w=25
+btp.tsi n=5 i=0 j=1 k=4 idx=19 u=19 v=25 w=26
+btp.tsi n=5 i=0 j=0 k=5 idx=20 u=20 v=26 w=27
+btp.tsi.neg idx=2 u=9223372036854775808 v=3 w=13
+btp.max nanform=nan
+btp.max max(1,2)=2
+btp.max max(nan,1)=nan
+btp.max max(1,nan)=1
+btp.max max3(1,nan,2)=2
+btp.max max3(1,2,nan)=2
+btp.max max3(nan,1,2)=nan
+btp.max max(-0.0,0.0)=-0
+btp.max max(0.0,-0.0)=0
+btp.max max3(2,2,2)=2
+btp.size n=0 nB=1 opCall(0.25,0.25)
+btp.size.eval u=0.25 v=0.25 x=2 y=3 z=4
+btp.size n=1 nB=3 opCall(0.25,0.25)
+btp.size.eval u=0.25 v=0.25 x=0.5 y=0.125 z=-0.625
+btp.size n=2 nB=6 opCall(0.25,0.25)
+btp.size.eval u=0.25 v=0.25 x=0.5 y=0.125 z=-0.625
+btp.size n=3 nB=10 opCall(0.25,0.25)
+btp.size.eval u=0.25 v=0.25 x=0.5 y=0.125 z=-0.625
+btp.size n=5 nB=21 opCall(0.25,0.25)
+btp.size.eval u=0.25 v=0.25 x=0.5 y=0.125 z=-0.625
+btp.ctor.err n=1 supplied=0 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.3 expected, 0 supplied.
+btp.ctor.err n=1 supplied=2 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.3 expected, 2 supplied.
+btp.ctor.noerror n=1 supplied=3 nB=3
+btp.ctor.err n=1 supplied=4 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.3 expected, 4 supplied.
+btp.ctor.err n=1 supplied=6 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.3 expected, 6 supplied.
+btp.ctor.err n=1 supplied=10 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.3 expected, 10 supplied.
+btp.ctor.err n=2 supplied=0 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.6 expected, 0 supplied.
+btp.ctor.err n=2 supplied=2 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.6 expected, 2 supplied.
+btp.ctor.err n=2 supplied=3 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.6 expected, 3 supplied.
+btp.ctor.err n=2 supplied=4 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.6 expected, 4 supplied.
+btp.ctor.noerror n=2 supplied=6 nB=6
+btp.ctor.err n=2 supplied=10 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.6 expected, 10 supplied.
+btp.ctor.err n=3 supplied=0 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.10 expected, 0 supplied.
+btp.ctor.err n=3 supplied=2 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.10 expected, 2 supplied.
+btp.ctor.err n=3 supplied=3 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.10 expected, 3 supplied.
+btp.ctor.err n=3 supplied=4 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.10 expected, 4 supplied.
+btp.ctor.err n=3 supplied=6 type=object.Error msg=BezierTrianglePatch: incorrect number of control points supplied.10 expected, 6 supplied.
+btp.ctor.noerror n=3 supplied=10 nB=10
+btp.opCall.farin u=0 v=0 x=0 y=0 z=0
+btp.opCall.farin u=1 v=0 x=6 y=0 z=9
+btp.opCall.farin u=0 v=1 x=0 y=6 z=0
+btp.opCall.farin u=0.33333333333333331 v=0.33333333333333331 x=2 y=2 z=2.333333333333333
+btp.opCall.farin u=0.20000000000000001 v=0.29999999999999999 x=1.2000000000000002 y=1.7999999999999998 z=1.0800000000000001
+btp.opCall.farin u=0.5 v=0.5 x=3 y=3 z=5.25
+btp.opCall.farin u=0.25 v=0.75 x=1.5 y=4.5 z=2.8125
+btp.opCall.farin u=1.1000000000000001 v=0 x=7.2600000000000016 y=0 z=10.890000000000001
+btp.opCall.farin u=0 v=1.1000000000000001 x=0 y=7.2600000000000016 z=0
+btp.opCall.farin u=0.59999999999999998 v=0.59999999999999998 x=4.3199999999999994 y=4.3199999999999994 z=7.5599999999999987
+btp.opCall.farin u=-0.10000000000000001 v=-0.10000000000000001 x=-0.60000000000000009 y=-0.60000000000000009 z=0.21000000000000002
+btp.opCall.farin u=-0.10000000000000001 v=0.20000000000000001 x=-0.60000000000000009 y=1.2000000000000002 z=-0.15000000000000005
+btp.opCall.farin u=0.99999999999999989 v=0 x=5.9999999999999982 y=0 z=8.9999999999999964
+btp.opCall.farin u=0 v=0 x=0 y=0 z=0
+btp.opCall.farin u=2 v=-1 x=12 y=-6 z=12
+btp.opCall.farin u=nan v=0.5 x=nan y=nan z=nan
+btp.opCall.farin.nanv u=0.5 v=nan x=nan y=nan z=nan
+btp.opCall.sym u=0 v=0 x=0 y=0 z=-1.25
+btp.opCall.asym u=0 v=0 x=0.11 y=-0.69999999999999996 z=2
+btp.opCall.sym u=0.33333333333333331 v=0.33333333333333331 x=0.66666666666666663 y=0.16666666666666666 z=-0.4166666666666668
+btp.opCall.asym u=0.33333333333333331 v=0.33333333333333331 x=0.5033333333333333 y=0.21666666666666662 z=0.6000000000000002
+btp.opCall.sym u=0.20000000000000001 v=0.29999999999999999 x=0.40000000000000002 y=0.14999999999999999 z=-0.625
+btp.opCall.asym u=0.20000000000000001 v=0.29999999999999999 x=0.30499999999999999 y=0.030000000000000027 z=0.98999999999999999
+btp.opCall.sym u=0.69999999999999996 v=0.29999999999999999 x=1.3999999999999999 y=0.14999999999999999 z=-6.9388939039072284e-17
+btp.opCall.asym u=0.69999999999999996 v=0.29999999999999999 x=1.0999999999999999 y=0.505 z=-0.2599999999999999
+btp.opCall.sym.corner0 u=1 v=0 x=2 y=0 z=-0
+btp.opCall.asym.corner0 u=1 v=0 x=1.7 y=0.25 z=-0.5
+btp.opCall.asym str=Vector3(0.305, 0.03, 0.99)
+btp.opCall.sym u=0 v=0 x=0 y=0 z=-1.25
+btp.opCall.asym u=0 v=0 x=0.22 y=-1.3999999999999999 z=4
+btp.opCall.sym u=0.33333333333333331 v=0.33333333333333331 x=0.66666666666666674 y=0.16666666666666669 z=-0.41666666666666685
+btp.opCall.asym u=0.33333333333333331 v=0.33333333333333331 x=1.0066666666666666 y=0.43333333333333335 z=1.2000000000000006
+btp.opCall.sym u=0.20000000000000001 v=0.29999999999999999 x=0.40000000000000002 y=0.14999999999999999 z=-0.625
+btp.opCall.asym u=0.20000000000000001 v=0.29999999999999999 x=0.6100000000000001 y=0.060000000000000053 z=1.98
+btp.opCall.sym u=0.69999999999999996 v=0.29999999999999999 x=1.3999999999999999 y=0.14999999999999999 z=-6.9388939039072284e-17
+btp.opCall.asym u=0.69999999999999996 v=0.29999999999999999 x=2.1999999999999997 y=1.01 z=-0.5199999999999998
+btp.opCall.sym.corner0 u=1 v=0 x=2 y=0 z=-0
+btp.opCall.asym.corner0 u=1 v=0 x=3.3999999999999999 y=0.5 z=-1
+btp.opCall.asym str=Vector3(0.61, 0.06, 1.98)
+btp.opCall.sym u=0 v=0 x=0 y=0 z=-1.25
+btp.opCall.asym u=0 v=0 x=0.33000000000000002 y=-2.0999999999999996 z=6
+btp.opCall.sym u=0.33333333333333331 v=0.33333333333333331 x=0.66666666666666663 y=0.16666666666666666 z=-0.41666666666666685
+btp.opCall.asym u=0.33333333333333331 v=0.33333333333333331 x=1.5100000000000002 y=0.65000000000000002 z=1.8000000000000007
+btp.opCall.sym u=0.20000000000000001 v=0.29999999999999999 x=0.40000000000000008 y=0.14999999999999999 z=-0.625
+btp.opCall.asym u=0.20000000000000001 v=0.29999999999999999 x=0.91499999999999992 y=0.090000000000000191 z=2.9700000000000002
+btp.opCall.sym u=0.69999999999999996 v=0.29999999999999999 x=1.3999999999999997 y=0.14999999999999997 z=-6.9388939039072284e-17
+btp.opCall.asym u=0.69999999999999996 v=0.29999999999999999 x=3.2999999999999989 y=1.5149999999999997 z=-0.77999999999999969
+btp.opCall.sym.corner0 u=1 v=0 x=2 y=0 z=-0
+btp.opCall.asym.corner0 u=1 v=0 x=5.0999999999999996 y=0.75 z=-1.5
+btp.opCall.asym str=Vector3(0.915, 0.09, 2.97)
+btp.opCall.sym u=0 v=0 x=0 y=0 z=-1.25
+btp.opCall.asym u=0 v=0 x=0.55000000000000004 y=-3.5 z=10
+btp.opCall.sym u=0.33333333333333331 v=0.33333333333333331 x=0.66666666666666685 y=0.16666666666666671 z=-0.41666666666666685
+btp.opCall.asym u=0.33333333333333331 v=0.33333333333333331 x=2.5166666666666671 y=1.0833333333333333 z=3.0000000000000018
+btp.opCall.sym u=0.20000000000000001 v=0.29999999999999999 x=0.40000000000000002 y=0.14999999999999999 z=-0.625
+btp.opCall.asym u=0.20000000000000001 v=0.29999999999999999 x=1.5249999999999999 y=0.15000000000000013 z=4.9499999999999993
+btp.opCall.sym u=0.69999999999999996 v=0.29999999999999999 x=1.3999999999999995 y=0.14999999999999997 z=-6.9388939039072271e-17
+btp.opCall.asym u=0.69999999999999996 v=0.29999999999999999 x=5.4999999999999973 y=2.5249999999999995 z=-1.2999999999999996
+btp.opCall.sym.corner0 u=1 v=0 x=2 y=0 z=-0
+btp.opCall.asym.corner0 u=1 v=0 x=8.5 y=1.25 z=-2.5
+btp.opCall.asym str=Vector3(1.525, 0.15, 4.95)
+btp.opCall.collapsed u=0 v=0 x=1.5 y=-2.5 z=0.125
+btp.opCall.collapsed u=0.33333333333333331 v=0.33333333333333331 x=1.5 y=-2.5 z=0.125
+btp.opCall.collapsed u=1.1000000000000001 v=0 x=1.9965000000000006 y=-3.3275000000000006 z=0.16637500000000005
+btp.opCall.collapsed u=0.25 v=0.25 x=1.5 y=-2.5 z=0.125
+btp.opCall.nanet u=0 v=0 x=0 y=nan z=0.5
+btp.opCall.nanet u=0.33333333333333331 v=0.33333333333333331 x=0.33333333333333337 y=nan z=0.16666666666666674
+btp.opCall.nanet u=1.1000000000000001 v=0 x=1.2100000000000002 y=nan z=0
+btp.opCall.halvedge u=0 v=0 x=0 y=0 z=0
+btp.opCall.halvedge u=0.5 v=0 x=3 y=0 z=2.25
+btp.opCall.halvedge u=0 v=0.5 x=0 y=1.5 z=0
+btp.opCall.halvedge u=0.33333333333333331 v=0.33333333333333331 x=2 y=1.3333333333333335 z=2.333333333333333
+btp.stale.before u=0.20000000000000001 v=0.29999999999999999 x=1.2000000000000002 y=1.7999999999999998 z=1.0800000000000001
+btp.stale.afterMutation u=0.20000000000000001 v=0.29999999999999999 x=1.2000000000000002 y=1.7999999999999998 z=1.0800000000000001
+btp.stale.afterUpdate u=0.20000000000000001 v=0.29999999999999999 x=1.2400000000000002 y=1.1699999999999999 z=1.0800000000000001
+btp.stale.recheck u=0.20000000000000001 v=0.29999999999999999 x=1.2400000000000002 y=1.1699999999999999 z=1.0800000000000001
+btp.project.onsurf dist=1.4267284698501588e-08 u=0.33333333463907311 v=0.33333333164755163
+btp.project.onsurf.q x=2.0000000078344389 y=1.9999999898853098 z=2.3333333396476044
+btp.project.near dist=0.31219825511820337 u=0.37628874849383032 v=0.35099079602293259
+btp.project.near.q x=2.2577324909629826 y=2.1059447761375956 z=2.8592256486073486
+btp.project.far dist=17.714325985438407 u=0.81964679489043024 v=0.28035320510170403
+btp.project.far.q x=5.4096688462381559 y=1.8503311536580154 z=8.8038750873538483
+btp.project.corner dist=0 u=1 v=0
+btp.project.collapsed dist=2.9181543824821876 u=0.29999999999999999 v=0.59999999999999998
+btp.project.collapsed.q x=1.4999999999999996 y=-2.5 z=0.12499999999999997
+btp.project.nan.err type=object.Exception msg=Error in BezierTrianglePatch.projectPoint()<newline>Optimizer stats:<newline>  number of function evaluations: 10003<newline>  number of restarts: 0<newline>  minimum of function found:          nan<newline>
+btp.project.nan.returned dist=nan u=0 v=0
+btp.project.nan.q x=0 y=0 z=0
+btp.file.ctrlpts len=414
+btp.file.ctrlpts.body=6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>3.0000000000000000e+00 3.0000000000000000e+00 6.0000000000000000e+00<newline>3.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>0.0000000000000000e+00 3.0000000000000000e+00 0.0000000000000000e+00<newline>0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>
+btp.file.ctrlpts.collapsed.body=1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>1.5000000000000000e+00 -2.5000000000000000e+00 1.2500000000000000e-01<newline>
+btp.file.ctrlvtk n=1 len=837
+btp.file.ctrlvtk n=1.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="3" NumberOfCells="1"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       1.7000000000000000e+00 2.5000000000000000e-01 -5.0000000000000000e-01<newline>       -2.9999999999999999e-01 1.1000000000000001e+00 2.9999999999999999e-01<newline>       1.1000000000000000e-01 -6.9999999999999996e-01 2.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.ctrlvtk n=2 len=1174
+btp.file.ctrlvtk n=2.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="6" NumberOfCells="4"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       3.3999999999999999e+00 5.0000000000000000e-01 -1.0000000000000000e+00<newline>       1.3999999999999999e+00 1.3500000000000001e+00 -2.0000000000000001e-01<newline>       1.8100000000000001e+00 -4.4999999999999996e-01 1.5000000000000000e+00<newline>       -5.9999999999999998e-01 2.2000000000000002e+00 5.9999999999999998e-01<newline>       -1.9000000000000000e-01 4.0000000000000013e-01 2.2999999999999998e+00<newline>       2.2000000000000000e-01 -1.3999999999999999e+00 4.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.ctrlvtk n=3 len=1662
+btp.file.ctrlvtk n=3.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="10" NumberOfCells="9"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       5.0999999999999996e+00 7.5000000000000000e-01 -1.5000000000000000e+00<newline>       3.1000000000000001e+00 1.6000000000000001e+00 -6.9999999999999996e-01<newline>       3.5099999999999998e+00 -1.9999999999999996e-01 1.0000000000000000e+00<newline>       1.1000000000000001e+00 2.4500000000000002e+00 9.9999999999999978e-02<newline>       1.5100000000000000e+00 6.5000000000000013e-01 1.8000000000000000e+00<newline>       1.9199999999999999e+00 -1.1499999999999999e+00 3.5000000000000000e+00<newline>       -8.9999999999999991e-01 3.3000000000000003e+00 8.9999999999999991e-01<newline>       -4.8999999999999999e-01 1.5000000000000002e+00 2.6000000000000001e+00<newline>       -7.9999999999999988e-02 -2.9999999999999982e-01 4.2999999999999998e+00<newline>       3.3000000000000002e-01 -2.0999999999999996e+00 6.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>       3 6 7<newline>       3 7 4<newline>       4 7 8<newline>       4 8 5<newline>       5 8 9<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>        15<newline>        18<newline>        21<newline>        24<newline>        27<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.ctrlvtk n=5 len=3118
+btp.file.ctrlvtk n=5.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="21" NumberOfCells="25"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       8.5000000000000000e+00 1.2500000000000000e+00 -2.5000000000000000e+00<newline>       6.5000000000000000e+00 2.1000000000000001e+00 -1.7000000000000000e+00<newline>       6.9100000000000001e+00 3.0000000000000004e-01 0.0000000000000000e+00<newline>       4.5000000000000000e+00 2.9500000000000002e+00 -9.0000000000000002e-01<newline>       4.9100000000000001e+00 1.1500000000000001e+00 8.0000000000000004e-01<newline>       5.3199999999999994e+00 -6.4999999999999991e-01 2.5000000000000000e+00<newline>       2.5000000000000000e+00 3.8000000000000003e+00 -1.0000000000000009e-01<newline>       2.9099999999999997e+00 2.0000000000000000e+00 1.6000000000000001e+00<newline>       3.3200000000000003e+00 2.0000000000000018e-01 3.2999999999999998e+00<newline>       3.7300000000000000e+00 -1.5999999999999996e+00 5.0000000000000000e+00<newline>       5.0000000000000000e-01 4.6500000000000004e+00 6.9999999999999996e-01<newline>       9.1000000000000003e-01 2.8500000000000005e+00 2.3999999999999999e+00<newline>       1.3200000000000001e+00 1.0500000000000003e+00 4.0999999999999996e+00<newline>       1.7300000000000000e+00 -7.4999999999999956e-01 5.7999999999999998e+00<newline>       2.1400000000000001e+00 -2.5499999999999998e+00 7.5000000000000000e+00<newline>       -1.5000000000000000e+00 5.5000000000000000e+00 1.5000000000000000e+00<newline>       -1.0899999999999999e+00 3.7000000000000002e+00 3.2000000000000002e+00<newline>       -6.7999999999999994e-01 1.9000000000000004e+00 4.9000000000000004e+00<newline>       -2.6999999999999996e-01 1.0000000000000053e-01 6.5999999999999996e+00<newline>       1.4000000000000001e-01 -1.6999999999999997e+00 8.3000000000000007e+00<newline>       5.5000000000000004e-01 -3.5000000000000000e+00 1.0000000000000000e+01<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>       3 6 7<newline>       3 7 4<newline>       4 7 8<newline>       4 8 5<newline>       5 8 9<newline>       6 10 11<newline>       6 11 7<newline>       7 11 12<newline>       7 12 8<newline>       8 12 13<newline>       8 13 9<newline>       9 13 14<newline>       10 15 16<newline>       10 16 11<newline>       11 16 17<newline>       11 17 12<newline>       12 17 18<newline>       12 18 13<newline>       13 18 19<newline>       13 19 14<newline>       14 19 20<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>        15<newline>        18<newline>        21<newline>        24<newline>        27<newline>        30<newline>        33<newline>        36<newline>        39<newline>        42<newline>        45<newline>        48<newline>        51<newline>        54<newline>        57<newline>        60<newline>        63<newline>        66<newline>        69<newline>        72<newline>        75<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.trivtk ne=1 len=641
+btp.file.trivtk ne=1.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="1" NumberOfCells="0"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>                       -nan                 -nan                 -nan<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.trivtk ne=2 len=834
+btp.file.trivtk ne=2.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="3" NumberOfCells="1"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>       0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.trivtk ne=3 len=1168
+btp.file.trivtk ne=3.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="6" NumberOfCells="4"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>       3.0000000000000000e+00 3.0000000000000000e+00 5.2500000000000000e+00<newline>       3.0000000000000000e+00 0.0000000000000000e+00 2.2500000000000000e+00<newline>       0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 3.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.trivtk ne=5 len=2297
+btp.file.trivtk ne=5.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="15" NumberOfCells="16"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>       4.5000000000000000e+00 1.5000000000000000e+00 7.3125000000000000e+00<newline>       4.5000000000000000e+00 0.0000000000000000e+00 5.0625000000000000e+00<newline>       3.0000000000000000e+00 3.0000000000000000e+00 5.2500000000000000e+00<newline>       3.0000000000000000e+00 1.5000000000000000e+00 3.7500000000000000e+00<newline>       3.0000000000000000e+00 0.0000000000000000e+00 2.2500000000000000e+00<newline>       1.5000000000000000e+00 4.5000000000000000e+00 2.8125000000000000e+00<newline>       1.5000000000000000e+00 3.0000000000000000e+00 2.0625000000000000e+00<newline>       1.5000000000000000e+00 1.5000000000000000e+00 1.3125000000000000e+00<newline>       1.5000000000000000e+00 0.0000000000000000e+00 5.6250000000000000e-01<newline>       0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 4.5000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 3.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.5000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>       3 6 7<newline>       3 7 4<newline>       4 7 8<newline>       4 8 5<newline>       5 8 9<newline>       6 10 11<newline>       6 11 7<newline>       7 11 12<newline>       7 12 8<newline>       8 12 13<newline>       8 13 9<newline>       9 13 14<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>        15<newline>        18<newline>        21<newline>        24<newline>        27<newline>        30<newline>        33<newline>        36<newline>        39<newline>        42<newline>        45<newline>        48<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.trivtk.nanet.body=<VTKFile type="UnstructuredGrid" version="1.0" header_type="UInt64"><newline>  <UnstructuredGrid><newline>    <Piece NumberOfPoints="6" NumberOfCells="4"><newline>       <Points><newline>         <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       1.0000000000000000e+00                  nan 0.0000000000000000e+00<newline>       5.0000000000000000e-01                  nan 0.0000000000000000e+00<newline>       5.0000000000000000e-01                  nan 2.5000000000000000e-01<newline>       0.0000000000000000e+00                  nan 0.0000000000000000e+00<newline>       0.0000000000000000e+00                  nan 2.5000000000000000e-01<newline>       0.0000000000000000e+00                  nan 5.0000000000000000e-01<newline>        </DataArray><newline>      </Points><newline>      <Cells><newline>        <DataArray type="Int32" Name="connectivity"><newline>       0 1 2<newline>       1 3 4<newline>       1 4 2<newline>       2 4 5<newline>         </DataArray><newline>         <DataArray type="Int32" Name="offsets"><newline>        3<newline>        6<newline>        9<newline>        12<newline>         </DataArray><newline>         <DataArray type="UInt8" Name="types"><newline>          5<newline>          5<newline>          5<newline>          5<newline>         </DataArray><newline>       </Cells><newline>    </Piece><newline>  </UnstructuredGrid><newline></VTKFile><newline>
+btp.file.dat ne=1 len=72
+btp.file.dat ne=1.body=1<newline>                       -nan                 -nan                 -nan<newline>
+btp.file.dat ne=3 len=458
+btp.file.dat ne=3.body=6<newline>       6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>       3.0000000000000000e+00 3.0000000000000000e+00 5.2500000000000000e+00<newline>       3.0000000000000000e+00 0.0000000000000000e+00 2.2500000000000000e+00<newline>       0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 3.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>
+btp.file.dat ne=5 len=1143
+btp.file.dat ne=5.body=15<newline>       6.0000000000000000e+00 0.0000000000000000e+00 9.0000000000000000e+00<newline>       4.5000000000000000e+00 1.5000000000000000e+00 7.3125000000000000e+00<newline>       4.5000000000000000e+00 0.0000000000000000e+00 5.0625000000000000e+00<newline>       3.0000000000000000e+00 3.0000000000000000e+00 5.2500000000000000e+00<newline>       3.0000000000000000e+00 1.5000000000000000e+00 3.7500000000000000e+00<newline>       3.0000000000000000e+00 0.0000000000000000e+00 2.2500000000000000e+00<newline>       1.5000000000000000e+00 4.5000000000000000e+00 2.8125000000000000e+00<newline>       1.5000000000000000e+00 3.0000000000000000e+00 2.0625000000000000e+00<newline>       1.5000000000000000e+00 1.5000000000000000e+00 1.3125000000000000e+00<newline>       1.5000000000000000e+00 0.0000000000000000e+00 5.6250000000000000e-01<newline>       0.0000000000000000e+00 6.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 4.5000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 3.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.5000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>
+btp.fpc.cloud n=15
+btp.fpc.cloud[0] x=0 y=0 z=0
+btp.fpc.cloud[1] x=0 y=1.5 z=0
+btp.fpc.cloud[2] x=0 y=3 z=0
+btp.fpc.cloud[3] x=0 y=4.5 z=0
+btp.fpc.cloud[4] x=0 y=6 z=0
+btp.fpc.cloud[5] x=1.5 y=0 z=0.5625
+btp.fpc.cloud[6] x=1.5 y=1.5 z=1.3125
+btp.fpc.cloud[7] x=1.5 y=3 z=2.0625
+btp.fpc.cloud[8] x=1.5 y=4.5 z=2.8125
+btp.fpc.cloud[9] x=3 y=0 z=2.25
+btp.fpc.cloud[10] x=3 y=1.5 z=3.75
+btp.fpc.cloud[11] x=3 y=3 z=5.25
+btp.fpc.cloud[12] x=4.5 y=0 z=5.0625
+btp.fpc.cloud[13] x=4.5 y=1.5 z=7.3125
+btp.fpc.cloud[14] x=6 y=0 z=9
+btp.fpc.guess n=2 nB=6
+btp.fpc.guess B[0] x=6 y=0 z=9
+btp.fpc.guess B[1] x=2.9512010446953174 y=2.9592895101733325 z=5.9142994754738396
+btp.fpc.guess B[2] x=3.1417024704523735 y=-0.19386885579209084 z=0.01619408816253215
+btp.fpc.guess B[3] x=0 y=6 z=0
+btp.fpc.guess B[4] x=-0.002275296678192624 y=2.9019271993110642 z=-0.0020066144446327433
+btp.fpc.guess B[5] x=0 y=0 z=0
+btp.fpc.guess.eval u=0.20000000000000001 v=0.29999999999999999 x=1.2218020304504551 y=1.726919129855701 z=1.0723527703559774
+btp.fpc.guess.eval0 u=0 v=0 x=0 y=0 z=0
+btp.fpc.guess.eval1 u=1 v=0 x=6 y=0 z=9
+btp.fpc.guess.eval2 u=0 v=1 x=0 y=6 z=0
+btp.fpc.noguess n=2 nB=6
+btp.fpc.noguess B[0] x=6 y=0 z=9
+btp.fpc.noguess B[1] x=5.633036581263335 y=1.1726100664735877 z=10.777268687942122
+btp.fpc.noguess B[2] x=6.5488559164813758 y=-3.9439856051224522 z=1.4030568697386439
+btp.fpc.noguess B[3] x=0 y=6 z=0
+btp.fpc.noguess B[4] x=-2.2047552734911795 y=5.3054523382414693 z=-2.0692333585053344
+btp.fpc.noguess B[5] x=0 y=0 z=0
+btp.fpc.noguess.eval u=0.20000000000000001 v=0.29999999999999999 x=1.5643089910005219 y=1.4835517884247806 z=1.3131136089491833
+btp.fpc.wrongsizenet B[0] x=6 y=0 z=9
+btp.fpc.wrongsizenet B[1] x=5.633036581263335 y=1.1726100664735877 z=10.777268687942122
+btp.fpc.wrongsizenet B[2] x=6.5488559164813758 y=-3.9439856051224522 z=1.4030568697386439
+btp.fpc.wrongsizenet B[3] x=0 y=6 z=0
+btp.fpc.wrongsizenet B[4] x=-2.2047552734911795 y=5.3054523382414693 z=-2.0692333585053344
+btp.fpc.wrongsizenet B[5] x=0 y=0 z=0
+btp.fpc.emptynet B[0] x=6 y=0 z=9
+btp.fpc.emptynet B[1] x=3.1000000000000001 y=2.8999999999999999 z=6.2000000000000002
+btp.fpc.emptynet B[2] x=2.7999999999999998 y=0.14999999999999999 z=-0.050000000000000003
+btp.fpc.emptynet B[3] x=0 y=6 z=0
+btp.fpc.emptynet B[4] x=-0.29999999999999999 y=2.8500000000000001 z=-0.10000000000000001
+btp.fpc.emptynet B[5] x=0 y=0 z=0
+btp.fpc.deg1.err type=object.Exception msg=i=0 seems not to be in the high points
+btp.fpcb.n3 ok=true nB=10
+btp.fpcb.n3 B[0] x=0 y=0 z=0
+btp.fpcb.n3 B[1] x=1 y=1 z=-0.20000000000000001
+btp.fpcb.n3 B[2] x=1 y=0 z=0.40000000000000002
+btp.fpcb.n3 B[3] x=0.40000000000000002 y=2 z=0.29999999999999999
+btp.fpcb.n3 B[4] x=-1039.082664623706 y=-4246.5498222488886 z=-4177.0090481547913
+btp.fpcb.n3 B[5] x=2 y=0 z=0.10000000000000001
+btp.fpcb.n3 B[6] x=3 y=0 z=1
+btp.fpcb.n3 B[7] x=2 y=1 z=0
+btp.fpcb.n3 B[8] x=0.5 y=2 z=0.5
+btp.fpcb.n3 B[9] x=0 y=3 z=0
+btp.fpcb.n3.eval u=0.20000000000000001 v=0.29999999999999999 x=-186.15377963226709 y=-763.27496800480003 z=-751.67412866786242
+btp.fpcb.n3guess ok=true
+btp.fpcb.n3guess B[0] x=0 y=0 z=0
+btp.fpcb.n3guess B[1] x=1 y=1 z=-0.20000000000000001
+btp.fpcb.n3guess B[2] x=1 y=0 z=0.40000000000000002
+btp.fpcb.n3guess B[3] x=0.40000000000000002 y=2 z=0.29999999999999999
+btp.fpcb.n3guess B[4] x=1.9631353383559313 y=0.98333974744878916 z=2.5203064511696018
+btp.fpcb.n3guess B[5] x=2 y=0 z=0.10000000000000001
+btp.fpcb.n3guess B[6] x=3 y=0 z=1
+btp.fpcb.n3guess B[7] x=2 y=1 z=0
+btp.fpcb.n3guess B[8] x=0.5 y=2 z=0.5
+btp.fpcb.n3guess B[9] x=0 y=3 z=0
+btp.fpcb.n2.err type=object.Exception msg=i=0 seems not to be in the high points
+btp.fpcb.mismatch.b0b2 type=object.Error msg=Error: b0 and b2 end points are not coincident.<newline>
+btp.fpcb.mismatch.b0b1 type=object.Error msg=Error: b0 and b1 end points are not coincident.<newline>
+btp.fpcb.mismatch.b1b2 type=object.Error msg=Error: b1 and b2 end points are not coincident.<newline>

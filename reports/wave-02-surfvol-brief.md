@@ -25,11 +25,17 @@ class FooPatch : public ParametricSurface {
     Vector3 operator()(double r, double s) const override;            // D: opCall
     std::shared_ptr<ParametricSurface> dup() const override;           // adapted-handles
     std::string toString() const override;
-    std::string classString() const override;                          // D 用它打日志，不可省
 };
 ```
-`ParametricVolume` 同构，`operator()(r,s,t)` 三参。D 的 `cast(X)v !is null` →
-`dynamic_cast`（要 RTTI，不要换成虚函数标志位）。
+`ParametricVolume` 同构，`operator()(r,s,t)` 三参。**本波更正（代理实测，我写错了）**：
+`classString()` **只存在于 `geom/gpath`**（`grep -c classString gdtk/src/geom/surface/*.d
+gdtk/src/geom/volume/*.d` → 全 0）。把它写成 `override` 编不过；surface/volume 的子类
+若要类名行，就声明成**非虚** helper 并在头注释写明"不是 D 符号"，
+`ParametricSurface`/`ParametricVolume` 基类也**不加**这个纯虚。
+D 的 `cast(X)v !is null` → `dynamic_cast`（要 RTTI，不要换成虚函数标志位）。
+
+另一条同类更正：`geom/volume/parametricvolume.d` **没有** `area()` 之外的日志虚函数，
+volume 侧的九差分是**具体实现**不是虚函数，子类不 override 它们。
 
 ## 2. 本波已知的 D 怪癖（照抄，注释里写 file:line，不许顺手修）
 
