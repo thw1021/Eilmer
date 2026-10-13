@@ -93,6 +93,12 @@ add_executable(test_aa tests/test_aa.cpp)
 target_link_libraries(test_aa PRIVATE eil_substrate)
 add_test(NAME associative_arrays COMMAND test_aa)
 
+# Substrate rule for D's `^^` operator: replayed against the ldc2-captured probe.
+add_executable(test_substrate_pow tests/test_substrate_pow.cpp)
+target_link_libraries(test_substrate_pow PRIVATE eil_substrate)
+add_test(NAME substrate_pow COMMAND test_substrate_pow
+         ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_pow.txt)
+
 # --- Wave 1: nm --------------------------------------------------------------------------------
 foreach(_m IN ITEMS bracketing brent ridder secant linesearch newton bbla rsla schedule
                     newtoncotes gaussquad rungekutta)
@@ -120,6 +126,9 @@ foreach(_u IN ITEMS lua lua_service lua_roundtrip msg_service time_utils)
   add_test(NAME util_${_u} COMMAND test_util_${_u})
 endforeach()
 
+# --- Wave 2: geom ------------------------------------------------------------------------------
+# Registered per module in cmake/wave2_geom.cmake.
+
 # --- Demo equivalence against the D reference --------------------------------------------------
 # Each demo's stdout is compared to the byte-identical D binary's stdout, captured by
 # harness/capture_d_demos.sh into baselines/<rev>/demos/.
@@ -135,3 +144,11 @@ if(BASH_PROGRAM AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/baselines)
     endif()
   endforeach()
 endif()
+
+# --- Wave 2 stages -----------------------------------------------------------------------------
+# Each Wave 2 stage declares its own targets in a fragment under cmake/ so that
+# stages ported in parallel edit disjoint files instead of racing on this one.
+# Included last: their add_test() calls must land after enable_testing().
+include(cmake/wave2_nm.cmake)
+include(cmake/wave2_geom.cmake)
+include(cmake/wave2_gasdyn.cmake)

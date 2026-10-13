@@ -38,6 +38,17 @@ inline number acos(number x) { return canonical_nan(std::acos(x)); }
 inline bool isNaN(number x) { return std::isnan(x); }
 inline bool isInfinite(number x) { return std::isinf(x); }
 
+// D's `a ^^ b` is std.math.pow, and that is *not* the same bits as repeated
+// multiplication: measured at -O0 with ldc2 1.40.0 (probes/substrate/pow.d),
+// 1.2345^^3 = 1.8813659636249997 while 1.2345*1.2345*1.2345 = 1.8813659636249995,
+// and 2.0/3.0^^3 differs the same way. 107 `^^` sites are in Wave 2 scope (89 of
+// them `^^2`), mostly in Bezier/NURBS/Paver polynomial evaluation, so ports must
+// write eil::pow(x, 3) rather than expanding the product. std::pow reproduced
+// every measured D row bit-for-bit, including the integer-exponent overload
+// (pow(x,2) == pow(x,2.0)), so the widening here is only about spelling.
+inline number pow(number x, number y) { return canonical_nan(std::pow(x, y)); }
+inline number pow(number x, int y) { return canonical_nan(std::pow(x, static_cast<number>(y))); }
+
 // Determined from the boundary rows in tools/fmt_corpus.txt (D's own answers):
 //
 //   isClose(1e-5, 0, rel=1.0,  abs=0)   => true     isClose(1e-5, 0, rel=0.5,  abs=0) => false
