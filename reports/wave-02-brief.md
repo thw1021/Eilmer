@@ -44,6 +44,17 @@
   （Wave 12 债务 T-904）；`with_libplot`、`FlowSolverVersion.tecplot_io` 之类未开的 version
   用 `#if 0` 或 `#ifdef` 原样保留并注明变体名，不要删。
 
+## 2b. geom 剩余范围的构造分布（实测计数，据此排优先级）
+
+`grep -rF` 统计，geom 去掉 luawrap：`foreach (` **491**、`~=` **478**、`assert(` **297**、
+`override` **202**、`this(` **164**、`.dup` **120**、`version(` 32、`immutable ` 21、
+`enum ` 12、`opIndex` 6、`template ` 5、`map(` 4。
+**没有** `mixin`、`static if`、`__traits`、`alias this`、`scope(exit)`、`__gshared`、
+`extern(C++)` —— 也就是说 geom 这一层没有元编程障碍，工作量全在
+循环/追加/断言/虚函数重写这四类上，映射表第 3 节已覆盖。
+两个提醒：`assert(` 297 处一律 `eil_assert`（D 的 release 求解器保留 assert，不是 NDEBUG 语义）；
+`opIndex` 6 处 → `operator[]`，注意 D 的越界是 RangeError 而不是未定义行为。
+
 ## 3. 语言构造映射（已在前置件里定稿的写法，照抄）
 
 | D | C++ |
