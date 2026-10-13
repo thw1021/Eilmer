@@ -32,17 +32,33 @@
 
 - [ ] **T-010** `geom/elements/`（`vector3.d` 812、`properties.d` 1168 等）— 最底层，被全树引用；
   先做。验证：`eil::Vector3` 的算术/点积/叉积与 D 逐位对照 + `%.6g` 打印一致
+  （vector3 部分已完成：53 行 `%17g`/`%.6g` 观测 diff 为空）
+- [ ] **T-017** Wave 2 前置件（本轮核实新增）：`nm/spline.d`(120)、`nm/splinelsq.d`(161)、
+  `nm/nelmin.d`(432)、`extern/gzip/gzip.d`(147)。原 T-905 把这三个 nm 叶子排到 Wave 3/4，
+  但 `geom/gpath/{xspline,xsplinelsq,gpath_utils}.d`、`geom/surface/beziertrianglepatch.d`、
+  `geom/grid/sgrid.d` 直接 import 它们，Wave 2 绕不过；gzip 被
+  `geom/grid/{sgrid,usgrid}.d` 的 `read/write_from_gzip_file` 需要（本机有 `zlib.h`，
+  可比的是解压后的 payload，容器字节含 mtime 不可比）
 - [ ] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
-  — 结构化/非结构网格核心。依赖 T-010
+  — 结构化/非结构网格核心。依赖 T-010、T-017
 - [ ] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
 - [ ] **T-013** `geom/misc/`（`univariatefunctions.d` 833、`sketch.d` 964、`svg.d` 364）与
   `geom/gpath/`（`modifiedpath.d` 394）。注意 `misc/libplot.d` 428 属 `with_libplot` 变体，推迟
-- [ ] **T-014** `gasdyn/`：`gasflow.d` 1595、`idealgasflow.d` 952、`gasflowexception.d` 13、
-  并把 4 个 `*_demo.d`（`gasflow_demo` 202 等）转为对照测试。依赖 T-010
+- [ ] **T-014** `gasdyn/`：`gasflowexception.d` 13、`idealgasflow.d` 952、`idealgasflow_demo.d` 93。
+  **范围修正（本轮核实）**：`gasflow.d`(1595) 与 `gasflow_demo.d`(202) 移出 Wave 2 → 新 ID **T-018**。
+  依据：`gasflow.d` 的激波关系式签名普遍是 `ref const(GasState)`/`GasModel gm`，并做
+  `cast(CEAGas) gm` 动态下行转换（`gasdyn/gasflow.d:85`），而 `GasState`/`GasModel` 属
+  `gas/` 包（非 Lua 23,281 行＝Wave 3）；`gasflow_demo.d:14` 还要
+  `init_gas_model("../gas/sample-data/cea-lut-air-version-test.lua")`，属 Wave 7。
+  在 Wave 2 做它必须凭空造一个 gas/ 桩，那就是改行为
+- [ ] **T-018** `gasdyn/gasflow.d`(1595) + `gasflow_demo.d`(202)：随 **Wave 3** 的 `gas/`
+  一起做（依赖 `GasState`/`GasModel`/`CEAGas` 真实体与 `init_gas_model`）
 - [ ] **T-015** Wave 2 门禁扩充：新增基线 `3D/sod-shock-tube/usg`（`sod-usg-test.rb` 已注册于
   `test-names.txt:21`，走非结构网格，正是 T-011 的检验对象）；并确认 `3D/sod-shock-tube/sg`
   与 `usg` 两条链在 C++ 侧可跑
+  （usg 基线已抓取并 D-vs-D 自测通过：75 步、`final-t= 0.000600988`、17 个可比产物全 PASS，
+  含 `.flow/.grid` gzip payload 180,631/181,024/145,581 字节与两个 probe 读数）
 - [ ] **T-016** Wave 2 收尾报告 `wave-02.md` + `wave-02` tag + 本清单更新
 
 **Wave 2 执行约束**（源自 wave-01 集成的 3 类返工，必须写进每个子代理简报）：
@@ -84,7 +100,10 @@
 - [ ] **T-901** 403 处 `parallel` 的串行化漂移实测（用 cone20 量，决定是否复刻 std.parallelism
   分块/归约树）→ **Wave 5**
 - [ ] **T-902** `util/json_helper.d`(141)：先做 `std.json` 语料探针（浮点往返/键序/报错文本），
-  本机无 JSON 库 → **Wave 4 之前**（全局配置与 BC 按名注册都依赖它）
+  本机无 JSON 库 → **Wave 4 之前**（全局配置与 BC 按名注册都依赖它）。
+  Wave 2 已核实的挂钩点：`geom/elements/vector3.d:794 getJSONVector3(JSONValue,...)` 依赖
+  `std.json`，全树只有 `lmr/bc/*`（Wave 8）消费它，故 Wave 2 未移植该函数（`fidelity.yml`
+  记 `deferred: std.json`）
 - [ ] **T-903** substrate 缺口：`toString()` 类名前缀无法与 D 一致；`luaL_error` 的 longjmp 跳过
   C++ 析构，跨边界传临时字符串会泄漏 → **Wave 7**
 - [ ] **T-904** `complex_numbers` 支：Wave 1 文件里 `#ifdef` 保留了复数支但**从未编译**，
