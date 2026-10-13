@@ -1,0 +1,109 @@
++ prep-gas ideal-air.inp ideal-air-gas-model.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air-gas-model.lua
++ e4shared --prep --job=pit1
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Build config files for job:	pit1
+Done building config files.
+NOTE: shock detector is on.
+NOTE: shock detector is on.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=pit1
++ e4shared --run --job=pit1
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: pit1
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 16 for shared memory-parallelism
+Begin init_simulation()...
+NOTE: shock detector is on.
+Single process running with 1 threads.
+Heap memory used: 2 MB, unused: 10 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.0 sec
+starting simulation time= 0
+Integrate in time.
+Step=     20 t= 2.371e-03 dt= 1.169e-04 cfl=0.51 WC=0.0 WCtFT=0.2 WCtMS=1.8
+Step=     40 t= 4.628e-03 dt= 1.117e-04 cfl=0.51 WC=0.0 WCtFT=0.2 WCtMS=1.9
+Write flow solution.
+Write grid
+Step=     60 t= 6.807e-03 dt= 1.082e-04 cfl=0.51 WC=0.1 WCtFT=0.3 WCtMS=2.5
+Step=     80 t= 8.931e-03 dt= 1.057e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.4
+Write flow solution.
+Write grid
+Step=    100 t= 1.102e-02 dt= 1.043e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.4
+Step=    120 t= 1.310e-02 dt= 1.040e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.4
+Write flow solution.
+Write grid
+Step=    140 t= 1.519e-02 dt= 1.043e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.4
+Step=    160 t= 1.728e-02 dt= 1.048e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.3
+Step=    180 t= 1.938e-02 dt= 1.052e-04 cfl=0.50 WC=0.1 WCtFT=0.2 WCtMS=2.2
+Write flow solution.
+Write grid
+Step=    200 t= 2.151e-02 dt= 1.070e-04 cfl=0.50 WC=0.2 WCtFT=0.1 WCtMS=2.3
+Step=    220 t= 2.368e-02 dt= 1.085e-04 cfl=0.50 WC=0.2 WCtFT=0.1 WCtMS=2.2
+Write flow solution.
+Write grid
+Step=    240 t= 2.587e-02 dt= 1.102e-04 cfl=0.50 WC=0.2 WCtFT=0.1 WCtMS=2.2
+Step=    260 t= 2.811e-02 dt= 1.128e-04 cfl=0.49 WC=0.2 WCtFT=0.1 WCtMS=2.2
+Write flow solution.
+Write grid
+Step=    280 t= 3.041e-02 dt= 1.154e-04 cfl=0.49 WC=0.2 WCtFT=0.1 WCtMS=2.3
+Step=    300 t= 3.276e-02 dt= 1.181e-04 cfl=0.49 WC=0.2 WCtFT=0.1 WCtMS=2.2
+Write flow solution.
+Write grid
+Step=    320 t= 3.517e-02 dt= 1.218e-04 cfl=0.49 WC=0.3 WCtFT=0.0 WCtMS=2.2
+Step=    340 t= 3.766e-02 dt= 1.249e-04 cfl=0.49 WC=0.3 WCtFT=0.0 WCtMS=2.2
+Write flow solution.
+Write grid
+Integration stopped: Reached target simulation time of 0.04 seconds.
+Done integrate_in_time().
+Finalize the simulation.
+Step= 359 final-t= 0.0400891
+Done.
+rc=0 for: e4shared --run --job=pit1
++ e4shared --custom-script --script-file=balanceCheck.lua
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin custom script processing using user-supplied script.
+fsolStart=	FlowSolution(jobName=pit1, sim_time=0.00506685, nBlocks=1, variables=["pos.x", "pos.y", "pos.z", "volume", "rho", "vel.x", "vel.y", "vel.z", "p", "a", "mu", "k", "mu_t", "k_t", "S", "massf[0]-air", "u", "T"])
+fsolEnd=	FlowSolution(jobName=pit1, sim_time=0.0400891, nBlocks=1, variables=["pos.x", "pos.y", "pos.z", "volume", "rho", "vel.x", "vel.y", "vel.z", "p", "a", "mu", "k", "mu_t", "k_t", "S", "massf[0]-air", "u", "T"])
+
+Gas-mass-early = 	1.1305733137541
+Gas-mass-at-end = 	1.1305733137541
+Gas-energy-early = 	281140.43045227
+Gas-energy-at-end = 	244484.81254655
+Piston-Energy-at-end = 	38481.006641464
+
+Energy-error = 239.54 (0.08%)
+
+Done.
+rc=0 for: e4shared --custom-script --script-file=balanceCheck.lua

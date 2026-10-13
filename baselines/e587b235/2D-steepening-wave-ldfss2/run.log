@@ -1,0 +1,244 @@
++ rm -rf ldfss2
+rc=0 for: rm -rf ldfss2
++ mkdir -p ldfss2
+rc=0 for: mkdir -p ldfss2
++ cp -r blank/swp.lua ./
+rc=0 for: cp -r blank/swp.lua ./
++ cp -r blank/ideal-air.inp ./
+rc=0 for: cp -r blank/ideal-air.inp ./
++ sed -i s/N=128/N=32/ swp.lua
+rc=0 for: sed -i s/N=128/N=32/ swp.lua
++ sed -i s/asf/ldfss2/ swp.lua
+rc=0 for: sed -i s/asf/ldfss2/ swp.lua
++ prep-gas ideal-air.inp ideal-air.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air.lua
++ e4shared --prep --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Load balancing - Distribute blocks to CPUs
+Number of processors   	 	 = 4
+Ideal cell partitioning   	 = 24 cells/proc
+Smallest partition factor 	 = 1.000
+Largest partition factor  	 = 1.000
+Largest processor load    	 = 24 cells
+Note: Setting config.fixed_time_step = true disallows restarting of the explicit update with a smaller time step.
+Build config files for job:	swp
+Done building config files.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=swp
++ e4shared --run --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: swp
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 16 for shared memory-parallelism
+Begin init_simulation()...
+Single process running with 4 threads.
+Heap memory used: 1 MB, unused: 11 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.0 sec
+starting simulation time= 0
+Integrate in time.
+Write flow solution.
+Write flow solution.
+Write flow solution.
+Write flow solution.
+Step=     20 t= 3.222e-04 dt= 1.611e-05 cfl=N/A WC=0.0 WCtFT=0.0 WCtMS=0.0
+Integration stopped: Reached maximum number of steps with step=22.
+Done integrate_in_time().
+Finalize the simulation.
+Write flow solution.
+Step= 22 final-t= 0.000354466
+Done.
+rc=0 for: e4shared --run --job=swp
++ mkdir -p ldfss2/032
+rc=0 for: mkdir -p ldfss2/032
++ mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/032
+rc=0 for: mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/032
++ cp -r blank/swp.lua ./
+rc=0 for: cp -r blank/swp.lua ./
++ cp -r blank/ideal-air.inp ./
+rc=0 for: cp -r blank/ideal-air.inp ./
++ sed -i s/N=128/N=64/ swp.lua
+rc=0 for: sed -i s/N=128/N=64/ swp.lua
++ sed -i s/asf/ldfss2/ swp.lua
+rc=0 for: sed -i s/asf/ldfss2/ swp.lua
++ prep-gas ideal-air.inp ideal-air.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air.lua
++ e4shared --prep --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Load balancing - Distribute blocks to CPUs
+Number of processors   	 	 = 4
+Ideal cell partitioning   	 = 48 cells/proc
+Smallest partition factor 	 = 1.000
+Largest partition factor  	 = 1.000
+Largest processor load    	 = 48 cells
+Note: Setting config.fixed_time_step = true disallows restarting of the explicit update with a smaller time step.
+Build config files for job:	swp
+Done building config files.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=swp
++ e4shared --run --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: swp
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 16 for shared memory-parallelism
+Begin init_simulation()...
+Single process running with 4 threads.
+Heap memory used: 2 MB, unused: 10 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.0 sec
+starting simulation time= 0
+Integrate in time.
+Write flow solution.
+Write flow solution.
+Step=     20 t= 1.649e-04 dt= 8.243e-06 cfl=N/A WC=0.0 WCtFT=0.0 WCtMS=0.0
+Write flow solution.
+Write flow solution.
+Step=     40 t= 3.297e-04 dt= 8.243e-06 cfl=N/A WC=0.0 WCtFT=0.0 WCtMS=0.0
+Write flow solution.
+Integration stopped: Reached target simulation time of 0.000354466 seconds.
+Reached maximum number of steps with step=43.
+Done integrate_in_time().
+Finalize the simulation.
+Step= 43 final-t= 0.000354466
+Done.
+rc=0 for: e4shared --run --job=swp
++ mkdir -p ldfss2/064
+rc=0 for: mkdir -p ldfss2/064
++ mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/064
+rc=0 for: mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/064
++ cp -r blank/swp.lua ./
+rc=0 for: cp -r blank/swp.lua ./
++ cp -r blank/ideal-air.inp ./
+rc=0 for: cp -r blank/ideal-air.inp ./
++ sed -i s/N=128/N=128/ swp.lua
+rc=0 for: sed -i s/N=128/N=128/ swp.lua
++ sed -i s/asf/ldfss2/ swp.lua
+rc=0 for: sed -i s/asf/ldfss2/ swp.lua
++ prep-gas ideal-air.inp ideal-air.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air.lua
++ e4shared --prep --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Load balancing - Distribute blocks to CPUs
+Number of processors   	 	 = 4
+Ideal cell partitioning   	 = 96 cells/proc
+Smallest partition factor 	 = 1.000
+Largest partition factor  	 = 1.000
+Largest processor load    	 = 96 cells
+Note: Setting config.fixed_time_step = true disallows restarting of the explicit update with a smaller time step.
+Build config files for job:	swp
+Done building config files.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=swp
++ e4shared --run --job=swp
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: swp
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 16 for shared memory-parallelism
+Begin init_simulation()...
+Single process running with 4 threads.
+Heap memory used: 4 MB, unused: 8 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.0 sec
+starting simulation time= 0
+Integrate in time.
+Write flow solution.
+Step=     20 t= 8.340e-05 dt= 4.170e-06 cfl=N/A WC=0.0 WCtFT=0.1 WCtMS=0.1
+Write flow solution.
+Step=     40 t= 1.668e-04 dt= 4.170e-06 cfl=N/A WC=0.1 WCtFT=0.1 WCtMS=0.1
+Write flow solution.
+Step=     60 t= 2.502e-04 dt= 4.170e-06 cfl=N/A WC=0.1 WCtFT=0.0 WCtMS=0.0
+Write flow solution.
+Step=     80 t= 3.336e-04 dt= 4.170e-06 cfl=N/A WC=0.1 WCtFT=0.0 WCtMS=0.0
+Write flow solution.
+Integration stopped: Reached target simulation time of 0.000354466 seconds.
+Reached maximum number of steps with step=85.
+Done integrate_in_time().
+Finalize the simulation.
+Step= 85 final-t= 0.000354466
+Done.
+rc=0 for: e4shared --run --job=swp
++ mkdir -p ldfss2/128
+rc=0 for: mkdir -p ldfss2/128
++ mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/128
+rc=0 for: mv config flow grid hist ideal-air.inp ideal-air.lua loads solid swp.lua ldfss2/128
++ python3 scripts/post_process.py ldfss2/032 ldfss2/064 ldfss2/128
+Picked up flow solution at time:  ldfss2/032/flow/t0005
+Picked up flow solution at time:  ldfss2/064/flow/t0005
+Picked up flow solution at time:  ldfss2/128/flow/t0005
+Order of Convergence: 
+     p L0=2.03
+     p L2=2.05
+   rho L0=1.95
+   rho L2=2.03
+ vel.x L0=2.02
+ vel.x L2=2.07
+rc=0 for: python3 scripts/post_process.py ldfss2/032 ldfss2/064 ldfss2/128

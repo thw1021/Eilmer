@@ -1,0 +1,125 @@
++ prep-gas ideal-air.inp ideal-air-gas-model.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air-gas-model.lua
++ e4shared --prep --job=cone20-nff
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Mach 1.5 flow over a 20 degree cone.
+GasModel set to ideal air. nsp= 	1	 nmodes= 	0
+inflow=	FlowState{p=95840.0, T=1103.0, quality=1.0, massf={["air"]=1.0, }, p_e=0.0, velx=1000.0, vely=0.0, velz=0.0, Bx=0.0, By=0.0, Bz=0.0, psi=0.0, divB=0.0, turb={}, mu_t=0.0, k_t=0.0, S=0}
+T=	1103.0	density=	0.30264478175742	sound speed= 	665.84144678097
+inflow Mach number=	1.5018590459253
+dynamic pressure q=	151322.39087871
+Fluid History point [1] ib=1 i=9 x=0.451313 y=0.101727 z=0
+Fluid History point [2] ib=1 i=20 x=0.745109 y=0.208918 z=0
+Build config files for job:	cone20-nff
+Done building config files.
+NOTE: shock detector is on.
+NOTE: shock detector is on.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=cone20-nff
++ e4shared --run --job=cone20-nff --verbosity=1 --max-cpus=2
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: cone20-nff
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 2 for shared memory-parallelism
+Begin init_simulation()...
+NOTE: shock detector is on.
+Single process running with 2 threads.
+Heap memory used: 11 MB, unused: 11 MB, total: 22 MB (22-22 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.1 sec
+starting simulation time= 0
+Integrate in time.
+Step=     20 t= 1.201e-04 dt= 6.003e-06 cfl=0.50 WC=0.1 WCtFT=2.6 WCtMS=9.4
+Step=     40 t= 2.401e-04 dt= 6.003e-06 cfl=0.50 WC=0.1 WCtFT=2.5 WCtMS=9.2
+Step=     60 t= 3.602e-04 dt= 6.003e-06 cfl=0.50 WC=0.2 WCtFT=2.4 WCtMS=9.2
+Step=     80 t= 4.802e-04 dt= 6.003e-06 cfl=0.50 WC=0.2 WCtFT=2.3 WCtMS=9.1
+Step=    100 t= 6.003e-04 dt= 6.003e-06 cfl=0.50 WC=0.3 WCtFT=2.3 WCtMS=8.9
+Step=    120 t= 7.204e-04 dt= 6.003e-06 cfl=0.50 WC=0.4 WCtFT=2.2 WCtMS=9.0
+Step=    140 t= 8.404e-04 dt= 6.003e-06 cfl=0.50 WC=0.4 WCtFT=2.2 WCtMS=8.9
+Step=    160 t= 9.605e-04 dt= 6.003e-06 cfl=0.50 WC=0.5 WCtFT=2.1 WCtMS=8.8
+Step=    180 t= 1.081e-03 dt= 6.003e-06 cfl=0.50 WC=0.6 WCtFT=2.0 WCtMS=8.7
+Step=    200 t= 1.201e-03 dt= 6.003e-06 cfl=0.50 WC=0.6 WCtFT=2.0 WCtMS=8.7
+Step=    220 t= 1.321e-03 dt= 6.003e-06 cfl=0.50 WC=0.7 WCtFT=1.9 WCtMS=8.7
+Step=    240 t= 1.441e-03 dt= 6.003e-06 cfl=0.50 WC=0.7 WCtFT=1.9 WCtMS=8.6
+Write flow solution.
+Step=    260 t= 1.561e-03 dt= 6.003e-06 cfl=0.50 WC=0.9 WCtFT=1.9 WCtMS=9.3
+Step=    280 t= 1.681e-03 dt= 6.003e-06 cfl=0.50 WC=0.9 WCtFT=1.9 WCtMS=9.2
+Step=    300 t= 1.801e-03 dt= 6.003e-06 cfl=0.50 WC=1.0 WCtFT=1.8 WCtMS=9.1
+Step=    320 t= 1.921e-03 dt= 6.003e-06 cfl=0.50 WC=1.1 WCtFT=1.7 WCtMS=9.0
+Step=    340 t= 2.041e-03 dt= 6.003e-06 cfl=0.50 WC=1.1 WCtFT=1.7 WCtMS=8.9
+Step=    360 t= 2.161e-03 dt= 6.003e-06 cfl=0.50 WC=1.2 WCtFT=1.6 WCtMS=8.9
+Step=    380 t= 2.281e-03 dt= 6.003e-06 cfl=0.50 WC=1.3 WCtFT=1.5 WCtMS=8.8
+Step=    400 t= 2.401e-03 dt= 6.003e-06 cfl=0.50 WC=1.3 WCtFT=1.5 WCtMS=8.7
+Step=    420 t= 2.521e-03 dt= 6.003e-06 cfl=0.50 WC=1.4 WCtFT=1.4 WCtMS=8.7
+Step=    440 t= 2.641e-03 dt= 6.003e-06 cfl=0.50 WC=1.5 WCtFT=1.3 WCtMS=8.6
+Step=    460 t= 2.761e-03 dt= 6.003e-06 cfl=0.50 WC=1.5 WCtFT=1.3 WCtMS=8.5
+Step=    480 t= 2.881e-03 dt= 6.003e-06 cfl=0.50 WC=1.6 WCtFT=1.2 WCtMS=8.4
+Step=    500 t= 3.001e-03 dt= 6.003e-06 cfl=0.50 WC=1.7 WCtFT=1.1 WCtMS=8.3
+Write flow solution.
+Step=    520 t= 3.122e-03 dt= 6.003e-06 cfl=0.50 WC=1.8 WCtFT=1.1 WCtMS=8.6
+Step=    540 t= 3.242e-03 dt= 6.003e-06 cfl=0.50 WC=1.9 WCtFT=1.0 WCtMS=8.5
+Step=    560 t= 3.362e-03 dt= 6.003e-06 cfl=0.50 WC=1.9 WCtFT=0.9 WCtMS=8.4
+Step=    580 t= 3.482e-03 dt= 6.003e-06 cfl=0.50 WC=2.0 WCtFT=0.9 WCtMS=8.4
+Step=    600 t= 3.602e-03 dt= 6.003e-06 cfl=0.50 WC=2.1 WCtFT=0.8 WCtMS=8.3
+Step=    620 t= 3.722e-03 dt= 6.003e-06 cfl=0.50 WC=2.1 WCtFT=0.7 WCtMS=8.3
+Step=    640 t= 3.842e-03 dt= 6.003e-06 cfl=0.50 WC=2.2 WCtFT=0.7 WCtMS=8.2
+Step=    660 t= 3.962e-03 dt= 6.003e-06 cfl=0.50 WC=2.3 WCtFT=0.6 WCtMS=8.1
+Step=    680 t= 4.082e-03 dt= 6.003e-06 cfl=0.50 WC=2.3 WCtFT=0.5 WCtMS=8.0
+Step=    700 t= 4.202e-03 dt= 6.003e-06 cfl=0.50 WC=2.4 WCtFT=0.5 WCtMS=7.9
+Step=    720 t= 4.322e-03 dt= 6.003e-06 cfl=0.50 WC=2.5 WCtFT=0.4 WCtMS=7.8
+Step=    740 t= 4.442e-03 dt= 6.003e-06 cfl=0.50 WC=2.5 WCtFT=0.3 WCtMS=7.8
+Write flow solution.
+Step=    760 t= 4.562e-03 dt= 6.003e-06 cfl=0.50 WC=2.7 WCtFT=0.3 WCtMS=7.9
+Step=    780 t= 4.682e-03 dt= 6.003e-06 cfl=0.50 WC=2.7 WCtFT=0.2 WCtMS=7.8
+Step=    800 t= 4.802e-03 dt= 6.003e-06 cfl=0.50 WC=2.8 WCtFT=0.1 WCtMS=7.7
+Step=    820 t= 4.922e-03 dt= 6.003e-06 cfl=0.50 WC=2.9 WCtFT=0.0 WCtMS=7.6
+Integration stopped: Reached target simulation time of 0.005 seconds.
+Done integrate_in_time().
+Finalize the simulation.
+Write flow solution.
+Step= 833 final-t= 0.00500048
+Done.
+rc=0 for: e4shared --run --job=cone20-nff --verbosity=1 --max-cpus=2
++ e4shared --post --job=cone20-nff --tindx-plot=last --add-vars="mach" --probe=0.4,0.5,0.0
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin post-processing with command-line arguments.
+  jobName: cone20-nff
+  verbosityLevel: 1
+NOTE: shock detector is on.
+Probing flow solution at specified points.
+  tindx= 4
+1:k_t 2:volume 3:pos.x 4:massf[0]-air 5:mu_t 6:B.y 7:pos.z 8:u 9:vel.z 10:vel.y 11:vel.x 12:B.x 13:a 14:k 15:divB 16:mu 17:B.z 18:pos.y 19:S 20:T 21:rho 22:p 23:M_local
+0.000000000000000000e+00 2.806877396902783257e-04 4.118954633830956280e-01 1.000000000000000000e+00 0.000000000000000000e+00 0.000000000000000000e+00 0.000000000000000000e+00 7.916874544788596686e+05 0.000000000000000000e+00 3.794942087461083665e-04 9.999996443441722249e+02 0.000000000000000000e+00 6.658415536057819963e+02 2.655650907319743667e-02 0.000000000000000000e+00 1.865807420693115767e-05 0.000000000000000000e+00 4.912952428167385310e-01 0.000000000000000000e+00 1.103000353921410806e+03 3.026450088869321320e-01 9.584010267857086728e+04 1.501858270828653863e+00
+Done.
+rc=0 for: e4shared --post --job=cone20-nff --tindx-plot=last --add-vars="mach" --probe=0.4,0.5,0.0

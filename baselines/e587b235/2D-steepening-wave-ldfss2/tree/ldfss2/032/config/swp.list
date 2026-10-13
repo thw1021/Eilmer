@@ -1,0 +1,5 @@
+# indx type label ncells
+   0 structured_grid FluidBlock-0 24
+   1 structured_grid FluidBlock-1 24
+   2 structured_grid FluidBlock-2 24
+   3 structured_grid FluidBlock-3 24

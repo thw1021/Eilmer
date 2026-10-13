@@ -1,0 +1,109 @@
++ prep-gas ideal-air.inp ideal-air-gas-model.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air-gas-model.lua
++ e4shared --prep --job=piston
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+Build config files for job:	piston
+Done building config files.
+NOTE: shock detector is on.
+NOTE: shock detector is on.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=piston
++ e4shared --run --job=piston
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: piston
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 16 for shared memory-parallelism
+Begin init_simulation()...
+NOTE: shock detector is on.
+Single process running with 1 threads.
+Heap memory used: 1 MB, unused: 11 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.0 sec
+starting simulation time= 0
+Integrate in time.
+Step=     20 t= 4.530e-05 dt= 1.543e-06 cfl=0.19 WC=0.0 WCtFT=0.1 WCtMS=0.7
+Step=     40 t= 7.250e-05 dt= 1.322e-06 cfl=0.11 WC=0.0 WCtFT=0.1 WCtMS=0.8
+Step=     60 t= 9.805e-05 dt= 1.272e-06 cfl=0.10 WC=0.0 WCtFT=0.1 WCtMS=0.8
+Write flow solution.
+Write grid
+Step=     80 t= 1.237e-04 dt= 1.291e-06 cfl=0.10 WC=0.0 WCtFT=0.1 WCtMS=0.9
+Step=    100 t= 1.498e-04 dt= 1.300e-06 cfl=0.10 WC=0.0 WCtFT=0.1 WCtMS=0.9
+Step=    120 t= 1.753e-04 dt= 1.270e-06 cfl=0.10 WC=0.0 WCtFT=0.1 WCtMS=0.9
+Step=    140 t= 2.005e-04 dt= 1.261e-06 cfl=0.10 WC=0.0 WCtFT=0.1 WCtMS=0.9
+Write flow solution.
+Write grid
+Step=    160 t= 2.254e-04 dt= 1.240e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    180 t= 2.499e-04 dt= 1.219e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    200 t= 2.741e-04 dt= 1.205e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    220 t= 2.979e-04 dt= 1.185e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Write flow solution.
+Write grid
+Step=    240 t= 3.213e-04 dt= 1.170e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    260 t= 3.445e-04 dt= 1.152e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    280 t= 3.673e-04 dt= 1.135e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    300 t= 3.897e-04 dt= 1.118e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=0.9
+Write flow solution.
+Write grid
+Step=    320 t= 4.118e-04 dt= 1.100e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    340 t= 4.335e-04 dt= 1.082e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    360 t= 4.549e-04 dt= 1.064e-06 cfl=0.10 WC=0.1 WCtFT=0.1 WCtMS=1.0
+Step=    380 t= 4.759e-04 dt= 1.046e-06 cfl=0.10 WC=0.1 WCtFT=0.0 WCtMS=1.0
+Step=    400 t= 4.965e-04 dt= 1.028e-06 cfl=0.10 WC=0.1 WCtFT=0.0 WCtMS=0.9
+Write flow solution.
+Write grid
+Step=    420 t= 5.169e-04 dt= 1.011e-06 cfl=0.10 WC=0.2 WCtFT=0.0 WCtMS=0.9
+Step=    440 t= 5.368e-04 dt= 9.940e-07 cfl=0.10 WC=0.2 WCtFT=0.0 WCtMS=0.9
+Step=    460 t= 5.564e-04 dt= 9.772e-07 cfl=0.10 WC=0.2 WCtFT=0.0 WCtMS=0.9
+Step=    480 t= 5.757e-04 dt= 9.608e-07 cfl=0.10 WC=0.2 WCtFT=0.0 WCtMS=0.9
+Step=    500 t= 5.947e-04 dt= 9.446e-07 cfl=0.10 WC=0.2 WCtFT=0.0 WCtMS=0.9
+Write flow solution.
+Write grid
+Integration stopped: Reached target simulation time of 0.0006 seconds.
+Done integrate_in_time().
+Finalize the simulation.
+Step= 506 final-t= 0.000600331
+Done.
+rc=0 for: e4shared --run --job=piston
++ e4shared --post --job=piston --probe=0.28,0,0
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin post-processing with command-line arguments.
+  jobName: piston
+  verbosityLevel: 1
+NOTE: shock detector is on.
+Probing flow solution at specified points.
+  tindx= 6
+1:pos.x 2:pos.y 3:pos.z 4:volume 5:rho 6:vel.x 7:vel.y 8:vel.z 9:p 10:a 11:mu 12:k 13:mu_t 14:k_t 15:S 16:massf[0]-air 17:u 18:T
+2.830521747093783791e-01 2.499999999999997016e-02 0.000000000000000000e+00 3.238027243143790784e-04 2.644835931243606497e-01 2.930314278147986329e+02 2.636857983180631856e-14 0.000000000000000000e+00 3.025772781064344963e+04 4.002052721401215649e+02 1.744624056656184110e-05 2.456697245229079452e-02 0.000000000000000000e+00 0.000000000000000000e+00 0.000000000000000000e+00 1.000000000000000000e+00 2.860076068727656384e+05 3.984735261625900193e+02
+Done.
+rc=0 for: e4shared --post --job=piston --probe=0.28,0,0

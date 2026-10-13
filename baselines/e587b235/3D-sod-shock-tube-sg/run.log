@@ -1,0 +1,93 @@
++ prep-gas ideal-air.inp ideal-air-gas-model.lua
+Species database loaded from: 	/home/tang/packages/gdtk/build/data/species-database.lua
+rc=0 for: prep-gas ideal-air.inp ideal-air-gas-model.lua
++ e4shared --prep --job=sod
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin preparation stage for a simulation.
+Loading prep.lua...
+Done loading prep.lua
+One-dimensional shock tube with air driving air.
+GasModel set to ideal air. nsp= 	1	 nmodes= 	0
+Build config files for job:	sod
+Done building config files.
+Done building grid and flow files.
+Done.
+rc=0 for: e4shared --prep --job=sod
++ e4shared --run --job=sod --verbosity=1 --max-cpus=1
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin simulation with command-line arguments.
+  jobName: sod
+  tindxStart: 0
+  maxWallClock: 432000
+  verbosityLevel: 1
+  maxCPUs: 1 for shared memory-parallelism
+Begin init_simulation()...
+Single process running with 1 threads.
+Heap memory used: 7 MB, unused: 5 MB, total: 12 MB (12-12 MB per task)
+Done init_simulation() at wall-clock(WC)= 0.1 sec
+starting simulation time= 0
+Integrate in time.
+Step=     20 t= 2.069e-04 dt= 7.331e-06 cfl=0.91 WC=0.0 WCtFT=0.1 WCtMS=1.2
+Step=     40 t= 3.511e-04 dt= 7.197e-06 cfl=0.50 WC=0.1 WCtFT=0.1 WCtMS=1.1
+Step=     60 t= 4.950e-04 dt= 7.200e-06 cfl=0.50 WC=0.1 WCtFT=0.0 WCtMS=1.1
+Integration stopped: Reached target simulation time of 0.0006 seconds.
+Done integrate_in_time().
+Finalize the simulation.
+Write flow solution.
+Step= 75 final-t= 0.00060314
+Done.
+rc=0 for: e4shared --run --job=sod --verbosity=1 --max-cpus=1
++ e4shared --post --job=sod --tindx-plot=last --add-vars="mach" --probe=0.78,0.025,0.025
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin post-processing with command-line arguments.
+  jobName: sod
+  verbosityLevel: 1
+Probing flow solution at specified points.
+  tindx= 1
+1:pos.x 2:pos.y 3:pos.z 4:volume 5:rho 6:vel.x 7:vel.y 8:vel.z 9:p 10:a 11:mu 12:k 13:mu_t 14:k_t 15:S 16:massf[0]-air 17:u 18:T 19:M_local
+7.750000000000001332e-01 2.500000000000000139e-02 2.500000000000000139e-02 2.500000000000002830e-05 2.646817430805949445e-01 2.929942748336787872e+02 2.519120256618240934e-14 -2.314895308929202439e-15 3.026184327861650308e+04 4.000826459028518229e+02 1.744624056656184110e-05 2.456697245229079452e-02 0.000000000000000000e+00 0.000000000000000000e+00 0.000000000000000000e+00 1.000000000000000000e+00 2.858323634868334047e+05 3.982293723420234528e+02 7.323343759949630938e-01
+Done.
+rc=0 for: e4shared --post --job=sod --tindx-plot=last --add-vars="mach" --probe=0.78,0.025,0.025
++ e4shared --post --job=sod --tindx-plot=last --add-vars="mach" --probe=0.6,0.025,0.025
+Eilmer 4.0 compressible-flow simulation code.
+Revision-id: e587b235
+Revision-date: Sun Oct 11 11:58:04 2026 +1000
+Compiler-name: ldc2
+Build-date: Tue Oct 13 01:53:18 AM CST 2026
+Build-flavour: debug
+Profiling: omitted
+Capabilities: multi-species-gas multi-temperature-gas MHD turbulence.
+Parallelism: Shared-memory
+Begin post-processing with command-line arguments.
+  jobName: sod
+  verbosityLevel: 1
+Probing flow solution at specified points.
+  tindx= 1
+1:pos.x 2:pos.y 3:pos.z 4:volume 5:rho 6:vel.x 7:vel.y 8:vel.z 9:p 10:a 11:mu 12:k 13:mu_t 14:k_t 15:S 16:massf[0]-air 17:u 18:T 19:M_local
+5.949999999999999734e-01 2.500000000000000139e-02 2.500000000000000139e-02 2.500000000000002830e-05 4.269183364809309711e-01 2.934933082015578520e+02 3.960843605047757351e-14 6.171918542057993208e-14 3.031397293198302214e+04 3.152920663781105191e+02 1.744624056656184110e-05 2.456697245229079452e-02 0.000000000000000000e+00 0.000000000000000000e+00 0.000000000000000000e+00 1.000000000000000000e+00 1.775162270017479605e+05 2.473204041595052445e+02 9.308616977681551941e-01
+Done.
+rc=0 for: e4shared --post --job=sod --tindx-plot=last --add-vars="mach" --probe=0.6,0.025,0.025
