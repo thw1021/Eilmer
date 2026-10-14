@@ -17,31 +17,38 @@ namespace geom {
 
 namespace {
 
-// D:81, D:82 `to!int(r / dr)`. Phobos' floating -> integer conversion truncates toward
-// zero and RAISES outside the target range; static_cast<int> would wrap. Measured with
-// ldc2 1.40.0 and recorded in baselines/e587b235/probes/geom_surface_meshpatch.txt:
+// D:81, D:82 `to!int(r / dr)`. Phobos' floating -> integer conversion RAISES outside the
+// target range rather than wrapping, and it range-checks the FLOATING value, not the
+// truncated one. Measured with ldc2 1.40.0 against std/conv.d:1555-1574 and recorded in
+// baselines/e587b235/probes/geom_surface_meshpatch.txt:
 //
-//   NaN                std.conv.ConvException         msg=[Input was NaN]      row mp.oc.r.nan
-//   v >= 2^31          std.conv.ConvOverflowException msg=[Conversion positive overflow]  mp.oc.r.pinf/.big
-//   v <  -(2^31)       std.conv.ConvOverflowException msg=[Conversion negative overflow]   mp.oc.r.ninf/.big
-//   2147483647.5       -> 2147483647  (INT_MAX itself is fine; the boundary is the value
-//                        just above it, so the test is `>= 2147483648.0` and NOT
-//                        `>= INT_MAX` — measured alongside the rows above)
-//   -2147483648.0      -> -2147483648 (INT_MIN itself is fine)
+//   NaN                 std.conv.ConvException          msg=[Input was NaN]       row mp.oc.r.nan / mp.oc.s.nan
+//   v >  2147483647.0   std.conv.ConvOverflowException  msg=[Conversion positive overflow]  mp.oc.r.pinf / mp.oc.r.big
+//   v < -2147483648.0   std.conv.ConvOverflowException  msg=[Conversion negative overflow]  mp.oc.r.ninf / mp.oc.s.big
+//   otherwise           cast(int), i.e. truncated toward zero
+//
+// The two boundaries are the extremes themselves and they are INCLUSIVE on the good side:
+// measured separately (off-corpus, same compiler) because the difference is not cosmetic —
+//   to!int(2147483647.0)   -> 2147483647          to!int(-2147483648.0) -> -2147483648
+//   to!int(2147483647.5)   -> THROWS positive     to!int(-2147483648.5) -> THROWS negative
+//   to!int(2147483646.5)   -> 2147483646          to!int(-0.9999)       -> 0
+// so a test of `v >= 2147483648.0` would silently accept 2147483647.5 where D raises. (For
+// the record: src/util/lua_service.hpp:169 has the mirror-image mistake, `v >= INT_MAX`,
+// which raises at 2147483647.0 where D converts. Reported, not fixed: that file is not this
+// stage's, its path is a Lua number rather than this one, and T-928 already notes the two
+// are different D routes that must not be merged.)
 //
 // SUBSTRATE GAP, reported rather than fixed here (backlog T-928: "no
 // std.conv.ConvOverflowException"): substrate declares the parent
 // eil::ConversionException (= std.conv.ConvException, error.hpp:142) only, so both D
 // classes arrive as the parent carrying D's exact message, and the replay distinguishes
 // them by that message. src/geom/grid/usgrid.hpp:96 declares a second local copy of the
-// overflow child for the string -> int case; this file does not include it, because the
-// two D paths are separate (T-928 says so explicitly) and pulling a grid header into a
-// surface module to reuse a shim would widen the dependency for no evidence gain. The
-// rule itself is also recorded at src/util/lua_service.hpp:158-165 for the Lua layer,
-// with a boundary that is 1 too eager; the boundary above is the measured one.
+// overflow child for the string -> int case; this file does not include it, because
+// pulling a grid header into a surface module to reuse a shim would widen the dependency
+// for no evidence gain.
 int d_to_int(double v) {
     if (std::isnan(v)) throw eil::ConversionException("Input was NaN");
-    if (v >= 2147483648.0) throw eil::ConversionException("Conversion positive overflow");
+    if (v > 2147483647.0) throw eil::ConversionException("Conversion positive overflow");
     if (v < -2147483648.0) throw eil::ConversionException("Conversion negative overflow");
     return static_cast<int>(v); // D's to!int truncates toward zero
 }
