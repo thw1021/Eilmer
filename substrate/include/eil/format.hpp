@@ -114,6 +114,18 @@ template <typename C> size_t range_length(const C& c) {
 template <typename T> struct is_string_like
     : std::is_convertible<T, std::string_view> {};
 
+// A type declaring a NO-ARG const `toString()`. Detected with the same void_t SFINAE the
+// range traits above use. It matches only the zero-argument overload, which is exactly
+// what D's `to!string(x)` prefers: measured in substrate_tostring_dispatch.txt, a type
+// with BOTH `string toString()` and `string toString(string fmt, Args...)` renders via the
+// NO-ARG one (row struct.both -> "plain"), while a type with ONLY the fmt overload is NOT
+// matched here and stays the field dump C++ cannot reproduce without reflection (rows
+// struct.fmt.toString, struct.no.toString, class.no.toString).
+template <typename T, typename = void> struct has_noarg_to_string : std::false_type {};
+template <typename T>
+struct has_noarg_to_string<T, std::void_t<decltype(std::declval<const T&>().toString())>>
+    : std::true_type {};
+
 template <typename T> std::string to_string(const T& v) {
     if constexpr (std::is_same_v<T, bool>) {
         return v ? "true" : "false";
@@ -136,6 +148,16 @@ template <typename T> std::string to_string(const T& v) {
             else out += to_string(v[i]);
         }
         return out + "]";
+    } else if constexpr (has_noarg_to_string<T>::value) {
+        // D dispatches to!string(x) to x.toString() when the type declares a no-arg one.
+        // The scalar/string/range branches above come first only because none of them can
+        // also carry a toString() in this tree; a user struct or class that does is
+        // rendered here. Ported types with a hand-written toString() (Vector3, USGCell,
+        // every geom patch, nm's Bbla/Smla/Schedule, ...) therefore become directly
+        // printable via eil::to_string(x) — which is the whole value of this branch, since
+        // C++ reflection cannot auto-produce the field dump or the class-name text D uses
+        // when there is NO toString() (see the header comment and the dispatch corpus).
+        return v.toString();
     } else {
         static_assert(sizeof(T) == 0, "eil::to_string: no conversion for this type yet");
     }
@@ -269,6 +291,8 @@ std::string pick_apply(const Tuple& t, char spec, const std::string& flags, int 
 // Ports call eil::to_string(); the implementation lives in detail::td so the
 // generic template can be found without include-order concerns.
 using detail::td::to_string;
+// Re-exported so a port can assert a type is/isn't dispatchable (the T-926 corpus gate does).
+using detail::td::has_noarg_to_string;
 
 // std.format.format for the subset the solver actually uses.
 template <typename... Args>
