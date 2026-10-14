@@ -93,6 +93,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -128,6 +129,7 @@ using eil::geom::Grid;
 using eil::geom::LinearFunction;
 using eil::geom::ParametricSurface;
 using eil::geom::ParametricVolume;
+using eil::geom::Quaternion;
 using eil::geom::StructuredGrid;
 using eil::geom::UnivariateFunctionPtr;
 using eil::geom::Vector3;
@@ -883,6 +885,311 @@ void grp_rgrid() {
     dump_doubles("sg.rgrid.roundtrip", back);
 }
 
+// ------------------------------------------------------------------
+// sg.join.* — joinGrid (probe_sgrid.d:1052-1107, sgrid.d:1130-1256)
+// ------------------------------------------------------------------
+void grp_join() {
+    auto a = mk2d(4, 3, "A");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            a->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    auto b = mk2d(3, 3, "B");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            b->opIndex(i, j)->set(static_cast<double>(i + 3) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    auto aj = a->dup();
+    aj->joinGrid(b, "east");
+    dump_grid("sg.join.east", aj);
+    auto bj = a->dup();
+    bj->joinGrid(b, "imax");
+    dump_grid("sg.join.imax", bj);
+    emit(eil::format("sg.join.same=%s", aj->toString() == bj->toString()));
+    // north join
+    auto c = mk2d(4, 3, "C");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            c->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0 + 2.0, 0.0);
+        }
+    }
+    auto nj = a->dup();
+    nj->joinGrid(c, "north");
+    dump_grid("sg.join.north", nj);
+    auto nj2 = a->dup();
+    nj2->joinGrid(c, "jmax");
+    dump_grid("sg.join.jmax", nj2);
+    // guards
+    tryit("sg.join.badloc", [&a, &b]() { a->joinGrid(b, "west"); });
+    tryit("sg.join.emptyloc", [&a, &b]() { a->joinGrid(b, ""); });
+    std::shared_ptr<Grid> g3 = vol_grid3d("3d");
+    tryit("sg.join.3d", [&g3, &b]() {
+        std::static_pointer_cast<StructuredGrid>(g3)->joinGrid(b, "east");
+    });
+    auto mismatch = mk2d(3, 2, "M");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            mismatch->opIndex(i, j)->set(static_cast<double>(i + 3) * 1.0,
+                                         static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.njv", [&a, &mismatch]() { a->joinGrid(mismatch, "east"); });
+    auto nkvbad = mk2d(3, 3, "K");
+    emit(eil::format("sg.join.nkv %d %d", a->nkv, nkvbad->nkv));
+    // non-coincident vertex
+    auto apart = mk2d(3, 3, "AP");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            apart->opIndex(i, j)->set(static_cast<double>(i) * 1.0 + 1.0e-3,
+                                      static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.coincide", [&a, &apart]() { a->joinGrid(apart, "east"); });
+    auto nbad = mk2d(5, 3, "NB");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 5; ++i) {
+            nbad->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                     static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.niv", [&a, &nbad]() { a->joinGrid(nbad, "north"); });
+    auto nbad2 = mk2d(4, 3, "NB2");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            nbad2->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                      static_cast<double>(j) * 1.0 + 1.0e-2, 0.0);
+        }
+    }
+    tryit("sg.join.coincide.north", [&a, &nbad2]() { a->joinGrid(nbad2, "north"); });
+}
+
+// ------------------------------------------------------------------
+// sg.slab.* / sg.wedge.* (probe_sgrid.d:1110-1133, sgrid.d:1258-1310)
+// ------------------------------------------------------------------
+void grp_slab_wedge() {
+    auto g = mk2d(3, 2, "slabsrc");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.5);
+        }
+    }
+    dump_grid("sg.slab.sym", g->makeSlabGrid(Vector3(0.0, 0.0, 2.0), true, ""));
+    dump_grid("sg.slab.asym", g->makeSlabGrid(Vector3(0.0, 0.0, 2.0), false, ""));
+    dump_grid("sg.slab.dbl", g->makeSlabGrid(3.0, true, "dbl"));
+    dump_grid("sg.slab.dblasym", g->makeSlabGrid(3.0, false, "dblasym"));
+    emit(eil::format("sg.slab.srclabel=%s", g->makeSlabGrid(1.0)->label));
+    // makeWedgeGrid around the x-axis. D:1294 atan2 and the :1299/:1304 cos/sin pair of one
+    // argument go through eil::atan2 / eil::cos / eil::sin (T-910, T-920).
+    auto w = mk2d(3, 2, "wedgesrc");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            w->opIndex(i, j)->set(static_cast<double>(i) * 0.5,
+                                  1.0 + static_cast<double>(j) * 0.25,
+                                  0.1 * static_cast<double>(i));
+        }
+    }
+    dump_grid("sg.wedge.sym", w->makeWedgeGrid(0.3, true, "", 3));
+    dump_grid("sg.wedge.asym", w->makeWedgeGrid(0.3, false, "", 3));
+    dump_grid("sg.wedge.sym2", w->makeWedgeGrid(1.0, true));
+    dump_grid("sg.wedge.nkv2", w->makeWedgeGrid(0.75, false, "w2", 2));
+    emit(eil::format("sg.wedge.pi=%s",
+                     w->makeWedgeGrid(3.141592653589793, true, "wpi", 5)->toString()));
+    tryit("sg.slab.3d", []() { (void)vol_grid3d("x")->makeSlabGrid(1.0); });
+    tryit("sg.wedge.3d", []() { (void)vol_grid3d("x")->makeWedgeGrid(0.3); });
+}
+
+// ------------------------------------------------------------------
+// sg.bad.* — measure_of_badness (probe_sgrid.d:1135-1179, sgrid.d:1320-1394)
+// ------------------------------------------------------------------
+void grp_bad() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cflin;
+    for (int n = 0; n < 4; ++n) cflin.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    auto gid = std::make_shared<StructuredGrid>(*patch, 5, 5, cflin, "simple", "badid");
+    emit(eil::format("sg.bad.identical=%.17g", gid->measure_of_badness()));
+    ClusterF cfclust;
+    cfclust.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cfclust.append(std::make_shared<eil::geom::RobertsFunction>(true, true, 2.0));
+    cfclust.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cfclust.append(std::make_shared<eil::geom::RobertsFunction>(true, true, -2.0));
+    auto gc = std::make_shared<StructuredGrid>(*patch, 5, 5, cfclust, "simple", "badc");
+    emit(eil::format("sg.bad.clustered=%.17g", gc->measure_of_badness()));
+    emit(eil::format("sg.bad.clustered.bilinear=%.17g",
+                     std::make_shared<StructuredGrid>(*patch, 5, 5, cfclust, "bilinear",
+                                                     "badcb")
+                         ->measure_of_badness()));
+    // A skewed (non-orthogonal) quadrilateral mesh.
+    auto sk = mk2d(4, 4, "skew");
+    for (size_t j = 0; j < 4; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            sk->opIndex(i, j)->set(static_cast<double>(i) * 1.0 + 0.3 * static_cast<double>(j),
+                                   static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    emit(eil::format("sg.bad.skew=%.17g", sk->measure_of_badness()));
+    // An inverted cell: negative area triggers the penalty (D:1373).
+    auto inv = mk2d(3, 2, "inv");
+    inv->opIndex(0, 0)->set(0.0, 0.0, 0.0);
+    inv->opIndex(1, 0)->set(1.0, 0.0, 0.0);
+    inv->opIndex(2, 0)->set(2.0, 0.0, 0.0);
+    inv->opIndex(0, 1)->set(0.0, 1.0, 0.0);
+    inv->opIndex(1, 1)->set(1.0, -1.0, 0.0);
+    inv->opIndex(2, 1)->set(2.0, 1.0, 0.0);
+    emit(eil::format("sg.bad.inverted=%.17g", inv->measure_of_badness()));
+    // Degenerate: a zero-area cell (repeated vertices).
+    auto deg = mk2d(3, 3, "deg");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            deg->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                    static_cast<double>(i) * 1.0, 0.0);
+        }
+    }
+    emit(eil::format("sg.bad.degenerate=%.17g", deg->measure_of_badness()));
+    // A single-row mesh (njv == 2) and a single-column one (niv == 2).
+    emit(eil::format("sg.bad.2row=%.17g", surf_grid2d("b2")->measure_of_badness()));
+    tryit("sg.bad.3d", []() { (void)vol_grid3d("b3")->measure_of_badness(); });
+    tryit("sg.bad.1d", []() {
+        (void)std::make_shared<StructuredGrid>(5, 1, 1, "b1")->measure_of_badness();
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.rs.* — the two list/grid mappers (probe_sgrid.d:1181-1194, sgrid.d:1472-1522)
+// ------------------------------------------------------------------
+void grp_rs() {
+    eil::Array<double> data = d_init_doubles(16);
+    for (size_t i = 0; i < 16; ++i) data[i] = 0.01 * static_cast<double>(i) + 0.02;
+    eil::geom::RSGrid rg{}, sgr{};
+    eil::geom::list_to_rs_grids(data, rg, sgr);
+    dump_g2d("sg.rs.r", rg);
+    dump_g2d("sg.rs.s", sgr);
+    eil::Array<double> back = d_init_doubles(16);
+    eil::geom::rs_grids_to_list(rg, sgr, back);
+    dump_doubles("sg.rs.roundtrip", back);
+    // The assert on a short array (D:1478, :1504).
+    tryit("sg.rs.short.list", [&rg, &sgr]() {
+        eil::Array<double> d = d_init_doubles(15);
+        eil::geom::rs_grids_to_list(rg, sgr, d);
+    });
+    tryit("sg.rs.short.get", [&rg, &sgr]() {
+        eil::Array<double> d = d_init_doubles(0);
+        eil::geom::list_to_rs_grids(d, rg, sgr);
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.determ.* — determine_rs_grids (probe_sgrid.d:1205-1234, sgrid.d:1396-1423),
+// which minimises through nm/nelmin
+// ------------------------------------------------------------------
+void grp_determ() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf;
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<eil::geom::RobertsFunction>(true, true, 1.5));
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<eil::geom::RobertsFunction>(true, true, -1.5));
+    auto g = std::make_shared<StructuredGrid>(*patch, 6, 5, cf, "simple", "det");
+    emit(eil::format("sg.determ.before=%.17g", g->measure_of_badness()));
+    eil::geom::RSGrid rg{}, sgr{};
+    // Start from the identity redistribution (D:1407 reads these values). D's `id[] = 0.0`
+    // writes every slot, so there is no .init tail to reproduce here.
+    eil::Array<double> id = d_init_doubles(16);
+    for (size_t i = 0; i < 16; ++i) id[i] = 0.0;
+    id[2] = 0.0; id[7] = 1.0; id[13] = 1.0;
+    eil::geom::list_to_rs_grids(id, rg, sgr);
+    dump_g2d("sg.determ.rg0", rg);
+    dump_g2d("sg.determ.sg0", sgr);
+    const bool conv = g->determine_rs_grids(*patch, cf, rg, sgr);
+    emit(eil::format("sg.determ.conv=%s", conv));
+    dump_g2d("sg.determ.rg", rg);
+    dump_g2d("sg.determ.sg", sgr);
+    emit(eil::format("sg.determ.after=%.17g", g->measure_of_badness()));
+    auto gr = std::make_shared<StructuredGrid>(*patch, 6, 5, cf, rg, sgr, "detr");
+    dump_grid("sg.determ.grid", gr);
+}
+
+// ------------------------------------------------------------------
+// sg.rotq.* — rotateGrid (probe_sgrid.d:1236-1262, sgrid.d:1425-1465)
+// ------------------------------------------------------------------
+void grp_rotq() {
+    auto g = std::make_shared<StructuredGrid>(2, 2, 2, "rotq");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                g->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                         static_cast<double>(k));
+            }
+        }
+    }
+    auto a = g->dup();
+    a->rotateGrid(1.0, 0.0, 0.0, 0.0);
+    dump_verts("sg.rotq.ident", a->vertices);
+    auto b = g->dup();
+    b->rotateGrid(0.7071067811865476, 0.0, 0.7071067811865476, 0.0);
+    dump_verts("sg.rotq.pi2.y", b->vertices);
+    auto c = g->dup();
+    c->rotateGrid(0.0, 0.0, 0.0, 1.0);
+    dump_verts("sg.rotq.pi.y", c->vertices);
+    auto d = g->dup();
+    d->rotateGrid(0.5, 0.5, 0.5, 0.5);
+    dump_verts("sg.rotq.diag", d->vertices);
+    tryit("sg.rotq.norm", [&g]() { g->dup()->rotateGrid(1.0, 1.0, 0.0, 0.0); });
+    tryit("sg.rotq.zero", [&g]() { g->dup()->rotateGrid(0.0, 0.0, 0.0, 0.0); });
+    tryit("sg.rotq.nan", [&g]() {
+        g->dup()->rotateGrid(std::numeric_limits<double>::quiet_NaN(), 0.0, 0.0, 0.0);
+    });
+    // norm exactly at the 1e-8 band edge.
+    emit(eil::format("sg.rotq.band=%.17g", (std::abs(1.0 + 1e-9) - 1.0) > 1e-8));
+    auto e = g->dup();
+    e->rotateGrid(0.9999999999999999, 0.0, 0.0, 0.0);
+    dump_verts("sg.rotq.justunder", e->vertices);
+}
+
+// ------------------------------------------------------------------
+// sg.rot.* — the two inherited Grid.rotate entries (probe_sgrid.d:1264-1287,
+// grid.d:443-500). The handle h is a Grid, so these replay the base implementations.
+// ------------------------------------------------------------------
+void grp_rot() {
+    auto g = std::make_shared<StructuredGrid>(3, 3, 1, "rot");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i), static_cast<double>(j), 0.0);
+        }
+    }
+    std::shared_ptr<Grid> h = g;
+    Quaternion q = {{1.0, 0.0, 0.0, 0.0}};
+    h->rotate(q);
+    dump_verts("sg.rot.q.ident", g->vertices);
+    Quaternion q180 = {{0.0, 0.0, 0.0, 1.0}};
+    h->rotate(q180);
+    dump_verts("sg.rot.q.pi", g->vertices);
+    h->rotate(3.141592653589793, Vector3(0.0, 0.0, 1.0));
+    dump_verts("sg.rot.a.pi", g->vertices);
+    h->rotate(1.5707963267948966, Vector3(0.0, 0.0, 1.0), Vector3(1.0, 1.0, 0.0));
+    dump_verts("sg.rot.a.pi2 ctr", g->vertices);
+    Vector3 ax = Vector3(0.0, 2.0, 0.0);
+    h->rotate(0.5, ax);
+    emit(eil::format("sg.rot.axis.after %.17g %.17g %.17g", eil::re(ax.x), eil::re(ax.y),
+                     eil::re(ax.z)));
+    dump_verts("sg.rot.a.len2", g->vertices);
+    tryit("sg.rot.q.badnorm", [&h]() {
+        Quaternion bad = {{1.0, 1.0, 0.0, 0.0}};
+        h->rotate(bad);
+    });
+    // D's `Quaternion nq;` is double[4].init, i.e. four NaNs (nomenclature.d:68).
+    Quaternion nq = eil::geom::quaternion_init();
+    tryit("sg.rot.q.naninit", [&h, &nq]() { h->rotate(nq); });
+    dump_verts("sg.rot.q.naninit.after", g->vertices);
+}
+
 //<<<SECTIONS-NOW>>>
 
 // ------------------------------------------------------------------
@@ -1299,6 +1606,13 @@ int main(int argc, char** argv) {
     grp_frmt();
     grp_raw();
     grp_vtk_su2();
+    grp_join();
+    grp_slab_wedge();
+    grp_bad();
+    grp_rs();
+    grp_determ();
+    grp_rotq();
+    grp_rot();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
