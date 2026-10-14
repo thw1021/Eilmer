@@ -256,6 +256,19 @@
   因为 `two_temperature_nitrogen.d` 会走到。已开 **T-916** 钉住它。
   普查本身作为常驻测试留在树里：它**不要求差异为零**（差异是它测的东西），
   只在两侧不再描述同一批行时失败。
+- [x] **T-918** substrate 缺陷（grid 代理报的第三条）：`eil_assert` 渲染的是
+  `"Assertion failure: <字符串化的条件>"`，而 **D 的 `e.msg` 根本不是这个**。实测
+  （ldc2 1.40.0，`catch (Error e)` 取 `e.msg`）：
+  `assert(i==3, "index i is invalid")` → `msg == "index i is invalid"`（**没有**
+  "Assertion failure" 前缀）；`assert(i==3)` → `msg == "Assertion failure"`（**不带**
+  条件文本）。旧实现对两种情况都追加 `#cond`，是参考侧从不产生的文本；而
+  `harness/normalize_log.py` 是按字节比异常文本的，geom 有 **297** 个 assert 站点、
+  src/eilmer 有 **249** 个。
+  **完成 2026-10-14**：`substrate/include/eil/error.hpp` 拆成
+  `d_assert`（裸文本）与 `d_assert_msg`（原样消息）+ 两个宏，
+  `grid.cpp` 的本地副本改为**转发**（两份同一规则必漂移，见 T-910 的教训）。
+  D 的 `toString()` 里 `core.exception.AssertError@file(line):` 这个类名前缀仍无法一致，
+  那是既有的 T-903，不在本条范围。
 - [ ] **T-919** `geom_grid_grid` 行 178 `cbc.nan2d x=`：**仅 Release 红**，
   D `-nan` / 端口 `nan`，且 Debug 与 `-DEIL_SLICE_CHECK=ON` 两侧一致为 `-nan`。
   643 行里唯一一条，量级是 y/z 完全相同、只有 x 的 NaN 符号位不同。

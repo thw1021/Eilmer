@@ -113,11 +113,31 @@ inline void enforce(bool condition, const std::string& msg) {
 }
 
 // D's `assert(...)` is a hard runtime check compiled into the release solver
-// (249 sites in src/eilmer), so it is not std::assert: it throws and stays live.
-inline void d_assert(bool condition, const char* what, const char* file, size_t line) {
-    if (!condition) throw ErrorBase(std::string("Assertion failure: ") + what, file, line);
+// (249 sites in src/eilmer, 297 in geom alone), so it is not std::assert: it throws
+// and stays live.
+//
+// What `.msg` holds was measured, because the previous version of this helper was
+// wrong for every one of those sites. ldc2 1.40.0, caught with `catch (Error e)`:
+//
+//     assert(i == 3, "index i is invalid")   e.msg == "index i is invalid"
+//     assert(i == 3)                          e.msg == "Assertion failure"
+//
+// i.e. with a message, `.msg` is EXACTLY that message -- no "Assertion failure"
+// prefix -- and without one it is the bare words "Assertion failure", NOT
+// "Assertion failure: <stringified condition>". The old code appended `#cond` in both
+// cases, which is text the reference never produces; it surfaces in logs because
+// harness/normalize_log.py byte-compares the exception text a job script sees.
+// The file/line the port still carries lives in .file()/.line(), matching
+// ThrowableBase; D puts it in the class prefix of toString() instead, and that
+// prefix cannot be reproduced here (reports/backlog.md T-903).
+inline void d_assert(bool condition, const char* file, size_t line) {
+    if (!condition) throw ErrorBase("Assertion failure", file, line);
 }
-#define eil_assert(cond) ::eil::d_assert((cond), #cond, __FILE__, __LINE__)
+inline void d_assert_msg(bool condition, const char* msg, const char* file, size_t line) {
+    if (!condition) throw ErrorBase(std::string(msg), file, line);
+}
+#define eil_assert(cond) ::eil::d_assert((cond), __FILE__, __LINE__)
+#define eil_assert_msg(cond, msg) ::eil::d_assert_msg((cond), (msg), __FILE__, __LINE__)
 
 // core.exception.OutOfMemoryError and friends appear via `new` failing; kept as a
 // distinct type so ported catch clauses stay honest.

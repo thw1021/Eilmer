@@ -33,16 +33,19 @@ namespace {
 // D's `assert(cond, "msg")` reaches the caller as core.exception.AssertError whose
 // .msg is exactly "msg", and a bare `assert(cond)` with .msg == "Assertion failure"
 // (measured: probe rows idx.1d si(0,1) -> "index j is invalid" and idx.ijk 3d(27) ->
-// "Assertion failure"). eil_assert() renders "Assertion failure: <stringified
-// condition>", which is a different text, so grid.d's four contract asserts use these
-// two helpers instead of rewriting the substrate. Both stay live in a release build,
+// "Assertion failure"). grid.d's four contract asserts route through these two
+// helpers, which forward to the substrate's eil::d_assert / eil::d_assert_msg; both
+// stay live in a release build,
 // as eil_assert() does and as D's solver requires. The recorded file/line necessarily
 // names grid.cpp, not grid.d.
+// Thin forwarders: substrate/include/eil/error.hpp now owns the measured rule
+// (T-918), and two copies of a transcendental-or-message rule drift -- see the T-910
+// history in reports/task-log.md. Call sites keep naming the file/line of the throw.
 void d_assert_msg(bool cond, const char* msg, const char* file, size_t line) {
-    if (!cond) throw eil::ErrorBase(msg, file, line);
+    ::eil::d_assert_msg(cond, msg, file, line);
 }
 void d_assert_bare(bool cond, const char* file, size_t line) {
-    if (!cond) throw eil::ErrorBase("Assertion failure", file, line);
+    ::eil::d_assert(cond, file, line);
 }
 
 // D's `max(0, min(nbx-1, ix))` (D:253, :262, :273) mixes a size_t bound with an int
