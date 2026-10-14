@@ -113,8 +113,10 @@ const std::string MP_PATH = "/tmp/gdtk_shadow/geom/surface/meshpatch.d";
 const std::string CONV_PATH = "/home/tang/packages/dlang/bin/../import/std/conv.d";
 
 // The port's exception -> D's class, from substrate/include/eil/error.hpp's measured
-// table (T-922). std.conv.ConvOverflowException is not in substrate (T-928), so the two
-// conv classes are told apart by the message the port raised with.
+// table (T-922). substrate now declares std.conv.ConvOverflowException as the child of
+// ConversionException (T-928) and meshpatch.cpp raises it, so the overflow child is caught
+// explicitly BEFORE its parent: the gate verifies the class the port threw rather than
+// re-deriving it from the message text (which would hide a wrong-class regression).
 void dump_throw(const std::string& tag, const std::function<void()>& fn, const std::string& dfile,
                 long dline) {
     try {
@@ -123,12 +125,11 @@ void dump_throw(const std::string& tag, const std::function<void()>& fn, const s
     } catch (const eil::RangeError& e) {
         emitf("%s|class=core.exception.ArrayIndexError|msg=[%s]|file=[%s]|line=%d", tag, e.msg(),
               dfile, dline);
+    } catch (const eil::ConvOverflowException& e) {
+        emitf("%s|class=std.conv.ConvOverflowException|msg=[%s]|file=[%s]|line=%d", tag, e.msg(),
+              dfile, dline);
     } catch (const eil::ConversionException& e) {
-        const std::string m = e.msg();
-        const bool overflow = (m == "Conversion positive overflow" ||
-                               m == "Conversion negative overflow");
-        emitf("%s|class=%s|msg=[%s]|file=[%s]|line=%d", tag,
-              overflow ? "std.conv.ConvOverflowException" : "std.conv.ConvException", m, dfile,
+        emitf("%s|class=std.conv.ConvException|msg=[%s]|file=[%s]|line=%d", tag, e.msg(), dfile,
               dline);
     } catch (const eil::ErrorBase& e) {
         // A bare new Error: D reports no site, and so does the port.

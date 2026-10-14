@@ -87,18 +87,6 @@ namespace geom {
 // forward-declares UnstructuredGrid the same way.
 class StructuredGrid;
 
-// std.conv.ConvOverflowException — the overflow child of std.conv.ConvException
-// (substrate/include/eil/error.hpp:142 declares only the parent, and eil/conv.hpp:244-259
-// has no range check, so `to!int` of an out-of-range string currently cannot be reproduced
-// from substrate; SUBSTRATE GAP, reported to the main thread for a T-9xx entry).
-// Declared here because this stage may not modify substrate/**. The only corpus row that
-// reaches it is us.face.str.bigcount (row 208); d_to_int() in usgrid.cpp raises it.
-class ConvOverflowException : public eil::ConversionException {
-  public:
-    explicit ConvOverflowException(const std::string& message)
-        : eil::ConversionException(message) {}
-};
-
 // std.stdio.StdioException — D's buffered File reader raises this when the underlying
 // read fails, as opposed to reaching end of file (which returns an empty line and does
 // NOT throw; T-923). The one corpus row that reaches it is us.imp-directory (row 1267):

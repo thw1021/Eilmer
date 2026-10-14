@@ -262,7 +262,7 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         std::rethrow_exception(ep);
     } catch (const eil::geom::GeometryException& e) {
         return {"geom.geometry_exception.GeometryException", e.msg(), site.file, site.line};
-    } catch (const eil::geom::ConvOverflowException& e) {
+    } catch (const eil::ConvOverflowException& e) {
         // The overflow child has to be tested before its parent ConversionException,
         // which would otherwise swallow it (corpus row 208, us.face.str.bigcount).
         return {"std.conv.ConvOverflowException", e.msg(), site.file, site.line};
@@ -280,7 +280,7 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         // failed", rt/lifetime.d:1454 -- backlog T-929, measured in probe_throw_identity.d row
         // gen.negative_length). So the exception carries the site to report; the passed-in
         // module site is NOT substituted here the way it is for a throw the port raises itself.
-        return {"core.exception.OutOfMemoryError", e.msg(), e.file(), e.line()};
+        return {"core.exception.OutOfMemoryError", e.msg(), e.file(), static_cast<long>(e.line())};
     } catch (const eil::gzip::ZlibException& e) {
         // std.zlib.ZlibException is a Phobos Exception subclass raised inside std/zlib.d;
         // the port's eil::gzip::ZlibException (src/extern/gzip/gzip.hpp:83) carries the

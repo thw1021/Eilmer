@@ -32,6 +32,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <type_traits>
 
 #include "eil/error.hpp"
 #include "eil/format.hpp"
@@ -257,23 +258,48 @@ inline double to_double(const std::string& s) {
 //        to!size_t("-1")  -> Unexpected '-' ... type ulong   (as is "-0")
 //     A signed target consumes the sign first, so a bare "+"/"-" is an
 //     end-of-input error instead.
-inline long long parse_int_strict(const std::string& s, const char* tname, bool allow_sign) {
+//  3. An out-of-range value is std.conv.ConvOverflowException "Overflow in integral
+//     conversion", raised DURING the digit walk (as soon as the accumulated magnitude
+//     leaves T's range), not after — so `to!int("99999999999999999999")` reports the
+//     overflow, not a wrapped negative. The bound is per target type and its two ends
+//     are asymmetric in magnitude: int takes [-2147483648, 2147483647], so "2147483647"
+//     and "-2147483648" convert while "2147483648" and "-2147483649" overflow
+//     (measured: substrate_conv_int_typename.txt rows int.max/int.max+1/int.min/int.min-1).
+//     The magnitude is accumulated in make_unsigned_t<T> so that ulong's own maximum
+//     (18446744073709551615, which does not fit in a signed long long) converts rather
+//     than overflowing the accumulator.
+template <typename T>
+T parse_int_strict(const std::string& s, const char* tname, bool allow_sign) {
+    using U = typename std::make_unsigned<T>::type;
     const size_t n = s.size();
     size_t i = 0;
+    bool neg = false;
     if (i < n && (s[i] == '+' || s[i] == '-')) {
         if (!allow_sign) detail::conv_fail(detail::unexpected_char(s[i], tname));
+        neg = (s[i] == '-');
         ++i;
     }
     if (i >= n) detail::conv_fail(detail::unexpected_end(tname));
-    const long long sign = (s[0] == '-') ? -1 : 1;
-    long long acc = 0;
+    // |bound| on the accumulated magnitude: T::max on the positive side, and on the
+    // negative side |T::min| == T::max + 1 (two's complement). For an unsigned target
+    // `neg` is unreachable — allow_sign is false, so a leading '-' already failed above.
+    U limit = static_cast<U>(std::numeric_limits<T>::max());
+    if constexpr (std::is_signed<T>::value) {
+        if (neg) limit = static_cast<U>(limit + 1);
+    }
+    U acc = 0;
     for (; i < n; ++i) {
         if (!std::isdigit(static_cast<unsigned char>(s[i]))) {
             detail::conv_fail(detail::unexpected_char(s[i], tname));
         }
-        acc = acc * 10 + (s[i] - '0');
+        const U d = static_cast<U>(s[i] - '0');
+        // acc*10 + d > limit, tested without ever overflowing U: limit <= U's max and
+        // d <= 9 <= limit for every integer type the solver names (byte's is 127).
+        if (acc > (limit - d) / 10) throw ConvOverflowException("Overflow in integral conversion");
+        acc = acc * 10 + d;
     }
-    return sign * acc;
+    if (neg) return static_cast<T>(static_cast<U>(0) - acc);
+    return static_cast<T>(acc);
 }
 
 // The name the message carries, by measured target type. Narrow targets add a
@@ -289,11 +315,11 @@ template <typename T> const char* d_int_type_name() {
     else static_assert(sizeof(T) == 0, "eil::to: measured type name needed for this integer type");
 }
 
-inline long to_long(const std::string& s) { return parse_int_strict(s, "long", true); }
-inline int to_int(const std::string& s) { return static_cast<int>(parse_int_strict(s, "int", true)); }
+inline long to_long(const std::string& s) { return parse_int_strict<long>(s, "long", true); }
+inline int to_int(const std::string& s) { return parse_int_strict<int>(s, "int", true); }
 // D's `to!size_t(text)`: size_t resolves to ulong in the message, and takes no sign.
 inline size_t to_size_t(const std::string& s) {
-    return static_cast<size_t>(parse_int_strict(s, d_int_type_name<size_t>(), false));
+    return parse_int_strict<size_t>(s, d_int_type_name<size_t>(), false);
 }
 
 // The single entry point ports use, mirroring `to!T(value)`.
@@ -303,8 +329,8 @@ template <typename T, typename U> T to(const U& v) {
     } else if constexpr (std::is_same_v<T, double>) {
         return to_double(::eil::to_string(v));
     } else if constexpr (std::is_integral_v<T>) {
-        return static_cast<T>(parse_int_strict(::eil::to_string(v), d_int_type_name<T>(),
-                                               std::is_signed_v<T>));
+        return parse_int_strict<T>(::eil::to_string(v), d_int_type_name<T>(),
+                                   std::is_signed_v<T>);
     } else {
         static_assert(sizeof(T) == 0, "eil::to: add the conversion when a ported file needs it");
     }

@@ -281,15 +281,13 @@ std::string fmt_read_rest(FormattedInput& in) {
 // conversion" (corpus row 208: `new USGFace("9999999999999999999 1")` reports that class,
 // not the OutOfMemoryError a negative length would give — row 207 — because the conversion
 // is checked BEFORE `vtx_id_list.length = ...` can allocate).
-// eil::to_int (substrate/include/eil/conv.hpp:293) is `static_cast<int>(parse_int_strict(s,
-// "int", true))` with no range check at all, so an overflowing count silently becomes a
-// negative number and the port reached the wrong failure path. SUBSTRATE GAP (reported to
-// the main thread): substrate has neither the check nor the ConvOverflowException child of
-// ConversionException, and this stage may not modify it, so both live here —
-// ConvOverflowException in src/geom/grid/usgrid.hpp, this scanner next to the other
-// port-local std.conv/std.format shims. The grammar failure texts stay substrate's
-// (eil::detail::unexpected_end / unexpected_char_at), so the non-numeric rows
-// (us.face.str.nonint, us.face.str.hex, us.cell.str.badint) are unaffected.
+// substrate's eil::to_int now carries that check itself (backlog T-928: parse_int_strict
+// raises ConvOverflowException on the first digit that leaves the target's range, and
+// substrate/include/eil/error.hpp declares the class), so the port-local d_to_int scanner and
+// the usgrid.hpp ConvOverflowException are both gone and every site below is a plain
+// eil::to_int(...). The grammar failure texts are unchanged (eil::detail::unexpected_end /
+// unexpected_char), so the non-numeric rows (us.face.str.nonint, us.face.str.hex,
+// us.cell.str.badint — all plain-ASCII offending chars) reproduce exactly.
 // D's `arr.length = n` when n is larger than the allocator can satisfy raises
 // core.exception.OutOfMemoryError "Memory allocation failed" at the runtime's OWN location
 // (.file == "rt/lifetime.d", .line == 1454 — see substrate T-914 and
@@ -299,26 +297,6 @@ std::string fmt_read_rest(FormattedInput& in) {
 // us.sgbad.zeroj (a 3x0x1 lattice gives nfaces = 3*(0-1) = a size_t wrap, which D cannot
 // allocate).
 
-int d_to_int(const std::string& s) {    const size_t n = s.size();
-    size_t i = 0;
-    bool neg = false;
-    if (i < n && (s[i] == '+' || s[i] == '-')) { neg = (s[i] == '-'); ++i; }
-    if (i >= n) eil::detail::conv_fail(eil::detail::unexpected_end("int"));
-    const long long limit_pos = 2147483647LL;   // INT_MAX
-    const long long limit_neg = 2147483648LL;   // |INT_MIN|
-    long long acc = 0;
-    for (; i < n; ++i) {
-        const unsigned char c = static_cast<unsigned char>(s[i]);
-        if (!std::isdigit(c)) {
-            eil::detail::conv_fail(eil::detail::unexpected_char_at(s, i, "int"));
-        }
-        acc = acc * 10 + static_cast<long long>(c - '0');
-        if (neg ? (acc > limit_neg) : (acc > limit_pos)) {
-            throw ConvOverflowException("Overflow in integral conversion");
-        }
-    }
-    return static_cast<int>(neg ? -acc : acc);
-}
 
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
 // Phobos' numeric unformat (std/format/internal/read.d:196) is `std.conv.parse!T(input)`
@@ -335,7 +313,7 @@ template <typename T> void fmt_into(FormattedInput& in, T* dst);
 template <> void fmt_into<int>(FormattedInput& in, int* dst) {
     const std::string tok = fmt_read_token(in);
     if (tok.empty()) return; // exhausted: D writes nothing
-    *dst = d_to_int(tok);
+    *dst = eil::to_int(tok);
 }
 template <> void fmt_into<long>(FormattedInput& in, long* dst) {
     const std::string tok = fmt_read_token(in);
@@ -581,9 +559,9 @@ USGFace::USGFace(const std::string& str) {
     // D:183-185. tokens is D's string[], so an over-long index is ArrayIndexError;
     // eil::Array reproduces it. The length comes from the FILE as a signed int (T-914).
     eil::Array<std::string> tokens = split_ws(d_strip(str));
-    vtx_id_list.set_length_signed(d_to_int(tokens[0]));
+    vtx_id_list.set_length_signed(eil::to_int(tokens[0]));
     for (size_t i = 0; i < vtx_id_list.length(); ++i) {
-        vtx_id_list[i] = static_cast<size_t>(d_to_int(tokens[i + 1]));  // D:185 to!int
+        vtx_id_list[i] = static_cast<size_t>(eil::to_int(tokens[i + 1]));  // D:185 to!int
     }
 }
 
@@ -649,19 +627,19 @@ USGCell::USGCell(const std::string& str, size_t id) {
     }
     std::string junk = tokens[itok++]; // "vtx"
     (void)junk;
-    vtx_id_list.set_length_signed(d_to_int(tokens[itok++]));
+    vtx_id_list.set_length_signed(eil::to_int(tokens[itok++]));
     for (size_t i = 0; i < vtx_id_list.length(); ++i) {
-        vtx_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:258 to!int
+        vtx_id_list[i] = static_cast<size_t>(eil::to_int(tokens[itok++]));  // D:258 to!int
     }
     junk = tokens[itok++]; // "faces"
-    face_id_list.set_length_signed(d_to_int(tokens[itok++]));
+    face_id_list.set_length_signed(eil::to_int(tokens[itok++]));
     for (size_t i = 0; i < face_id_list.length(); ++i) {
-        face_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:263, :355 to!int
+        face_id_list[i] = static_cast<size_t>(eil::to_int(tokens[itok++]));  // D:263, :355 to!int
     }
     junk = tokens[itok++]; // "outsigns"
-    outsign_list.set_length_signed(d_to_int(tokens[itok++]));
+    outsign_list.set_length_signed(eil::to_int(tokens[itok++]));
     for (size_t i = 0; i < outsign_list.length(); ++i) {
-        outsign_list[i] = d_to_int(tokens[itok++]);
+        outsign_list[i] = eil::to_int(tokens[itok++]);
     }
 }
 
@@ -1267,14 +1245,14 @@ BoundaryFaceSet::BoundaryFaceSet(const std::string& str) {
         this->tag = tokens[itok++];
         std::string junk = tokens[itok++]; // "faces"
         (void)junk;
-        face_id_list.set_length_signed(d_to_int(tokens[itok++]));
+        face_id_list.set_length_signed(eil::to_int(tokens[itok++]));
         for (size_t i = 0; i < face_id_list.length(); ++i) {
-            face_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:355 to!int
+            face_id_list[i] = static_cast<size_t>(eil::to_int(tokens[itok++]));  // D:355 to!int
         }
         junk = tokens[itok++]; // "outsigns"
-        outsign_list.set_length_signed(d_to_int(tokens[itok++]));
+        outsign_list.set_length_signed(eil::to_int(tokens[itok++]));
         for (size_t i = 0; i < outsign_list.length(); ++i) {
-            outsign_list[i] = d_to_int(tokens[itok++]);
+            outsign_list[i] = eil::to_int(tokens[itok++]);
         }
         eil_assert_msg(face_id_list.length() == outsign_list.length(),
                        "Mismatch in numbers of faces and outsigns");
@@ -1847,7 +1825,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         return ""; // D:1405 didn't find the target
     };
 
-    dimensions = d_to_int(getHeaderContent("NDIME")); // D:1407
+    dimensions = eil::to_int(getHeaderContent("NDIME")); // D:1407
     f.do_rewind();                                       // D:1411
     ncells = eil::to_size_t(getHeaderContent("NELEM")); // D:1412
     cells.set_length(ncells);                            // D:1413
@@ -1855,7 +1833,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         if ((i % 100000) == 0) { d_stdout_write("."); d_stdout_flush(); } // D:1417
         const std::string lineContent = d_strip(f.readln());
         eil::Array<std::string> tokens = split_ws(lineContent);
-        const int vtk_element_type = d_to_int(tokens[0]);       // D:1425
+        const int vtk_element_type = eil::to_int(tokens[0]);       // D:1425
         size_t indx = i;                                           // D:1426
         const int nv_expected = n_vertices_for_vtk_element(vtk_element_type);
         eil::Array<size_t> vtx_id_list;
@@ -2124,7 +2102,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         const size_t nelem = eil::to_size_t(getHeaderContent("MARKER_ELEMS"));
         for (size_t j = 0; j < nelem; ++j) {
             eil::Array<std::string> tokens = split_ws(d_strip(f.readln()));
-            const int vtk_type = d_to_int(tokens[0]); // D:1721 (read, not used further)
+            const int vtk_type = eil::to_int(tokens[0]); // D:1721 (read, not used further)
             (void)vtk_type;
             eil::Array<size_t> my_vtx_id_list;
             for (size_t k = 1; k < tokens.length(); ++k) {

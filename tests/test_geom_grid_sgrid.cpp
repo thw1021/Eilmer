@@ -112,7 +112,7 @@
 //   eil::ExceptionBase with a site     object.Exception
 //   eil::geom::GeometryException       geom.geometry_exception.GeometryException
 //   eil::ConversionException           std.conv.ConvException   (an Exception subclass)
-//   eil::geom::ConvOverflowException   std.conv.ConvOverflowException
+//   eil::ConvOverflowException         std.conv.ConvOverflowException (child of the above)
 //   eil::gzip::ZlibException           std.zlib.ZlibException
 //   eil::format_error                  std.format.FormatException (an Exception)
 // All of those render as `err=` except the last five, which render as `exc=`.

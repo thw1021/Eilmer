@@ -32,24 +32,21 @@ namespace {
 //   to!int(2147483647.0)   -> 2147483647          to!int(-2147483648.0) -> -2147483648
 //   to!int(2147483647.5)   -> THROWS positive     to!int(-2147483648.5) -> THROWS negative
 //   to!int(2147483646.5)   -> 2147483646          to!int(-0.9999)       -> 0
-// so a test of `v >= 2147483648.0` would silently accept 2147483647.5 where D raises. (For
-// the record: src/util/lua_service.hpp:169 has the mirror-image mistake, `v >= INT_MAX`,
-// which raises at 2147483647.0 where D converts. Reported, not fixed: that file is not this
-// stage's, its path is a Lua number rather than this one, and T-928 already notes the two
-// are different D routes that must not be merged.)
+// so a test of `v >= 2147483648.0` would silently accept 2147483647.5 where D raises. (The
+// mirror-image boundary in src/util/lua_service.hpp's to_int_from_double — `> INT_MAX`,
+// exclusive — was fixed under T-932; that path is a Lua number rather than this one, and
+// T-928 keeps the two separate because they are different D routes with different messages.)
 //
-// SUBSTRATE GAP, reported rather than fixed here (backlog T-928: "no
-// std.conv.ConvOverflowException"): substrate declares the parent
-// eil::ConversionException (= std.conv.ConvException, error.hpp:142) only, so both D
-// classes arrive as the parent carrying D's exact message, and the replay distinguishes
-// them by that message. src/geom/grid/usgrid.hpp:96 declares a second local copy of the
-// overflow child for the string -> int case; this file does not include it, because
-// pulling a grid header into a surface module to reuse a shim would widen the dependency
-// for no evidence gain.
+// substrate now declares both D classes (backlog T-928): eil::ConversionException
+// (= std.conv.ConvException) and its overflow child eil::ConvOverflowException
+// (= std.conv.ConvOverflowException), so this file raises the SAME class D does rather
+// than the parent carrying the child's message. The replay (test_geom_surface_meshpatch.cpp
+// classify()) catches the child before the parent, so the gate verifies the class directly
+// instead of re-deriving it from the message text.
 int d_to_int(double v) {
     if (std::isnan(v)) throw eil::ConversionException("Input was NaN");
-    if (v > 2147483647.0) throw eil::ConversionException("Conversion positive overflow");
-    if (v < -2147483648.0) throw eil::ConversionException("Conversion negative overflow");
+    if (v > 2147483647.0) throw eil::ConvOverflowException("Conversion positive overflow");
+    if (v < -2147483648.0) throw eil::ConvOverflowException("Conversion negative overflow");
     return static_cast<int>(v); // D's to!int truncates toward zero
 }
 

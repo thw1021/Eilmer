@@ -145,6 +145,23 @@ class ConversionException : public ExceptionBase {
         : ExceptionBase(message, file, line) {}
 };
 
+// std.conv.ConvOverflowException — the overflow CHILD of std.conv.ConvException, so a
+// D `catch (ConvException)` takes it too. Phobos raises it from two distinct paths,
+// each with its own measured wording (T-928, baselines substrate_conv_int_typename.txt
+// and substrate_to_int_from_double.txt):
+//   to!T(string) out of T's range -> "Overflow in integral conversion"   (string path)
+//   to!T(numeric) out of range    -> "Conversion positive overflow" /
+//                                    "Conversion negative overflow"     (numeric path)
+// and NaN on the numeric path is the PARENT ConvException "Input was NaN", not this.
+// The two paths must not be collapsed into one generic text: they are different D
+// functions with different messages.
+class ConvOverflowException : public ConversionException {
+  public:
+    explicit ConvOverflowException(const std::string& message, const char* file = "",
+                                   size_t line = 0)
+        : ConversionException(message, file, line) {}
+};
+
 // std.exception.enforce. Message text is the raw first argument (see header note).
 template <typename... Args>
 inline void enforce(bool condition, const std::string& msg, const Args&...) {
