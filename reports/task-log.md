@@ -723,3 +723,55 @@
   `probe_phobos_bits.d`（673 行、有测试回放），再补一份就是造一个没人读的第二参照。
   另外我第一版扫描脚本报"三个探针编不过"是**脚本自己的错**（`-of=` 指到了刚创建的目录），
   记在这里是因为一个自信报错的坏 harness 比没有 harness 更糟。
+
+## T-011 段 G5（续）/ T-927 — 复跑代理的数字，量出一个 substrate 的类型名缺陷  (2026-10-14)
+
+- **交接点是一句话**：第三个 usgrid 代理用完 150 轮，最后一行状态是
+  *"Rows 1–946 byte-identical. Now `us.su2rd.*` (947–1191)"*。我没有按这句话往下推，
+  而是在那个 build 目录里 `cmake --build .`（**全部 target**，`build=0`）后自己复跑回放，
+  得到当时唯一可信的一行：
+  `probe replay 1393 D lines, 1189 C++ lines, 207 differ; 1186 of 1393 rows byte-identical`。
+  **发出 1189 行、其中 3 行是红的**——此前每一版都是"发了 N 行、N 行全同"，
+  这是第一次出现"发了但不对"，所以先分类再动手：harness 只打印差异行，
+  按 `line N`/`D:`/`C++:` 三元组统计 ⇒ 204 行 `<none>`（没写）、**3 行内容不同**。
+- **3 行红是同一个原因，而且不是 usgrid 的原因**：行 1170/1171/1172 的
+  `msg=[Unexpected end of input when converting from type string to type **int**]`
+  对着 D 的 `type **ulong**`。D 侧 `usgrid.d:1412/:1478/:1713` 写的是
+  `to!size_t(getHeaderContent(...))`，而端口这 11 处全部借用了
+  `substrate` 里那个**把 `"int"` 硬编码进消息文本**的 `to_long`。
+  端口发出的行**其他字段全对**（`dline`/`class`/`file`/`line`/`toString1`），
+  只有类型名不对——这类缺陷三关门禁抓不到（它比的是数值与归一化日志文本），
+  只有逐字节回放才抓得到。
+- **T-927（substrate 缺陷，已闭合）**：没有直接改成 `ulong` 了事，而是写了
+  `probes/substrate/probe_conv_int_typename.d`（**105 行，重跑 0 差异，行内无地址**），
+  量出三条规则：①报文里是**解析后的类型名**，别名报基元（`size_t`→`ulong`、
+  `ptrdiff_t`→`long`）；②**无符号目标不吃前导符号**——`to!int("+")` 是
+  *end of input*，`to!size_t("+7")`/`to!size_t("-1")`/`to!size_t("-0")` 报
+  `Unexpected '+'`/`'-'`（**端口原来的 `to_long` 对无符号目标也吃符号**，这是第二条潜在
+  分歧，只是还没有站点踩到）；③超范围是
+  `ConvOverflowException "Overflow in integral conversion"`。还有第四条**只记录不实现**：
+  `short/byte/ubyte` 的 end-of-input 报基元、尾部垃圾报目标——本波无人需要。
+- **改 substrate 前先数依赖**（这一步决定了它是不是安全改动）：
+  `to_long` 只在 `sgrid.cpp`/`usgrid.cpp` 出现，两个文件都还没注册；
+  全语料里 `converting from type string to type` 只出现在这两个包（`int`×19、`ulong`×6）。
+  ⇒ 扫描器改成 `parse_int_strict(s, tname, allow_sign)`、新增 `eil::to_size_t`、
+  `eil::to<integral>` 按 `d_int_type_name<T>()` 选名字，11 处 `to!size_t` 站点回归正确目标。
+  改完 **1189 发出 / 1189 全同**，注册套件 **100/100** 未受影响。
+- **顺手把 G4 会踩的同一件事也量了**：`probes/substrate/probe_format_int_target.d`
+  （26 行可复现）证明 std.format 的数字读取把 token 交给 std.conv，
+  所以 `formattedRead("%d", &size_t)` **同样报 `ulong`**；另两个只属于 std.format 的形状：
+  输入在字面量匹配前耗尽 → `FormatException parseToFormatSpec: Cannot find character 'n' …`
+  （**不是** conv 错误），`%d` 读 `"0x10"` 吃掉 `0` 留下 `"x10"` 值为 0。
+  `sgrid.cpp`/`usgrid.cpp` 的 `fmt_into<size_t>` 各改一处并引这份证据。
+- **这一段真正的产出是"进度在哪"变成了一张可交接的表**：`reports/wave-02-grid-brief.md`
+  新增 §11——按**语料行号**列出 G5 剩余 11 段与 G4 的 5 段（含每段行数、对应
+  `probe_usgrid.d`/`probe_sgrid.d` 的行段），并记下两条实测结论：
+  ①**sgrid/usgrid 的端口在函数层面已经转完**（D 侧 31 个 sgrid 成员函数在 C++ 里全部有实现，
+  `single_cell_index`/`oldSingleIndex` 是 lambda、`determine_rs_grids` 的嵌套 `objective`
+  是仿函数），所以 G4/G5 剩下的活儿是**写回放 harness**，harness 暴露的才是真 bug；
+  ②**一次只放一个 agent 碰 `eil_geom`**——sgrid.cpp 与 usgrid.cpp 编进同一个库，
+  并行必然互相看到半成品（本波已经为此付出过一次文件被并写弄坏）。
+- **状态**：G5 = 1189/1393 发出、1189/1189 逐字节相同，1190–1252（vtk/stl/foam 三组）
+  正在做，1253–1393 待做；G4 = harness 尚未开始，2097 行全量待做；
+  `add_test` 两个都还关着（**整条语料 0 差异才注册**），100/100 不变。
+

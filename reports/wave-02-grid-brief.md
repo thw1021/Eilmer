@@ -295,3 +295,54 @@ G5 落地时 `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义*
 - **如果时间/轮次不够**：停下来报告"usgrid/sgrid 各自到哪一节、语料第几行、
   D 值 vs 端口值、已排除的假设"。主线程按 `paver` 的先例接着做——
   **明确的部分结果 + 诚实的停止点**，比一个假的绿有用得多。
+
+## 11. G4/G5 分段进度表（2026-10-14 主线程实测，按语料行号）
+
+**G5 现状**：`tests/test_geom_grid_usgrid.cpp` 已能发出语料 **1–1189 行，1189/1189 逐字节相同**
+（`/tmp/w2_g5r/test_geom_grid_usgrid <corpus>`，摘要行
+`probe replay 1393 D lines, 1189 C++ lines, 204 differ; 1189 of 1393 rows byte-identical`）。
+1190 之后**全部是 `<none>`**——不是数值不对，是**回放组还没写**。
+这一段红过一次：1170–1172 三行的类型名是 `int` 而 D 报 `ulong`，根因与规则见 **T-927**
+（已修，`eil::to_size_t`）。
+
+**关键事实（省掉下一位的一段弯路）**：`src/geom/grid/sgrid.cpp`（1875 行）与
+`src/geom/grid/usgrid.cpp`（2883 行）**函数层面已经转完**——D 侧 31 个 sgrid 成员函数在
+C++ 里全部有对应实现（`single_cell_index`/`oldSingleIndex` 是 lambda，
+`determine_rs_grids` 的嵌套 `objective` 是 `Objective` 仿函数，见 `sgrid.cpp:1345/:1525`）。
+所以 **G4/G5 剩下的工作是写回放 harness，不是转写求解器**；harness 暴露出来的才是真 bug。
+
+### 11.1 G5 剩余分段（语料行号，必须按序接在 `grp_su2rd()` 之后）
+
+| 行 | 组 | D 代码 | harness 里对应要mirror的 probe 段 |
+|---|---|---|---|
+| 1190–1205 | `grp_vtk()` | `write_to_vtk_file` D:1850 / `read_from_vtk_text_file` D:1785 | `probe_usgrid.d:2232-2296` |
+| 1206–1216 | `grp_stl()` | 继承的 `Grid.write_to_stl_file` grid.d:389 | `:2297-2317` |
+| 1217–1252 | `grp_foam()` | `write_openFoam_polyMesh` D:1930-2162 | `:2318-2379` |
+| 1253–1267 | `grp_imp()` | import 构造器 D:830-846 + 其余够不到的 throw/assert | `:2380-2447` |
+| 1268–1282 | `grp_idx()`+`grp_conn()` | 抽象表下标 D:988-1010 / `get_connected_cell_ids_for_cell` D:1045 | `:2448-2479` |
+| 1283–1300 | `grp_sort/bnd/blc()` | D:888 / D:1057 / D:1106 | `:2480-2538` |
+| 1301–1316 | `grp_vaf/split/link()` | D:1133/:1167 / D:1179 / D:1258 | `:2539-2576` |
+| 1317–1337 | `grp_join/stats()` | `joinGrid` D:2164 六个 assert + D:2342 outsign / `writeStats` D:2416 | `:2577-2634` |
+| 1338–1347 | `grp_vtxb/bin/edge()` | D:2450 / grid.d bin sort / D:881 下溢 | `:2635-2676` |
+| 1348–1360 | `grp_unit()` | usgrid.d 自带 unittest D:2484-2524 | `:2677-2718` |
+| 1361–1393 | `grp_gap()` | 其余够不到的站点 | `:2719-end` |
+
+### 11.2 G4 分段（`geom_grid_sgrid.txt` 2097 行；harness 从零开始，第一段还要建骨架）
+
+| 行 | 内容（D 段） | 备注 |
+|---|---|---|
+| 1–459 | `ctor`(71) `idx`(67) `opidx`(47) `cell`(106) `abst`(124) `str`(5) `tag`(13) `dup`(26) | **含 harness 骨架**：`tw/twd`、`classify`、`emit`、`dump_*`，照 `test_geom_grid_usgrid.cpp` 的同一套行格式，否则格式差会伪装成数值差 |
+| 460–830 | `sub`(68) `bnd`(100) `blc`(6) `path`(29) `surf`(89) `rgrid`(79) | `sg.surf/vol` 要 `ParametricSurface`/`ParametricVolume`，G3 已注册可用 |
+| 831–1173 | `vol`(114) `readtxt`(84) `wgz`(5) `readgz`(59) `frmt`(18) `wraw`(4) `readraw`(50) `vtk`(11) `su2`(3) | **`sg.frmt.*` 必读 T-927**：`%d` 读进 `size_t` 报 `ulong`、读进 `long` 报 `long`；输入提前耗尽是 `FormatException`（`parseToFormatSpec: Cannot find character …`）而不是 conv 错误 |
+| 1174–1594 | `join`(97) `slab`(62) `wedge`(74) `bad`(9) `rs`(57) `determ`(52) `rotq`(44) `rot`(101) | `determ` 走 `nelmin.minimize`（已注册）；`wedge` 有 T-920 的 `cos/sin` 成对与 T-910 的 `atan2` |
+| 1595–2097 | `uflowz`(25) `vtkhdr`(9) `gridpro`(37) `rsgp`(31) `fswap`(41) `plot3d`(100) `ccp`(19) `pic`(32) `bin`(156) `fsc`(26) `unit`(8) | `plot3d` 的 `pipeShell("gunzip -c …")` 走 popen；`bin`(156) 是全语料最大的一段 |
+
+### 11.3 派发纪律（本轮踩过的坑，写给下一个主线程）
+
+- **一次只放一个 agent 碰 `eil_geom`**。sgrid.cpp 与 usgrid.cpp 编进同一个库，两个 agent
+  并行必然互相看到对方半成品（G5 早期已经发生过一次文件被并写弄坏）。
+- **数字自己复跑**。agent 报"1–946 全同"时真实情况是"发出的 1189 行里有 3 行不同"——
+  只有 harness 的摘要行可信。
+- **`add_executable` 常开、`add_test` 常关**，直到整条语料 0 差异；这样半成品继续编译、
+  套件保持 100/100，进度可交接。
+

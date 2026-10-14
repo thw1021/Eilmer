@@ -604,6 +604,38 @@
     `-0.0` 那行立刻红（**1 行差异 / 35**）；换回来 **35/35**。
   - **Wave 12 会再撞上**：`shape_sensitivity_core.d:2315-2316`、`ntypes/complex.d:1820`
     （`z^^0.5` 是 csqrt 的写法）。转写这两处时按本条，不要用 `eil::pow`。
+- [x] **T-927** **substrate 缺陷：整数 `to!T` 的失败文本按"辅助函数名字"报类型，而不是按 `T`**。
+  **完成 2026-10-14**。G5 语料行 1170–1172（`us.su2rd.no-nelem/no-npoin/no-nmark`）是这三行
+  把问题暴露出来的：D 写 `to!size_t(getHeaderContent("NELEM"))`，空串时报
+  `…converting from type string to type ulong`，端口报的是 `int`——因为 `usgrid.cpp` 的
+  11 处 `to!size_t` 全部借用了 `substrate` 里那个硬编码 `"int"` 的 `to_long`。
+  - **实测**（`probes/substrate/probe_conv_int_typename.d` →
+    `baselines/…/substrate_conv_int_typename.txt`，**105 行，重跑 0 差异、行内无地址**）三条规则：
+    1. 报文里是**解析后的类型名**，别名报基元：`size_t`→`ulong`、`ptrdiff_t`→`long`；
+    2. **无符号目标根本不吃前导符号**：`to!int("+")` 是 *end of input*，而
+       `to!ulong("+")`/`to!size_t("-1")`/`to!size_t("-0")` 报 `Unexpected '+'`/`'-'`；
+    3. 比目标范围大的量值抛 **`std.conv.ConvOverflowException`**
+       `"Overflow in integral conversion"`（不是 `ConvException`）。
+    窄类型还有第 4 条不对称，**目前无端口站点需要，只记录不实现**：`short/byte/ubyte` 的
+    end-of-input 与前导字符错误报**基元类型**（`short`→`int`、`ubyte`→`uint`），
+    而尾部垃圾错误报**目标类型**（`short`/`ubyte`）。
+  - **`formattedRead` 同规则**（`probes/substrate/probe_format_int_target.d` →
+    `substrate_format_int_target.txt`，**26 行可复现**）：std.format 的数字读取把 token
+    交给 std.conv，所以 `%d` 读进 `size_t` 也说 `ulong`、读进 `long` 说 `long`。
+    另有两个**只属于 std.format** 的形状：输入在字面量匹配前就耗尽 →
+    `std.format.FormatException "parseToFormatSpec: Cannot find character 'n' in the input string."`
+    （不是 conv 错误），`%d` 读 `"0x10"` 会吃掉 `0` 把 `"x10"` 留在流里、值为 0，
+    **十六进制在这条路上到不了 conv 的语法**。G4 的 `sg.frmt.*`（语料行 1096–1113）必须按此实现。
+  - **入库**：`substrate/include/eil/conv.hpp` 把扫描器改成带 `tname`/`allow_sign` 参数的
+    `parse_int_strict`，新增 `eil::to_size_t`，`eil::to<integral>` 按 `d_int_type_name<T>()`
+    选名字；`usgrid.cpp` 11 处、`sgrid.cpp` 1 处 `to!size_t` 站点改用 `to_size_t`。
+    **改前先数过依赖**：`to_long` 只在 sgrid/usgrid 两个尚未注册的模块里用，全部语料里
+    `converting from type string to type` 只出现在这两个包（`int`×19、`ulong`×6），
+    所以改动不影响已注册门禁；改后全量 **100/100** 复跑确认。
+  - **Wave 3+ 会再撞上**：任何把整数读进 `size_t`/`uint` 的文件解析代码（`gas/species.fld`
+    读取、`fluidblock` 头、Lua 配置里的整数强转）。规则：**看 D 源码写的目标类型名，
+    不看端口辅助函数的名字**。
+- [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
 - [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
   1. **`eil::to_string` 不派发类的 `toString()`**。D 的 `to!string(x)` 对带 `toString()` 的
      类型会调它，而 `substrate/include/eil/format.hpp:139` 对非算术类型直接 `static_assert`。
