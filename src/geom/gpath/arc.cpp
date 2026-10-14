@@ -116,7 +116,7 @@ void Arc::evaluate_position_and_length(double t, Vector3& loc, number& L) const 
     L = theta * cb_mag;
     // Move the second point around the arc in the local xy-plane.
     theta *= t;
-    loc.set(std::cos(theta) * cb_mag, std::sin(theta) * cb_mag, number(0.0));
+    loc.set(eil::cos(theta) * cb_mag, eil::sin(theta) * cb_mag, number(0.0));
     // Transform back to global xyz coordinates
     // and remember to add the centre coordinates.
     loc.transform_to_global_frame(tangent1, tangent2, n, c);

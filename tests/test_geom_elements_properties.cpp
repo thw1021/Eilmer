@@ -22,6 +22,7 @@
 #include <cctype>
 #include <cstdarg>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -238,16 +239,16 @@ void port_d_unittest() {
 
     // Build tetrahedron with equilateral triangle (side 1.0) base on xy plane.
     p0 = Vector3(0, 0, 0);
-    p1 = Vector3(std::cos(eil::geom::radians(30)), std::sin(eil::geom::radians(30)), 0.0);
+    p1 = Vector3(eil::cos(eil::geom::radians(30)), eil::sin(eil::geom::radians(30)), 0.0);
     p2 = Vector3(0.0, 1.0, 0.0);
     double dx = 0.5 * std::tan(eil::geom::radians(30));
-    double dL = std::cos(eil::geom::radians(30));
+    double dL = eil::cos(eil::geom::radians(30));
     double dz = eil::sqrt(dL * dL - dx * dx);
     p3 = Vector3(dx, 0.5, dz);
     number volume = 0.0;
     tetrahedron_properties(p0, p1, p2, p3, centroid, volume);
     CHECK(eil::geom::approxEqualVectors(centroid, Vector3(dx, 0.5, 0.25 * dz)), "D:1037 tet centroid");
-    CHECK(eil::nm::approxEqualNumbers(volume, number(std::cos(eil::geom::radians(30)) * 0.5 * dz / 3)),
+    CHECK(eil::nm::approxEqualNumbers(volume, number(eil::cos(eil::geom::radians(30)) * 0.5 * dz / 3)),
           "D:1038 tet volume");
 
 #ifdef EIL_COMPLEX_NUMBERS
@@ -256,8 +257,8 @@ void port_d_unittest() {
         number volume_dash;
         p0_dash = Vector3(zero, zero, zero);
         p1_dash = Vector3(alpha + ih, zero, zero);
-        p2_dash = Vector3((alpha + ih) * std::cos(eil::geom::radians(60)),
-                          (alpha + ih) * std::sin(eil::geom::radians(60)), zero);
+        p2_dash = Vector3((alpha + ih) * eil::cos(eil::geom::radians(60)),
+                          (alpha + ih) * eil::sin(eil::geom::radians(60)), zero);
         p3_dash = Vector3(0.5 * (alpha + ih), 0.5 * (alpha + ih) * std::tan(number(eil::geom::radians(30))),
                           (alpha + ih) * (eil::sqrt(6.0) / 3.0));
         tetrahedron_properties(p0_dash, p1_dash, p2_dash, p3_dash, centroid_dash, volume_dash);
@@ -266,8 +267,8 @@ void port_d_unittest() {
                                im(centroid_dash.z) / h);
         CHECK(eil::isClose(dvol_da, eil::pow(alpha, 2) / (2.0 * eil::sqrt(2.0))), "D:1052 tet dvol");
         CHECK(eil::geom::approxEqualVectors(dcentroid_da,
-                                          Vector3(3.0 / 8.0 + 0.25 * std::cos(eil::geom::radians(60)),
-                                                  1.0 / 4.0 * std::sin(eil::geom::radians(60)) +
+                                          Vector3(3.0 / 8.0 + 0.25 * eil::cos(eil::geom::radians(60)),
+                                                  1.0 / 4.0 * eil::sin(eil::geom::radians(60)) +
                                                       1.0 / 8.0 * std::tan(eil::geom::radians(30)),
                                                   eil::sqrt(6.0) / 12.0)),
               "D:1053 tet dcentroid");
@@ -276,7 +277,7 @@ void port_d_unittest() {
 
     // Build a wedge with the same equilateral-triangle base.
     p0 = Vector3(0, 0, 0);
-    p1 = Vector3(std::cos(eil::geom::radians(30)), std::sin(eil::geom::radians(30)), 0.0);
+    p1 = Vector3(eil::cos(eil::geom::radians(30)), eil::sin(eil::geom::radians(30)), 0.0);
     p2 = Vector3(0.0, 1.0, 0.0);
     Vector3 incz = Vector3(0, 0, -1.0);
     p3 = p0 + incz;
@@ -284,7 +285,7 @@ void port_d_unittest() {
     Vector3 p5 = p2 + incz;
     eil::geom::wedge_properties(p0, p1, p2, p3, p4, p5, true, centroid, volume);
     CHECK(eil::geom::approxEqualVectors(centroid, Vector3(dx, 0.5, -0.5)), "D:1067 wedge centroid");
-    CHECK(eil::nm::approxEqualNumbers(volume, number(std::cos(eil::geom::radians(30)) * 0.5 * 1.0)),
+    CHECK(eil::nm::approxEqualNumbers(volume, number(eil::cos(eil::geom::radians(30)) * 0.5 * 1.0)),
           "D:1068 wedge volume");
 
 #ifdef EIL_COMPLEX_NUMBERS
@@ -292,8 +293,8 @@ void port_d_unittest() {
     {
         p0_dash = Vector3(zero, zero, zero);
         p1_dash = Vector3(alpha + ih, zero, zero);
-        p2_dash = Vector3((alpha + ih) * std::cos(eil::geom::radians(60)),
-                          (alpha + ih) * std::sin(eil::geom::radians(60)), zero);
+        p2_dash = Vector3((alpha + ih) * eil::cos(eil::geom::radians(60)),
+                          (alpha + ih) * eil::sin(eil::geom::radians(60)), zero);
         Vector3 p3_dash = p0_dash + incz;
         Vector3 p4_dash = p1_dash + incz;
         Vector3 p5_dash = p2_dash + incz;
@@ -302,10 +303,10 @@ void port_d_unittest() {
         dvol_da = im(volume_dash) / h;
         dcentroid_da = Vector3(im(centroid_dash.x) / h, im(centroid_dash.y) / h,
                                im(centroid_dash.z) / h);
-        CHECK(eil::isClose(dvol_da, alpha * std::sin(eil::geom::radians(60))), "D:1082 wedge dvol");
+        CHECK(eil::isClose(dvol_da, alpha * eil::sin(eil::geom::radians(60))), "D:1082 wedge dvol");
         CHECK(eil::geom::approxEqualVectors(dcentroid_da,
-                                          Vector3((1.0 / 3.0) * (1.0 + std::cos(eil::geom::radians(60))),
-                                                  (1.0 / 3.0) * std::sin(eil::geom::radians(60)), 0.0)),
+                                          Vector3((1.0 / 3.0) * (1.0 + eil::cos(eil::geom::radians(60))),
+                                                  (1.0 / 3.0) * eil::sin(eil::geom::radians(60)), 0.0)),
               "D:1083 wedge dcentroid");
     }
 
@@ -513,10 +514,10 @@ void replay_probe() {
           c2.x, c2.y, c2.z, a_xy, iLen, jLen, minLen);
 
     Vector3 t0 = Vector3(0, 0, 0);
-    Vector3 t1v = Vector3(std::cos(radians(30)), std::sin(radians(30)), 0.0);
+    Vector3 t1v = Vector3(eil::cos(radians(30)), eil::sin(radians(30)), 0.0);
     Vector3 t2v = Vector3(0.0, 1.0, 0.0);
     double dx = 0.5 * std::tan(radians(30));
-    double dL = std::cos(radians(30));
+    double dL = eil::cos(radians(30));
     double dz = eil::sqrt(dL * dL - dx * dx);
     Vector3 t3v = Vector3(dx, 0.5, dz);
     emitf("tet.consts dx=%.17g dL=%.17g dz=%.17g", dx, dL, dz);
@@ -541,7 +542,7 @@ void replay_probe() {
           centroid.y, centroid.z, volume, L_min);
     Vector3 o0 = Vector3(0.0, 0.0, 0.0);
     Vector3 rt1 = Vector3(1.0, 0.0, 0.0);
-    Vector3 rt2 = Vector3(std::cos(radians(60)), std::sin(radians(60)), 0.0);
+    Vector3 rt2 = Vector3(eil::cos(radians(60)), eil::sin(radians(60)), 0.0);
     Vector3 rt3 = Vector3(0.5, 0.5 * std::tan(radians(30)), eil::sqrt(6.0) / 3.0);
     tetrahedron_properties(rt1, rt2, rt3, o0, centroid, volume, L_min);
     emitf("tet.regular cx=%.17g cy=%.17g cz=%.17g vol=%.17g Lmin=%.17g", centroid.x, centroid.y,
@@ -595,7 +596,7 @@ void replay_probe() {
           eil::to_string(volume).c_str());
 
     Vector3 w0 = Vector3(0, 0, 0);
-    Vector3 w1 = Vector3(std::cos(radians(30)), std::sin(radians(30)), 0.0);
+    Vector3 w1 = Vector3(eil::cos(radians(30)), eil::sin(radians(30)), 0.0);
     Vector3 w2 = Vector3(0.0, 1.0, 0.0);
     Vector3 incz = Vector3(0, 0, -1.0);
     Vector3 w3 = w0 + incz;

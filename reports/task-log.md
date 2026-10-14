@@ -546,3 +546,50 @@
     （10b6bde 已加 `File_guard`，`grep -n File_guard` 在 volume/surface 两个基类各命中，
     throw 路径 323 字节由语料行 2166 钉住）。
   - `gdtk` 树零写入；D 侧探测一律走 `/tmp/gdtk_shadow` 副本。
+
+## T-920 — 一个"编译器替我做了决定"的类别：cos/sin 对被融合成 sincos  (2026-10-14)
+
+- **范围**：`substrate/include/eil/math.hpp` 新增 `eil::sin`/`eil::cos`；
+  改道 7 个源文件站点 + 9 个测试文件；新门禁
+  `probes/substrate/probe_sin_cos_pair.d`（415 行）+ `tests/test_substrate_sin_cos_pair.cpp`
+  + `tests/test_data/sincos_angle.txt`（415 角）+ `cmake/wave2_t920.cmake`。
+- **它是怎么被发现的，以及为什么第一轮的说法是错的**：4 个并行代理被配额打断后，
+  `wip/geom-grid-paver/paver.cpp:8-18` 里留着一条"g++ 把 `sin`+`cos` 合并成 glibc
+  `sincos()`，与 ldc2 的两次独立调用差 1 ULP"。我先照这条登记 T-920，登记前**没有**验证
+  "ldc2 不合并"这半句 —— 一验就错：LLVM 有同名 pass，ldc2 -O1 起一样合并。
+  于是这条从"语言替换缺陷"改成"优化级别契约缺陷"，与 T-919 同构。
+  分类方法（不是比大小，是问"哪种形态能同时复现一行的两个位型"）：
+  415 个角 × 两个形态 × ldc2 两个优化档 →
+  -O0 = separate-only 401 / sincos-only 0 / 两者皆可 14；
+  -O3 = separate-only 0 / sincos-only 401 / 两者皆可 14。
+  **401/415 行在参照系自己内部随 -O 移动**，所以不存在"哪个是 D 的行为"这种值层面规则，
+  只有"基线是 -O0 抓的"这条契约。
+- **站点清点方式**：不是 grep `std::sin`，而是 `nm -u *.o | grep sincos` ——
+  前者会漏（只有成对且同自变量才融合），后者是结果侧证据。
+  Release 下改道前 **11 个 .o** 引用 `sincos`，其中 **4 个是测试自己的对象**
+  （`test_geom_gpath_arcsteps`、`test_nm_newton`、`test_substrate_phobos_bits`、
+  `test_geom_gpath_mp_rot_chain`）——即门禁的算术本身走合并形态，
+  只是语料里的角度恰好都在 ctrl 集里才没红。改道后 **0 个**（-flto 构建亦 0）。
+- **保留的历史**：`src/geom/volume/wedgevolume.cpp` 是本站最早踩到并自行绕过的地方
+  （-O3 下它 4594 行语料红 **20 行**，局部用 volatile **函数指针**）。本次删掉那份本地
+  副本、改为转发 `eil::cos`/`eil::sin`，把它的测量数据留在注释里。
+  同一规则留两份必漂移，这是 T-910 已经付过学费的教训。
+- **验证**：
+  - 判别力（关键，语料不能只是"怎么改都过"）：**去掉** wrapper 后 Release -O3
+    **401 行 differ / 14 行相同**；装回后 **415/415**。
+    Debug(-O0) 下两侧同值，符合"融合只发生在 -O1+"的分类。
+  - `substrate_sin_cos_pair` 在 Debug / Release / slice-check / 手工 `-flto -O3`
+    四档构建全部 **415/415 字节相同**。
+  - 全树回归：改道前后都是 **93 个测试**（+1 是本条新增），
+    Release **93/93**、Debug **93/93**、slice-check **93/93**、`-flto -O3` **93/93**。
+    改道**没有**让任何原绿行变红——这是可预期的：原绿行必然满足"合并值==分别值"
+    （否则它们在 -O3 下就是红的），换成分别调用只可能修复不可能引入。
+  - 代价：一次 cos+sin 对 **11.97 ns → 14.94 ns**（+22%，-O3、`-ffp-contract=off`、
+    2×10⁷ 次、两轮交替）。
+  - `tools/check_staleness.sh` → `no drift`；`provenance/fidelity.yml` 记 T-920 规则块
+    并把 `ctest:substrate_sin_cos_pair` 加进 `vector3.{hpp,cpp}` 的 `verified_by`。
+  - `gdtk` 树零写入；D 侧一律编 `/tmp/gdtk_shadow` 副本。
+- **复跑本条判据的命令**：
+  `g++ -O3 -ffp-contract=off -std=c++17 -I substrate/include` 编译
+  任一含 `std::cos(x)`+`std::sin(x)` 同自变量的 TU，`nm -u` 看是否有 `U sincos`；
+  以及 `/tmp/probe_scp -O0 vs -O3` 语料 diff（401 行移动）。

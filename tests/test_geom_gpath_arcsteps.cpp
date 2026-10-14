@@ -24,6 +24,7 @@
 // Run: ./test_geom_gpath_arcsteps ../baselines/e587b235/probes/geom_gpath_arcsteps.txt
 
 #include <cmath>
+#include "eil/math.hpp"
 #include <limits>
 #include <string>
 #include <utility>
@@ -118,8 +119,8 @@ void steps(const char* tag, Vector3 a, Vector3 b, Vector3 c) {
 
     for (double tt : {0.0, 0.0005, 0.001, 0.5}) {
         number th = theta * tt;
-        number cx = std::cos(th) * cb_mag;
-        number sy = std::sin(th) * cb_mag;
+        number cx = eil::cos(th) * cb_mag;
+        number sy = eil::sin(th) * cb_mag;
         emitf("%s loc t=%.17g cx=%.17g sy=%.17g", tag, tt, cx, sy);
         Vector3 loc = Vector3(cx, sy, number(0.0));
         loc.transform_to_global_frame(tangent1, tangent2, n, c);

@@ -9,6 +9,7 @@
 
 #include <array>
 #include <cmath>
+#include "eil/math.hpp"
 #include <limits>
 
 #include "eil/error.hpp"
@@ -75,7 +76,7 @@ void map_neutral_plane_to_cylinder(Vector3& p, number H) {
     // For Hannes Wojciak and Paul Petrie-Repar's turbomachinery grids.
     if (H > 0.0) {
         number theta = p.y / H;
-        p.set(p.x, p.z * std::sin(theta), p.z * std::cos(theta));
+        p.set(p.x, p.z * eil::sin(theta), p.z * eil::cos(theta));
     }
     return;
 }

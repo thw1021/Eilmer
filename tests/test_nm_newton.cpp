@@ -9,6 +9,7 @@
 // See tests/test_nm_ridder.cpp for the shared translation notes on pow.
 
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdio>
 
 #include "eil/eil.hpp"
@@ -38,11 +39,11 @@ eil::nm::number test_dfun_1(eil::nm::number x) {
 }
 
 eil::nm::number test_fun_2(eil::nm::number x, eil::nm::number a) {
-    return a * x + std::sin(x) - std::exp(x);
+    return a * x + eil::sin(x) - std::exp(x);
 }
 
 eil::nm::number test_dfun_2(eil::nm::number x, eil::nm::number a) {
-    return a + std::cos(x) - std::exp(x);
+    return a + eil::cos(x) - std::exp(x);
 }
 
 eil::nm::number test_fun_3(eil::nm::number x) {

@@ -33,6 +33,7 @@
 //
 // Run: ./test_geom_gpath_mp_rot_chain <baseline.txt>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -120,9 +121,9 @@ std::vector<std::string> produce() {
         double r = eil::sqrt(sum);
         emit("mp.chain.r", r);
 
-        double cost = std::cos(theta);
+        double cost = eil::cos(theta);
         emit("mp.chain.cos", cost);
-        double sint = std::sin(theta);
+        double sint = eil::sin(theta);
         emit("mp.chain.sin", sint);
         emit("mp.chain.rxcos", r * cost);
         emit("mp.chain.rysin", r * sint);
@@ -149,12 +150,12 @@ std::vector<std::string> produce() {
     }
     for (double th : {0.0, 0.1, 0.7853981633974483, 1.5707963267948966, 1.6522047499950325,
                       2.356194490192345, 3.141592653589793, 4.0, 5.5, 6.283185307179586}) {
-        emit("ctl.cos " + val(th), std::cos(th));
-        emit("ctl.sin " + val(th), std::sin(th));
+        emit("ctl.cos " + val(th), eil::cos(th));
+        emit("ctl.sin " + val(th), eil::sin(th));
     }
     for (double th : {1.6522047499950325, 1.6522047499950327, 1.6522047499950329}) {
-        emit("ctl.ulp.cos " + val(th), std::cos(th));
-        emit("ctl.ulp.sin " + val(th), std::sin(th));
+        emit("ctl.ulp.cos " + val(th), eil::cos(th));
+        emit("ctl.ulp.sin " + val(th), eil::sin(th));
     }
 
     const double p05x = 1.7071067811865475, p05y = 2.0;
@@ -162,10 +163,10 @@ std::vector<std::string> produce() {
     const double r05 = eil::sqrt(p05x * p05x + p05y * p05y);
     emit("ctl.model.theta", th05);
     emit("ctl.model.r", r05);
-    emit("ctl.model.x", r05 * std::cos(th05));
-    emit("ctl.model.x.plus1ulp", r05 * std::cos(std::nextafter(th05, 2.0)));
-    emit("ctl.model.y", r05 * std::sin(th05));
-    emit("ctl.model.y.plus1ulp", r05 * std::sin(std::nextafter(th05, 2.0)));
+    emit("ctl.model.x", r05 * eil::cos(th05));
+    emit("ctl.model.x.plus1ulp", r05 * eil::cos(std::nextafter(th05, 2.0)));
+    emit("ctl.model.y", r05 * eil::sin(th05));
+    emit("ctl.model.y.plus1ulp", r05 * eil::sin(std::nextafter(th05, 2.0)));
     g_lines.push_back("ctl.model.dtheta.ulp=" + val(std::nextafter(th05, 2.0) - th05));
 
     return g_lines;

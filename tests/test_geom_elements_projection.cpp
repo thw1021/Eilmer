@@ -31,6 +31,7 @@
 #include <cctype>
 #include <cstdarg>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -163,7 +164,7 @@ void port_d_unittest() {
     // projection onto a cylinder.
     Vector3 myp = Vector3(1.0, 1.0, 1.0);
     eil::geom::map_neutral_plane_to_cylinder(myp, number(1.0));
-    CHECK(eil::geom::approxEqualVectors(myp, Vector3(1.0, std::sin(1.0), std::cos(1.0))),
+    CHECK(eil::geom::approxEqualVectors(myp, Vector3(1.0, eil::sin(1.0), eil::cos(1.0))),
           "D:241 cylinder mapping");
 
 #ifdef EIL_COMPLEX_NUMBERS
@@ -191,7 +192,7 @@ void port_d_unittest() {
     // Barycentric coordinates for the midpoint of an equilateral triangle.
     Vector3 p0 = Vector3(0.0, 0.0);
     Vector3 p1 = Vector3(1.0, 0.0);
-    Vector3 p2 = Vector3(0.5, std::sin(60.0 * static_cast<double>(EIL_PI) / 180.0));
+    Vector3 p2 = Vector3(0.5, eil::sin(60.0 * static_cast<double>(EIL_PI) / 180.0));
     Vector3 p = (p0 + p1 + p2) / 3.0;
     std::array<number, 3> bcc = barycentricCoords(p, p0, p1, p2);
     CHECK(eil::isClose(eil::re(bcc[0]), 1.0 / 3.0), "D:276 bcc[0]");
@@ -306,12 +307,12 @@ void replay_probe() {
     Vector3 mp9 = Vector3(0.5, 1.5, -0.25);
     map_neutral_plane_to_cylinder(mp9, number(0.75));
     emitf("cyl.off x=%.17g y=%.17g z=%.17g", mp9.x, mp9.y, mp9.z);
-    emitf("cyl.ref sin1=%.17g cos1=%.17g", std::sin(1.0), std::cos(1.0));
+    emitf("cyl.ref sin1=%.17g cos1=%.17g", eil::sin(1.0), eil::cos(1.0));
 
     emitf("== barycentricCoords, triangle (3-point) ==");
     Vector3 b0 = Vector3(0.0, 0.0);
     Vector3 b1 = Vector3(1.0, 0.0);
-    Vector3 b2 = Vector3(0.5, std::sin(60.0 * static_cast<double>(EIL_PI) / 180.0));
+    Vector3 b2 = Vector3(0.5, eil::sin(60.0 * static_cast<double>(EIL_PI) / 180.0));
     Vector3 bm = (b0 + b1 + b2) / 3.0;
     std::array<number, 3> bc = barycentricCoords(bm, b0, b1, b2);
     emitf("bary3.mid l0=%.17g l1=%.17g l2=%.17g sum=%.17g outside=%s", bc[0], bc[1], bc[2],

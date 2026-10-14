@@ -8,6 +8,7 @@
 #include <array>
 #include <cstdarg>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -116,12 +117,12 @@ int main(int argc, char** argv) {
     r2.rotate_about_zaxis(pi3);
     emitf("rot_z_third %.17g %.17g %.17g", r2.x, r2.y, r2.z);
     const number PI_d = static_cast<number>(EIL_PI);
-    Vector3 q45 = Vector3(std::cos(PI_d / 4), std::sin(PI_d / 4));
+    Vector3 q45 = Vector3(eil::cos(PI_d / 4), eil::sin(PI_d / 4));
     q45.rotate2d(static_cast<double>(15.0L * EIL_PI / 180.0L));
     emitf("rot2d_45_60 %.17g %.17g %.17g", q45.x, q45.y, q45.z);
-    Vector3 q60 = Vector3(std::cos(PI_d / 3), std::sin(PI_d / 3));
+    Vector3 q60 = Vector3(eil::cos(PI_d / 3), eil::sin(PI_d / 3));
     emitf("rot2d_target %.17g %.17g %.17g", q60.x, q60.y, q60.z);
-    Vector3 q30 = Vector3(std::cos(PI_d / 6), std::sin(PI_d / 6));
+    Vector3 q30 = Vector3(eil::cos(PI_d / 6), eil::sin(PI_d / 6));
     q30.rotate2d(static_cast<double>(30.0L * EIL_PI / 180.0L));
     emitf("rot2d_30_60 %.17g %.17g %.17g", q30.x, q30.y, q30.z);
 

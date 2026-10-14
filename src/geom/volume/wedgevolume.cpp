@@ -26,31 +26,29 @@ std::string tostr(const ParametricSurface::Ptr& s) {
 }
 
 // ---------------------------------------------------------------------------
-// d_cos / d_sin — why the two calls go through a volatile pointer.
+// d_cos / d_sin — this module is where the pair-fusion problem was first caught, and
+// it is kept here as the measurement record. See eil/math.hpp's eil::sin / eil::cos
+// block for the rule; the substrate now carries it and every other sin/cos pair in the
+// port goes through those two, so this file no longer needs its own mechanism.
 //
-// D calls cos() and sin() as two separate libm entries: std/math/trigonometry.d:74 and
-// :132 forward to core.math, LDC lowers those to llvm.cos.f64 / llvm.sin.f64, and LLVM
-// emits two calls. GCC at -O1 and above recognises a cos(x)/sin(x) pair in one
-// expression and rewrites it into a single call to glibc's `sincos` — which is NOT the
-// same function. Measured on this machine with the argument this module actually
-// produces, x = theta1 = 0x3fcc185df5fdd150 (0.21949362288763511):
+// The history, because the numbers below are what proved it: D's std/math/trigonometry.d:74
+// and :132 forward to core.math, LDC lowers them to llvm.cos.f64 / llvm.sin.f64, and LLVM's
+// sincos pass fuses them again from -O1 up — g++ does the same thing to `std::cos(x)` plus
+// `std::sin(x)` of one argument. Measured with the argument this module actually produces,
+// x = theta1 = 0x3fcc185df5fdd150 (0.21949362288763511):
 //
 //   ldc2 binary, cos(x)            0x3fef3b74c62efebb  0.97600783069352515
 //   g++ -O0, std::cos(x)           0x3fef3b74c62efebb  (same function, same answer)
 //   g++ -O1/-O2/-O3, fused sincos  0x3fef3b74c62efeba  0.97600783069352504  (1 ULP low)
 //
-// and the wedge's y lands at 0x3fc0d1af56120768 against D's 0x3fc0d1af56120769 — 20 of
-// the 4594 corpus rows differ at -O3, 0 of 4594 at -O0 (objdump of the -O1 object shows
-// one `sincos@plt` where the -O0 object has none). The volatile pointers keep the two
-// calls two calls; nothing else in sweep_through_arc changes. This is the same class of
-// compiler substitution as the atan2 one in wave-02-brief section 5 (T-910), so it is
-// fixed on the port side, not by widening a tolerance.
+// and the wedge's y landed at 0x3fc0d1af56120768 against D's 0x3fc0d1af56120769 — **20 of
+// the 4594 corpus rows differ at -O3, 0 of 4594 at -O0** (objdump of the -O1 object shows
+// one `sincos@plt` where the -O0 object has none). Nothing else in sweep_through_arc
+// changes. Same class of compiler substitution as the atan2 one (T-910), so it is fixed on
+// the port side, not by widening a tolerance.
 // ---------------------------------------------------------------------------
-double (*volatile d_cos_ptr)(double) = &std::cos;
-double (*volatile d_sin_ptr)(double) = &std::sin;
-
-inline eil::number d_cos(eil::number x) { return d_cos_ptr(x); }
-inline eil::number d_sin(eil::number x) { return d_sin_ptr(x); }
+inline eil::number d_cos(eil::number x) { return eil::cos(x); }
+inline eil::number d_sin(eil::number x) { return eil::sin(x); }
 
 } // namespace
 

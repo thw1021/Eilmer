@@ -59,8 +59,8 @@
   根本没写。**下一件事不是改 paver.cpp，是先确认 219 行之后的每一节有对应生成代码**。
   wip 里有一条**已测得的 substrate 级发现**，别丢：g++ -O2/-O3 会把同一自变量的
   `sin`+`cos` 合并成 glibc `sincos()`，与 ldc2 的两次独立 libm 调用差 1 ULP
-  → 已登记为 **T-920**（那里有我自己复跑的计数），paver 侧的规避写法是
-  `volatile` 拷贝自变量，见 `wip/geom-grid-paver/paver.cpp:8-18`。
+  → 已由 **T-920** 收口（规则上移 substrate 成 `eil::sin`/`eil::cos`，带 415 行位型语料）；
+  wip 里的 paver 仍留它自己的 volatile 拷贝写法，恢复 G2 时应改成调用 substrate 那两个
   **剩余**：`paver.d` 1737（G2）、`sgrid.d` 1865（G4）、`usgrid.d` 2524（G5）、
   四个 demo（`paver2d_demo` 51、`paver_demo` 115、`sgrid_demo` 101、`usgrid_demo` 103；
   前两者的 D 基线**已抓取并验证可复生成**，见 `cmake/wave2_grid_g3.cmake` 的头注释）、
@@ -317,27 +317,40 @@
   行 178 照旧红，nanadd 反而恶化到 **103 行** differ。
   （`-fno-slp-vectorize` 在 g++ 里根本不存在——wave-01 教训 2 的再现，
   先 `g++ -O3 -fno-tree-slp-vectorize -c` 验过才用。）
-- [ ] **T-920** **新测出的、已在已转写代码里的分歧**：g++ 在 **-O2/-O3** 会把
-  "同一个自变量既取 `std::cos` 又取 `std::sin`" 合并成一次 glibc `sincos()` 调用，
-  而 ldc2 是把 Phobos 的 sin/cos 分别下发成两次 libm 调用 —— 两者**不等价**。
-  实测（`/tmp/sc/sc2.cpp`，2×10⁶ 个 0..2π 均匀角，`-ffp-contract=off`）：
-  -O0 合并与否 **0 差异**；-O2/-O3 下 **cos 差 1374 次、sin 差 1353 次**
-  （约每 1,466 个分量一次），最大绝对差 `1.1102230246251565e-16` ＝ **1 ULP**。
-  1 ULP 在角度上不是末位噪声：T-910 已经量过，`cos(theta)` 过零附近 1 ULP 的角
+- [x] **T-920** 同一个自变量的 `cos(x)`+`sin(x)` 会被**两个编译器都**从 -O1 起合并成一次
+  glibc `sincos()`，而 `sincos` 与两次独立 libm 调用**不等价**。
+  **完成 2026-10-14**，数字与复跑命令见 `task-log.md` 的 T-920 节。
+  最初登记的说法（"g++ 合并、ldc2 不合并"）**是错的**：LDC 把 Phobos 的
+  `std.math.cos/sin` 下发成 `llvm.cos.f64`/`llvm.sin.f64`，LLVM 自己的 sincos pass
+  从 -O1 起又把它们合回去。按"哪一种 libm 形态能同时复现某行的两个位型"分类
+  （`tests/test_data/sincos_angle.txt`，415 个角）：
+  - ldc2 **-O0**：separate-only **401** / sincos-only **0** / 两者皆可 14
+  - ldc2 **-O3**：separate-only **0** / sincos-only **401** / 两者皆可 14
+  ⇒ **401/415 行在参照系自己内部随 -O 移动**。基线全是 ldc2 -O0 抓的，所以契约是
+  "两次独立调用"——与 T-919 同构：不是去发现一条值层面的规则，而是钉住一个优化级别。
+  分歧密度：6×10⁷ 个 0..2π 抽样（g++ -O3、`-ffp-contract=off`）中 400 个角两侧不同
+  ≈ **每 1466 个分量一次**，最大绝对差 `1.1102230246251565e-16` ＝ 1 ULP。
+  1 ULP 在角度上不是末位噪声：T-910 实测过 `cos(theta)` 过零附近 1 ULP 的角
   会变成 ~2.9e-09 的**相对**变化，再乘半径进入坐标。
-  当前受影响的 TU（`nm -u *.o | grep sincos` 命中，Release）：
-  `vector3.cpp`（`rotate2d`/`rotate_about_zaxis`，:340-341 与 :346-347）、
-  `gpath/arc.cpp:119`、`gpath/helix.cpp:70`、`grid/grid.cpp`、
-  `elements/projection.cpp`、`gasdyn/idealgasflow.cpp`，以及 arcsteps/newton/
-  phobos_bits/mp_rot_chain 四个测试自身。
-  现有语料**全部没踩到**那 1/1466，所以门禁今天全绿——这是运气不是正确性。
-  修法（已验证可行，同一实验里的 shape_B）：自变量经一次 `volatile` 拷贝再调用，
-  合并即消失（`nm -u` 只剩 sin/cos，差异计数 0）。
-  ⇒ 待做：substrate 加 `eil::sin`/`eil::cos`（或 `eil::sin_cos_pair`）承载这条规则，
-  把上述站点统一改道，并补一条 D-vs-端口逐位语料（照 `probe_phobos_bits.d` 的做法）
-  把它钉住，而不是只在注释里说。**改道对现有门禁可证明是安全的**：
-  今天字节相同的行必然满足"合并值 == 分别调用值"（否则现在就红了），
-  所以换成分别调用不会让任何绿行变红 → **Wave 2 内解决**
+  **入库的修法**：`substrate/include/eil/math.hpp` 加 `eil::sin`/`eil::cos`
+  （自变量经一次 `volatile` 拷贝；实测该 TU 的 `nm -u` 只剩 `U sin`/`U cos`，无 `sincos`）。
+  改道站点：`vector3.cpp`（`rotate_about_zaxis`、`rotate2d`）、`projection.cpp:78`、
+  `grid.cpp:533-534`、`arc.cpp:119`、`helix.cpp:70`、`wedgevolume.cpp`
+  （此问题最早由它发现：当时 -O3 下 **4594 行里红 20 行**，局部用 volatile 函数指针绕过；
+  现删掉本地副本、统一走 substrate——同一规则留两份必漂移，T-910 的教训）、
+  `idealgasflow.cpp` 全部成对站点，外加**自己算角度的 9 个测试文件**
+  （Release 下原先有 **4 个测试 .o 被合并**，也就是门禁自身的算术走合并形态）。
+  门禁：`probes/substrate/probe_sin_cos_pair.d` → **415 行位型语料** →
+  `tests/test_substrate_sin_cos_pair.cpp`（注册在 `cmake/wave2_t920.cmake`）。
+  判别力实测：**去掉** wrapper 后 Release -O3 **差 401 行、只剩 14 行相同**
+  （那 14 行正是 ctrl 组）；装上后 **415/415** 在 -O0 / -O3 / slice-check / `-flto -O3`
+  四种构建字节相同。改道后 Release 里引用 `sincos` 的 .o 从 **11 → 0**，-flto 构建也是 0。
+  全树 **93 个测试三配置 100%**。
+  代价实测：一次 cos+sin 对 **11.97 ns（合并）→ 14.94 ns（保持分开）**，约 +22%；
+  与 T-919 同理，按需求第 3 条不为这点速度放宽一致性。
+  **同类面仍需后续 Wave 复查**：其他"成对且可融合"的 libm 调用——本项目里目前只找到
+  sin/cos 这一对（`exp`/`expm1`、`log`/`log10` 之类 glibc 没有融合形态），
+  Wave 4 的 `fluxcalc` 类若出现 `sqrt`+`rsqrt` 或成对三角调用需照此法复查
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；

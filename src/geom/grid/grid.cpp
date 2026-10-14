@@ -14,6 +14,7 @@
 
 #include <cerrno>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
@@ -530,8 +531,8 @@ void Grid::rotate(Quaternion q, Vector3 rotation_ctr) {
  */
 // D:473-488
 void Grid::rotate(double theta, Vector3 rotation_axis, Vector3 rotation_ctr) {
-    auto C = std::cos(theta / 2.0);
-    auto S = std::sin(theta / 2.0);
+    auto C = eil::cos(theta / 2.0);
+    auto S = eil::sin(theta / 2.0);
     // rotation_axis is a by-value copy of the caller's Vector3, as in D, so this
     // normalize() is not visible to the caller (measured: row rot.a axis after call).
     rotation_axis.normalize();

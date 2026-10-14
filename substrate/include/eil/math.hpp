@@ -155,6 +155,42 @@ inline number asin(number x) { return domain_nan(x, std::asin(x), quiet_nan_nega
 inline number acos(number x) { return domain_nan(x, std::acos(x), quiet_nan_negative()); }
 
 // -----------------------------------------------------------------------------
+// eil::sin / eil::cos — keep a cos(x)+sin(x) pair as TWO libm calls.
+//
+// Both compilers fuse them. g++ at -O1 and above turns `std::cos(x)` and `std::sin(x)`
+// of one argument into a single glibc `sincos()` call; LDC lowers Phobos'
+// std.math.cos/std.math.sin to llvm.cos.f64/llvm.sin.f64 and LLVM's own sincos pass
+// fuses them again from -O1 up. `sincos` is not the same function as the two separate
+// entries and differs from them by 1 ULP on roughly 1 component in 1466 (scan: 6e7
+// angles over 0..2pi).
+//
+// Classified against the 415 angles of tests/test_data/sincos_angle.txt (see
+// probes/substrate/probe_sin_cos_pair.d), by which form reproduces BOTH bit patterns:
+//   ldc2 -O0   separate-only 401   sincos-only 0     both 14
+//   ldc2 -O3   separate-only   0   sincos-only 401   both 14
+//   g++  -O0   separate            g++ -O1..-O3      fused
+// So 401 of 415 rows move inside the reference itself as its -O changes. Every baseline
+// in this repository is an ldc2 -O0 capture, which makes the separate form the contract
+// -- the same reasoning as the both-NaN pin above (T-919) and for the same reason: a
+// port must not inherit its answer from the optimiser.
+//
+// 1 ULP of angle is not end-of-line noise. T-910 measured that near a zero crossing of
+// cos(theta), 1 ULP of theta is a ~2.9e-09 RELATIVE change in a cosine of magnitude
+// 7.7e-08, and the geometry code multiplies that by a radius into a coordinate. The
+// wedgevolume stage found the same thing the hard way: 20 of its 4594 corpus rows went
+// red at -O3 before its local guard (src/geom/volume/wedgevolume.cpp:49-53, now just a
+// caller of these two).
+//
+// The volatile copy is the measured way to stop the fusion: a TU whose only sin/cos use
+// goes through it has `U sin`, `U cos` and NO `U sincos` in nm -u at -O3, and its values
+// equal ldc2 -O0's. Sites routed here: geom/elements/vector3.cpp (rotate_about_zaxis,
+// rotate2d), geom/elements/projection.cpp:78, geom/grid/grid.cpp:533-534,
+// geom/gpath/arc.cpp:119, geom/gpath/helix.cpp:70, geom/volume/wedgevolume.cpp, and every
+// sin/cos pair in gasdyn/idealgasflow.cpp. Guarded by ctest:substrate_sin_cos_pair.
+inline number sin(number x) { volatile number a = x; return std::sin(a); }
+inline number cos(number x) { volatile number a = x; return std::cos(a); }
+
+// -----------------------------------------------------------------------------
 // eil::atan / eil::atan2 — Phobos' own arc tangent, not libm's.
 //
 // D's std.math.atan2(double,double) is NOT the C library's atan2:

@@ -310,13 +310,13 @@ int main(int argc, char** argv) {
     // D:94 writeln("my_box=", my_box, " d=", d)
     emit("my_box=" + my_box->toString() + " d=" + d.toString());
     dump3("wv.ut.d", d);
-    emit(eil::format("wv.ut.expected y=%.17g z=%.17g", eil::re(0.2 * std::cos(0.05)),
-                     eil::re(0.2 * std::sin(0.05))));
-    const Vector3 expect(0.1, eil::number(0.2) * std::cos(0.05),
-                         eil::number(0.2) * std::sin(0.05)); // D:96 right-hand side
+    emit(eil::format("wv.ut.expected y=%.17g z=%.17g", eil::re(0.2 * eil::cos(0.05)),
+                     eil::re(0.2 * eil::sin(0.05))));
+    const Vector3 expect(0.1, eil::number(0.2) * eil::cos(0.05),
+                         eil::number(0.2) * eil::sin(0.05)); // D:96 right-hand side
     emit_bool("wv.ut.approxEqualVectors", eil::geom::approxEqualVectors(d, expect));
     emit(eil::format("wv.ut.residual dx=%.17g dy=%.17g dz=%.17g", d.x - 0.1,
-                     d.y - (0.2 * std::cos(0.05)), d.z - (0.2 * std::sin(0.05))));
+                     d.y - (0.2 * eil::cos(0.05)), d.z - (0.2 * eil::sin(0.05))));
     emit("wv.ut.str=" + my_box->toString());
     for (int i = 0; i < 8; ++i) dump3("wv.ut.p[" + std::to_string(i) + "]", my_box->p[i]);
 #ifdef EIL_COMPLEX_NUMBERS

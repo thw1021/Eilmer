@@ -27,6 +27,7 @@
 //
 // Run: ./test_substrate_phobos_bits <baseline.txt>
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -112,7 +113,7 @@ int main(int argc, char** argv) {
         emit("log10", x, x > 0 ? std::log10(x) : std::log10(-x));
         emit("log2", x, x > 0 ? std::log2(x) : std::log2(-x));
         emit("sinh", x, std::sinh(x)); emit("cosh", x, std::cosh(x)); emit("tanh", x, std::tanh(x));
-        emit("sin", x, std::sin(x)); emit("cos", x, std::cos(x)); emit("tan", x, std::tan(x));
+        emit("sin", x, eil::sin(x)); emit("cos", x, eil::cos(x)); emit("tan", x, std::tan(x));
         emit("atan", x, std::atan(x));
         emit("sqrt", x, x >= 0 ? std::sqrt(x) : std::sqrt(-x)); emit("cbrt", x, std::cbrt(x));
         emit("pow_int2", x, std::pow(x, 2.0)); emit("pow_real2", x, std::pow(x, 2.0));

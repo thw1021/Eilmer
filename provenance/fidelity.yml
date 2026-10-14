@@ -84,8 +84,25 @@ src/geom/elements/projection.cpp:  {fidelity: exact, variants: [complex_numbers]
 # through eil::add_rhs_nan / eil::mul_rhs_nan rather than inheriting it. operator+ / - /
 # -= /= are left as plain arithmetic: measured to make the same choice at every -O level in
 # both languages. The 4-number add() keeps D's member-shadowing no-side-effect body.
-src/geom/elements/vector3.hpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check]}
-src/geom/elements/vector3.cpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add]}
+# T-920 (whole-port rule, measured 2026-10-14): a cos(x)+sin(x) pair of one argument is
+# fused into a single glibc `sincos()` by BOTH toolchains from -O1 up -- g++ recognises the
+# pair, and LLVM's own sincos pass re-fuses what LDC lowered to llvm.cos.f64/llvm.sin.f64.
+# Classified over the 415 angles of tests/test_data/sincos_angle.txt by which libm form
+# reproduces both bit patterns: ldc2 -O0 gives separate-only 401 / sincos-only 0 / both 14,
+# and ldc2 -O3 gives separate-only 0 / sincos-only 401 / both 14. 401 of 415 rows therefore
+# move inside the reference itself. All baselines are -O0 captures, so the contract is two
+# separate calls and eil::sin / eil::cos (substrate/include/eil/math.hpp) keep them that way
+# with a volatile copy of the argument. Sites routed: geom/elements/vector3.cpp
+# (rotate_about_zaxis, rotate2d), geom/elements/projection.cpp:78, geom/grid/grid.cpp:533-534,
+# geom/gpath/arc.cpp:119, geom/gpath/helix.cpp:70, geom/volume/wedgevolume.cpp (which is
+# where this was first caught, with 20 of its 4594 rows red at -O3 before the guard), every
+# pair in gasdyn/idealgasflow.cpp, and the 9 test files that compute angles themselves.
+# After routing: 0 objects reference `sincos` in Release (11 before), ctest
+# substrate_sin_cos_pair 415/415 byte-identical at -O0, -O3, slice-check and -flto -O3,
+# and the suite is 93/93 in all three configurations. Cost measured: a pair costs ~12.1 ns
+# fused vs ~14.8 ns kept separate (+22%).
+src/geom/elements/vector3.hpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check, ctest:substrate_sin_cos_pair]}
+src/geom/elements/vector3.cpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add, ctest:substrate_sin_cos_pair 415 of 415 (rotate_about_zaxis/rotate2d go through eil::sin/eil::cos)]}
 
 # --- geom/volume stage A (T-012): meshvolume / subrangedvolume / slabvolume /
 # --- twosurfacevolume. Verified by replaying each module's ldc2 probe corpus.

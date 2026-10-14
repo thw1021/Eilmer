@@ -62,7 +62,7 @@ files:
   d: src/geom/elements/projection.d
   d_blob: cbefc588e4acd6926affcabffc713f25b53ac881
   d_lines: 309
-  cpp_lines: 179
+  cpp_lines: 180
   fidelity: exact
   variants: [complex_numbers]
   verified_by: [ctest:geom_elements_projection]
@@ -97,7 +97,7 @@ files:
   cpp_lines: 452
   fidelity: exact
   variants: [complex_numbers]
-  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add]
+  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add, ctest:substrate_sin_cos_pair 415 of 415 (rotate_about_zaxis/rotate2d go through eil::sin/eil::cos)]
 - cpp: src/geom/elements/vector3.hpp
   d: src/geom/elements/vector3.d
   d_blob: 9d5b6ceb9c03d954ba56efc21eb69fb3e7c4e5f0
@@ -105,7 +105,7 @@ files:
   cpp_lines: 157
   fidelity: exact
   variants: [complex_numbers]
-  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check]
+  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check, ctest:substrate_sin_cos_pair]
 - cpp: src/geom/geometry_exception.cpp
   d: src/geom/geometry_exception.d
   d_blob: 11b8fb0f896ee456b8a3aad58c7a7698c996e808
@@ -174,7 +174,7 @@ files:
   d: src/geom/gpath/helix.d
   d_blob: d284c1d0a292bdc3c2938ac1bee38a3630c93597
   d_lines: 112
-  cpp_lines: 89
+  cpp_lines: 90
   fidelity: exact
   variants: []
   verified_by: []
@@ -334,7 +334,7 @@ files:
   d: src/geom/grid/grid.d
   d_blob: bc92bd5817bf21ee94f4b3a9112266fc1de8f53a
   d_lines: 490
-  cpp_lines: 544
+  cpp_lines: 545
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_grid_grid, 643 of 643 rows in Debug Release slice-check and -flto, ctest:geom_grid_nanadd 638 of 638 (the both-NaN operand rule this module depends on), throw type object.Error at D:37, 144, 174, 428 + AssertError text at D:73-75, 83, GeometryException at D:284]
@@ -346,22 +346,6 @@ files:
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug Release and slice-check, 17 abstract members driven through a base handle]
-- cpp: src/geom/grid/paver.cpp
-  d: src/geom/grid/paver.d
-  d_blob: 35f8624a383058116398d2960caa13024daff46b
-  d_lines: 1737
-  cpp_lines: 1720
-  fidelity: exact
-  variants: []
-  verified_by: []
-- cpp: src/geom/grid/paver.hpp
-  d: src/geom/grid/paver.d
-  d_blob: 35f8624a383058116398d2960caa13024daff46b
-  d_lines: 1737
-  cpp_lines: 268
-  fidelity: exact
-  variants: []
-  verified_by: []
 - cpp: src/geom/grid/paver2d.cpp
   d: src/geom/grid/paver2d.d
   d_blob: 17d53a36f562eecafd90f01bb9b2642be0a6ad4d
@@ -790,7 +774,7 @@ files:
   d: src/geom/volume/wedgevolume.d
   d_blob: 5a50d20991233adb0a3ad73dd11c7f74b4075a77
   d_lines: 118
-  cpp_lines: 122
+  cpp_lines: 120
   fidelity: exact
   variants: []
   verified_by: []

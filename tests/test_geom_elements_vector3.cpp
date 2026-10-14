@@ -12,6 +12,7 @@
 //   * the 2D transform_to_{local,global}_frame overloads set z = 0.0 explicitly.
 
 #include <cmath>
+#include "eil/math.hpp"
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -130,12 +131,12 @@ int main() {
     // and the division is then a double division. That is not the same expression
     // as (PI/4) rounded afterwards, so the cast is kept where D puts it.
     const number PI_d = static_cast<number>(EIL_PI);
-    Vector3 a45 = Vector3(std::cos(PI_d / 4), std::sin(PI_d / 4));
-    Vector3 a60 = Vector3(std::cos(PI_d / 3), std::sin(PI_d / 3));
+    Vector3 a45 = Vector3(eil::cos(PI_d / 4), eil::sin(PI_d / 4));
+    Vector3 a60 = Vector3(eil::cos(PI_d / 3), eil::sin(PI_d / 3));
     CHECK(eil::geom::approxEqualVectors(
               a45.rotate2d(static_cast<double>(15.0L * EIL_PI / 180.0L)), a60),
           "rotate2d 45->60");
-    Vector3 a30 = Vector3(std::cos(PI_d / 6), std::sin(PI_d / 6));
+    Vector3 a30 = Vector3(eil::cos(PI_d / 6), eil::sin(PI_d / 6));
     CHECK(eil::geom::approxEqualVectors(
               a30.rotate2d(static_cast<double>(30.0L * EIL_PI / 180.0L)), a60),
           "rotate2d 30->60");

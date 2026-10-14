@@ -350,7 +350,7 @@ double beta_obl2(double M1, double p2_p1, double g) {
 } // end beta_obl2()
 
 double theta_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (std::fabs(M1n - 1) < 1.0e-9) return 0.0;
     if (M1n < 1.0) {
         std::string msg = eil::text("theta_obl: subsonic normal Mach number: ", M1n,
@@ -365,33 +365,33 @@ double theta_obl(double M1, double beta, double g) {
         EIL_THROW_GASFLOW(msg);
     } // end if
     double t1 = 2.0 / std::tan(beta) * (eil::pow(M1n, 2) - 1.0);
-    double t2 = eil::pow(M1, 2) * (g + std::cos(2.0 * beta)) + 2.0;
+    double t2 = eil::pow(M1, 2) * (g + eil::cos(2.0 * beta)) + 2.0;
     return sign_beta*std::atan(t1/t2);
 } // end theta_obl()
 
 double dtan_theta(double M1, double beta, double g) {
     beta = std::fabs(beta);
-    double dum1 = eil::pow(M1, 2)*(std::cos(2.0*beta)+g)+2.0;
+    double dum1 = eil::pow(M1, 2)*(eil::cos(2.0*beta)+g)+2.0;
     // D: `M1^^2*sin(beta)^^2` -- `^^` binds tighter than `*`, so it is
     // (M1^^2) * pow(sin(beta), 2), not pow(M1* sin(beta), 2).
-    double dum2 = eil::pow(M1, 2)*eil::pow(std::sin(beta), 2)-1.0;
-    return 4.0*eil::pow(M1, 2)*eil::pow(std::cos(beta), 2)/dum1
-        + 4.0*eil::pow(M1, 2)*std::sin(2.0*beta)*dum2/(eil::pow(dum1, 2))/std::tan(beta)
-        - 2.0*dum2/dum1/(eil::pow(std::sin(beta), 2));
+    double dum2 = eil::pow(M1, 2)*eil::pow(eil::sin(beta), 2)-1.0;
+    return 4.0*eil::pow(M1, 2)*eil::pow(eil::cos(beta), 2)/dum1
+        + 4.0*eil::pow(M1, 2)*eil::sin(2.0*beta)*dum2/(eil::pow(dum1, 2))/std::tan(beta)
+        - 2.0*dum2/dum1/(eil::pow(eil::sin(beta), 2));
 } // end dtan_theta()
 
 double M2_obl(double M1, double beta, double theta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("M2_obl: subsonic normal Mach number: ", M1n));
     }
     double numer = 1.0 + (g - 1.0) * 0.5 * eil::pow(M1n, 2);
     double denom = g * eil::pow(M1n, 2) - (g - 1.0) * 0.5;
-    return eil::sqrt(numer / denom / eil::pow(std::sin(beta - theta), 2) );
+    return eil::sqrt(numer / denom / eil::pow(eil::sin(beta - theta), 2) );
 } // end M2_obl()
 
 double r2_r1_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("r2_r1_obl: subsonic normal Mach number: ", M1n));
     }
@@ -399,7 +399,7 @@ double r2_r1_obl(double M1, double beta, double g) {
 } // end r2_r1_obl()
 
 double Vn2_Vn1_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("Vn2_Vn1_obl: subsonic normal Mach number: ", M1n));
     }
@@ -407,16 +407,16 @@ double Vn2_Vn1_obl(double M1, double beta, double g) {
 }
 
 double V2_V1_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("V2_V1_obl: subsonic normal Mach number: ", M1n));
     }
-    return eil::sqrt(eil::pow(std::sin(beta) / r2_r1_obl(M1, beta, g), 2)
-                     + eil::pow(std::cos(beta), 2));
+    return eil::sqrt(eil::pow(eil::sin(beta) / r2_r1_obl(M1, beta, g), 2)
+                     + eil::pow(eil::cos(beta), 2));
 }
 
 double p2_p1_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("p2_p1_obl: subsonic normal Mach number: ", M1n));
     }
@@ -424,7 +424,7 @@ double p2_p1_obl(double M1, double beta, double g) {
 }
 
 double T2_T1_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("T2_T1_obl: subsonic normal Mach number: ", M1n));
     }
@@ -432,7 +432,7 @@ double T2_T1_obl(double M1, double beta, double g) {
 }
 
 double p02_p01_obl(double M1, double beta, double g) {
-    double M1n = M1 * std::fabs(std::sin(beta));
+    double M1n = M1 * std::fabs(eil::sin(beta));
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("p02_p01_obl: subsonic normal Mach number: ", M1n));
     }
@@ -541,8 +541,8 @@ eil::Array<double> theta_cone(double V1, double p1, double T1, double beta,
     // Initial conditions for Taylor-Maccoll integration.
     double dtheta = -0.05 * EIL_PI / 180.0;  // fraction-of-a-degree steps
     double theta = beta;
-    double V_r = V2 * std::cos(beta - theta_s);
-    double V_theta = -V2 * std::sin(beta - theta_s);
+    double V_r = V2 * eil::cos(beta - theta_s);
+    double V_theta = -V2 * eil::sin(beta - theta_s);
     double rho = rho2; double p = p2; double h = h2;
     // For integrating across the shock layer, the state vector is:
     double z[5] = {rho2, V_r, V_theta, h2, p2};

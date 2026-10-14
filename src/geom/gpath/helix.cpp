@@ -3,6 +3,7 @@
 #include "geom/gpath/helix.hpp"
 
 #include <cmath>
+#include "eil/math.hpp"
 #include <memory>
 
 #include "geom/elements/vector3.hpp"
@@ -67,7 +68,7 @@ std::shared_ptr<Path> Helix::dup() const {
 Vector3 Helix::operator()(double t) const {
     double r = r0 * (1.0 - t) + r1 * t;
     double theta = theta01 * t;
-    Vector3 p = r * std::cos(theta) * xdsh + r * std::sin(theta) * ydsh + a0 * (1.0 - t) + a1 * t;
+    Vector3 p = r * eil::cos(theta) * xdsh + r * eil::sin(theta) * ydsh + a0 * (1.0 - t) + a1 * t;
     return p;
 }
 
