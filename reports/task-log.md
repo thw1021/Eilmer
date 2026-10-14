@@ -654,3 +654,72 @@
   paver 1、sketch 5、nm_stmatrix_fails 1）；`check_staleness.sh` → `no drift`；
   `provenance/fidelity.yml` 补 `paver.{hpp,cpp}`、`sketch.{hpp,cpp}` 四条记录后重跑
   `gen_manifest.py`。`wip/` 目录已空并删除——半成品在门禁下干净落地，没有靠降低标准。
+
+## T-922 / T-923 / T-925 / T-914 — 一条"给代理写简报"的支线，扫出四个端口级问题  (2026-10-14)
+
+- **起点很小**：给 T-019（sketch）写简报需要一张表——`sketch.d` 那 8 个 `throw` 里哪些是
+  `Exception`、哪些是 `Error`。我**没有**按构造器签名推，而是写了
+  `probes/substrate/probe_throw_identity.d`：对每种 D 侧写法在运行期打印
+  `classinfo.name / .msg / .file / .line / toString()` 首行（**15 行，重跑 0 差异，
+  行内不含地址**——回溯按设计砍成首行，那是既有的 T-903）。
+- **T-922（端口系统性缺陷，已闭合）**：量出来发现 D 的 `new Exception(m)` **带**调用点
+  （且 `.file` 就是**编译时传给编译器的那条路径原文**），而 `new Error(m)`
+  **不带**：实测 `.file==""`、`.line==0`，`toString()` 打成 `object.Error@(0): msg`。
+  端口里 `ErrorBase(...)` 带 `__FILE__/__LINE__` 的站点共 **84 处**（`ExceptionBase` 那
+  15 处是对的，不能动）⇒ **83 处改掉、1 处保留**：
+  `geom/grid/grid.cpp:76` 对应 D 的 `final switch` 越界，抛
+  `core.exception.SwitchError`，**实测它带 `switch` 所在文件行号**，删掉才是错。
+  分两批改：第一批 40 处按消息字面量能直接对上 D 的 `new Error(`；
+  第二批 43 处（含 5 处被 T-914 合并掉的本地副本）按站点 `// D:NN` 引用读 D 的**类**，
+  同族收敛（`aopatch`/`coonspatch`/`tfivolume`/`arc` 的开角检查家族）再补一批。
+  **计数方法本身也是一条教训**：用"行窗口 3 行"数出来是 82→42，用**括号配对逐调用**
+  数出来是 84→39——差的正是**参数换行**的调用，`arc.cpp:130/158` 就是这么漏掉的。
+  可核对的历史：`a1800ca`(84) → `050ab29`(44) → `f9b633e`(39) → `86c7a78`(1)。
+  顺带修掉一条**说反话的注释**：`util/lua_service.hpp` 原写"`ErrorBase` 派生自
+  `ExceptionBase`，下游 `catch (ExceptionBase&)` 会吞掉它"，而 `error.hpp:91-98` 与
+  wave-01 教训第 1 条正是相反的约定（两者是兄弟）；照旧注释写出的 handler 永远不触发。
+- **T-923（假门禁）**：全树扫"`throw` 站点里的字面量消息能否在 D 树 grep 到"，
+  **100 个带字面量的站点里 97 个逐字命中，3 个在 D 里根本不存在**，全在
+  `nm/stmatrix.d` 的读取器——因为**这条函数的失败路径一条语料都没有**。
+  实测 D 真抛什么：打不开文件是 `std.exception.ErrnoException`
+  `Cannot open file \`X' in mode \`r' (No such file or directory)`；
+  空文件/只有注释/声明 2 条只给 1 条/首个空行**一律**是
+  `ArrayIndexError index [0] is out of bounds for array of length 0`
+  （**D 的 `readln()` 到 EOF 返回空串、不抛**），端口原来的 `ExceptionBase("Unexpected EOF")`
+  是一条**这条函数根本发不出来的异常**。改掉三处（两处 EOF 检查直接删，让空串走 D 同一条
+  越界路径；端口 `eil::Array::operator[]` 的文本与 D 逐字节相同），
+  新增 `ctest:nm_stmatrix_fails`（7 行）并**验证它会红**：故意把 `mode \`r'` 改 `mode \`w'`、
+  `RangeError(0,0)` 改 `(1,0)` → 3 行红；还原 → 7/7。
+  推广出的检查值得留：**没有语料覆盖的路径，就是能藏住编造文本的地方**——问题不是习惯，是覆盖。
+- **T-925（更正本仓库自己的一条规则）**：简报里"`a ^^ b` **一律**写 `eil::pow(a,b)`"是错的。
+  765 个非负操作数实测：`x^^0.5` 与 `sqrt(x)` **765/765 位型全同**，
+  `pow(x,0.5)` 与它差**恰好一个操作数 —— `x = -0.0`**：
+  `(-0.0)^^0.5 = 8000000000000000`（= `sqrt(-0.0)`，零的符号保住），
+  `pow(-0.0,0.5) = 0000000000000000`。带符号零决定之后每次除以它的商的符号，不是末位噪声。
+  负数域也不等价：`pow(-real.max,0.5)` 在 D 里是 **inf**，`^^0.5`/`sqrt` 是 NaN。
+  变量指数 `e=0.5` 时 `x^^e == sqrt(x)` ⇒ 规则看**值**不看语法。
+  来源是 G2 落地时的唯二红行（`paver.d:202/:238`）。规则写进 `eil::pow` 自己的注释头上，
+  语料 `substrate_pow` 从 26 行扩到 **35 行**（新增 9 行 `half` 组，**按位型比较**——
+  第一版用 `==` 时对 `-0.0` 报"相等"、对 NaN 报"不等"，两个都是假信号），
+  且**判别力实测**：把 `op=` 换回 `eil::pow(x,0.5)` 就红那一行 `-0.0`。
+  Wave 12 还会撞两次（`shape_sensitivity_core.d:2315-2316`、`complex.d:1820`）。
+- **T-914（同一规则不留两份）**：有符号 `arr.length = L` 原来在
+  `bezierpatch.cpp` 有 3 个本地重载、`controlpointpatch.cpp` 有 2 个。
+  收进 `eil::Array::set_length_signed(long)`，**5 个副本删除**。语义同样按实测：
+  D 抛的是 `core.exception.OutOfMemoryError`、`.file=="rt/lifetime.d"`、`.line==1454`
+  ⇒ **只带消息**（端口填自己文件的位置就是凭空造站点，正是 T-922 那一类）；
+  `L==0` 合法不抛（语料行 `bzp.nm1.ctor threw=none`）。
+  两条头注释原本指向已删除的本地 helper——**注释指向不存在的符号比没注释更坏**，已改。
+- **验证**（不采信任何自报数）：本轮所有代理产物我都自己复跑过——
+  sketch 的 682 行语料我按 `ldc2 -O0` **独立重抓 = 0 行差异**；
+  paver 的探针与 1961 行基线 **sha256 `d96d146f…` 自主线程归档提交起未变**（排除"改参照系"）；
+  全树 **100/100 × 三配置**（Release / Debug / `-DEIL_SLICE_CHECK=ON`）多次复跑，
+  `check_staleness.sh` → `no drift`；`gdtk` 树零写入。
+- **本轮顺手补的可复现性债**：树里 19 个探针逐个重跑比对，15 个逐字节复现；
+  4 个有账没对上——`probe_real_print` 注释指向一个**从未创建**的基线文件，
+  `probe_fold_div`/`probe_tol`/`probe_ds_cv` 干脆没写捕获行（它们的数字只活在注释里，
+  包括 T-909 那条"`90.0/25.4` 折叠低 1 ULP"）。四个都已确定性地补档（5/22/54/2 行）。
+  `probe_phobos_transcendentals.d` **故意不补**：它的结论已升格进
+  `probe_phobos_bits.d`（673 行、有测试回放），再补一份就是造一个没人读的第二参照。
+  另外我第一版扫描脚本报"三个探针编不过"是**脚本自己的错**（`-of=` 指到了刚创建的目录），
+  记在这里是因为一个自信报错的坏 harness 比没有 harness 更糟。
