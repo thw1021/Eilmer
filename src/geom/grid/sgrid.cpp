@@ -214,17 +214,37 @@ std::string fmt_read_rest(FormattedInput& in) {
 // %d and %g: skip whitespace, take the numeric prefix, and — when there is none — hand
 // the whole remaining input to the conversion so that Phobos' wording (which quotes the
 // input it was given) comes out byte-identical.
-std::string fmt_read_int(FormattedInput& in) {
+//
+// MEASURED EXCEPTION (corpus rows 1104 and 1106, sg.frmt.shortvtx/sg.frmt.nospaces): when
+// the input has run out at the point of the conversion, std.format performs NO conversion
+// at all — it neither assigns the destination nor raises. ldc2 1.40.0 with
+// `formattedRead(" 1 0", " %g %g %g", &x, &y, &z)` for x=1, y=2, z=3 gives x=1, y=0, z=3:
+// the third spec leaves z untouched and the call returns normally, so the reader reaches the
+// ntags line of a 2-number vertex line and only fails there. Handing "" to std.conv instead
+// would raise `Floating point conversion error for input ""`, which D never prints here.
+// `got` is how that no-op reaches the fmt_into<> specialisations below; an empty token with
+// input still remaining is the OTHER case (dimsword, wordvtx) and must still reach conv.
+std::string fmt_read_int(FormattedInput& in, bool& got) {
     while (!in.exhausted() && std::isspace(static_cast<unsigned char>(in.next()))) ++in.p;
     std::string tok = fmt_scan_prefix(in, false);
-    if (tok.empty()) { tok = in.s.substr(in.p); in.p = in.s.size(); }
+    if (tok.empty()) {
+        if (in.exhausted()) { got = false; return tok; }
+        tok = in.s.substr(in.p);
+        in.p = in.s.size();
+    }
+    got = true;
     return tok;
 }
 
-std::string fmt_read_float(FormattedInput& in) {
+std::string fmt_read_float(FormattedInput& in, bool& got) {
     while (!in.exhausted() && std::isspace(static_cast<unsigned char>(in.next()))) ++in.p;
     std::string tok = fmt_scan_prefix(in, true);
-    if (tok.empty()) { tok = in.s.substr(in.p); in.p = in.s.size(); }
+    if (tok.empty()) {
+        if (in.exhausted()) { got = false; return tok; }
+        tok = in.s.substr(in.p);
+        in.p = in.s.size();
+    }
+    got = true;
     return tok;
 }
 
@@ -244,7 +264,11 @@ void d_set_length(eil::Array<T>& a, size_t n) {
     }
 }
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
-template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = eil::to_int(fmt_read_int(in)); }
+template <> void fmt_into<int>(FormattedInput& in, int* dst) {
+    bool got = false;
+    const std::string tok = fmt_read_int(in, got);
+    if (got) *dst = eil::to_int(tok);
+}
 // No fmt_into<long>: all ten formattedRead sites of sgrid.d (D:861, :867, :869, :871, :873,
 // :875, :896, :910, :914, :933) target string, int (dimensions, grid.d:43), size_t
 // (niv/njv/nkv/ntags) or double (x,y,z), so a `long` destination is unreachable — measured
@@ -255,13 +279,25 @@ template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
     // D reads into a size_t (sgrid.d:910 `size_t ntags`), and std.format's integer reader
     // hands the token to std.conv, so the failure text names the RESOLVED target type:
     // "ulong", and it rejects a leading sign. Measured in
-    // baselines/e587b235/probes/substrate_format_int_target.txt (size_t.word, size_t.neg).
-    *dst = eil::to_size_t(fmt_read_int(in));
+    // baselines/e587b235/probes/substrate_format_int_target.txt (size_t.word, size_t.neg)
+    // and by corpus row sg.frmt.nivbig, where the huge value must reach set_length rather
+    // than raise a conv error.
+    bool got = false;
+    const std::string tok = fmt_read_int(in, got);
+    if (got) *dst = eil::to_size_t(tok);
 }
 template <> void fmt_into<double>(FormattedInput& in, double* dst) {
-    *dst = eil::to_double(fmt_read_float(in));
+    bool got = false;
+    const std::string tok = fmt_read_float(in, got);
+    if (got) *dst = eil::to_double(tok);
 }
 template <> void fmt_into<std::string>(FormattedInput& in, std::string* dst) {
+    // Same no-op-at-exhausted rule as the numeric specs (measured with ldc2 1.40.0:
+    // `formattedRead("label:", "label: %s", &s)` leaves s at its previous value). For the
+    // string destinations in these readers it is unobservable either way, because D's
+    // untouched value is a null string and the port's is the empty string, and both render
+    // as nothing inside %s of an array (corpus row 1060, bcTags=["west-tag", "", "", ""]).
+    if (in.exhausted()) return;
     *dst = fmt_read_rest(in);
 }
 
@@ -1016,8 +1052,20 @@ void StructuredGrid::read_from_text_file(const std::string& fileName, bool vtkHe
             for (size_t i = 0; i < niv; ++i) {
                 tokens = split_ws(d_strip(d_readln(f, at_eof))); // D:837
                 try {                                  // D:838-846
-                    opIndex(i, j, k)->set(eil::to_double(tokens[0]), eil::to_double(tokens[1]),
-                                          eil::to_double(tokens[2]));
+                    // D:839-841 evaluates LEFT TO RIGHT: the indexing, then tokens[0],
+                    // then tokens[1], then tokens[2]. gcc evaluates function arguments in
+                    // the opposite order, so an unwritten token would report the wrong
+                    // subscript. Measured at corpus row 1031 (sg.readtxt.eof, a file with
+                    // one vertex line for a 3x3 grid): D says
+                    //   index [0] is out of bounds for array of length 0
+                    // and the un-sequenced port said index [2]. Same hand-sequencing as
+                    // toString() for corpus row 58. The to!double of each token also runs in
+                    // that order, which is why the conversions are split out here too.
+                    Vector3* vtx = opIndex(i, j, k);
+                    const double t0 = eil::to_double(tokens[0]);
+                    const double t1 = eil::to_double(tokens[1]);
+                    const double t2 = eil::to_double(tokens[2]);
+                    vtx->set(t0, t1, t2);
                 } catch (const eil::ExceptionBase& e) { // D:842 `catch (Exception e)`
                     // D:843-845 builds the text with text(...), which renders the caught
                     // exception through its toString(). The port's ThrowableBase has no
@@ -1117,14 +1165,20 @@ void StructuredGrid::read_from_raw_binary_file(const std::string& fileName, doub
         throw eil::ErrorBase("StructuredGrid.read_from_raw_binary_file(): "
                              "invalid format version found: " + format_version);
     }
-    int buf1[1]; d_raw_read(f, buf1, 4);                       // D:938
+    // D initialises these local static arrays to their .init (0 for int, NaN for double)
+    // and Phobos' File.rawRead does NOT raise on a short read — it just reads what is there.
+    // Corpus row 1167 (sg.readraw.trunc) pins both halves: a 19-byte header-only file makes
+    // every read after the header come back empty, and the reference still prints `done`.
+    // An uninitialised C++ buffer turned that into label_length = garbage, a 1.9e19-element
+    // allocation and `err=Memory allocation failed`.
+    int buf1[1] = {0}; d_raw_read(f, buf1, 4);                       // D:938
     const int label_length = buf1[0];
     if (label_length > 0) {
         std::vector<char> found_label(static_cast<size_t>(label_length), '\0');
         d_raw_read(f, found_label.data(), static_cast<size_t>(label_length));
         label = std::string(found_label.data(), static_cast<size_t>(label_length));
     }
-    int buf4[4]; d_raw_read(f, buf4, 4 * 4);                   // D:945-947
+    int buf4[4] = {0}; d_raw_read(f, buf4, 4 * 4);                   // D:945-947
     dimensions = buf4[0];
     niv = static_cast<size_t>(buf4[1]); njv = static_cast<size_t>(buf4[2]);
     nkv = static_cast<size_t>(buf4[3]);
@@ -1137,7 +1191,8 @@ void StructuredGrid::read_from_raw_binary_file(const std::string& fileName, doub
     d_set_length(vertices, nvertices);                         // D:958
     d_set_length(vtx_id, nvertices);                           // D:959
     size_t ivtx = 0;
-    double xyz[3];
+    // D's `double[3] xyz;` is xyz.init, i.e. three NaNs; a short rawRead leaves them there.
+    double xyz[3] = {eil::d_init<double>(), eil::d_init<double>(), eil::d_init<double>()};
     for (size_t k = 0; k < nkv; ++k) {
         for (size_t j = 0; j < njv; ++j) {
             for (size_t i = 0; i < niv; ++i) {
