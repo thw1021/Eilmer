@@ -94,6 +94,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -1190,6 +1191,163 @@ void grp_rot() {
     dump_verts("sg.rot.q.naninit.after", g->vertices);
 }
 
+// ------------------------------------------------------------------
+// probe-side stand-in for D's `File(name, "r")`. The constructor itself raises when
+// the open fails (T-923: a *failed* open is a StdioException/ErrnoException whose msg
+// is `Cannot open file `NAME' in mode `MODE' (strerror)`, distinct from readln() at EOF
+// which returns an empty string and raises nothing). This is the probe's own call, not
+// an expected output, so reproducing it here keeps the gate honest.
+std::FILE* d_file(const std::string& name, const char* mode) {
+    std::FILE* h = std::fopen(name.c_str(), mode);
+    if (h == nullptr) {
+        throw eil::ExceptionBase("Cannot open file `" + name + "' in mode `" + mode + "' (" +
+                                 std::strerror(errno) + ")");
+    }
+    return h;
+}
+
+// ------------------------------------------------------------------
+// sg.uflowz.* — the underflow/overflow guard (probe_sgrid.d:1290-1306, D:1534-1540)
+// ------------------------------------------------------------------
+void grp_uflowz() {
+    const double vals[] = {1.0, 1.0e-32, 1.0e-29, 1.0e+29, 1.0e+32,
+                           -1.0, -1.0e-32, -1.0e-29, -1.0e+29, -1.0e+32,
+                           0.0, -0.0, 1.0e-30, 1.0e30, 1.0e-31, 1.0e31,
+                           std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::quiet_NaN(),
+                           std::numeric_limits<double>::infinity(),
+                           -std::numeric_limits<double>::infinity(),
+                           9.999999999999999e+29};
+    for (const double v : vals) {
+        emit(eil::format("sg.uflowz %.17g -> %.17g", v, eil::geom::uflowz(v)));
+    }
+    emit(eil::format("sg.uflowz.custom %.17g %.17g -> %.17g", 1.0e-5, 1.0e-4,
+                     eil::geom::uflowz(1.0e-5, 1.0e-4)));
+    emit(eil::format("sg.uflowz.custom2 %.17g -> %.17g", 5.0,
+                     eil::geom::uflowz(5.0, 1.0e-30, 4.0)));
+    emit(eil::format("sg.uflowz.negcustom %.17g -> %.17g", -5.0,
+                     eil::geom::uflowz(-5.0, 1.0e-30, 4.0)));
+    // sign of the zero that comes out of the underflow branch.
+    emit(eil::format("sg.uflowz.sign %.17g -> %.17g signbit=%d", -1.0e-32,
+                     eil::geom::uflowz(-1.0e-32),
+                     static_cast<int>(std::signbit(eil::geom::uflowz(-1.0e-32)))));
+}
+
+// ------------------------------------------------------------------
+// sg.vtkhdr.* — read_VTK_header_line (probe_sgrid.d:1308-1339, D:1544-1561)
+// ------------------------------------------------------------------
+void grp_vtkhdr() {
+    const std::string p = TD + "/hdr.vtk";
+    mkr(p, "# vtk DataFile Version 2.0\nLabel Line\nascii\ndataset structured_grid\n"
+           "DIMENSIONS 3 2 1\nPOINTS 6 float\n");
+    {
+        std::FILE* f = d_file(p, "r");
+        emit(eil::format("sg.vtkhdr.0=%s", eil::geom::read_VTK_header_line("vtk", f)));
+        emit(eil::format("sg.vtkhdr.1=%s", eil::geom::read_VTK_header_line("ASCII", f)));
+        emit(eil::format("sg.vtkhdr.2=%s", eil::geom::read_VTK_header_line("STRUCTURED_GRID", f)));
+        emit(eil::format("sg.vtkhdr.3=%s", eil::geom::read_VTK_header_line("DIMENSIONS", f)));
+        emit(eil::format("sg.vtkhdr.4=%s", eil::geom::read_VTK_header_line("POINTS", f)));
+        tryit("sg.vtkhdr.eof", [f]() { (void)eil::geom::read_VTK_header_line("CELLS", f); });
+        std::fclose(f);
+    }
+    // A target that appears mid-word, and one that never appears.
+    {
+        std::FILE* f = d_file(p, "r");
+        emit(eil::format("sg.vtkhdr.mid=%s", eil::geom::read_VTK_header_line("structured", f)));
+        std::fclose(f);
+    }
+    {
+        std::FILE* f = d_file(p, "r");
+        tryit("sg.vtkhdr.absent", [f]() { (void)eil::geom::read_VTK_header_line("LOOKUP", f); });
+        std::fclose(f);
+    }
+    tryit("sg.vtkhdr.missing", [&]() {
+        std::FILE* f = d_file(TD + "/nope.vtk", "r");
+        (void)eil::geom::read_VTK_header_line("vtk", f);
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.gridpro.* — import_gridpro_grid (probe_sgrid.d:1341-1366, D:1565-1612).
+// Two of these rows are printed from INSIDE the ported function (D's own writefln),
+// which is why main() redirects stdout into the capture file.
+// ------------------------------------------------------------------
+void grp_gridpro() {
+    const std::string p = TD + "/gp.dat";
+    {
+        std::string body = "# a comment line\n2 2 1\n";
+        body += "0.0 0.0 0.0\n1000.0 0.0 0.0\n0.0 1000.0 0.0\n1000.0 1000.0 1.0e-40\n";
+        body += "2 2 1\n";
+        body += "1.0e+40 0.0 0.0\n2.0 3.0 4.0\n5.0 6.0 7.0\n8.0 9.0 1.0e-35\n";
+        mkr(p, body);
+    }
+    auto gr = eil::geom::import_gridpro_grid(p);
+    emit(eil::format("sg.gridpro.count=%d", gr.length()));
+    for (size_t i = 0; i < gr.length(); ++i) {
+        dump_grid(eil::format("sg.gridpro[%d]", i), gr[i]);
+    }
+    auto gr2 = eil::geom::import_gridpro_grid(p, 0.001);
+    emit(eil::format("sg.gridpro.count2=%d", gr2.length()));
+    for (size_t i = 0; i < gr2.length(); ++i) {
+        dump_grid(eil::format("sg.gridpro.scale[%d]", i), gr2[i]);
+    }
+    tryit("sg.gridpro.missing", [&]() { (void)eil::geom::import_gridpro_grid(TD + "/nope.dat"); });
+    // A single block with no trailing blank line.
+    const std::string p1 = TD + "/gp1.dat";
+    mkr(p1, "2 1 1\n1.0 2.0 3.0\n4.0 5.0 6.0\n");
+    auto g1 = eil::geom::import_gridpro_grid(p1, 1.0);
+    emit(eil::format("sg.gridpro.1=%d", g1.length()));
+    dump_grid("sg.gridpro.1blk", g1[0]);
+}
+
+// ------------------------------------------------------------------
+// sg.rsgp.* — rotate_gridpro_blocks (probe_sgrid.d:1368-1383, D:1756-1798)
+// ------------------------------------------------------------------
+void grp_rsgp() {
+    auto g = mk2d(3, 2, "gp");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 10.0,
+                                  static_cast<double>(i + j) * 0.25);
+        }
+    }
+    auto r1 = eil::geom::rotate_gridpro_blocks(g, "East", "South");
+    dump_grid("sg.rsgp.east.south", r1);
+    emit(eil::format("sg.rsgp.east.south.aliased=%s", r1 == g));
+    auto r2 = eil::geom::rotate_gridpro_blocks(g, "North", "East");
+    dump_grid("sg.rsgp.north.east", r2);
+    auto r3 = eil::geom::rotate_gridpro_blocks(g, "West", "North");
+    dump_grid("sg.rsgp.west.north", r3);
+    auto r4 = eil::geom::rotate_gridpro_blocks(g);
+    emit(eil::format("sg.rsgp.default.aliased=%s", r4 == g));
+    auto r5 = eil::geom::rotate_gridpro_blocks(g, "North", "South");
+    emit(eil::format("sg.rsgp.other.aliased=%s", r5 == g));
+    emit(eil::format("sg.rsgp.north.west=%s",
+                    eil::geom::rotate_gridpro_blocks(g, "North", "West")->toString()));
+}
+
+// ------------------------------------------------------------------
+// sg.fswap.* — grid_faceswap (probe_sgrid.d:1385-1398, D:1800-1828)
+// ------------------------------------------------------------------
+void grp_fswap() {
+    auto g = mk2d(3, 2, "fs");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 10.0, 0.0);
+        }
+    }
+    dump_grid("sg.fswap.ns", eil::geom::grid_faceswap(g, true, false));
+    dump_grid("sg.fswap.ew", eil::geom::grid_faceswap(g, false, true));
+    dump_grid("sg.fswap.both", eil::geom::grid_faceswap(g, true, true));
+    dump_grid("sg.fswap.none", eil::geom::grid_faceswap(g, false, false));
+    dump_grid("sg.fswap.default", eil::geom::grid_faceswap(g));
+    // 3D source: the readers only touch the (i,j) lattice, so z survives oddly.
+    auto g3 = vol_grid3d("fs3d");
+    dump_grid("sg.fswap.3d", eil::geom::grid_faceswap(g3, true, false));
+}
+
 //<<<SECTIONS-NOW>>>
 
 // ------------------------------------------------------------------
@@ -1613,6 +1771,11 @@ int main(int argc, char** argv) {
     grp_determ();
     grp_rotq();
     grp_rot();
+    grp_uflowz();
+    grp_vtkhdr();
+    grp_gridpro();
+    grp_rsgp();
+    grp_fswap();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
