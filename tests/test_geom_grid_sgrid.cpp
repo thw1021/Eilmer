@@ -53,10 +53,38 @@
 //               (D:924-997, :1042-1082)
 //   sg.vtk/su2  rows 1169-1173 write_to_vtk_file (D:1084-1102) and write_to_su2_file
 //               (D:1312-1318), the latter purely delegated to UnstructuredGrid
+//   sg.join.*   rows 1174-1270 joinGrid east/imax/north/jmax plus its six Error wordings
+//               (multi-line messages, so the rows carry <newline>) (D:1130-1256)
+//   sg.slab/wedge rows 1271-1406 makeSlabGrid and makeWedgeGrid, including the :1294 atan2
+//               and the :1299/:1304 cos/sin pair of one argument (T-910, T-920) (D:1258-1310)
+//   sg.bad.*    rows 1407-1415 measure_of_badness, two of them -nan (T-919)
+//   sg.rs.*     rows 1416-1441 rs_grids_to_list / list_to_rs_grids and their short-array
+//               asserts (D:1472-1522)
+//   sg.determ.* rows 1442-1493 determine_rs_grids through nm/nelmin, then the redistributed
+//               grid it implies (D:1396-1423)
+//   sg.rotq.*   rows 1494-1537 rotateGrid (D:1425-1465)
+//   sg.rot.*    rows 1538-1594 the two inherited Grid.rotate entries (grid.d:443-500)
+//   sg.uflowz.* rows 1595-1619 the underflow/overflow guard, incl. the +0 that comes out of
+//               the underflow arm and inf/nan (D:1534-1540)
+//   sg.vtkhdr.* rows 1620-1628 read_VTK_header_line, case-insensitive and mid-word
+//               (D:1544-1561)
+//   sg.gridpro.* rows 1629-1670 import_gridpro_grid; rows 1629-1630 and 1646-1647, 1664 are
+//               printed from INSIDE the ported function (D:1565-1612)
+//   sg.rsgp.*   rows 1671-1701 rotate_gridpro_blocks, incl. pointer identity of the pass-
+//               through arms (D:1756-1798)
+//   sg.fswap.*  rows 1702-1742 grid_faceswap, incl. isnull=true when neither flag is set
+//   sg.plot3d.* rows 1743-1842 writeGridsAsPlot3D and importPlot3DGrid, incl. the gzipped
+//               read through popen("gunzip -c ...") (D:1614-1754)
+//   sg.ccp.*    rows 1843-1861 compute_cell_properties over 3D/2D/1D lattices (grid.d:124)
+//   sg.pic/cbc/bin/fsc/fncc rows 1862-2087 the search services, the ULP-exact bin-boundary
+//               clamps and the three search entries (grid.d:198-420)
+//   sg.unit.*   rows 2088-2096 sgrid.d's own unittest (D:1833-1865); row 2097 is sg.done
 //
-// Not yet emitted: rows 1174-2097 (sg.join/slab/wedge/bad/rs/determ/rotq/rot, then uflowz,
-// vtkhdr, gridpro, rsgp, fswap, plot3d, ccp, pic, bin, fsc, unit). add_test() stays
-// commented out until the whole corpus replays at 0 differ.
+// Not yet emitted: none. The whole 2097-row corpus replays at 0 differing rows
+// (/tmp/w2_g4b/test_geom_grid_sgrid <corpus> prints
+// `PASS: geom_grid_sgrid, probe replay 2097 D lines, 2097 C++ lines, 0 differ;
+//  2097 of 2097 rows byte-identical`), so add_test() in cmake/wave2_grid_g4.cmake is
+// ready to switch on once the main thread has re-run the three configurations.
 //
 // Substrate gap worked around HERE (not in src/, so it is test-local and does not mask a
 // port defect): eil::Array::set_length value-initialises the grown tail
@@ -132,6 +160,7 @@ using eil::geom::ParametricSurface;
 using eil::geom::ParametricVolume;
 using eil::geom::Quaternion;
 using eil::geom::StructuredGrid;
+using eil::geom::StructuredGridArray;
 using eil::geom::UnivariateFunctionPtr;
 using eil::geom::Vector3;
 
@@ -1348,6 +1377,366 @@ void grp_fswap() {
     dump_grid("sg.fswap.3d", eil::geom::grid_faceswap(g3, true, false));
 }
 
+// ------------------------------------------------------------------
+// sg.plot3d.* — writeGridsAsPlot3D / importPlot3DGrid
+// (probe_sgrid.d:1400-1471, D:1614-1754). The gzipped read goes through
+// popen("gunzip -c ...") exactly as D's pipeShell does (D:1623).
+// ------------------------------------------------------------------
+void grp_plot3d() {
+    StructuredGridArray gs;
+    gs.append(mk2d(3, 2, "p1"));
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            gs[0]->opIndex(i, j)->set(static_cast<double>(i) * 1.25,
+                                      static_cast<double>(j) * 2.5, 0.0);
+        }
+    }
+    gs.append(std::make_shared<StructuredGrid>(2, 2, 2, "p2"));
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                gs[1]->opIndex(i, j, k)->set(static_cast<double>(i) + 0.1,
+                                             static_cast<double>(j) + 0.2,
+                                             static_cast<double>(k) + 0.3);
+            }
+        }
+    }
+    const std::string f2 = TD + "/out2.dat";
+    {
+        StructuredGridArray one;
+        one.append(gs[0]);
+        eil::geom::writeGridsAsPlot3D(f2, one, 2);
+    }
+    emit(eil::format("sg.plot3d.2d.len=%d body=%s", len_of(f2), body_of(f2)));
+    const std::string f3 = TD + "/out3.dat";
+    eil::geom::writeGridsAsPlot3D(f3, gs, 3);
+    emit(eil::format("sg.plot3d.3d.len=%d body=%s", len_of(f3), body_of(f3)));
+    tryit("sg.plot3d.baddim.write", [&f3, &gs]() { eil::geom::writeGridsAsPlot3D(f3, gs, 4); });
+    tryit("sg.plot3d.dim1.write", [&f3, &gs]() { eil::geom::writeGridsAsPlot3D(f3, gs, 1); });
+    // Round trip through the reader.
+    auto rb2 = eil::geom::importPlot3DGrid(f2, 2);
+    emit(eil::format("sg.plot3d.read2.count=%d", rb2.length()));
+    for (size_t i = 0; i < rb2.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read2[%d]", i), rb2[i]);
+    }
+    auto rb3 = eil::geom::importPlot3DGrid(f3, 3);
+    emit(eil::format("sg.plot3d.read3.count=%d", rb3.length()));
+    for (size_t i = 0; i < rb3.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read3[%d]", i), rb3[i]);
+    }
+    auto rb3as2 = eil::geom::importPlot3DGrid(f3, 2);
+    emit(eil::format("sg.plot3d.read3as2.count=%d", rb3as2.length()));
+    for (size_t i = 0; i < rb3as2.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read3as2[%d]", i), rb3as2[i]);
+    }
+    tryit("sg.plot3d.baddim.read", [&f2]() { (void)eil::geom::importPlot3DGrid(f2, 5); });
+    // A single-block file (the size line has more than one token).
+    const std::string s1 = TD + "/single.dat";
+    {
+        std::string body = "2 2 1\n";
+        for (size_t n = 0; n < 4; ++n) body += eil::format(" %.18e\n", static_cast<double>(n) * 0.5);
+        for (size_t n = 0; n < 4; ++n) body += eil::format(" %.18e\n", static_cast<double>(n) * 0.25);
+        body += " 0.0 0.0 0.0 0.0\n";
+        mkr(s1, body);
+    }
+    auto rs = eil::geom::importPlot3DGrid(s1, 2);
+    emit(eil::format("sg.plot3d.single.count=%d", rs.length()));
+    for (size_t i = 0; i < rs.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.single[%d]", i), rs[i]);
+    }
+    // Values spread over several lines and in scientific format.
+    const std::string s2 = TD + "/messy.dat";
+    mkr(s2, " 2 2 \n1.0 2.0\n  3.0,4.0\n");
+    mkr(s2, "2 2 1\n1.0 2.0 3.0 4.0\n1.0e+0 2.0e+0 3.0e+0\n4.0e+0\n");
+    auto rm = eil::geom::importPlot3DGrid(s2, 2);
+    dump_grid("sg.plot3d.messy", rm[0]);
+    // The gzipped path, through pipeShell("gunzip -c ...") (D:1623).
+    const std::string gzf = TD + "/out3.dat.gz";
+    {
+        eil::gzip::GzipOut o(gzf);
+        bool ok = false;
+        o.compress(read_whole(f3, ok));
+        o.finish();
+    }
+    auto rg = eil::geom::importPlot3DGrid(gzf, 3, 1.0, true);
+    emit(eil::format("sg.plot3d.gz.count=%d", rg.length()));
+    for (size_t i = 0; i < rg.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.gz[%d]", i), rg[i]);
+    }
+    auto rgsc = eil::geom::importPlot3DGrid(gzf, 3, 0.001, true);
+    dump_grid("sg.plot3d.gz.scale", rgsc[0]);
+    tryit("sg.plot3d.gz.missing", [&]() {
+        (void)eil::geom::importPlot3DGrid(TD + "/nope.dat.gz", 3, 1.0, true);
+    });
+    tryit("sg.plot3d.missing", [&]() { (void)eil::geom::importPlot3DGrid(TD + "/nope.dat", 3); });
+    std::remove(gzf.c_str());
+}
+
+// ------------------------------------------------------------------
+// sg.ccp.* — compute_cell_properties on a real lattice
+// (probe_sgrid.d:1473-1516, grid.d:124)
+// ------------------------------------------------------------------
+void grp_ccp() {
+    std::shared_ptr<Grid> g3 = std::make_shared<StructuredGrid>(2, 2, 2, "ccp3d");
+    auto sg = std::static_pointer_cast<StructuredGrid>(g3);
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                sg->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                          static_cast<double>(k));
+            }
+        }
+    }
+    Vector3 c;
+    double vol = eil::d_init<double>();
+    for (const bool tc : {true, false}) {
+        g3->compute_cell_properties(0, tc, c, vol);
+        emit(eil::format("sg.ccp.hex tc=%s %.17g %.17g %.17g %.17g", tc, eil::re(c.x),
+                         eil::re(c.y), eil::re(c.z), eil::re(vol)));
+    }
+    // Degenerate: all 8 vertices coincident -> zero volume.
+    auto deg = std::make_shared<StructuredGrid>(2, 2, 2, "ccpdeg");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                deg->opIndex(i, j, k)->set(1.0, 2.0, 3.0);
+            }
+        }
+    }
+    std::shared_ptr<Grid> dh = deg;
+    dh->compute_cell_properties(0, true, c, vol);
+    emit(eil::format("sg.ccp.degenerate %.17g %.17g %.17g %.17g", eil::re(c.x), eil::re(c.y),
+                     eil::re(c.z), eil::re(vol)));
+    // Inverted (mirrored) cell: negative volume.
+    auto inv = std::make_shared<StructuredGrid>(2, 2, 2, "ccpinv");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                inv->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                           -static_cast<double>(k));
+            }
+        }
+    }
+    std::shared_ptr<Grid> ih = inv;
+    ih->compute_cell_properties(0, true, c, vol);
+    emit(eil::format("sg.ccp.inverted %.17g %.17g %.17g %.17g", eil::re(c.x), eil::re(c.y),
+                     eil::re(c.z), eil::re(vol)));
+    ih->compute_cell_properties(0, false, c, vol);
+    emit(eil::format("sg.ccp.inverted.false %.17g %.17g %.17g %.17g", eil::re(c.x),
+                     eil::re(c.y), eil::re(c.z), eil::re(vol)));
+    // 2D lattice cells.
+    std::shared_ptr<Grid> g2 = surf_grid2d("ccp2d");
+    for (size_t n = 0; n < g2->ncells; ++n) {
+        g2->compute_cell_properties(n, true, c, vol);
+        emit(eil::format("sg.ccp.2d n=%d %.17g %.17g %.17g %.17g", n, eil::re(c.x), eil::re(c.y),
+                         eil::re(c.z), eil::re(vol)));
+    }
+    // 1D lattice: nvtx==2 falls to the default arm of the 2D/3D switch.
+    std::shared_ptr<Grid> g1 = std::make_shared<StructuredGrid>(3, 1, 1, "ccp1d");
+    tryit("sg.ccp.1d", [&g1, &c, &vol]() { g1->compute_cell_properties(0, true, c, vol); });
+    tryit("sg.ccp.oob", [&g3, &c, &vol]() { g3->compute_cell_properties(1, true, c, vol); });
+}
+
+// ------------------------------------------------------------------
+// sg.pic / sg.cbc / sg.bin / sg.fsc / sg.fncc — the search services
+// (probe_sgrid.d:1518-1626, grid.d:198-420)
+// ------------------------------------------------------------------
+void grp_search() {
+    auto g = std::make_shared<StructuredGrid>(3, 3, 2, "srch");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 3; ++j) {
+            for (size_t i = 0; i < 3; ++i) {
+                g->opIndex(i, j, k)->set(static_cast<double>(i) * 1.0,
+                                         static_cast<double>(j) * 2.0,
+                                         static_cast<double>(k) * 3.0);
+            }
+        }
+    }
+    std::shared_ptr<Grid> h = g;
+    const std::vector<Vector3> probes = {
+        Vector3(0.5, 1.0, 1.5), Vector3(1.0, 1.0, 1.5), Vector3(1.5, 3.0, 1.5),
+        Vector3(0.5, 1.0, 3.0), Vector3(0.0, 0.0, 0.0), Vector3(2.0, 4.0, 3.0),
+        Vector3(2.5, 4.5, 3.5), Vector3(0.5, 1.0, 1.5)};
+    // point_is_inside_cell at inside / face / edge / vertex / outside points.
+    for (size_t i = 0; i < probes.size(); ++i) {
+        for (size_t c = 0; c < h->ncells; ++c) {
+            emit(eil::format("sg.pic p=%d c=%d inside=%s", i, c,
+                             h->point_is_inside_cell(probes[i], c)));
+        }
+    }
+    // cell_barycentre and find_nearest_cell_centre.
+    for (size_t c = 0; c < h->ncells; ++c) {
+        const Vector3 b = h->cell_barycentre(c);
+        emit(eil::format("sg.cbc c=%d %.17g %.17g %.17g", c, eil::re(b.x), eil::re(b.y),
+                         eil::re(b.z)));
+    }
+    // Binning.
+    h->sort_cells_into_bins();
+    emit(eil::format("sg.bin.default nbx=%d nby=%d nbz=%d dx=%.17g dy=%.17g dz=%.17g", h->nbx,
+                     h->nby, h->nbz, h->deltax, h->deltay, h->deltaz));
+    emit(eil::format("sg.bin.bb0 %.17g %.17g %.17g", eil::re(h->bb0.x), eil::re(h->bb0.y),
+                     eil::re(h->bb0.z)));
+    emit(eil::format("sg.bin.bb1 %.17g %.17g %.17g", eil::re(h->bb1.x), eil::re(h->bb1.y),
+                     eil::re(h->bb1.z)));
+    for (size_t c = 0; c < h->ncells; ++c) {
+        const Vector3 b = h->cell_barycentre(c);
+        emit(eil::format("sg.bin.ix c=%d b=%.17g %.17g %.17g ix=%d iy=%d iz=%d", c, eil::re(b.x),
+                         eil::re(b.y), eil::re(b.z), h->get_bin_ix(b), h->get_bin_iy(b),
+                         h->get_bin_iz(b)));
+    }
+    const auto dump_bins = [&h](const std::string& tag) {
+        for (size_t ix = 0; ix < h->nbx; ++ix) {
+            for (size_t iy = 0; iy < h->nby; ++iy) {
+                for (size_t iz = 0; iz < h->nbz; ++iz) {
+                    emit(eil::format("%s bin[%d][%d][%d]=%s", tag, ix, iy, iz,
+                                     h->bins[ix][iy][iz]));
+                }
+            }
+        }
+    };
+    dump_bins("sg.bin.contents");
+    // Points exactly on a bin boundary and one ULP either side of it.
+    std::vector<double> bx;
+    for (size_t ix = 1; ix < h->nbx; ++ix) {
+        bx.push_back(eil::re(h->bb0.x) + static_cast<double>(ix) * h->deltax);
+    }
+    for (const double v : bx) {
+        for (const char* off : {"exact", "nextup", "nextdown"}) {
+            const double x = (std::strcmp(off, "nextup") == 0)
+                                 ? std::nextafter(v, std::numeric_limits<double>::infinity())
+                                 : ((std::strcmp(off, "nextdown") == 0)
+                                        ? std::nextafter(v, -std::numeric_limits<double>::infinity())
+                                        : v);
+            const Vector3 p = Vector3(x, 1.0, 1.5);
+            emit(eil::format("sg.bin.edge v=%.17g off=%s ix=%d iy=%d iz=%d", x, off,
+                             h->get_bin_ix(p), h->get_bin_iy(p), h->get_bin_iz(p)));
+        }
+    }
+    // y and z boundaries too.
+    const Vector3 py = Vector3(0.5, eil::re(h->bb0.y) + h->deltay, 1.5);
+    emit(eil::format("sg.bin.edgey iy=%d", h->get_bin_iy(py)));
+    const Vector3 pyn = Vector3(0.5, std::nextafter(eil::re(h->bb0.y) + h->deltay,
+                                                    -std::numeric_limits<double>::infinity()),
+                                1.5);
+    emit(eil::format("sg.bin.edgey.down iy=%d", h->get_bin_iy(pyn)));
+    const Vector3 pz = Vector3(0.5, 1.0, eil::re(h->bb0.z) + h->deltaz);
+    emit(eil::format("sg.bin.edgez iz=%d", h->get_bin_iz(pz)));
+    const Vector3 pzn = Vector3(0.5, 1.0, std::nextafter(eil::re(h->bb0.z) + h->deltaz,
+                                                         -std::numeric_limits<double>::infinity()));
+    emit(eil::format("sg.bin.edgez.down iz=%d", h->get_bin_iz(pzn)));
+    // far outside / left of the box (the clamp rows).
+    const Vector3 far = Vector3(-1.0, -1.0, -1.0);
+    emit(eil::format("sg.bin.far ix=%d iy=%d iz=%d", h->get_bin_ix(far), h->get_bin_iy(far),
+                     h->get_bin_iz(far)));
+    const Vector3 over = Vector3(1.0e6, 1.0e6, 1.0e6);
+    emit(eil::format("sg.bin.over ix=%d iy=%d iz=%d", h->get_bin_ix(over), h->get_bin_iy(over),
+                     h->get_bin_iz(over)));
+    const Vector3 nanp = Vector3(std::numeric_limits<double>::quiet_NaN(), 1.0, 1.5);
+    emit(eil::format("sg.bin.nan ix=%d iy=%d iz=%d", h->get_bin_ix(nanp), h->get_bin_iy(nanp),
+                     h->get_bin_iz(nanp)));
+    // fast / slow / dispatcher search at a set of points
+    size_t idx = 0;
+    bool found = false;
+    for (const Vector3& p : probes) {
+        h->find_enclosing_cell_fast(p, idx, found);
+        emit(eil::format("sg.fsc.fast p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+        h->find_enclosing_cell_slow(p, idx, found);
+        emit(eil::format("sg.fsc.slow p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+        h->find_enclosing_cell(p, idx, found);
+        emit(eil::format("sg.fsc.dis p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+    }
+    // On-boundary cells searched at a shared face of two cells.
+    const Vector3 onface = Vector3(1.0, 1.0, 1.5);
+    h->find_enclosing_cell_fast(onface, idx, found);
+    emit(eil::format("sg.fsc.shared fast idx=%d found=%s", idx, found));
+    h->find_enclosing_cell_slow(onface, idx, found);
+    emit(eil::format("sg.fsc.shared slow idx=%d found=%s", idx, found));
+    // A 1x1x1 bin grid (the degenerate delta floor of grid.d:301-304).
+    std::shared_ptr<Grid> s1 = std::make_shared<StructuredGrid>(2, 2, 1, "singlebin");
+    s1->sort_cells_into_bins(1, 1, 1);
+    emit(eil::format("sg.bin.one nbx=%d dx=%.17g contents=%s", s1->nbx, s1->deltax,
+                     s1->bins[0][0][0]));
+    tryit("sg.bin.zero", [&s1]() { s1->sort_cells_into_bins(0, 1, 1); });
+    // A second sort appends into the same bins (grid.d:306-310 keeps contents).
+    std::shared_ptr<Grid> app = std::make_shared<StructuredGrid>(2, 2, 1, "append");
+    app->sort_cells_into_bins(2, 2, 1);
+    emit(eil::format("sg.bin.twice a=%s b=%s", app->bins[0][0][0], app->bins[1][1][0]));
+    app->sort_cells_into_bins(2, 2, 1);
+    emit(eil::format("sg.bin.thrice a=%s b=%s", app->bins[0][0][0], app->bins[1][1][0]));
+    // 2D: nbinz is forced to 1 (grid.d:280).
+    std::shared_ptr<Grid> g2d = surf_grid2d("bin2d");
+    g2d->sort_cells_into_bins(3, 2, 7);
+    emit(eil::format("sg.bin.2d nbz=%d nby=%d contents0=%s", g2d->nbz, g2d->nby,
+                     g2d->bins[0][0][0]));
+    // nearest cell centre
+    double dist = 0.0;
+    for (const Vector3& p : probes) {
+        h->find_nearest_cell_centre(p, idx, dist);
+        emit(eil::format("sg.fncc p=%.17g %.17g %.17g idx=%d d=%.17g", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, dist));
+    }
+}
+
+// ------------------------------------------------------------------
+// sg.unit.* — sgrid.d's own unittest (probe_sgrid.d:1628-1656, D:1833-1865).
+// The unittest's 15 asserts are put in as executable assertions, in source order with
+// their D line numbers, exactly as the probe header asks (probe:115-118); the corpus
+// shows every one of them holding.
+// ------------------------------------------------------------------
+void grp_unit() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    auto my_patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf;
+    for (int n = 0; n < 4; ++n) cf.append(std::make_shared<LinearFunction>());
+    auto my_grid = std::make_shared<StructuredGrid>(*my_patch, 11, 21, cf);
+    my_grid->set_tag(eil::geom::Face::north, "north-face");
+    my_grid->set_tags(tags({{"south", "south-face-here-sir"},
+                            {"west", "west-face-here-sir!"}}));
+    const std::string repr = my_grid->toString();
+    emit("my_grid=" + repr);
+    emit(eil::format("sg.unit.canFind.north=%s", repr.find("north-face") != std::string::npos));
+    emit(eil::format("sg.unit.canFind.south=%s",
+                     repr.find("south-face-here-sir") != std::string::npos));
+    emit(eil::format("sg.unit.canFind.west=%s",
+                     repr.find("west-face-here-sir!") != std::string::npos));
+    // D:1846-1847 assert(repr.canFind(...)) x3, D:1848 the vector comparison
+    eil_assert(repr.find("north-face") != std::string::npos); // D:1846;
+    eil_assert(repr.find("south-face-here-sir") != std::string::npos); // D:1847;
+    eil_assert(repr.find("west-face-here-sir!") != std::string::npos); // D:1848;
+    emit(eil::format("sg.unit.v55=%.17g %.17g %.17g", eil::re(my_grid->opIndex(5, 5)->x),
+                     eil::re(my_grid->opIndex(5, 5)->y), eil::re(my_grid->opIndex(5, 5)->z)));
+    emit(eil::format("sg.unit.v55.approx=%s",
+                     eil::geom::approxEqualVectors(*my_grid->opIndex(5, 5),
+                                                   Vector3(0.5, 0.35, 0.0))));
+    eil_assert(eil::geom::approxEqualVectors(*my_grid->opIndex(5, 5),
+                                            Vector3(0.5, 0.35, 0.0))); // D:1851
+    auto my_subgrid = my_grid->subgrid(4, 3, 4, 5);
+    emit(eil::format("sg.unit.sub=%.17g %.17g %.17g", eil::re(my_subgrid->opIndex(1, 1)->x),
+                     eil::re(my_subgrid->opIndex(1, 1)->y),
+                     eil::re(my_subgrid->opIndex(1, 1)->z)));
+    emit(eil::format("sg.unit.sub.approx=%s",
+                     eil::geom::approxEqualVectors(*my_subgrid->opIndex(1, 1),
+                                                   Vector3(0.5, 0.35, 0.0))));
+    eil_assert(eil::geom::approxEqualVectors(*my_subgrid->opIndex(1, 1),
+                                            Vector3(0.5, 0.35, 0.0))); // D:1855
+    // D:1857-1864, the ten uflowz asserts of the unittest
+    eil_assert(eil::geom::uflowz(1.0) == 1.0); // D:1857;
+    eil_assert(eil::geom::uflowz(1.0e-32) == 0.0); // D:1858;
+    eil_assert(eil::geom::uflowz(1.0e-29) == 1.0e-29); // D:1859;
+    eil_assert(eil::geom::uflowz(1.0e+29) == 1.0e+29); // D:1860;
+    eil_assert(eil::geom::uflowz(1.0e+32) == 1.0e+30); // D:1861;
+    eil_assert(eil::geom::uflowz(-1.0) == -1.0); // D:1863;
+    eil_assert(eil::geom::uflowz(-1.0e-32) == 0.0); // D:1864;
+    eil_assert(eil::geom::uflowz(-1.0e-29) == -1.0e-29); // D:1865;
+    eil_assert(eil::geom::uflowz(-1.0e+29) == -1.0e+29); // D:1866;
+    eil_assert(eil::geom::uflowz(-1.0e+32) == -1.0e+30); // D:1867;
+    emit(eil::format("sg.unit.niv=%d njv=%d nkv=%d ncells=%d label=%s", my_grid->niv,
+                     my_grid->njv, my_grid->nkv, my_grid->ncells, my_grid->label));
+}
+
 //<<<SECTIONS-NOW>>>
 
 // ------------------------------------------------------------------
@@ -1776,6 +2165,11 @@ int main(int argc, char** argv) {
     grp_gridpro();
     grp_rsgp();
     grp_fswap();
+    grp_plot3d();
+    grp_ccp();
+    grp_search();
+    grp_unit();
+    emit("sg.done");   // probe_sgrid.d:1627, the last corpus row (2097)
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
