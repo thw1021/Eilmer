@@ -753,6 +753,46 @@
      然后删掉两份替身。
   → 与 T-926 第 1 条、T-928 同批做（都要重建 `eil_geom`）；**做完的判定不是"能编过"**，
   而是三配置复跑 + `d_init_doubles`/`d_set_length`/`set_length_d` 三个替身**都从树里消失**。
+- [ ] **T-930** **substrate 缺口（Wave 3 起就是硬依赖）：Phobos 的 `to!double` 十进制→二进制**不是正确舍入的**。
+  由 G6a 的 `sgrid_demo` 产物门禁暴露（`cmake/wave2_grid_g6.cmake` 里那条"10 of 16 rows
+  reproduce"的注释），主线程**自己复测确认**：
+  `probes/substrate/probe_to_double_rounding.d` → `substrate_to_double_rounding.txt`
+  （34 行、两跑逐字节相同、行内无地址），同一批 token 用 g++ -O0 打 `strtod` 的位型对比，
+  **15 个数值 token 里 2 个差 1 ULP，且 D 是错的那一方**：
+  `0.2929550221030571` → D `0x1.2bfc66bc86beep-2`（bits `3fd2bfc66bc86bee`）、
+  strtod/`eil::to_double`/Python `float()` 都给 `…bed`；`2.929550221030571e-1` 同样差 1 ULP
+  （说明指数写法走的是同一条路）。其余 13 个（含 `0.1`/`0.3`/`1e308`/denormal/
+  `…5712345` 长位串）**位型全同**。
+  - **为什么它现在就要记下来**：这些值不经过任何几何运算——`import_gridpro_grid`
+    （sgrid.d:1603）只做 `uflowz(scale * to!double(tks[m]))`、`scale=1.0`，
+    所以差异**完全来自解析**。而 Wave 3+ 的入口全是解析：Lua 配置里的浮点字面量、
+    `.fld`/`.dat` 表、`fluidblock` 头、网格文件。**只要用户写下一个 D 会误舍的十进制，
+    端口就给另一个 double**，之后每一步都跟着错。
+  - **纪律**：忠实复刻优先于"更正确"。本波要求是"行为与 D 求解器一致、不得优化"，
+    所以 `eil::to_double` 必须复刻 Phobos 的算法（`std/conv.d` 的 decimal→binary 快速路径），
+    **不能**停在 strtod。T-913 只管了它的**错误文本**，没管**舍入**。
+  - **实现前必须先扫范围**：写一个 `probes/substrate/probe_to_double_range.d`，
+    把 Phobos 路径与 strtod 在**大量随机/边界十进制串**上比位型，量出分歧率与触发条件
+    （位数？是否含指数？尾数超过 19 位？），再决定是复刻整条快速路径还是
+    只在"会分歧的类"上走复刻。**先量后写**，这是本仓库反复验证过的顺序。
+  - **门禁状态**：`demo_equiv_geom_grid_sgrid` 已注册且绿（26 行 stdout 在 `%.6g` 下看不出差）；
+    `demo_artefacts_geom_grid_sgrid` **故意没注册**——16 行里 6 行不行，
+    5 行是本条、1 行是 G6b 未落地（`test_gmo_grid-2D.vtk`）。
+    注册条件写死在 `wave2_grid_g6.cmake` 的注释里。
+- [ ] **T-931** `geom/grid/paver.cpp` 的**内部铺面算术**与参照差 1 ULP 级（不是格式化差异）。
+  由 `paver_demo` 的产物暴露：`paved_grid.vtk` **字节长度相同（141,490）**，
+  但 **398/1490 个顶点行的末位不同**，第一处差异在第 235 行（顶点 228）
+  `6.036702247749276516e-03` vs 端口 `6.036702247749274781e-03`，全文件最大相对差 **4.3e-13**。
+  **定位是量出来的**：前 **214** 个顶点逐字节相同，而 214 正是 D 基线第 2 行说的
+  "there are 214 points in the external boundary" ⇒ `construct_boundary` 与 gpath 的弧/线采样
+  与参照一致，分歧在 **paver 的内部铺面**里。
+  **为什么现有门禁没抓到**：`geom_grid_paver` 语料 **1961/1961 逐字节相同**——它数的量
+  覆盖不到这条路径（与 T-923"没有语料的路径能藏住东西"同一类，只是这里藏的是数值末位）。
+  **待做**：给 paver 的内部点补语料（按 `%.17g` + 位型），先复现"214 之后才开始差"，
+  再定位到具体表达式；候选是 T-920 的 `cos/sin` 融合、T-909 的常量折叠、以及
+  迭代里 `a*b+c` 的融合次序。**不许**为了产物一致而调容差。
+  `demo_artefacts_geom_grid_paver` 因此在 `wave2_grid_g6.cmake:112-119` 注释着，
+  stdout 门禁（129/129）照常注册且绿。
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；

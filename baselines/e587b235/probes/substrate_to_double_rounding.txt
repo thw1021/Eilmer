@@ -1,0 +1,50 @@
+# baselines/e587b235/probes/substrate_to_double_rounding.txt
+# Phobos `to!double` vs glibc strtod, bit patterns, on the literals that matter for
+# file/config parsing. Captured by probes/substrate/probe_to_double_rounding.d with
+# ldc2 1.40.0 at -O0 (reproducible: two runs byte-identical, no addresses in any row).
+#
+# Comparator (not part of this file's rows, kept for the record): a g++ -O0 program
+# printing strtod's bits for the same 17 tokens. Rows that diverge, 1 ULP each, D being
+# the one that is NOT correctly rounded:
+#   0.2929550221030571     D 0x1.2bfc66bc86beep-2 / strtod 0x1.2bfc66bc86bedp-2
+#   2.929550221030571e-1   D 0x1.2bfc66bc86beep-2 / strtod 0x1.2bfc66bc86bedp-2
+# 2 of 15 numeric tokens diverge. The two whitespace tokens are grammar, not rounding.
+#
+# Why this file exists: geom_grid_sgrid_demo.artefacts.txt has 5 of 16 rows differing from
+# the D reference, always in the last printed digit, and the values in those .vtk files come
+# straight from `to!double(token)` in import_gridpro_grid (sgrid.d:1603) with scale=1.0 -- no
+# geometry arithmetic at all. Backlog T-930.
+to!double|src=[0.2929550221030571]|bits=3fd2bfc66bc86bee|a=0x1.2bfc66bc86beep-2
+to!double|src=[0.2929550221030572]|bits=3fd2bfc66bc86bef|a=0x1.2bfc66bc86befp-2
+to!double|src=[0.292955022103057]|bits=3fd2bfc66bc86bec|a=0x1.2bfc66bc86becp-2
+to!double|src=[2.929550221030571e-1]|bits=3fd2bfc66bc86bee|a=0x1.2bfc66bc86beep-2
+to!double|src=[0.1]|bits=3fb999999999999a|a=0x1.999999999999ap-4
+to!double|src=[0.3]|bits=3fd3333333333333|a=0x1.3333333333333p-2
+to!double|src=[1.0000000000000002]|bits=3ff0000000000001|a=0x1.0000000000001p+0
+to!double|src=[9.007199254740993e15]|bits=4340000000000000|a=0x1p+53
+to!double|src=[0.29295502210305712345]|bits=3fd2bfc66bc86bee|a=0x1.2bfc66bc86beep-2
+to!double|src=[1e308]|bits=7fe1ccf385ebc8a0|a=0x1.1ccf385ebc8ap+1023
+to!double|src=[1e-308]|bits=000730d67819e8d2|a=0x0.730d67819e8d2p-1022
+to!double|src=[4.9406564584124654e-324]|bits=0000000000000001|a=0x0.0000000000001p-1022
+to!double|src=[0.5000000000000001]|bits=3fe0000000000001|a=0x1.0000000000001p-1
+to!double|src=[2.2250738585072011e-308]|bits=000fffffffffffff|a=0x0.fffffffffffffp-1022
+to!double|src=[1.7976931348623157e308]|bits=7fefffffffffffff|a=0x1.fffffffffffffp+1023
+to!double|src=[0.2929550221030571 ]|class=std.conv.ConvException|msg=[Unexpected ' ' when converting from type string to type double]
+to!double|src=[ 0.2929550221030571]|class=std.conv.ConvException|msg=[no digits seen for input " 0.2929550221030571".]
+roundtrip|src=[0.2929550221030571]|g17=0.29295502210305713
+roundtrip|src=[0.2929550221030572]|g17=0.29295502210305718
+roundtrip|src=[0.292955022103057]|g17=0.29295502210305702
+roundtrip|src=[2.929550221030571e-1]|g17=0.29295502210305713
+roundtrip|src=[0.1]|g17=0.10000000000000001
+roundtrip|src=[0.3]|g17=0.29999999999999999
+roundtrip|src=[1.0000000000000002]|g17=1.0000000000000002
+roundtrip|src=[9.007199254740993e15]|g17=9007199254740992
+roundtrip|src=[0.29295502210305712345]|g17=0.29295502210305713
+roundtrip|src=[1e308]|g17=1e+308
+roundtrip|src=[1e-308]|g17=9.9999999999999991e-309
+roundtrip|src=[4.9406564584124654e-324]|g17=4.9406564584124654e-324
+roundtrip|src=[0.5000000000000001]|g17=0.50000000000000011
+roundtrip|src=[2.2250738585072011e-308]|g17=2.2250738585072009e-308
+roundtrip|src=[1.7976931348623157e308]|g17=1.7976931348623157e+308
+roundtrip|src=[0.2929550221030571 ]|class=std.conv.ConvException|msg=[Unexpected ' ' when converting from type string to type double]
+roundtrip|src=[ 0.2929550221030571]|class=std.conv.ConvException|msg=[no digits seen for input " 0.2929550221030571".]
