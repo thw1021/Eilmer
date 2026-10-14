@@ -32,8 +32,14 @@ src/nm/newton.cpp:        {fidelity: exact, verified_by: [ctest:nm_newton]}
 # --- nm: linear algebra (wave 1, cluster B) ---
 src/nm/bbla.hpp:          {fidelity: adapted-handles, variants: [complex_numbers], verified_by: [ctest:nm_bbla, 467 quantities bit-identical vs D]}
 src/nm/bbla.cpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_bbla]}
-src/nm/stmatrix.hpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix]}
-src/nm/stmatrix.cpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix]}
+# stmatrix.d's reader had no failure-path coverage at all, which is how two invented
+# exception texts survived in the port (see backlog T-923 for the measurements): D raises
+# ErrnoException text built from strerror for an unusable path, and core.exception
+# .ArrayIndexError "index [0] is out of bounds for array of length 0" for every empty or
+# truncated input, because readln() at EOF returns "" rather than throwing. Both are now
+# replayed byte for byte against a 7-row ldc2 corpus.
+src/nm/stmatrix.hpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix, ctest:nm_stmatrix_fails 7 of 7 failure-path messages byte-identical]}
+src/nm/stmatrix.cpp:      {fidelity: adapted-handles, verified_by: [ctest:nm_stmatrix, ctest:nm_stmatrix_fails]}
 src/nm/smla.hpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_smla, gmres/ilu paths bit-identical]}
 src/nm/smla.cpp:          {fidelity: adapted-handles, verified_by: [ctest:nm_smla]}
 src/nm/rsla.hpp:          {fidelity: exact, verified_by: [ctest:nm_rsla at N=2,3,4]}

@@ -25,7 +25,9 @@
 // stmatrix.d:11 imports core.stdc.stdlib:exit but the module never calls it, so
 // there is no C++ counterpart to add.
 
+#include <cerrno>
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -89,14 +91,29 @@ STMatrix<T> readFromMatrixMarketFile(const std::string& fName);
 // (T appears solely in `to!T`, per stmatrix.d:55).
 template <typename T>
 STMatrix<T> readFromMatrixMarketFile(const std::string& fName) {
+    // D opens with `auto f = File(fName, "r")` (stmatrix.d:34), which raises
+    // std.exception.ErrnoException on an unusable path. Measured text for an absent file:
+    //   Cannot open file `/tmp/stm/does_not_exist.mtx' in mode `r' (No such file or directory)
+    // The substrate has no ErrnoException yet, so -- exactly as
+    // src/geom/surface/parametricsurface.cpp:58-65 does for mode `w' -- the message is
+    // rebuilt from strerror and the class stays ExceptionBase. An earlier version of this
+    // line threw `Failed to open "name"', a text D never prints.
     std::ifstream f(fName.c_str());
     if (!f) {
-        throw eil::ExceptionBase("Failed to open \"" + fName + "\"", __FILE__, __LINE__);
+        const int saved_errno = errno;
+        throw eil::ExceptionBase("Cannot open file `" + fName + "' in mode `r' ("
+                                 + std::strerror(saved_errno) + ")", __FILE__, __LINE__);
     }
     // Keep throwing away comment lines until we find information about the size and number of entries.
+    // D never tests for end of file here: readln() at EOF yields an empty string, and the very
+    // next statement `line[0]` raises. Measured for an empty file and for a comments-only file
+    // (baselines/e587b235/probes/nm_stmatrix_fails.txt):
+    //   class=core.exception.ArrayIndexError  msg=[index [0] is out of bounds for array of length 0]
+    // so a failed getline must fall through to the same out-of-bounds raise rather than into an
+    // invented "Unexpected EOF" exception (backlog T-923).
     std::string line;
     for (;;) {
-        if (!std::getline(f, line)) throw eil::ExceptionBase("Unexpected EOF", __FILE__, __LINE__);
+        std::getline(f, line);
         line = strip(line);
         if (line.length() == 0) throw eil::RangeError(0, 0);   // D: line[0] on ""
         if (line[0] != '%') break;
@@ -111,7 +128,11 @@ STMatrix<T> readFromMatrixMarketFile(const std::string& fName) {
     // The MatrixMarket format allows duplicate entries for (i,j) BUT this code is specifically built for files from
     // the SuiteSparse collection. These matrices do NOT have duplicates, so we won't handle that case here.
     for (size_t k = 0; k < n_nzeros; ++k) {
-        if (!std::getline(f, line)) throw eil::ExceptionBase("Unexpected EOF", __FILE__, __LINE__);
+        // Same as D, which does not test the stream here either: a file that declares more
+        // entries than it holds makes readln() yield "", split() gives a zero-length array and
+        // `tks[0]` raises. Measured for a header claiming 2 entries with 1 row present:
+        //   class=core.exception.ArrayIndexError  msg=[index [0] is out of bounds for array of length 0]
+        std::getline(f, line);
         line = strip(line);
         tks = split(line);
         auto i = eil::to<size_t>(tks[0]) - 1; // Change 1- to 0-offset

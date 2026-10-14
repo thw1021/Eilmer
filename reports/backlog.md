@@ -187,6 +187,34 @@
   或按 `with_libplot` 变体推到 Wave 12（与 T-904 `complex_numbers` 同批）。
   留此条是为了**防止将来又把它当"T-011 做完就能做"** 而凭空造桩
 
+- [x] **T-923** **假门禁**：`nm/stmatrix.d` 的读取失败路径**一条语料都没有**，
+  于是端口里两条**凭空造的异常文本**一直没人管。
+  **完成 2026-10-14**（同 T-922 的动因，扫出来的下一处）。
+  做法是先**量 D 真正抛什么**（`probes/nm/probe_stmatrix_fails.d` →
+  `baselines/e587b235/probes/nm_stmatrix_fails.txt`，**7 行，D 连跑两次自比相同**）：
+  * 文件打不开：`std.exception.ErrnoException`
+    `msg=[Cannot open file \`X' in mode \`r' (No such file or directory)]`
+    ——端口原来抛的是 `ExceptionBase("Failed to open \"X\"")`，**文本与类都不是 D 的**；
+  * 空文件 / 只有注释 / 声明 2 条只给 1 条 / 首个空行：D **一律**
+    `core.exception.ArrayIndexError`
+    `msg=[index [0] is out of bounds for array of length 0]`，
+    因为 D 的 `readln()` 到 EOF **不抛异常、返回空串**，紧接着的 `line[0]`（或空 `split()`
+    之后的 `tks[0]`）才是真正发作点 ⇒ 端口原来的
+    `ExceptionBase("Unexpected EOF")` 是**这条函数里根本不存在的异常**。
+  * 表头 token 不足：`ArrayIndexError index [2] is out of bounds for array of length 2`。
+  修法按实测改三处（`src/nm/stmatrix.hpp`）：open 失败改为 strerror 组装的 D 文本
+  （substrate 尚无 ErrnoException，类名限制是既有的 **T-903**）；两处 EOF 检查**删掉**，
+  让 `getline` 失败留下的空串走 D 同一条越界路径——端口 `eil::Array::operator[]` 抛的
+  `RangeError(i,n)` 文本与 D 逐字节相同，所以不需要新增任何机制。
+  **新增门禁** `ctest:nm_stmatrix_fails`（7 行逐字节），并做过**判别力验证**：
+  故意把 mode 改成 `w'`、把 `RangeError(0,0)` 改成 `(1,0)` → **3 行变红**；
+  还原后 **7/7**。这条测试比原来那条"读得动就好"的测试强的地方，正是它现在会因
+  异常文本改变而红。
+  **推广出来的检查（后续波次照做）**：凡端口里 `throw ...Base("任意字面量")` 的站点，
+  该字面量必须在 D 树里能 grep 到原文；grep 不到就是**编的**。本轮按这条全树扫了一遍
+  `src/`：**100 个带字面量消息的 throw 站点，只有这 3 个对不上**（其余 97 个逐字命中 D），
+  说明这不是普遍习惯问题，而是**没有语料覆盖的路径**才会漏——所以本条的价值在
+  "补语料"而不只在"改文本"。
 - [ ] **T-016** Wave 2 收尾报告 `wave-02.md` + `wave-02` tag + 本清单更新
 
 **Wave 2 执行约束**（源自 wave-01 集成的 3 类返工，必须写进每个子代理简报）：
