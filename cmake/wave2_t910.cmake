@@ -17,3 +17,12 @@ add_test(NAME substrate_conv_failtext
          COMMAND test_substrate_conv_failtext
                  ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_conv_failtext.txt
                  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_data/conv_inputs.hex)
+
+# T-911: the Phobos-vs-glibc divergence census. Deliberately does not require zero
+# differences; it counts and classifies them, so the 1e-13 tolerance floor is a
+# measured statement rather than an inherited assumption.
+add_executable(test_substrate_phobos_bits tests/test_substrate_phobos_bits.cpp)
+target_link_libraries(test_substrate_phobos_bits PRIVATE eil_substrate)
+add_test(NAME substrate_phobos_bits
+         COMMAND test_substrate_phobos_bits
+                 ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_phobos_bits.txt)

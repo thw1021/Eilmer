@@ -209,26 +209,48 @@
   同样 `slabvolume.d:32` 在 `super()` 之前调继承的 `face0123(0.0,0.0)` 也是 SIGSEGV。
   记录以免将来把它误当移植缺陷；若 Wave 7 的 `geom/luawrap` 允许 Lua 传 null 进来，
   那时"崩溃"就是用户可见行为，须按 D 原样保留（不做空指针检查）→ **Wave 7 复核**
-- [ ] **T-911** Phobos 的 `exp/sin/cos/tanh/sinh` 同样是**纯源码实现**
-  （`std/math/{trigonometry,exponential,algebraic}.d`），不是 C 库转发。T-910 已经证明
-  "D 的标准库函数名 == C 的同名函数"这个默认假设是**错的**，而
-  `geom/misc/univariatefunctions` 那 **42 行 1 ULP** 现在有了另一个解释：也许可以像
-  `atan2` 那样用 replica 消掉，而不是当作不可消除的本底。Wave 3 的 `gas/` 大量用 `exp`
-  （CEA LUT、Arrhenius 反应率），代价与收益都在那里。**先做位型级探针实测**
-  （照 `probe_mp_rot_chain.d` 的形状：同一自变量两侧各算一遍、打印 `bits=`），
-  统计差 1 ULP 的**比例**，再决定是否转写 `expImpl`/`sinImpl`/`cosImpl`。
-  在实测之前，现有 1e-13 门禁口径不变 → **Wave 3 开波前**
-- [x] **T-913** substrate 缺陷（两个代理各自独立实测到同一处）：
-  `substrate/include/eil/conv.hpp` 里 `to!double` 选择错误文本的分支是**从一条语料行
-  （"not a number"）推广出来的**，对 `#c` 错了——D 给 `no digits seen for input "#c".`，
-  端口给 `error converting input to floating point ...`。`svgpath.d`/`gpath_utils.d`
-  会把 `e.msg` 打进用户终端，这是用户可见契约。**完成 2026-10-14**：按 443 个操作数
-  重测规则后重写（`probes/substrate/probe_conv_failtext.d` +
-  `tests/test_data/conv_inputs.hex` + `tests/test_substrate_conv_failtext.cpp`，
-  **443/443 行字节相同**），实测出 7 条 D 特有语义（`+nan` 可转但 `+inf` 不可；
-  Phobos 只匹配三个字母 `inf`，故 `infinity` 是 unexpected `i`；`1e` 与 `1e+` 文本不同；
-  `_` 只在数字之后才是分隔符；hex 尾数遇 `p` 即停；溢出才是 Range error 而下溢只是 0）。
-  `geom_gpath_gpath_utils` 因此从 563/564 → **564/564**，全树三配置 76/76
+- [x] **T-911** Phobos 超越函数与 glibc 的分歧——**已实测成分类清单，不再当本底假设**
+  — **完成 2026-10-14**：`probes/substrate/probe_phobos_bits.d`（**673 行，每行带
+  IEEE-754 位型**）+ `tests/test_substrate_phobos_bits.cpp` 普查。
+  结果 **597/673 逐位相同（88.7%）**，其余分四类：
+  * **已经逐位相同、不需要 replica 的**：`sin` 32/32、`cos` 32/32、`sqrt` 32/32、
+    `log2` 32/32、`asin` 11/11、`acos` 11/11、`pow` 四种指数臂各 32/32。
+    ⇒ "Phobos 这些都是纯源码实现所以必然不同"这个前提是**错的**。
+  * **1 ULP 类（可用 replica 消除，代价/收益待定）**：`atan2` 12、`cbrt` 12、`sinh` 5、
+    `tanh` 5、`exp` 4、`cosh` 4、`atan` 2、`log10` 2、`log` 1、`expm1` 6。
+  * **结构类（>1 ULP，不是舍入差异）**：
+    `sinh(-20)` D=`-242582602.56479013` vs glibc `-242582597.70489514`（相对 **2.0e-08**，
+    且 **D 侧 `sinh` 破坏奇对称**：`sinh(20)` 与 `-sinh(-20)` 不等，而两者都不等于
+    `(exp(x)-exp(-x))/2`＝glibc 值）；
+    `sinh(710)` D=`inf` vs glibc `1.1169973830808557e+308`（**溢出阈值不同**）；
+    `tan(1e10)` 相对 **1.7e-06**（辐角约化品质不同）；`cbrt` 4 行 2 ULP；`expm1` 1 行 2 ULP。
+  * **域错误 NaN 符号** 5 行（`sqrt_neg`/`log_neg`/`asin_gt`/`acos_gt`/`pow_neg_half`），
+    substrate 的 `canonical_nan` 已在管，不是新分歧。
+  **对求解器的实际影响（逐个调用点查过）**：
+  `sinh` 在主干只有 `gas/two_temperature_nitrogen.d:111`（`sinh(θ_N2/(2Tv))`，**Tv 很小时
+  自变量可越过 710 → D 出 inf 而 C++ 出 1.1e308，这是真会走到的路径**）、
+  `geom/misc/univariatefunctions.d:600,704`（`sinh(beta)/beta`，beta 正常量级）、
+  `ntypes/complex.d:978-979`（`complex_numbers` 变体，Wave 12）。
+  `tan` 的调用点自变量都是小角度（`nozzleexpansionpatch.d:114`、
+  `properties.d:1031/1047/1054` 的 `radians(30)`/`radians(60)`），落在 1 ULP 类。
+  `tanh` 有负自变量（`quodas/source/block.d:443` `tanh(-d/scale)`）但只 1 ULP。
+  `cbrt`/`expm1` 主干调用点 **0**。
+  ⇒ 决定：**不为 1 ULP 类建 replica**（改了也只是把 88.7% 提到 97.9%，
+  而门禁是 1e-13，1 ULP 是 1e-16 量级）；
+  但 **Wave 3 必须专门处理 `sinh` 的两处结构性分歧**（奇对称破坏 + 溢出阈值），
+  因为 `two_temperature_nitrogen.d` 会走到。已开 **T-916** 钉住它。
+  普查本身作为常驻测试留在树里：它**不要求差异为零**（差异是它测的东西），
+  只在两侧不再描述同一批行时失败。
+- [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
+  (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
+  二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
+  (b) 溢出阈值不同：`sinh(710)` D 给 `inf`，glibc 给 `1.1169973830808557e+308`。
+  主干调用点 `gas/two_temperature_nitrogen.d:111` 的自变量是 `θ_N2/(2*Tv)`，
+  **Tv 很小（冷启动/高激波）时可以越过 710**，届时 D 出 inf、C++ 出有限值，
+  振动能量方程随之分叉——不是末位差异。
+  转写时须：先用 `probes/gas/probe_sinh_range.d`（待写）扫 `Tv` 全域把两条分歧的
+  实际命中范围量出来，再决定是复刻 Phobos 的 `sinhImpl` 还是在调用点显式保留 D 行为。
+  **禁止**用"反正 1e-13 容差够宽"糊过去：inf 与 1e308 的相对差是 1e-308 量级的**类别**差 → **Wave 3**
 - [ ] **T-912** 转写纪律（T-910 的教训，须写进每个子代理简报）：D 侧凡调用
   `std.math` 的函数，**必须先确认它在 Phobos 里是转发 C 库还是自带实现**，
   再决定 C++ 侧写 `std::xxx` 还是 `eil::xxx`。已知清单：
