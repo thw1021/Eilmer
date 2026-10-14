@@ -2208,9 +2208,11 @@ void UnstructuredGrid::read_from_vtk_text_file(const std::string& fileName, doub
     DTextReader f;
     f.f = raw;
     tokens = read_VTK_header_line("vtk", raw);         // D:1790 (sgrid.d:1544)
-    tokens = split_ws(d_strip(f.readln()));            // D:1791 label = readln().strip()
+    // D:1791 `label = f.readln().strip()` — ONE line consumed here. Reading twice (as an
+    // earlier port did) pushes the "ASCII" scan one line too far, and corpus rows 1199 and
+    // 1201 (which reach D:1795) plus 1203 (which reaches D:1793) all came back as
+    // "Did not find ASCII while reading VTK grid file" instead.
     label = d_strip(f.readln());
-    (void)tokens;
     tokens = read_VTK_header_line("ASCII", raw);       // D:1792
     tokens = read_VTK_header_line("UNSTRUCTURED_GRID", raw); // D:1793
     tokens = split_ws(d_strip(f.readln()));            // D:1794

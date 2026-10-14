@@ -2473,6 +2473,209 @@ void grp_su2rd() {
         [&esu2]() { UnstructuredGrid q(esu2, "su2text", true); });
 }
 
+// std.file.exists (used by the probe's boundary-set rows) — the artefact paths here are
+// plain files and directories under TD, so a stat is enough and keeps <filesystem> out.
+bool path_exists(const std::string& p) {
+    struct stat st;
+    return ::stat(p.c_str(), &st) == 0;
+}
+
+// ------------------------------------------------------------------
+// us.vtk.* — write_to_vtk_file (D:1850) and the unfinished reader (D:1785)
+// (probe_usgrid.d:2232-2295; corpus rows 1190-1205)
+//
+// Rows 1190-1191 are paver2d.fill_interior's own writeln pair, emitted by the paving
+// constructor at D:502; they arrive here exactly as they did in grp_pave.
+// ------------------------------------------------------------------
+void grp_vtk() {
+    auto gt = std::make_shared<UnstructuredGrid>(pave_square(), "vtk2d"); // rows 1190-1191
+    const std::string p = TD + "/vtk2d.vtk";
+    twd("us.vtk.2d", 1850, USG_PATH, [&gt, &p]() { gt->write_to_vtk_file(p); });
+    emit(eil::format("us.vtk.2d len=%d body=[%s]", len_of(p), body_of(p)));
+    auto gh = std::make_shared<UnstructuredGrid>(*vol_grid3d("vtk3d"), "vtk3d");
+    const std::string p2 = TD + "/vtk3d.vtk";
+    twd("us.vtk.3d", 1850, USG_PATH, [&gh, &p2]() { gh->write_to_vtk_file(p2); });
+    emit(eil::format("us.vtk.3d len=%d body=[%s]", len_of(p2), body_of(p2)));
+    // A cell of type none lands in vtk_element_types[0] == 0 (D:1871).
+    auto gn = hand_quad2d("vtknone");
+    gn->cells[0]->cell_type = USGCell_type::none;
+    const std::string p3 = TD + "/vtknone.vtk";
+    twd("us.vtk.cellnone", 1871, USG_PATH, [&gn, &p3]() { gn->write_to_vtk_file(p3); });
+    emit(eil::format("us.vtk.cellnone body=[%s]", body_of(p3)));
+    // An empty label prints as an empty line where the title goes (D:1854). This call is
+    // not wrapped in the probe either, so there is no tagged row for it (corpus 1198).
+    auto gl = std::make_shared<UnstructuredGrid>(2, "");
+    gl->vertices =
+        eil::Array<Vector3>{Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(1.0, 1.0)};
+    gl->nvertices = 3;
+    {
+        eil::Array<size_t> cv = ids({0, 1, 2});
+        eil::Array<size_t> cf;   // D:2252 cast(size_t[])[]
+        eil::Array<int> co;      //      cast(int[])[]
+        gl->cells.append(
+            std::make_shared<USGCell>(USGCell_type::triangle, 0, cv.all(), cf.all(), co.all()));
+    }
+    gl->ncells = 1;
+    gl->nfaces = 0; gl->nboundaries = 0; gl->niv = 3; gl->njv = 1; gl->nkv = 1;
+    const std::string p4 = TD + "/vtkemptylabel.vtk";
+    gl->write_to_vtk_file(p4);
+    emit(eil::format("us.vtk.emptylabel body=[%s]", body_of(p4)));
+    // read_from_vtk_text_file (D:1785) walks three header lines and then throws.
+    const std::string rv = TD + "/read.vtk";
+    mkr(rv, "# vtk DataFile Version 2.0\nmy label\nASCII\nDATASET UNSTRUCTURED_GRID\n"
+            "POINTS 3 float\n");
+    twd("us.vtk.rd-ok", 1795, USG_PATH, [&rv]() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(rv);
+    });
+    twd("us.vtk.rd-nobom", 1790, STDIO_PATH, 624, []() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(TD + "/no_such.vtk");
+    });
+    const std::string rv2 = TD + "/bad1.vtk";
+    mkr(rv2, "# vtk DataFile Version 3.0\nlabel\nASCII\nDATASET UNSTRUCTURED_GRID\n");
+    twd("us.vtk.rd-version", 1790, USG_PATH, [&rv2]() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(rv2);
+    });
+    const std::string rv3 = TD + "/bad2.vtk";
+    mkr(rv3, "# vtk DataFile Version 2.0\nlabel\nBINARY\nDATASET UNSTRUCTURED_GRID\n");
+    twd("us.vtk.rd-binary", 1792, USG_PATH, [&rv3]() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(rv3);
+    });
+    const std::string rv4 = TD + "/bad3.vtk";
+    mkr(rv4, "# vtk DataFile Version 2.0\nlabel\nASCII\nDATASET STRUCTURED_GRID\n");
+    twd("us.vtk.rd-dataset", 1793, USG_PATH, [&rv4]() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(rv4);
+    });
+    const std::string rv5 = TD + "/short.vtk";
+    mkr(rv5, "# vtk DataFile Version 2.0\n");
+    twd("us.vtk.rd-short", 1791, USG_PATH, [&rv5]() {
+        auto g = std::make_shared<UnstructuredGrid>(2, "rd");
+        g->read_from_vtk_text_file(rv5);
+    });
+    // The format the import constructor refuses outright (D:840); the probe comments that
+    // two are refused and exercises only this one here (the other is us.imp.unknown,
+    // corpus row 1254, a later cluster).
+    twd("us.vtk.xml-fmt", 840, USG_PATH, [&rv]() {
+        UnstructuredGrid q(rv, "vtkxml", true);
+    });
+}
+
+// ------------------------------------------------------------------
+// us.stl.* — the inherited STL writer (grid.d:388-433) on a 2D unstructured grid
+// (probe_usgrid.d:2297-2317; corpus rows 1206-1216)
+// ------------------------------------------------------------------
+void grp_stl() {
+    auto gt = std::make_shared<UnstructuredGrid>(pave_square(), "stl2d"); // rows 1206-1207
+    const std::string p = TD + "/stl2d.stl";
+    twd("us.stl.tri", 389, GRID_PATH, [&gt, &p]() { gt->write_to_stl_file(p); });
+    emit(eil::format("us.stl.tri len=%d body=[%s]", len_of(p), body_of(p)));
+    // D:2303 wraps the write and the re-read in an immediately-invoked delegate, so the
+    // scaled body replaces the same file name.
+    emit(eil::format("us.stl.tri scale25 body=[%s]",
+                     [&gt, &p]() {
+                         gt->write_to_stl_file(p, 25.4);
+                         return body_of(p);
+                     }()));
+    auto gq = std::make_shared<UnstructuredGrid>(*surf_grid2d("stlquad"), "stlquad");
+    const std::string p2 = TD + "/stlquad.stl";
+    twd("us.stl.quad", 389, GRID_PATH, [&gq, &p2]() { gq->write_to_stl_file(p2, 0.5); });
+    emit(eil::format("us.stl.quad len=%d body=[%s]", len_of(p2), body_of(p2)));
+    // grid.d:395 throws an Exception (not an Error) for a 3D grid; the probe names 391.
+    twd("us.stl.3d", 391, GRID_PATH, 395, []() {
+        auto g3 = std::make_shared<UnstructuredGrid>(*vol_grid3d("stl3d"), "stl3d");
+        g3->write_to_stl_file(TD + "/stl3d.stl");
+    });
+    // A polygonal cell (5 vertices) reaches the default branch of the switch (D:427).
+    auto gp = hand_quad2d("stlpenta");
+    gp->cells[0]->vtx_id_list = ids({0, 1, 2, 3, 0});
+    twd("us.stl.penta", 427, GRID_PATH, [&gp]() {
+        gp->write_to_stl_file(TD + "/stlpenta.stl");
+    });
+}
+
+// ------------------------------------------------------------------
+// us.foam.* — write_openFoam_polyMesh (D:1930-2162)
+// (probe_usgrid.d:2318-2379; corpus rows 1217-1252)
+//
+// The paved grid's faces carry no cell links, so the first pass trips the AA lookup at
+// D:1964 (a RangeError, reported there although the probe names the assert at D:1977).
+// ------------------------------------------------------------------
+void grp_foam() {
+    auto graw = std::make_shared<UnstructuredGrid>(pave_square(), "foam2draw"); // 1215-1216
+    const std::string topr = TD + "/foam2draw";
+    twd("us.foam.unlinked", 1977, USG_PATH, 1964,
+        [&graw, &topr]() { graw->write_openFoam_polyMesh(topr); });
+    emit(eil::format("us.foam.unlinked points len=%d", len_of(topr + "/polyMesh/points")));
+    graw->link_faces_back_to_cells();
+    twd("us.foam.relinked", 1930, USG_PATH, 1983,
+        [&graw, &topr]() { graw->write_openFoam_polyMesh(topr); });
+    emit(eil::format("us.foam.relinked points len=%d faces len=%d",
+                     len_of(topr + "/polyMesh/points"), len_of(topr + "/polyMesh/faces")));
+    // quad_rd.su2 and hex_rd.su2 were written by grp_su2rd (probe:2066, :2079) and are
+    // re-read here, so the reader's own "Importing:" lines land in this region.
+    const std::string quad_rd = TD + "/quad_rd.su2";
+    auto g = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+    const std::string top = TD + "/foam2d";
+    twd("us.foam.2d", 1930, USG_PATH, [&g, &top]() { g->write_openFoam_polyMesh(top); });
+    const std::vector<std::string> parts = {"points", "faces", "owner", "neighbour",
+                                           "boundary"};
+    for (const std::string& nm : parts) {
+        const std::string fp = top + "/polyMesh/" + nm;
+        emit(eil::format("us.foam.2d %s len=%d body=[%s]", nm, len_of(fp), body_of(fp)));
+    }
+    for (size_t bi = 0; bi < g->boundaries.length(); ++bi) {
+        const std::string tg = g->boundaries[bi]->tag;
+        const std::string fp = top + "/polyMesh/sets/" + tg;
+        if (path_exists(fp)) {
+            emit(eil::format("us.foam.2d set[%s] body=[%s]", tg, body_of(fp)));
+        } else {
+            emit(eil::format("us.foam.2d set[%s] absent", tg));
+        }
+    }
+    emit(eil::format("us.foam.2d label after write=[%s]", g->label));
+    // The 3D hex grid, with internal faces and six boundary sets.
+    const std::string hex_rd = TD + "/hex_rd.su2";
+    auto g3 = std::make_shared<UnstructuredGrid>(hex_rd, "su2text", true);
+    const std::string top3 = TD + "/foam3d";
+    twd("us.foam.3d", 1930, USG_PATH, [&g3, &top3]() { g3->write_openFoam_polyMesh(top3); });
+    for (const std::string& nm : parts) {
+        const std::string fp = top3 + "/polyMesh/" + nm;
+        emit(eil::format("us.foam.3d %s len=%d body=[%s]", nm, len_of(fp), body_of(fp)));
+    }
+    dump_bnd("us.foam.3d", g3->boundaries);
+    // An empty-tag boundary: D:2148 assigns to the grid's own `label` member (the local
+    // `label` of D:2125 is out of scope here), then D:2149 opens "<setsDir>/" as a file.
+    auto ge = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+    ge->boundaries[0]->tag = "";
+    const std::string topE = TD + "/foamempty";
+    twd("us.foam.emptytag", 2149, STDIO_PATH, 624,
+        [&ge, &topE]() { ge->write_openFoam_polyMesh(topE); });
+    emit(eil::format("us.foam.emptytag label after write=[%s]", ge->label));
+    emit(eil::format("us.foam.emptytag boundary body=[%s]", body_of(topE + "/polyMesh/boundary")));
+    // A face attached to no cell at all: the owner assert (D:1977), reached as the missing
+    // AA key of D:1964.
+    auto go = hand_quad2d("foamorphan");
+    eil::Array<size_t> orphan = ids({0, 2});
+    go->faces.append(std::make_shared<USGFace>(orphan.all()));
+    go->nfaces = go->faces.length();
+    go->boundaries.set_length(0);
+    go->nboundaries = 0;
+    twd("us.foam.unowned-face", 1977, USG_PATH, 1964, [&go]() {
+        go->write_openFoam_polyMesh(TD + "/foamorphan");
+    });
+    // A boundary set that repeats a face: the face tally assert (D:1983).
+    auto gr = hand_quad2d("foamdup");
+    gr->boundaries[1]->face_id_list.append(0);
+    gr->boundaries[1]->outsign_list.append(1);
+    twd("us.foam.double-counted", 1983, USG_PATH, 1983, [&gr]() {
+        gr->write_openFoam_polyMesh(TD + "/foamdup");
+    });
+}
+
 //<<<SECTIONS-NOW>>>
 
 } // namespace
@@ -2509,6 +2712,9 @@ int main(int argc, char** argv) {
     grp_raw();
     grp_su2();
     grp_su2rd();
+    grp_vtk();
+    grp_stl();
+    grp_foam();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
