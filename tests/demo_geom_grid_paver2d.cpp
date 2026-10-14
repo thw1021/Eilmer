@@ -30,9 +30,7 @@
 // Regenerate the baseline (both the 2 stdout lines and the .vtk are verified
 // reproducible — see reports/wave-02-grid-brief.md section 9.5 and cmake/wave2_grid_g3.cmake:20-22):
 //   export PATH=/home/tang/packages/dlang/bin:$PATH
-//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip \
-//     /home/tang/packages/gdtk/src/geom/grid/paver2d_demo.d \
-//     -of=/tmp/demo_g6/paver2d_demo -od=/tmp/demo_obj_g6
+//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip /home/tang/packages/gdtk/src/geom/grid/paver2d_demo.d -of=/tmp/demo_g6/paver2d_demo -od=/tmp/demo_obj_g6
 //   mkdir -p /tmp/demowork_g6 && cd /tmp/demowork_g6 && /tmp/demo_g6/paver2d_demo > out.txt
 #include <memory>
 

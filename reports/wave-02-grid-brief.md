@@ -307,6 +307,15 @@ G5 落地时 `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义*
 > 记在 `task-log.md` 与 `backlog.md` 的 T-011 进度块。
 > **T-011 只剩 G6**：四个 demo（基线已抓，缺 C++ demo 与门禁）+
 > `surface/gmopatch.d`(171)/`surface/meshpatch.d`(100)（**探针与语料都还没抓**）。
+>
+> **G6 也已完成（同日，见 `task-log.md` 的 T-011 G6 节）**：四条 demo stdout 门禁全注册
+> （paver2d 2/2、paver 129/129、sgrid 26/26、usgrid 56/56）+ 两条产物门禁注册，
+> 新增 `harness/compare_artefacts.sh`；gmopatch **497/497**、meshpatch **303/303**，
+> 且我重跑探针确认语料与探针逐字节一致。三配置 **110/110**。
+> **两条产物门禁故意没开**，原因各自成任务：`T-931`（paver 内部铺面末位差，
+> 前 214 个顶点全同 ⇒ 不在边界）、`T-930`（**Phobos `to!double` 不是正确舍入**，
+> 15 个数值 token 里 2 个差 1 ULP、D 是错的一方；sgrid 产物集因 G6b 落地从 10/16 升到 11/16，
+> 剩下 5 行只归 T-930）。T-011 整包闭合。
 
 **G5 现状**：`tests/test_geom_grid_usgrid.cpp` 已能发出语料 **1–1252 行，1252/1252 逐字节相同**
 （`/tmp/w2_g5r/test_geom_grid_usgrid <corpus>`，摘要行

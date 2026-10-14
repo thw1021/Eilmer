@@ -58,9 +58,7 @@
 // Regenerate the evidence (verified reproducible by two runs from different scratch
 // roots — manifest header lines 12-15):
 //   export PATH=/home/tang/packages/dlang/bin:$PATH
-//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip \
-//     /home/tang/packages/gdtk/src/geom/grid/sgrid_demo.d \
-//     -of=/tmp/demo_g6/sgrid_demo -od=/tmp/demo_obj_g6
+//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip /home/tang/packages/gdtk/src/geom/grid/sgrid_demo.d -of=/tmp/demo_g6/sgrid_demo -od=/tmp/demo_obj_g6
 //   mkdir -p /tmp/g6/src/eilmer && ln -s /home/tang/packages/gdtk/examples /tmp/g6/examples
 //   ln -s /home/tang/packages/gdtk/src/geom/sample-data /tmp/g6/src/eilmer/sample-data
 //   cd /tmp/g6/src/eilmer && /tmp/demo_g6/sgrid_demo > out.txt

@@ -45,7 +45,7 @@
   spline 156 行、splinelsq 340 行、nelmin 24 行、sort 6,889 排列、gzip 66 行均 **0 差异**；
   `ctest -R "nelmin|spline|gzip"` 6/6（三配置）。nelmin 的 `fx` 是唯一容差列，
   根因实测为两次 `exp` 各差 1 ULP
-- [~] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
+- [x] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
   — 结构化/非结构网格核心。依赖 T-010、T-017
   **进度（2026-10-14，四配置全绿）**：`grid.d`(490) 与 `paver2d.d`(52) **已闭合**——
   `geom_grid_grid` **643/643** 字节相同（含 T-919 钉住的行 178，Debug/Release/
@@ -150,6 +150,29 @@
   `usgrid_demo`(103) 的**基线都已抓**，剩 C++ demo 程序与门禁；
   以及 `surface/gmopatch.d`(171) + `surface/meshpatch.d`(100) —— 这两个的**探针与语料还没抓**，
   是 G6 里唯一"参照侧未就绪"的部分。demo 的**工作目录是契约**（相对路径，见上面"新发现"）。
+  **G6 完成，T-011 整包闭合（2026-10-14）**：
+  - **G6a 四个 demo 全部转完并进门禁**：stdout 四条全注册且逐字节相同
+    （paver2d 2/2、paver **129/129**、sgrid **26/26**、usgrid **56/56**），
+    产物门禁两条注册（paver2d、usgrid）；新增 `harness/compare_artefacts.sh`
+    （逐行 sha256 + 字节数，`.gz` 比解压后 payload，缺文件计为失败）。
+    demo 的**工作目录契约**按基线头注释实现（cmake fixture 建 `examples` 符号链接、
+    从 `<root>/src/eilmer` 运行），否则 D:96 的 `blk.tmp` 直接 `ErrnoException`。
+  - **两条产物门禁故意不注册**，各自原因已升格成任务：`T-931`（paver 内部铺面，
+    1490 个顶点里 398 行末位不同、前 214 个全同 ⇒ 定位在内部而非边界）、
+    `T-930`（**Phobos `to!double` 不是正确舍入**，主线程自己复测确认：
+    15 个数值 token 里 2 个差 1 ULP、D 是错的一方）。
+  - **G6b `gmopatch.d`/`meshpatch.d` 闭合**：先抓参照再写实现
+    （gmopatch **497 行**、meshpatch **303 行**，两份语料各自**行 1 记了 D 文件 sha256**）；
+    我用影子树**重跑 `probe_gmopatch.d`，输出与已提交语料逐字节相同**
+    （这条检查就是上一次"语料比探针少 33 行"事故的对策）。
+    `gmopatch.hpp` 落地后 `sgrid_demo` 的 `__has_include` 分支打开，
+    `test_gmo_grid-2D.vtk`（17,420 字节，sha `e4cbfa71…223edddf`）与基线行一致，
+    于是 sgrid 产物集从 10/16 升到 **11/16**，剩下 5 行**只**是 T-930。
+  - 顺带闭合 **T-932**（`to!int(double)` 边界，端口一处 `>=` 把最大合法 int 拒掉）。
+  **全波状态**：default **110/110**（新增 6 条 demo + 2 条 surface 门禁），
+  Release 与 `EIL_SLICE_CHECK` 同数（见下条提交/`task-log.md`）；
+  `check_staleness.sh` = `no drift`；`geom/grid/` 与它带进来的 `gmopatch`/`meshpatch`
+  至此**没有剩余待办**，Wave 2 只剩 T-015（等 Wave 5 候选二进制）与 T-016 收尾。
 - [x] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
   **完成 2026-10-14**：`tfivolume.d` 最后落地（`geom_volume_tfivolume`
@@ -793,6 +816,28 @@
   迭代里 `a*b+c` 的融合次序。**不许**为了产物一致而调容差。
   `demo_artefacts_geom_grid_paver` 因此在 `wave2_grid_g6.cmake:112-119` 注释着，
   stdout 门禁（129/129）照常注册且绿。
+- [x] **T-932** **`to!int(double)` 的上界是"严格大于 `INT_MAX`"，端口按 `>=` 写会把最大合法 int 拒掉。**
+  **完成 2026-10-14**。G6b 代理先在自己 helper 里发现（它把 `v >= 2147483648.0` 改成
+  D 的判据），我复测时确认 **`src/util/lua_service.hpp:168` 的 `to_int_from_double` 同样错**，
+  而且**它上面那行注释本来就写着 "exclusive of the endpoints"** —— 代码与自己正确的注释相反。
+  - 实测（`probes/substrate/probe_to_int_from_double.d` →
+    `substrate_to_int_from_double.txt`，**16 行、重跑逐字节相同、无地址**）：
+    `2147483647.0` **通过**；`2147483647.5` 与 `2147483648.0` → `ConvOverflowException
+    "Conversion positive overflow"`；`-2147483648.0` **通过**；`-2147483648.5` → negative 变体；
+    **NaN 走的是 `ConvException "Input was NaN"`，不是 overflow**（两类不同）；
+    `±inf`/`1e30` 都归到 positive/negative overflow；截断方向是**向零**
+    （`3.9→3`、`-3.9→-3`、`-2147483647.9999→-2147483647`）。
+  - **为什么这条影响用户**：`lua_service` 是作业脚本参数进求解器的路。`>=` 写法的后果是
+    一个把 `maxIterations = 2147483647` 写进 Lua 配置的用户**在这里死掉，而参照接受**。
+    边界值不是理论点：它就是 `INT_MAX` 本身。
+  - **修**：`src/util/lua_service.hpp` 一处 `>=` → `>`（下界本来就写对了）。
+    同时确认**没有任何注册用例把错误行为钉住**
+    （`test_util_lua_roundtrip.cpp:628` 的 `"2147483647"` 是**字符串**→int，走另一条路；
+    `test_util_time_utils.cpp:62` 同理），所以这次改动不会把绿测改红；
+    集成后 default **110/110**，Release 与 slice-check 另计。
+  - **推广出的检查**（值得写进每个简报）：端口里所有手写范围判断，**逐个问"边界值本身
+    D 收还是拒"**。`>=`/`>` 差一个字符，语料通常不采那个点。候选清单：
+    `to_int_from_long`（已核：用的是 `>`，正确）、各 `enforce`/`clamp` 站点。
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；

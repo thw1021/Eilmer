@@ -602,6 +602,38 @@ files:
   fidelity: exact
   variants: []
   verified_by: [ctest:geom_surface_cubepatch, 1604 of 1604 probe rows byte-identical, 9 of 9 D unittest assertions]
+- cpp: src/geom/surface/gmopatch.cpp
+  d: src/geom/surface/gmopatch.d
+  d_blob: 696c9f6560485000dcb2fd15b9542a087b14669f
+  d_lines: 171
+  cpp_lines: 165
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_surface_gmopatch, 497 of 497 rows byte-identical, probe re-run against the shadow tree reproduces the corpus byte for byte, the D file sha256 is recorded in row 1 of the corpus]
+- cpp: src/geom/surface/gmopatch.hpp
+  d: src/geom/surface/gmopatch.d
+  d_blob: 696c9f6560485000dcb2fd15b9542a087b14669f
+  d_lines: 171
+  cpp_lines: 132
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_gmopatch, 497 of 497 probe rows byte-identical in default Release and slice-check]
+- cpp: src/geom/surface/meshpatch.cpp
+  d: src/geom/surface/meshpatch.d
+  d_blob: 29b277c3a7b93a9e34bbcaee0d8482b2ab409c85
+  d_lines: 100
+  cpp_lines: 158
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_surface_meshpatch, 303 of 303 rows byte-identical, to!int overflow boundary measured per T-932 (strictly beyond INT_MAX), unservable grid sizes reproduce object.Error Not implemented. and AssertError index i is invalid at grid.d:73]
+- cpp: src/geom/surface/meshpatch.hpp
+  d: src/geom/surface/meshpatch.d
+  d_blob: 29b277c3a7b93a9e34bbcaee0d8482b2ab409c85
+  d_lines: 100
+  cpp_lines: 95
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_surface_meshpatch, 303 of 303 probe rows byte-identical in default Release and slice-check]
 - cpp: src/geom/surface/nozzleexpansionpatch.cpp
   d: src/geom/surface/nozzleexpansionpatch.d
   d_blob: 4b45cbfcfe0f63bf3af7cedf724a211883f31af3
@@ -1198,7 +1230,7 @@ files:
   d: src/util/lua_service.d
   d_blob: cb0b158ed721d9981de183708c20bf10c251276d
   d_lines: 742
-  cpp_lines: 450
+  cpp_lines: 454
   fidelity: adapted-callback
   variants: []
   verified_by: [ctest:util_lua_roundtrip, 226-line transcript == D]
