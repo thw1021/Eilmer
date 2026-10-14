@@ -85,8 +85,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[south])(0.0, 0.0);
         if (!approxEqualVectors(p[0], p_alt1) || !approxEqualVectors(p[0], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 0", p[0],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     { // corner 1 (D:36-42)
@@ -95,8 +94,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[south])(1.0, 0.0);
         if (!approxEqualVectors(p[1], p_alt1) || !approxEqualVectors(p[1], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 1", p[1],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     { // corner 2 (D:43-49) — prints the whole p array, D:47
@@ -105,8 +103,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[north])(1.0, 0.0);
         if (!approxEqualVectors(p[2], p_alt1) || !approxEqualVectors(p[2], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_arr("TFIVolume open at corner 2", p, p_alt1,
-                                                      p_alt2),
-                                 __FILE__, __LINE__);
+                                                      p_alt2));
         }
     }
     { // corner 3 (D:50-56) — prints the whole p array, D:54
@@ -115,8 +112,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[north])(0.0, 0.0);
         if (!approxEqualVectors(p[3], p_alt1) || !approxEqualVectors(p[3], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_arr("TFIVolume open at corner 3", p, p_alt1,
-                                                      p_alt2),
-                                 __FILE__, __LINE__);
+                                                      p_alt2));
         }
     }
     { // corner 4 (D:57-63)
@@ -125,8 +121,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[south])(0.0, 1.0);
         if (!approxEqualVectors(p[4], p_alt1) || !approxEqualVectors(p[4], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 4", p[4],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     { // corner 5 (D:64-70)
@@ -135,8 +130,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[south])(1.0, 1.0);
         if (!approxEqualVectors(p[5], p_alt1) || !approxEqualVectors(p[5], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 5", p[5],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     { // corner 6 (D:71-77)
@@ -145,8 +139,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[north])(1.0, 1.0);
         if (!approxEqualVectors(p[6], p_alt1) || !approxEqualVectors(p[6], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 6", p[6],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     { // corner 7 (D:78-84)
@@ -155,8 +148,7 @@ TFIVolume::TFIVolume(FaceSlice faceArray) {
         Vector3 p_alt2 = (*faces[north])(0.0, 1.0);
         if (!approxEqualVectors(p[7], p_alt1) || !approxEqualVectors(p[7], p_alt2)) {
             throw eil::ErrorBase(open_corner_text_1("TFIVolume open at corner 7", p[7],
-                                                    p_alt1, p_alt2),
-                                 __FILE__, __LINE__);
+                                                    p_alt1, p_alt2));
         }
     }
     checkVolume(); // D:85

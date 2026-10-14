@@ -379,7 +379,7 @@ template <typename T> void quick_sort_impl(Vertex<T>* r, size_t n, size_t depth)
         for (;;) {
             while (pred_less<T>(r[++lessI], pivot)) {}
             if (lessI > greaterI) {
-                throw eil::ErrorBase("sort: invalid comparison function.", __FILE__, __LINE__);
+                throw eil::ErrorBase("sort: invalid comparison function.");
             }
             for (;;) {
                 if (greaterI == lessI) { outer_done = true; break; }
@@ -387,7 +387,7 @@ template <typename T> void quick_sort_impl(Vertex<T>* r, size_t n, size_t depth)
             }
             if (outer_done) break;
             if (lessI > greaterI) {
-                throw eil::ErrorBase("sort: invalid comparison function.", __FILE__, __LINE__);
+                throw eil::ErrorBase("sort: invalid comparison function.");
             }
             if (lessI == greaterI) break;
             swap_at(r, lessI, greaterI);

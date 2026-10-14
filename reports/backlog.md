@@ -150,7 +150,20 @@
   且两者**都没有 `void main`** ⇒ 参照侧连二进制都产不出来，Wave 2 抓不到任何基线。
   `sketch.d` 自己的 libplot 支在 `version(with_libplot)` 内（:33-34、:62、:152、:178、:261），
   按既有约定原样保留不编译
-- [ ] **T-922** **端口系统性缺陷：D 的裸 `new Error(msg)` 不带抛出点，端口却给它编了一个。**
+- [x] **T-922** **端口系统性缺陷：D 的裸 `new Error(msg)` 不带抛出点，端口却给它编了一个。**
+  **已全部完成 2026-10-14**，最终账用**带括号配对的逐调用计数**核对（不是行窗口近似）：
+  `ErrorBase(...)` 调用中携带 `__FILE__/__LINE__` 的数量
+  **84 → 1**（`a1800ca` 84 → 第一批后 `050ab29` 44 → T-914 合并后 `f9b633e` 39 → 本批 1）。
+  **保留的那 1 处是正确写法**：`geom/grid/grid.cpp:76` 对应 D 的 `final switch` 越界，
+  抛的是 `core.exception.SwitchError`，**它带 `switch` 所在文件的行号**
+  （实测语料行 `gen.final_switch`），所以那里删掉才是错。
+  同批另两处**该带而未动**的：`util/lua_service.hpp` 的 `EIL_THROW_LUA_INPUT`
+  （D 的 `LuaInputException`，`lua_service.d:688-691` 默认实参就是 `__FILE__/__LINE__`）。
+  核对口径也记在这里，免得下次又用近似数：`ExceptionBase(` 带 `__FILE__` 的数量
+  扫描前后都是 **15**（一族都不该动）；本轮开始时我用行窗口数出的是"82/42"，
+  逐调用数出来是 **84/39**——**差的那几处正是跨行调用**，
+  行窗口看不见它们，`arc.cpp:130/158` 两处就是这么漏掉的（已在本批补上）。
+  三配置 **100/100**、`check_staleness` → `no drift`。下面原记录保留作为判据出处。
   本轮为核 sketch 简报里的 throw 分类而实测出来的（`probes/substrate/probe_throw_identity.d`
   → `baselines/e587b235/probes/substrate_throw_identity.txt`，**15 行，重跑 0 差异、
   行内无地址**）。D 侧的真实规则（每行都是 ldc2 1.40.0 运行期打印的
@@ -209,7 +222,7 @@
   （这些是 D 侧确实记录抛出点的，动了就是新缺陷）；
   ③ `git diff` 逐文件看只有该删除项、没有多余 `}`，再编 Release/Debug/slice-check
   三配置 **100/100**、`check_staleness.sh` `no drift`。
-  涉及 10 个文件：`geom/gpath/{arc,bezier,nurbs,polyline,polynomial}.cpp`、
+  第一批涉及 10 个文件：`geom/gpath/{arc,bezier,nurbs,polyline,polynomial}.cpp`、
   `geom/misc/{nurbs_utils,univariatefunctions}.cpp`、`geom/surface/nurbssurface.cpp`、
   `geom/volume/nurbsvolume.cpp`、`nm/bbla.hpp`。
   **剩下的 42 个**才是难的部分：35 个消息是变量拼出来的且站点没有 `// D:NN` 引用、

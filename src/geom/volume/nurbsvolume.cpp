@@ -370,7 +370,7 @@ void NURBSVolume::readFromCntrlNetFile(const std::string& fileName, const std::s
     } else {
         std::string errMsg = eil::format("Invalid NURBS net format: '%s'. ", fmt);
         errMsg += "Accepted options are 'plot3d-sgrid' or 'sgrid'.";
-        throw eil::ErrorBase(errMsg, __FILE__, __LINE__); // D:219-221, a bare Error
+        throw eil::ErrorBase(errMsg); // D:219-221, a bare Error
     }
 
     // import control net (D:224-242)

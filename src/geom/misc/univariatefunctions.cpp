@@ -534,7 +534,7 @@ VinokurFunction::VinokurFunction(int n, double s0, double s1) {
         msg += "\nnormalised end0 cell size: " + eil::to_string(s0);
         msg += "\nnormalised end1 cell size: " + eil::to_string(s1);
         msg += "\nnumber of cells: " + eil::to_string(n);
-        throw eil::ErrorBase(msg, __FILE__, __LINE__);
+        throw eil::ErrorBase(msg);
     }
     const double beta_min = 1.0e-3;
     const double beta_max = 200.0;
@@ -603,7 +603,7 @@ VinokurGeomHybridFunction::VinokurGeomHybridFunction(int n, double s0, int n0, d
         msg += "\nnumber geometric layers at start: " + eil::to_string(n0);
         // D:681 prints vn although the label says "at end" (n1 is that value). Kept.
         msg += "\nnumber geometric layers at end: " + eil::to_string(vn);
-        throw eil::ErrorBase(msg, __FILE__, __LINE__);
+        throw eil::ErrorBase(msg);
     }
     this->A = eil::sqrt(vs1 / vs0);
     double B = 1 / (vn * eil::sqrt(vs1 * vs0));
@@ -614,7 +614,7 @@ VinokurGeomHybridFunction::VinokurGeomHybridFunction(int n, double s0, int n0, d
         msg += "\nnormalised first cell size: " + eil::to_string(vs0);
         msg += "\nnormalised last cell size: " + eil::to_string(vs1);
         msg += "\nnumber of cells: " + eil::to_string(vn);
-        throw eil::ErrorBase(msg, __FILE__, __LINE__);
+        throw eil::ErrorBase(msg);
     }
     const double beta_min = 1.0e-3;
     const double beta_max = 200.0;

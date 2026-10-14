@@ -82,8 +82,7 @@ void Arc::evaluate_position_and_length(double t, Vector3& loc, number& L) const 
     cb = b - c; cb_mag = eil::geom::abs(cb);
     if (std::fabs(ca_mag - cb_mag) > 1.0e-5) {
         throw eil::ErrorBase(eil::text("Arc.evaluate(): radii do not match ca=", d_tostr(ca),
-                                       " cb=", d_tostr(cb)),
-                            __FILE__, __LINE__);
+                                       " cb=", d_tostr(cb)));
     }
     // First vector in plane.
     tangent1 = Vector3(ca); tangent1.normalize();
@@ -104,8 +103,7 @@ void Arc::evaluate_position_and_length(double t, Vector3& loc, number& L) const 
     cb_local.transform_to_local_frame(tangent1, tangent2, n, zerov);
     if (std::fabs(cb_local.z) > 1.0e-6) {
         throw eil::ErrorBase(eil::text("Arc.evaluate(): problem with transformation cb_local=",
-                                       d_tostr(cb_local)),
-                            __FILE__, __LINE__);
+                                       d_tostr(cb_local)));
     }
     // Angle of the final point on the arc is in the range -pi < th <= +pi.
     // D's atan2 is Phobos' own atan2Impl, not libm's (see arc.hpp); 1 ULP here
@@ -132,8 +130,7 @@ Vector3 Arc3::compute_centre(const Vector3& a, const Vector3& m, const Vector3& 
         throw eil::ErrorBase(eil::text("Arc3: Points appear colinear.",
                                        " a=", d_tostr(a),
                                        " m=", d_tostr(m),
-                                       " b=", d_tostr(b)),
-                            __FILE__, __LINE__);
+                                       " b=", d_tostr(b)));
     }
     // The centre of the circle lies along the bisector of am and
     // the bisector of mb.
@@ -159,8 +156,7 @@ Vector3 Arc3::compute_centre(const Vector3& a, const Vector3& m, const Vector3& 
     if (eil::re(eil::geom::abs(delc)) > 1.0e-9) {
         throw eil::ErrorBase(eil::text("Arc3: Points inconsistent centre estimates.",
                                        " c=", d_tostr(ccentre),
-                                       " c_check=", d_tostr(c_check)),
-                            __FILE__, __LINE__);
+                                       " c_check=", d_tostr(c_check)));
     }
     return ccentre;
 }

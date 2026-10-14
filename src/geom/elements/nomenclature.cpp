@@ -27,7 +27,7 @@ unsigned face_index(const std::string& name) {
     if (name == "north" || name == "jplus") return Face::north;
     if (name == "bottom" || name == "kminus") return Face::bottom;
     if (name == "top" || name == "kplus") return Face::top;
-    throw eil::ErrorBase(eil::text("Invalid face name: ", name), __FILE__, __LINE__);
+    throw eil::ErrorBase(eil::text("Invalid face name: ", name));
 } // end face_index
 
 // D:56. D's PI is an 80-bit real, so `PI*degrees/180.0` is evaluated in extended

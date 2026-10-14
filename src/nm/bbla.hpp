@@ -1101,8 +1101,7 @@ Matrix<T> lsqsolve(const Matrix<T> c, const Matrix<T> rhs) {
     size_t m = c.ncols(); // number of unknowns
     size_t N = c.nrows(); // number of linear constraint equations
     if (N < m) {
-        throw eil::ErrorBase(eil::text("too few constraints N=", N, " m=", m),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase(eil::text("too few constraints N=", N, " m=", m));
     }
     // Prepare the normal equations A.x = b
     Matrix<T> a = zeros<T>(m, m);

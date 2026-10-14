@@ -47,23 +47,19 @@ CoonsPatch::CoonsPatch(const PathPtr& south, const PathPtr& north, const PathPtr
     // baselines/e587b235/probes/geom_surface_coonspatch.txt.
     if (!approxEqualVectors(p00, p00_alt)) {
         throw eil::ErrorBase(eil::text("CoonsPatch open corner p00= ", d_tostr(p00),
-                                        " p00_alt= ", d_tostr(p00_alt)),
-                             __FILE__, __LINE__);
+                                        " p00_alt= ", d_tostr(p00_alt)));
     }
     if (!approxEqualVectors(p10, p10_alt)) {
         throw eil::ErrorBase(eil::text("CoonsPatch open corner p10= ", d_tostr(p10),
-                                        " p10_alt= ", d_tostr(p10_alt)),
-                             __FILE__, __LINE__);
+                                        " p10_alt= ", d_tostr(p10_alt)));
     }
     if (!approxEqualVectors(p11, p11_alt)) {
         throw eil::ErrorBase(eil::text("CoonsPatch open corner p11= ", d_tostr(p11),
-                                        " p11_alt= ", d_tostr(p11_alt)),
-                             __FILE__, __LINE__);
+                                        " p11_alt= ", d_tostr(p11_alt)));
     }
     if (!approxEqualVectors(p01, p01_alt)) {
         throw eil::ErrorBase(eil::text("CoonsPatch open corner p01= ", d_tostr(p01),
-                                        " p01_alt= ", d_tostr(p01_alt)),
-                             __FILE__, __LINE__);
+                                        " p01_alt= ", d_tostr(p01_alt)));
     }
 } // end constructor()
 

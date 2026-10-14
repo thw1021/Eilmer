@@ -197,8 +197,7 @@ BezierTrianglePatch::BezierTrianglePatch(eil::Slice<Vector3> _B, int _n) {
         // separators: the number runs into the following word, as the measured
         // btp.ctor.err rows show ("...supplied.3 expected, 0 supplied.").
         throw eil::ErrorBase(eil::text("BezierTrianglePatch: incorrect number of control points supplied.",
-                                        nCtrlPts, " expected, ", _B.length(), " supplied."),
-                             __FILE__, __LINE__);
+                                        nCtrlPts, " expected, ", _B.length(), " supplied."));
     }
     B.set_length(static_cast<std::size_t>(nCtrlPts));
     B.all().assign_from(_B);
@@ -641,16 +640,13 @@ BezierTrianglePatch::Ptr bezierTriangleFromPointCloud(
     // (D:520-528, `throw new Error(...)`: three distinct messages, and all three are
     // Errors, not Exceptions — measured classinfo.name is object.Error for each.)
     if (!approxEqualVectors(b0.B[0], b2.B[b2.B.length() - 1])) {
-        throw eil::ErrorBase("Error: b0 and b2 end points are not coincident.\n", __FILE__,
-                             __LINE__);
+        throw eil::ErrorBase("Error: b0 and b2 end points are not coincident.\n");
     }
     if (!approxEqualVectors(b0.B[b0.B.length() - 1], b1.B[b1.B.length() - 1])) {
-        throw eil::ErrorBase("Error: b0 and b1 end points are not coincident.\n", __FILE__,
-                             __LINE__);
+        throw eil::ErrorBase("Error: b0 and b1 end points are not coincident.\n");
     }
     if (!approxEqualVectors(b1.B[0], b2.B[0])) {
-        throw eil::ErrorBase("Error: b1 and b2 end points are not coincident.\n", __FILE__,
-                             __LINE__);
+        throw eil::ErrorBase("Error: b1 and b2 end points are not coincident.\n");
     }
 
     auto nCtrlPts = (n + 1) * (n + 2) / 2;

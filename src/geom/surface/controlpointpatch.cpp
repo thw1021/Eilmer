@@ -100,7 +100,7 @@ ControlPointPatch::ControlPointPatch(const PathPtr& south, const PathPtr& north,
         errMsg += eil::format("The guide patch type '%s' is not supported.\n", guidePatch);
         errMsg += "Check the spelling or what you are requesting.";
         errMsg += "Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'";
-        throw eil::ErrorBase(errMsg, __FILE__, __LINE__);
+        throw eil::ErrorBase(errMsg);
     }
 
     if (!channelBoundedOnEW) {

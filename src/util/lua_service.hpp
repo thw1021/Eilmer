@@ -130,12 +130,17 @@ class LuaInputException : public eil::ExceptionBase {
         : eil::ExceptionBase(message, file, line) {}
 };
 
-// `throw new Error(m)` has D's `object.Error` type, which `catch (Exception e)`
-// does NOT catch. See the note on eil::ErrorBase in eil/error.hpp: the substrate
-// currently derives ErrorBase from ExceptionBase, so a downstream
-// `catch (eil::ExceptionBase&)` will swallow these; reported upward rather than
-// worked around here.
-#define EIL_THROW_UTIL_ERROR(message) throw ::eil::ErrorBase((message), __FILE__, __LINE__)
+// `throw new Error(m)` has D's `object.Error` type, which `catch (Exception e)` does
+// NOT catch -- and in this substrate `ErrorBase` and `ExceptionBase` are siblings under
+// `ThrowableBase` (substrate/include/eil/error.hpp:91-98), so a `catch (ExceptionBase&)`
+// genuinely will not swallow these. An earlier revision of this comment claimed the
+// opposite (that ErrorBase derived from ExceptionBase and the catches would swallow);
+// that was wrong on both counts and would have licensed a downstream handler that never
+// fires. The two macros below are the measured distinction: D's bare `new Error` carries
+// no throw site, so EIL_THROW_UTIL_ERROR passes no file/line, while
+// LuaInputException (lua_service.d:688-691) defaults its own file/line to the call site,
+// so EIL_THROW_LUA_INPUT keeps them. Backlog T-922.
+#define EIL_THROW_UTIL_ERROR(message) throw ::eil::ErrorBase((message))
 #define EIL_THROW_LUA_INPUT(message) \
     throw ::eil::util::LuaInputException((message), __FILE__, __LINE__)
 

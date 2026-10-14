@@ -94,7 +94,7 @@ void PwTest(eil::Slice<std::array<double, 4>> Pw) {
         errMsg += eil::format("Supplied number of control points: %s", Pw.length());
         // D:79 `throw new Error(text(errMsg))` — an Error. No caller in the tree
         // reaches this (grep), but the message is asserted by the probe replay.
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__);
+        throw eil::ErrorBase(eil::text(errMsg));
     }
 } // end PwTest()
 

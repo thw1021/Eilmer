@@ -45,7 +45,7 @@ NURBS::NURBS(eil::Slice<std::array<double, 4>> Pw, eil::Slice<double> U, int p) 
         errMsg += eil::format("Supplied number of control points: %s", Pw.length());
         // D:26 `throw new Error(text(errMsg))`. text() of a single string is that
         // string, so the message is errMsg unchanged.
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__);
+        throw eil::ErrorBase(eil::text(errMsg));
     }
     // Test p is valid
     // D:29 compares int against the size_t Pw.length-1, so D converts p to size_t

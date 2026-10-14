@@ -120,8 +120,7 @@ int timeStringToSeconds(const std::string& timeString) {
     } else {
         // D: throw new Error(...). eil::ErrorBase is the port's object.Error, and
         // the file/line recorded are this site's, as D's `new Error(m)` does.
-        throw eil::ErrorBase(eil::format("Invalid maxWallClock setting %s", timeString),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase(eil::format("Invalid maxWallClock setting %s", timeString));
     }
 
     return outseconds;

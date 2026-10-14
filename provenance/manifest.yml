@@ -126,7 +126,7 @@ files:
   d: src/geom/gpath/arc.d
   d_blob: 624e744488664e18de8750c833d22c3daa60a337
   d_lines: 210
-  cpp_lines: 187
+  cpp_lines: 183
   fidelity: exact
   variants: []
   verified_by: []
@@ -462,7 +462,7 @@ files:
   d: src/geom/surface/aopatch.d
   d_blob: 41ecc7b65353325acfb8f17e3ca68ae0b0066b5a
   d_lines: 240
-  cpp_lines: 240
+  cpp_lines: 236
   fidelity: exact
   variants: []
   verified_by: []
@@ -494,7 +494,7 @@ files:
   d: src/geom/surface/beziertrianglepatch.d
   d_blob: 52b4cb3f84ea7dc5c36b149571f08f1bf8e8cbfc
   d_lines: 723
-  cpp_lines: 763
+  cpp_lines: 759
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_beziertrianglepatch, throw type object.Error at D:68 and D:521/524/527, object.Exception at D:198 and from nelmin replace_vertex]
@@ -542,7 +542,7 @@ files:
   d: src/geom/surface/coonspatch.d
   d_blob: eb43675413da86e6c4d1050ce827f311840f0a88
   d_lines: 125
-  cpp_lines: 109
+  cpp_lines: 105
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_coonspatch, throw type object.Error at D:59, 63, 67, 71 with text() over Vector3]
@@ -774,7 +774,7 @@ files:
   d: src/geom/volume/tfivolume.d
   d_blob: 8dea93dfa1cede954e4984d795ebdbfe38e1994f
   d_lines: 190
-  cpp_lines: 288
+  cpp_lines: 280
   fidelity: exact
   variants: []
   verified_by: []
@@ -830,7 +830,7 @@ files:
   d: src/nm/bbla.d
   d_blob: 39501edc2d4d501ce7408503ace383e73ab8be5c
   d_lines: 1108
-  cpp_lines: 1233
+  cpp_lines: 1232
   fidelity: adapted-handles
   variants: [complex_numbers]
   verified_by: [ctest:nm_bbla, 467 quantities bit-identical vs D]
@@ -1086,7 +1086,7 @@ files:
   d: src/nm/smla.d
   d_blob: 581e4644270b42dc56fdaa219febd2c4b417d867
   d_lines: 1505
-  cpp_lines: 1349
+  cpp_lines: 1348
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:nm_smla, gmres/ilu paths bit-identical]
@@ -1166,7 +1166,7 @@ files:
   d: src/util/lua_service.d
   d_blob: cb0b158ed721d9981de183708c20bf10c251276d
   d_lines: 742
-  cpp_lines: 445
+  cpp_lines: 450
   fidelity: adapted-callback
   variants: []
   verified_by: [ctest:util_lua_roundtrip, 226-line transcript == D]
@@ -1190,7 +1190,7 @@ files:
   d: src/util/time_utils.d
   d_blob: 33dea4b461615f4020bb198cad491eb6ec08dc4e
   d_lines: 44
-  cpp_lines: 131
+  cpp_lines: 130
   fidelity: exact
   variants: []
   verified_by: [ctest:util_time_utils]

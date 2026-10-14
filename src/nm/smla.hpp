@@ -361,8 +361,7 @@ template <typename T> class SMatrix {
         }
         // if we get here, something has gone wrong
         throw eil::ErrorBase(
-            "ERROR: An error occured while assigning a value to an entry in the sparse matrix.",
-            __FILE__, __LINE__);
+            "ERROR: An error occured while assigning a value to an entry in the sparse matrix.");
     }
 
     // smla.d:211-224 `override string toString()`
