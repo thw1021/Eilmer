@@ -26,12 +26,12 @@ endif()
 #
 # Gate for the corpus replay (put in place when the row count reaches 0 differ):
 #
-# if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_sgrid.cpp)
-#   add_executable(test_geom_grid_sgrid tests/test_geom_grid_sgrid.cpp)
-#   target_link_libraries(test_geom_grid_sgrid PRIVATE eil_geom eil_nm eil_substrate)
-#   # The corpus path is argv[1] (wave-01 lesson 3: a test that reads a data file
-#   # must be given the path as an argument).
-#   add_test(NAME geom_grid_sgrid
-#            COMMAND test_geom_grid_sgrid
-#                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_sgrid.txt)
-# endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_sgrid.cpp)
+  add_executable(test_geom_grid_sgrid tests/test_geom_grid_sgrid.cpp)
+  target_link_libraries(test_geom_grid_sgrid PRIVATE eil_geom eil_nm eil_substrate)
+  # The corpus path is argv[1] (wave-01 lesson 3: a test that reads a data file
+  # must be given the path as an argument).
+  # add_test(NAME geom_grid_sgrid
+  #          COMMAND test_geom_grid_sgrid
+  #                  ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_sgrid.txt)
+endif()

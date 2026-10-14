@@ -245,9 +245,12 @@ void d_set_length(eil::Array<T>& a, size_t n) {
 }
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
 template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = eil::to_int(fmt_read_int(in)); }
-template <> void fmt_into<long>(FormattedInput& in, long* dst) {
-    *dst = eil::to_long(fmt_read_int(in));
-}
+// No fmt_into<long>: all ten formattedRead sites of sgrid.d (D:861, :867, :869, :871, :873,
+// :875, :896, :910, :914, :933) target string, int (dimensions, grid.d:43), size_t
+// (niv/njv/nkv/ntags) or double (x,y,z), so a `long` destination is unreachable — measured
+// in grid brief section 11.2 and re-checked against the call sites in this file, which pass
+// only those four types. The specialisation is dead code, not a contract (a `-Wunused-function`
+// warning at -O0 build time).
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
     // D reads into a size_t (sgrid.d:910 `size_t ntags`), and std.format's integer reader
     // hands the token to std.conv, so the failure text names the RESOLVED target type:
@@ -455,8 +458,15 @@ std::string StructuredGrid::toString() const {
     std::string repr = "StructuredGrid(";                          // D:225
     repr += eil::format("dimensions=%d, niv=%d, njv=%d, nkv=%d, ncells=%d", dimensions, niv, njv,
                         nkv, ncells);                              // D:226-227
-    repr += eil::format(", vertices=[%s ... %s]", vertices[0].toString(),
-                        vertices[vertices.length() - 1].toString()); // D:228
+    // D:228 evaluates its two subscript expressions LEFT TO RIGHT, so on an empty lattice
+    // the failure is the read of vertices[0] and its text is "index [0] is out of bounds
+    // for array of length 0" (corpus row 58, sg.ctor.n0.tostr). C++ leaves the evaluation
+    // order of function arguments unspecified — and gcc evaluates them right to left, which
+    // reports vertices[$-1] instead, whose wrapped index is 18446744073709551615 — so the
+    // two reads are sequenced by hand here.
+    const Vector3& vfirst = vertices[0];
+    const Vector3& vlast = vertices[vertices.length() - 1];
+    repr += eil::format(", vertices=[%s ... %s]", vfirst.toString(), vlast.toString());
     repr += eil::format(", bcTags=%s", bcTags);                    // D:229
     repr += ")";
     return repr;
@@ -1466,7 +1476,11 @@ double StructuredGrid::measure_of_badness() {
                 // D:1336-1337 verbatim, including the reference's own slip: when j is the
                 // last row the else branch re-sets b (not c), so c keeps whatever it had.
                 // Corpus rows sg.bad.* count this value, so it is not "fixed".
-                Vector3 b; if (i < niv - 1) { b.set(*opIndex(i + 1, j, k)); } else { b.set(*opIndex(i, j - 1, k)); }
+                // D:1336's else step is in i (`*this[i-1,j,k]`), NOT in j: the row 703
+                // replay (sg.surf.simple.bad) caught the port reading this[i, j-1, k] here,
+                // which at j==0 wraps the size_t and fires D:1337's step instead —
+                // "index j is invalid" on the very first vertex of a 5x4 lattice.
+                Vector3 b; if (i < niv - 1) { b.set(*opIndex(i + 1, j, k)); } else { b.set(*opIndex(i - 1, j, k)); }
                 Vector3 c; if (j < njv - 1) { c.set(*opIndex(i, j + 1, k)); } else { b.set(*opIndex(i, j - 1, k)); }
                 Vector3 ab = b; ab -= a; ab.normalize();
                 Vector3 ac = c; ac -= a; ac.normalize();
