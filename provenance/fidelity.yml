@@ -252,3 +252,57 @@ src/geom/surface/sweptpathpatch.cpp: {fidelity: adapted-handles, variants: [], v
 # byte: 3524 of 3524 rows, 0 differ, in Release, Debug and -DEIL_SLICE_CHECK=ON.
 src/geom/volume/nurbsvolume.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_volume_nurbsvolume, 3524 of 3524 probe rows byte-identical, 1 of 1 D unittest assertions]}
 src/geom/volume/nurbsvolume.cpp: {fidelity: exact, variants: [EIL_COMPLEX_NUMBERS not compiled], verified_by: [ctest:geom_volume_nurbsvolume, throw type object.Error at D:99,109,119,129,139,149,159,221 + core.exception.ArrayIndexError via the shared statics]}
+#
+# grid.d (490 lines): the abstract Grid base of StructuredGrid (sgrid.d) and
+# UnstructuredGrid (usgrid.d), so its 17-member pure-virtual table (D:93-122) is copied
+# signature for signature and is exercised through a base-class handle by the probe's
+# concrete subclass (rows ab.*). grid.d declares NO unittest block (grep -c unittest
+# geom/grid/grid.d -> 0) and NO classString() (grep -c classString -> 0), so the 643-row
+# corpus is the whole gate.
+# `opIndex` (D:93-94) is deliberately NOT mapped to operator[], against the wave-02
+# mapping table: D's `g[i, j, k]` cannot be written in C++ (the commas become the comma
+# operator), and a 1-argument operator[] would be ambiguous with the (i, j, k=0) form.
+# Both overloads keep D's name. Which one D picks for the 3-argument calls at D:129, :183,
+# :236, :413 is not observable, because single_index(i, 0, 0) == i for every lattice; the
+# corpus drives both spellings separately.
+# get_vtx_id_list_for_cell (D:95, :98) returns a D slice aliasing the subclass' storage;
+# eil::Array is a value type, so the port returns a copy (same content, no write-through).
+# Fields are public, as in D (measured: the probe writes g.vertices/g.niv/g.nvertices/
+# g.dimensions/g.label from main()). Their uninitialised values are D's .init, not zero:
+# deltax/deltay/deltaz and bb0/bb1 are NaN before the first sort (row bin.unsorted), while
+# the size_t counters are 0. sort_cells_into_bins twice APPENDS into the existing bins
+# instead of clearing them, because `bins.length = nbx` with an unchanged length keeps the
+# contents (rows bin.twice, bin.thrice shrunk) — eil::Array::set_length reproduces that.
+# The bin-index clamp `max(0, min(nbx-1, ix))` (D:253, :262, :273) mixes size_t with int.
+# Measured (rows bin.clamp, which print D's own typeof()): the result type is int and the
+# comparison is signed, so the port converts the bound into int. Promoting ix to unsigned
+# would send a point left of the bounding box to bin nbx-1 instead of bin 0.
+# Every `throw new Error(...)` (D:37, :144, :174, :428) is eil::ErrorBase with the message
+# ONLY and no file/line, because a bare object.Error has .file == "" and .line == 0
+# (measured); GeometryException/Exception sites do carry the throw site, via
+# EIL_THROW_GEOM. Row gt.nocatch proves D's catch (Exception) does not catch them.
+# SUBSTRATE GAP (for the main thread to register): D's `assert(cond, "msg")` reaches the
+# caller as AssertError with .msg == "msg", and a bare `assert(cond)` with
+# .msg == "Assertion failure" (measured, rows idx.1d si(...) err=index i is invalid and
+# idx.ijk 3d(27) err=Assertion failure). eil_assert() renders
+# "Assertion failure: <stringified condition>", so grid.d's four contract asserts
+# (D:73-75, :83) go through two message-preserving helpers local to grid.cpp instead of
+# changing substrate/. geom has 297 assert sites, so this recurs.
+# OUT-OF-SCOPE FINDING (not fixed, base file): the corpus row cbc.nan2d prints
+# Vector3(nan+(-nan)) from cell_barycentre's `cbc.add(...)` (D:238). ldc2 -O0 and g++ -O0
+# both give -nan; g++ -O2/-O3 vectorise src/geom/elements/vector3.cpp:100
+# (`x += other.x; y += other.y`) into one `addpd %xmm1, %xmm0`, which returns source1's
+# payload, so the Release build prints nan. Measured triple: D -nan / C++ -O0 -nan /
+# C++ -O3 nan — one bit of sign, magnitude untouched, no other row affected (the 12 other
+# NaN rows in the corpus are products or single-operand propagations and match at every
+# -O level). Nothing in grid.d is re-scaled or loosened for it.
+# No `^^` and no atan/atan2 site in this module (grep '\^\^\|atan' over grid.d is empty),
+# so eil::pow / eil::atan2 are not exercised here; cos/sin go to std::cos/std::sin as the
+# existing ports do. `double[] Rmat; Rmat.length = 9;` (D:450-451) is a positive literal
+# length, so backlog T-914's signed `arr.length = L` case does not arise.
+# Gate = the 643-row ldc2 corpus replayed byte for byte, plus the pure-virtual table and
+# the file artefacts (STL/VTK/marker bodies) inside it: 643 of 643 rows byte-identical in
+# Debug (-O0); 642 of 643 in Release (-O3) and in -DEIL_SLICE_CHECK=ON, the single
+# exception being the vector3.cpp:100 NaN-payload row above.
+src/geom/grid/grid.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug, 17 abstract members driven through a base handle]}
+src/geom/grid/grid.cpp: {fidelity: adapted-arrays, variants: [], verified_by: [ctest:geom_grid_grid, 642 of 643 rows in Release, throw type object.Error at D:37,144,174,428 + AssertError text at D:73-75,83, GeometryException at D:284]}

@@ -330,6 +330,22 @@ files:
   fidelity: exact
   variants: []
   verified_by: []
+- cpp: src/geom/grid/grid.cpp
+  d: src/geom/grid/grid.d
+  d_blob: bc92bd5817bf21ee94f4b3a9112266fc1de8f53a
+  d_lines: 490
+  cpp_lines: 541
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_grid_grid, 642 of 643 rows in Release, throw type object.Error at D:37, 144, 174, 428 + AssertError text at D:73-75, 83, GeometryException at D:284]
+- cpp: src/geom/grid/grid.hpp
+  d: src/geom/grid/grid.d
+  d_blob: bc92bd5817bf21ee94f4b3a9112266fc1de8f53a
+  d_lines: 490
+  cpp_lines: 207
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug, 17 abstract members driven through a base handle]
 - cpp: src/geom/misc/kdtree.cpp
   d: src/geom/misc/kdtree.d
   d_blob: 5d98440f1bde04722810c4fa3002d8209c25472a
@@ -458,6 +474,22 @@ files:
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_channelpatch, 820 of 820 probe rows byte-identical]
+- cpp: src/geom/surface/controlpointpatch.cpp
+  d: src/geom/surface/controlpointpatch.d
+  d_blob: 2620338f1dd69bc6ad3f6dbedefeb024f706f4fb
+  d_lines: 340
+  cpp_lines: 305
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/surface/controlpointpatch.hpp
+  d: src/geom/surface/controlpointpatch.d
+  d_blob: 2620338f1dd69bc6ad3f6dbedefeb024f706f4fb
+  d_lines: 340
+  cpp_lines: 134
+  fidelity: exact
+  variants: []
+  verified_by: []
 - cpp: src/geom/surface/coonspatch.cpp
   d: src/geom/surface/coonspatch.d
   d_blob: eb43675413da86e6c4d1050ce827f311840f0a88
@@ -526,7 +558,7 @@ files:
   d: src/geom/surface/parametricsurface.d
   d_blob: 4d5794f2df683d405e7a08a841917de7796e9abf
   d_lines: 94
-  cpp_lines: 93
+  cpp_lines: 102
   fidelity: exact
   variants: []
   verified_by: []
@@ -630,7 +662,7 @@ files:
   d: src/geom/volume/parametricvolume.d
   d_blob: 7183205e88782684dd4b8c7d6800771858c3d507
   d_lines: 304
-  cpp_lines: 281
+  cpp_lines: 290
   fidelity: exact
   variants: []
   verified_by: []
@@ -710,7 +742,7 @@ files:
   d: src/geom/volume/wedgevolume.d
   d_blob: 5a50d20991233adb0a3ad73dd11c7f74b4075a77
   d_lines: 118
-  cpp_lines: 94
+  cpp_lines: 122
   fidelity: exact
   variants: []
   verified_by: []

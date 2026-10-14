@@ -10,6 +10,8 @@
 
 #include <cstddef>
 #include <cmath>
+#include <cstdint>
+#include <cstring>
 #include <limits>
 #include <limits>
 
@@ -17,25 +19,62 @@
 
 namespace eil {
 
-// Measured difference (corpus line "nan_math"): at run time Phobos' sqrt(-1) and
-// log(-1) print "nan" while glibc prints "-nan" — the libm results differ in the
-// NaN sign bit, even though both produce "-nan" for 0.0/0.0. A diverged solver run
-// prints NaN into logs and restart files, so the port calls these wrappers rather
-// than std::sqrt/std::log directly wherever a domain error is reachable.
-inline number canonical_nan(number v) {
-    if (std::isnan(v)) {
-        static const number pos_nan = std::numeric_limits<double>::quiet_NaN();
-        return pos_nan;
-    }
-    return v;
+// Measured NaN behaviour, now pinned by probes/substrate/probe_nan_sign.d (75 rows of
+// "input bits -> output bits"). The first version of this block was wrong in two ways,
+// both found while closing geom_surface_aopatch:
+//
+//   1. POLARITY. It built its "positive NaN" from
+//      std::numeric_limits<double>::quiet_NaN(), but on x86-64 with libstdc++ that value
+//      is 0xfff8000000000000 — the SIGN BIT IS SET. The helper that existed to remove
+//      a "-nan" divergence was therefore emitting "-nan" and had never done what its
+//      comment claimed. Both polarities are built from bit patterns here instead.
+//   2. SCOPE. It canonicalised every NaN, including one that arrived as an *operand*.
+//      Phobos propagates an operand's NaN with sign and payload intact
+//      (sqrt(0x7ff8..) = 0x7ff8.., sqrt(0xfff8..) = 0xfff8.., sqrt(0x7ffc..) = 0x7ffc..)
+//      and substitutes its own NaN only for a domain error on a finite operand. And that
+//      substitute is not a single value: sqrt/log/log10/log2/pow give +nan where glibc
+//      gives -nan, but asin/acos give -nan — the opposite polarity, which the old code
+//      got backwards for those two. (fabs clears the sign and has no domain error, so it
+//      stays unwrapped.)
+inline number quiet_nan_positive() {
+    const uint64_t u = 0x7ff8000000000000ull;
+    number r;
+    std::memcpy(&r, &u, sizeof r);
+    return r;
 }
 
-inline number sqrt(number x) { return canonical_nan(std::sqrt(x)); }
-inline number log(number x) { return canonical_nan(std::log(x)); }
-inline number log10(number x) { return canonical_nan(std::log10(x)); }
-inline number log2(number x) { return canonical_nan(std::log2(x)); }
-inline number asin(number x) { return canonical_nan(std::asin(x)); }
-inline number acos(number x) { return canonical_nan(std::acos(x)); }
+inline number quiet_nan_negative() {
+    const uint64_t u = 0xfff8000000000000ull;
+    number r;
+    std::memcpy(&r, &u, sizeof r);
+    return r;
+}
+
+// Keep Phobos' two cases apart: a NaN operand passes through untouched; a NaN generated
+// from a finite operand is replaced by `filler`, which is the only place the two
+// libraries disagree.
+inline number domain_nan(number x, number v, number filler) {
+    if (std::isnan(x)) return x;
+    return std::isnan(v) ? filler : v;
+}
+inline number domain_nan2(number x, number y, number v, number filler) {
+    if (std::isnan(x)) return x;
+    if (std::isnan(y)) return y;
+    return std::isnan(v) ? filler : v;
+}
+
+// Retained for call sites that only need "is this a NaN, and print it Phobos' way"
+// without an operand to consult. New code should prefer domain_nan.
+inline number canonical_nan(number v) {
+    return std::isnan(v) ? quiet_nan_positive() : v;
+}
+
+inline number sqrt(number x) { return domain_nan(x, std::sqrt(x), quiet_nan_positive()); }
+inline number log(number x) { return domain_nan(x, std::log(x), quiet_nan_positive()); }
+inline number log10(number x) { return domain_nan(x, std::log10(x), quiet_nan_positive()); }
+inline number log2(number x) { return domain_nan(x, std::log2(x), quiet_nan_positive()); }
+inline number asin(number x) { return domain_nan(x, std::asin(x), quiet_nan_negative()); }
+inline number acos(number x) { return domain_nan(x, std::acos(x), quiet_nan_negative()); }
 
 // -----------------------------------------------------------------------------
 // eil::atan / eil::atan2 — Phobos' own arc tangent, not libm's.
@@ -199,8 +238,10 @@ inline bool isInfinite(number x) { return std::isinf(x); }
 // write eil::pow(x, 3) rather than expanding the product. std::pow reproduced
 // every measured D row bit-for-bit, including the integer-exponent overload
 // (pow(x,2) == pow(x,2.0)), so the widening here is only about spelling.
-inline number pow(number x, number y) { return canonical_nan(std::pow(x, y)); }
-inline number pow(number x, int y) { return canonical_nan(std::pow(x, static_cast<number>(y))); }
+inline number pow(number x, number y) {
+    return domain_nan2(x, y, std::pow(x, y), quiet_nan_positive());
+}
+inline number pow(number x, int y) { return pow(x, static_cast<number>(y)); }
 
 // Determined from the boundary rows in tools/fmt_corpus.txt (D's own answers):
 //

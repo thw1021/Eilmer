@@ -26,3 +26,11 @@ target_link_libraries(test_substrate_phobos_bits PRIVATE eil_substrate)
 add_test(NAME substrate_phobos_bits
          COMMAND test_substrate_phobos_bits
                  ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_phobos_bits.txt)
+
+# T-917: the NaN polarity/propagation rule, gated by bit pattern rather than by the
+# textual "nan"/"-nan" it happens to print as.
+add_executable(test_substrate_nan_sign tests/test_substrate_nan_sign.cpp)
+target_link_libraries(test_substrate_nan_sign PRIVATE eil_substrate)
+add_test(NAME substrate_nan_sign
+         COMMAND test_substrate_nan_sign
+                 ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_nan_sign.txt)
