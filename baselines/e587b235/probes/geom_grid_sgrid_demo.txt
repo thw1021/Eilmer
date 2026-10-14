@@ -1,0 +1,26 @@
+Begin structured-grid demo...
+grid point 5 5 at x=0.463295 y=0.445833
+badness=14.7264
+Start playing with internal redistribution of r,s parameters.
+grid point 5 5 at x=0.161011 y=0.620254
+initial badness=2.00002e+06
+final badness=18.2033
+r_grid=[[0, 0, 0, 0], [0.588865, 0.78375, 0.679381, 0.106897], [0.91959, 0.450545, 0.336625, 0.356556], [1, 1, 1, 1]]
+s_grid=[[0, 0.242418, 0.302424, 1], [0, 0.351726, 0.0257045, 1], [0, 0.491971, 0.755209, 1], [0, 0.754796, 0.670292, 1]]
+GMOPatch is simpler to use.
+SlabGrid
+WedgeGrid
+3D grid from the start
+grid point 5 5 5 at p=Vector3(0.5, 0.35, 1.5)
+Search for cell enclosing my_point= Vector3(0, 0.6, 1.5)
+    cell found, index= 890
+    cell barycentre= Vector3(0.05, 0.575, 1.35)
+2D surface from the 3D grid
+grid point 5 5 at p=Vector3(0.5, 1.1, 1.5)
+Import GridPro grid...
+niv=21 njv=21 nkv=21
+niv=21 njv=21 nkv=21
+niv=21 njv=21 nkv=17
+niv=21 njv=21 nkv=21
+niv=21 njv=21 nkv=17
+Done.

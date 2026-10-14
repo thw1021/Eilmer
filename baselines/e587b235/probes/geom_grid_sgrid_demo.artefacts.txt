@@ -1,0 +1,34 @@
+# baselines/e587b235/probes/geom_grid_sgrid_demo.artefacts.txt
+# Checksum manifest for what geom/grid/sgrid_demo.d writes, following reports/phase-0.md's
+# rule that large reproducible artefacts are versioned as a manifest rather than as bytes
+# (sgrid_demo alone produces 3.4 MB of .vtk).
+#
+# The working directory is part of the contract: both demos resolve their inputs by
+# RELATIVE path, and each dies with an ErrnoException until the layout exists --
+# sgrid_demo wants `../../examples/eilmer/3D/gridpro-import/blk.tmp`, usgrid_demo wants
+# `sample-data/square-mesh.su2`. To reproduce:
+#   mkdir -p /tmp/g6/src/eilmer
+#   ln -s /home/tang/packages/gdtk/examples /tmp/g6/examples
+#   ln -s /home/tang/packages/gdtk/src/geom/sample-data /tmp/g6/src/eilmer/sample-data
+#   cd /tmp/g6/src/eilmer && /tmp/demo_g6/sgrid_demo > out.txt
+# Verified: two runs from different scratch roots give byte-identical stdout and identical
+# digests for every artefact listed here.
+# `.gz` rows carry the DECOMPRESSED payload digest and size, because the gzip container
+# embeds the entry mtime and differs between two runs of D itself.
+# Columns: kind<TAB>relative-path<TAB>bytes[ payload_bytes=...]<TAB>sha256
+bytes	gpgrid-0.vtk	694672	7e2b0516a0df03a52e5e2dfe49f1888c043256aa7f3b1600a3a3bffd31c42d81
+bytes	gpgrid-1.vtk	694672	7f6820d9935b5121c0c479aa5b6b3f31715f9dba0a63f745a5601e4f38b380b1
+bytes	gpgrid-2.vtk	562372	fffbfccce0cbf9c4535668de33c044eea1ab9dfd7e861748b4eececb0cb3a397
+bytes	gpgrid-3.vtk	694672	f9d4ba8502c1baa31b5359b93965163792b7d023586874c75a7948d7b7d06ae9
+bytes	gpgrid-4.vtk	562372	082dc3e7275feb52061969e56b4b89e7d0760706ae2ecdc4e7e28a90aa83488c
+bytes	test_gmo_grid-2D.vtk	17420	e4cbfa717c7c31594035772a1c462380aa8d3277de62e0eeaa8b7444223edddf
+bytes	test_grid-2D.bin	5603	a3e4f6a802e951d36f31c25e14227607f016c07013d81445825540569fe04429
+bytes	test_grid-2D.vtk	17420	eaeb278c79188632382c61aff84c271be028246a996b802ad06866b5596173f4
+bytes	test_grid-3D.vtk	190672	f6457e641b762b08c471dbf6ceb9bd39613eb86b276a0974f97e2857a8ede825
+bytes	test_grid2-2D.vtk	17420	eaeb278c79188632382c61aff84c271be028246a996b802ad06866b5596173f4
+bytes	test_grid2b-2D.vtk	17420	eaeb278c79188632382c61aff84c271be028246a996b802ad06866b5596173f4
+bytes	test_grid3-slab.vtk	34976	64724e61682e8be5060c33c4facce26a958bd4fc0376a104978aeec7a9afb078
+bytes	test_grid4-wedge.vtk	34976	caa0d040160c11c4e5796f0a43d1ce5138d8c9b3f3e689fba2afc5729b2863e1
+bytes	test_grid_b-2D.vtk	17420	cfb59729c4bd64a6651440eed54663aab547b9de95fc5af79666284ff9ff5fbd
+bytes	test_grid_better-2D.vtk	17420	92a234346549163a85fd9b545a4119a45da2566beda36a8eea3fe9dead2b5b7c
+payload	test_grid-2D.gz	4833 payload_bytes=17435	5ea83145d9cd9eacf03b715a3b4b9b519805fd8b5ecd919204ad56e7f84d02f7

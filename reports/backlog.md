@@ -84,6 +84,16 @@
   我手工把它编出来跑了一次真实回放：
   **1393 行里只发出 315 行、301 行字节相同** ⇒ 约 **23%**，还差 1078 行；
   `sgrid` 的测试**根本没开始写**。
+  **G6 的 sgrid/usgrid demo 基线本轮已抓**（原来标"尚未抓取"）：
+  `geom_grid_sgrid_demo.txt` **26 行 stdout** + `…sgrid_demo.artefacts.txt` **16 个产物摘要**；
+  `geom_grid_usgrid_demo.txt` **56 行** + **28 个产物摘要**。
+  两跑（不同 scratch 根目录）stdout 逐字节相同、每个产物 sha256 相同。
+  **新发现（必须记下来，否则端口测试一定写错）**：这两个 demo 用**相对路径**找输入，
+  工作目录因此是契约的一部分——`sgrid_demo` 要 `../../examples/eilmer/3D/gridpro-import/blk.tmp`、
+  `usgrid_demo` 要 `sample-data/square-mesh.su2`；布局不对时它们**直接死于
+  `ErrnoException`**（我第一次跑就是 rc=1、20/8 行后中断，看着像 demo 坏了）。
+  复现布局写在两个 `.artefacts.txt` 的头注释里。产物按 `phase-0.md` 既有规则**只存摘要清单
+  不存字节**（sgrid_demo 单独就产 3.4 MB 的 .vtk），`.gz` 存**解压后 payload** 摘要。
   **第二个续做代理（同样在 150 轮处被截断，且没留下任何报告）实测推进到**：
   **发出 615 行、615 行全部字节相同**（`add_executable` 已开、`add_test` 仍注释着，
   注册纪律没破），约 **44%**；停在语料第 616 行

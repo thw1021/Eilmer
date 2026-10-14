@@ -1,0 +1,46 @@
+# baselines/e587b235/probes/geom_grid_usgrid_demo.artefacts.txt
+# Checksum manifest for what geom/grid/usgrid_demo.d writes, following reports/phase-0.md's
+# rule that large reproducible artefacts are versioned as a manifest rather than as bytes
+# (sgrid_demo alone produces 3.4 MB of .vtk).
+#
+# The working directory is part of the contract: both demos resolve their inputs by
+# RELATIVE path, and each dies with an ErrnoException until the layout exists --
+# sgrid_demo wants `../../examples/eilmer/3D/gridpro-import/blk.tmp`, usgrid_demo wants
+# `sample-data/square-mesh.su2`. To reproduce:
+#   mkdir -p /tmp/g6/src/eilmer
+#   ln -s /home/tang/packages/gdtk/examples /tmp/g6/examples
+#   ln -s /home/tang/packages/gdtk/src/geom/sample-data /tmp/g6/src/eilmer/sample-data
+#   cd /tmp/g6/src/eilmer && /tmp/demo_g6/usgrid_demo > out.txt
+# Verified: two runs from different scratch roots give byte-identical stdout and identical
+# digests for every artefact listed here.
+# `.gz` rows carry the DECOMPRESSED payload digest and size, because the gzip container
+# embeds the entry mtime and differs between two runs of D itself.
+# Columns: kind<TAB>relative-path<TAB>bytes[ payload_bytes=...]<TAB>sha256
+bytes	test-join-grid.vtk	5283	317cd8c142ff8353ccc4f67f552cd0656265c4277491d86fbccd26c0d7d390cf
+bytes	test_3Dgrid.vtk	274211	1c0e48512e9410d3e46d9b91fde73c651c4248f9ec8c43826471df189da4d271
+bytes	test_3Dgrid_2.su2	274211	1c0e48512e9410d3e46d9b91fde73c651c4248f9ec8c43826471df189da4d271
+bytes	test_3Dgrid_2.vtk	274211	1c0e48512e9410d3e46d9b91fde73c651c4248f9ec8c43826471df189da4d271
+bytes	test_grid.bin	24095	b36528ea14aba881f826eec44b8cac31ea68158bd448b67c2b45415409c7b6e0
+bytes	test_grid.stl	187217	4f80af8df869dd62619357e9a930eed367d1040393ddb25a543f5939110151c6
+bytes	test_grid.vtk	21073	ca22c6c2f6c0b4b1d4427138adc978638ec677ce4ba8733dd2f99dea4d7ebf79
+bytes	test_grid_2.vtk	21073	ca22c6c2f6c0b4b1d4427138adc978638ec677ce4ba8733dd2f99dea4d7ebf79
+bytes	test_grid_2b.vtk	21073	ca22c6c2f6c0b4b1d4427138adc978638ec677ce4ba8733dd2f99dea4d7ebf79
+bytes	test_openFoam/polyMesh/boundary	507	ac6113fbee5013016c92d6e140ea39db9603fda929020f0d56d5e64005a8600d
+bytes	test_openFoam/polyMesh/faces	402	51c29bd9b0e3c430fbf3dbc2c5950909f75974f894ce930d0230ae78742cbc86
+bytes	test_openFoam/polyMesh/neighbour	141	76693bb98094ac4f10557ef849bb0b772713ac098214f2bf144f32aec4af10e6
+bytes	test_openFoam/polyMesh/owner	186	0ba7e49c51b391444b452043a0bf70634b91f27b1849aefc28f99f0135ea6605
+bytes	test_openFoam/polyMesh/points	1533	f3186ffe533b824de3ba1cad5d0b7e074a0f8783db7d4c53eebb23a330b6a8dc
+bytes	test_openFoam/polyMesh/sets/bottom	145	dad2a3ce82fef92c4ce5d14f7111c479f71c67bc2f1d939e9b2d60c0341b63fc
+bytes	test_openFoam/polyMesh/sets/east	133	9b03bfd1816d0a7556359f28b69a01c487acc40c1d8fe1a48aead570e97931f7
+bytes	test_openFoam/polyMesh/sets/north	134	be3b0dfebc60b4eb19ab98726f7ba5a967aab8c08a12c6410b89a0879b1d6371
+bytes	test_openFoam/polyMesh/sets/south	134	c0d7626e0858fcf24f6c9051c0bda9e22ac2a132b4ac5375e4ff51bce7edcb72
+bytes	test_openFoam/polyMesh/sets/top	142	11059a135d9aa5a5107e9b1d994882d68f31f10b51e6d167a5895c93c00698f9
+bytes	test_openFoam/polyMesh/sets/west	135	2b97930211a78b19a1dafc7b45545dde0eed14e9ac1533532d7d27cabde8979e
+bytes	test_su2-cube-mesh-hex.su2	1923	42b97986f260af218080ddf911358e97065dce5aae7d0d5400e69b7e94857cb7
+bytes	test_su2-cube-mesh-hex.vtk	1551	fd13739eb3070b7842ede6b36a38f251a82db382da48e69e36926161cdf41067
+bytes	test_su2-square-mesh-quads.su2	737	d2b138745e3260deb7ff71bf8732701af5915a52a1078f3339f25dc10450777b
+bytes	test_su2-square-mesh-quads.vtk	824	66be7bda0d89b18a5a775caa5d668a649a59a32887635ee730ec768f91d9bcce
+bytes	test_su2-square-mesh.su2	770	3e589419367d468b36274e396e4592b4d4303959d033794c86e6cb92e4d25126
+bytes	test_su2-square-mesh.vtk	856	df0da22e02b6ead0c00c4359fba98a399415ad5487a411204d544d65ad54ef51
+payload	test_3Dgrid.gz	110862 payload_bytes=563848	61587466358cc5bae85aa3f4686954629e2ce16efafd2faf904c197538841bff
+payload	test_grid.gz	9643 payload_bytes=35635	91580803cfdfdfec82f9055e77e028b9743495530db6e7efa4c173ebc3cf7a9d

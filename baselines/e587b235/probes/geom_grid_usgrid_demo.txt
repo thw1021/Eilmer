@@ -1,0 +1,56 @@
+Begin unstructured-grid demo...
+grid point 5 5 at x=0.463295 y=0.445833
+3D grid
+grid point 5 5 5 at p=Vector3(0.5, 0.35, 1.5)
+Search for cell enclosing my_point= Vector3(0, 0.6, 1.5)
+    cell found, index= 890
+    cell barycentre= Vector3(0.05, 0.575, 1.35)
+su2 2D grid -- triangles
+Importing: sample-data/square-mesh.su2 ... (done) scale=1 dim=2 ncells=8 nbfs= 4
+su2 2D grid -- quadrangles
+Importing: sample-data/square-mesh-quads.su2 ... (done) scale=1 dim=2 ncells=4 nbfs= 4
+su2 3D grid -- hexagons
+Importing: sample-data/cube-mesh-hex.su2 ... (done) scale=1 dim=3 ncells=4 nbfs= 6
+Try joining grids
+grid point 1 1 2 at p=Vector3(0.1, 0.15, 0.6)
+UnstructuredGrid: label=usga
+  nvertices=36 nfaces=52 ncells=12
+  BoundarySet[0] tag=usga-west nfaces=6
+  BoundarySet[1] tag=usga-east nfaces=6
+  BoundarySet[2] tag=usga-south nfaces=6
+  BoundarySet[3] tag=usga-north nfaces=6
+  BoundarySet[4] tag=usga-bottom nfaces=4
+  BoundarySet[5] tag=usga-top nfaces=4
+Check that each of the cells is closed.
+  OK
+Check that the region bounded by the grid is closed.
+  OK
+UnstructuredGrid: label=usgb
+  nvertices=36 nfaces=52 ncells=12
+  BoundarySet[0] tag=usgb-west nfaces=6
+  BoundarySet[1] tag=usgb-east nfaces=6
+  BoundarySet[2] tag=usgb-south nfaces=6
+  BoundarySet[3] tag=usgb-north nfaces=6
+  BoundarySet[4] tag=usgb-bottom nfaces=4
+  BoundarySet[5] tag=usgb-top nfaces=4
+Check that each of the cells is closed.
+  OK
+Check that the region bounded by the grid is closed.
+  OK
+UnstructuredGrid: label=usga
+  nvertices=60 nfaces=98 ncells=24
+  BoundarySet[0] tag=usga-west nfaces=6
+  BoundarySet[1] tag=usga-south nfaces=6
+  BoundarySet[2] tag=usga-north nfaces=6
+  BoundarySet[3] tag=usga-bottom nfaces=4
+  BoundarySet[4] tag=usga-top nfaces=4
+  BoundarySet[5] tag=usgb-east nfaces=6
+  BoundarySet[6] tag=usgb-south nfaces=6
+  BoundarySet[7] tag=usgb-north nfaces=6
+  BoundarySet[8] tag=usgb-bottom nfaces=4
+  BoundarySet[9] tag=usgb-top nfaces=4
+Check that each of the cells is closed.
+  OK
+Check that the region bounded by the grid is closed.
+  OK
+Done.
