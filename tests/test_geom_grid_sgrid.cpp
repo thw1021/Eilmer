@@ -34,6 +34,57 @@
 //               spellings, the padding of a short clusterf, and measure_of_badness (D:82)
 //   sg.rgrid.*  rows 752-830  the redistributed-parameter constructor and the
 //               list_to_rs_grids / rs_grids_to_list pair (D:104, :648, :1472-1522)
+//   sg.vol.*    rows 831-944  the ParametricVolume constructor, four interpolation
+//               spellings, clusterf padding to 12, unknown interpolation (D:115-136)
+//   sg.readtxt.* rows 945-1031 read_from_text_file with and without a VTK header, the four
+//               dimension-inference shapes, bad tokens, a missing file, an early EOF, and
+//               the format dispatch of the import constructor (D:783-852, :138-160)
+//   sg.wgz/readgz rows 1032-1095 the gzip round trip: payload, scale on read, versions 1.0
+//               and 1.1, a bad version, a truncated file, ntags: 0, and Grid.write's fmt
+//               dispatch (D:854-922, :999-1040; compared as DECOMPRESSED payload only)
+//   sg.frmt.*   rows 1096-1113 every formattedRead shape of read_from_gzip_file: literal
+//               mismatch under Phobos' forward search, a conversion at exhausted input
+//               (which raises nothing and leaves the destination untouched), conv text that
+//               names the RESOLVED target type, and an oversized dimension that reaches
+//               set_length and comes back as "Memory allocation failed" (T-927, T-914)
+//   sg.wraw/readraw rows 1114-1168 raw binary: exact container bytes by hex, round trip,
+//               scale, an empty label, a bad version, a missing file, a header-only file
+//               (D's rawRead does not raise on a short read), and Grid.write "rawbinary"
+//               (D:924-997, :1042-1082)
+//   sg.vtk/su2  rows 1169-1173 write_to_vtk_file (D:1084-1102) and write_to_su2_file
+//               (D:1312-1318), the latter purely delegated to UnstructuredGrid
+//   sg.join.*   rows 1174-1270 joinGrid east/imax/north/jmax plus its six Error wordings
+//               (multi-line messages, so the rows carry <newline>) (D:1130-1256)
+//   sg.slab/wedge rows 1271-1406 makeSlabGrid and makeWedgeGrid, including the :1294 atan2
+//               and the :1299/:1304 cos/sin pair of one argument (T-910, T-920) (D:1258-1310)
+//   sg.bad.*    rows 1407-1415 measure_of_badness, two of them -nan (T-919)
+//   sg.rs.*     rows 1416-1441 rs_grids_to_list / list_to_rs_grids and their short-array
+//               asserts (D:1472-1522)
+//   sg.determ.* rows 1442-1493 determine_rs_grids through nm/nelmin, then the redistributed
+//               grid it implies (D:1396-1423)
+//   sg.rotq.*   rows 1494-1537 rotateGrid (D:1425-1465)
+//   sg.rot.*    rows 1538-1594 the two inherited Grid.rotate entries (grid.d:443-500)
+//   sg.uflowz.* rows 1595-1619 the underflow/overflow guard, incl. the +0 that comes out of
+//               the underflow arm and inf/nan (D:1534-1540)
+//   sg.vtkhdr.* rows 1620-1628 read_VTK_header_line, case-insensitive and mid-word
+//               (D:1544-1561)
+//   sg.gridpro.* rows 1629-1670 import_gridpro_grid; rows 1629-1630 and 1646-1647, 1664 are
+//               printed from INSIDE the ported function (D:1565-1612)
+//   sg.rsgp.*   rows 1671-1701 rotate_gridpro_blocks, incl. pointer identity of the pass-
+//               through arms (D:1756-1798)
+//   sg.fswap.*  rows 1702-1742 grid_faceswap, incl. isnull=true when neither flag is set
+//   sg.plot3d.* rows 1743-1842 writeGridsAsPlot3D and importPlot3DGrid, incl. the gzipped
+//               read through popen("gunzip -c ...") (D:1614-1754)
+//   sg.ccp.*    rows 1843-1861 compute_cell_properties over 3D/2D/1D lattices (grid.d:124)
+//   sg.pic/cbc/bin/fsc/fncc rows 1862-2087 the search services, the ULP-exact bin-boundary
+//               clamps and the three search entries (grid.d:198-420)
+//   sg.unit.*   rows 2088-2096 sgrid.d's own unittest (D:1833-1865); row 2097 is sg.done
+//
+// Not yet emitted: none. The whole 2097-row corpus replays at 0 differing rows
+// (/tmp/w2_g4b/test_geom_grid_sgrid <corpus> prints
+// `PASS: geom_grid_sgrid, probe replay 2097 D lines, 2097 C++ lines, 0 differ;
+//  2097 of 2097 rows byte-identical`), so add_test() in cmake/wave2_grid_g4.cmake is
+// ready to switch on once the main thread has re-run the three configurations.
 //
 // Substrate gap worked around HERE (not in src/, so it is test-local and does not mask a
 // port defect): eil::Array::set_length value-initialises the grown tail
@@ -70,6 +121,8 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
+#include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -105,7 +158,9 @@ using eil::geom::Grid;
 using eil::geom::LinearFunction;
 using eil::geom::ParametricSurface;
 using eil::geom::ParametricVolume;
+using eil::geom::Quaternion;
 using eil::geom::StructuredGrid;
+using eil::geom::StructuredGridArray;
 using eil::geom::UnivariateFunctionPtr;
 using eil::geom::Vector3;
 
@@ -860,7 +915,1205 @@ void grp_rgrid() {
     dump_doubles("sg.rgrid.roundtrip", back);
 }
 
+// ------------------------------------------------------------------
+// sg.join.* — joinGrid (probe_sgrid.d:1052-1107, sgrid.d:1130-1256)
+// ------------------------------------------------------------------
+void grp_join() {
+    auto a = mk2d(4, 3, "A");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            a->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    auto b = mk2d(3, 3, "B");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            b->opIndex(i, j)->set(static_cast<double>(i + 3) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    auto aj = a->dup();
+    aj->joinGrid(b, "east");
+    dump_grid("sg.join.east", aj);
+    auto bj = a->dup();
+    bj->joinGrid(b, "imax");
+    dump_grid("sg.join.imax", bj);
+    emit(eil::format("sg.join.same=%s", aj->toString() == bj->toString()));
+    // north join
+    auto c = mk2d(4, 3, "C");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            c->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0 + 2.0, 0.0);
+        }
+    }
+    auto nj = a->dup();
+    nj->joinGrid(c, "north");
+    dump_grid("sg.join.north", nj);
+    auto nj2 = a->dup();
+    nj2->joinGrid(c, "jmax");
+    dump_grid("sg.join.jmax", nj2);
+    // guards
+    tryit("sg.join.badloc", [&a, &b]() { a->joinGrid(b, "west"); });
+    tryit("sg.join.emptyloc", [&a, &b]() { a->joinGrid(b, ""); });
+    std::shared_ptr<Grid> g3 = vol_grid3d("3d");
+    tryit("sg.join.3d", [&g3, &b]() {
+        std::static_pointer_cast<StructuredGrid>(g3)->joinGrid(b, "east");
+    });
+    auto mismatch = mk2d(3, 2, "M");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            mismatch->opIndex(i, j)->set(static_cast<double>(i + 3) * 1.0,
+                                         static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.njv", [&a, &mismatch]() { a->joinGrid(mismatch, "east"); });
+    auto nkvbad = mk2d(3, 3, "K");
+    emit(eil::format("sg.join.nkv %d %d", a->nkv, nkvbad->nkv));
+    // non-coincident vertex
+    auto apart = mk2d(3, 3, "AP");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            apart->opIndex(i, j)->set(static_cast<double>(i) * 1.0 + 1.0e-3,
+                                      static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.coincide", [&a, &apart]() { a->joinGrid(apart, "east"); });
+    auto nbad = mk2d(5, 3, "NB");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 5; ++i) {
+            nbad->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                     static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    tryit("sg.join.niv", [&a, &nbad]() { a->joinGrid(nbad, "north"); });
+    auto nbad2 = mk2d(4, 3, "NB2");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            nbad2->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                      static_cast<double>(j) * 1.0 + 1.0e-2, 0.0);
+        }
+    }
+    tryit("sg.join.coincide.north", [&a, &nbad2]() { a->joinGrid(nbad2, "north"); });
+}
+
+// ------------------------------------------------------------------
+// sg.slab.* / sg.wedge.* (probe_sgrid.d:1110-1133, sgrid.d:1258-1310)
+// ------------------------------------------------------------------
+void grp_slab_wedge() {
+    auto g = mk2d(3, 2, "slabsrc");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 1.0, 0.5);
+        }
+    }
+    dump_grid("sg.slab.sym", g->makeSlabGrid(Vector3(0.0, 0.0, 2.0), true, ""));
+    dump_grid("sg.slab.asym", g->makeSlabGrid(Vector3(0.0, 0.0, 2.0), false, ""));
+    dump_grid("sg.slab.dbl", g->makeSlabGrid(3.0, true, "dbl"));
+    dump_grid("sg.slab.dblasym", g->makeSlabGrid(3.0, false, "dblasym"));
+    emit(eil::format("sg.slab.srclabel=%s", g->makeSlabGrid(1.0)->label));
+    // makeWedgeGrid around the x-axis. D:1294 atan2 and the :1299/:1304 cos/sin pair of one
+    // argument go through eil::atan2 / eil::cos / eil::sin (T-910, T-920).
+    auto w = mk2d(3, 2, "wedgesrc");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            w->opIndex(i, j)->set(static_cast<double>(i) * 0.5,
+                                  1.0 + static_cast<double>(j) * 0.25,
+                                  0.1 * static_cast<double>(i));
+        }
+    }
+    dump_grid("sg.wedge.sym", w->makeWedgeGrid(0.3, true, "", 3));
+    dump_grid("sg.wedge.asym", w->makeWedgeGrid(0.3, false, "", 3));
+    dump_grid("sg.wedge.sym2", w->makeWedgeGrid(1.0, true));
+    dump_grid("sg.wedge.nkv2", w->makeWedgeGrid(0.75, false, "w2", 2));
+    emit(eil::format("sg.wedge.pi=%s",
+                     w->makeWedgeGrid(3.141592653589793, true, "wpi", 5)->toString()));
+    tryit("sg.slab.3d", []() { (void)vol_grid3d("x")->makeSlabGrid(1.0); });
+    tryit("sg.wedge.3d", []() { (void)vol_grid3d("x")->makeWedgeGrid(0.3); });
+}
+
+// ------------------------------------------------------------------
+// sg.bad.* — measure_of_badness (probe_sgrid.d:1135-1179, sgrid.d:1320-1394)
+// ------------------------------------------------------------------
+void grp_bad() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cflin;
+    for (int n = 0; n < 4; ++n) cflin.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    auto gid = std::make_shared<StructuredGrid>(*patch, 5, 5, cflin, "simple", "badid");
+    emit(eil::format("sg.bad.identical=%.17g", gid->measure_of_badness()));
+    ClusterF cfclust;
+    cfclust.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cfclust.append(std::make_shared<eil::geom::RobertsFunction>(true, true, 2.0));
+    cfclust.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cfclust.append(std::make_shared<eil::geom::RobertsFunction>(true, true, -2.0));
+    auto gc = std::make_shared<StructuredGrid>(*patch, 5, 5, cfclust, "simple", "badc");
+    emit(eil::format("sg.bad.clustered=%.17g", gc->measure_of_badness()));
+    emit(eil::format("sg.bad.clustered.bilinear=%.17g",
+                     std::make_shared<StructuredGrid>(*patch, 5, 5, cfclust, "bilinear",
+                                                     "badcb")
+                         ->measure_of_badness()));
+    // A skewed (non-orthogonal) quadrilateral mesh.
+    auto sk = mk2d(4, 4, "skew");
+    for (size_t j = 0; j < 4; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            sk->opIndex(i, j)->set(static_cast<double>(i) * 1.0 + 0.3 * static_cast<double>(j),
+                                   static_cast<double>(j) * 1.0, 0.0);
+        }
+    }
+    emit(eil::format("sg.bad.skew=%.17g", sk->measure_of_badness()));
+    // An inverted cell: negative area triggers the penalty (D:1373).
+    auto inv = mk2d(3, 2, "inv");
+    inv->opIndex(0, 0)->set(0.0, 0.0, 0.0);
+    inv->opIndex(1, 0)->set(1.0, 0.0, 0.0);
+    inv->opIndex(2, 0)->set(2.0, 0.0, 0.0);
+    inv->opIndex(0, 1)->set(0.0, 1.0, 0.0);
+    inv->opIndex(1, 1)->set(1.0, -1.0, 0.0);
+    inv->opIndex(2, 1)->set(2.0, 1.0, 0.0);
+    emit(eil::format("sg.bad.inverted=%.17g", inv->measure_of_badness()));
+    // Degenerate: a zero-area cell (repeated vertices).
+    auto deg = mk2d(3, 3, "deg");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            deg->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                    static_cast<double>(i) * 1.0, 0.0);
+        }
+    }
+    emit(eil::format("sg.bad.degenerate=%.17g", deg->measure_of_badness()));
+    // A single-row mesh (njv == 2) and a single-column one (niv == 2).
+    emit(eil::format("sg.bad.2row=%.17g", surf_grid2d("b2")->measure_of_badness()));
+    tryit("sg.bad.3d", []() { (void)vol_grid3d("b3")->measure_of_badness(); });
+    tryit("sg.bad.1d", []() {
+        (void)std::make_shared<StructuredGrid>(5, 1, 1, "b1")->measure_of_badness();
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.rs.* — the two list/grid mappers (probe_sgrid.d:1181-1194, sgrid.d:1472-1522)
+// ------------------------------------------------------------------
+void grp_rs() {
+    eil::Array<double> data = d_init_doubles(16);
+    for (size_t i = 0; i < 16; ++i) data[i] = 0.01 * static_cast<double>(i) + 0.02;
+    eil::geom::RSGrid rg{}, sgr{};
+    eil::geom::list_to_rs_grids(data, rg, sgr);
+    dump_g2d("sg.rs.r", rg);
+    dump_g2d("sg.rs.s", sgr);
+    eil::Array<double> back = d_init_doubles(16);
+    eil::geom::rs_grids_to_list(rg, sgr, back);
+    dump_doubles("sg.rs.roundtrip", back);
+    // The assert on a short array (D:1478, :1504).
+    tryit("sg.rs.short.list", [&rg, &sgr]() {
+        eil::Array<double> d = d_init_doubles(15);
+        eil::geom::rs_grids_to_list(rg, sgr, d);
+    });
+    tryit("sg.rs.short.get", [&rg, &sgr]() {
+        eil::Array<double> d = d_init_doubles(0);
+        eil::geom::list_to_rs_grids(d, rg, sgr);
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.determ.* — determine_rs_grids (probe_sgrid.d:1205-1234, sgrid.d:1396-1423),
+// which minimises through nm/nelmin
+// ------------------------------------------------------------------
+void grp_determ() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf;
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<eil::geom::RobertsFunction>(true, true, 1.5));
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<eil::geom::RobertsFunction>(true, true, -1.5));
+    auto g = std::make_shared<StructuredGrid>(*patch, 6, 5, cf, "simple", "det");
+    emit(eil::format("sg.determ.before=%.17g", g->measure_of_badness()));
+    eil::geom::RSGrid rg{}, sgr{};
+    // Start from the identity redistribution (D:1407 reads these values). D's `id[] = 0.0`
+    // writes every slot, so there is no .init tail to reproduce here.
+    eil::Array<double> id = d_init_doubles(16);
+    for (size_t i = 0; i < 16; ++i) id[i] = 0.0;
+    id[2] = 0.0; id[7] = 1.0; id[13] = 1.0;
+    eil::geom::list_to_rs_grids(id, rg, sgr);
+    dump_g2d("sg.determ.rg0", rg);
+    dump_g2d("sg.determ.sg0", sgr);
+    const bool conv = g->determine_rs_grids(*patch, cf, rg, sgr);
+    emit(eil::format("sg.determ.conv=%s", conv));
+    dump_g2d("sg.determ.rg", rg);
+    dump_g2d("sg.determ.sg", sgr);
+    emit(eil::format("sg.determ.after=%.17g", g->measure_of_badness()));
+    auto gr = std::make_shared<StructuredGrid>(*patch, 6, 5, cf, rg, sgr, "detr");
+    dump_grid("sg.determ.grid", gr);
+}
+
+// ------------------------------------------------------------------
+// sg.rotq.* — rotateGrid (probe_sgrid.d:1236-1262, sgrid.d:1425-1465)
+// ------------------------------------------------------------------
+void grp_rotq() {
+    auto g = std::make_shared<StructuredGrid>(2, 2, 2, "rotq");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                g->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                         static_cast<double>(k));
+            }
+        }
+    }
+    auto a = g->dup();
+    a->rotateGrid(1.0, 0.0, 0.0, 0.0);
+    dump_verts("sg.rotq.ident", a->vertices);
+    auto b = g->dup();
+    b->rotateGrid(0.7071067811865476, 0.0, 0.7071067811865476, 0.0);
+    dump_verts("sg.rotq.pi2.y", b->vertices);
+    auto c = g->dup();
+    c->rotateGrid(0.0, 0.0, 0.0, 1.0);
+    dump_verts("sg.rotq.pi.y", c->vertices);
+    auto d = g->dup();
+    d->rotateGrid(0.5, 0.5, 0.5, 0.5);
+    dump_verts("sg.rotq.diag", d->vertices);
+    tryit("sg.rotq.norm", [&g]() { g->dup()->rotateGrid(1.0, 1.0, 0.0, 0.0); });
+    tryit("sg.rotq.zero", [&g]() { g->dup()->rotateGrid(0.0, 0.0, 0.0, 0.0); });
+    tryit("sg.rotq.nan", [&g]() {
+        g->dup()->rotateGrid(std::numeric_limits<double>::quiet_NaN(), 0.0, 0.0, 0.0);
+    });
+    // norm exactly at the 1e-8 band edge.
+    emit(eil::format("sg.rotq.band=%.17g", (std::abs(1.0 + 1e-9) - 1.0) > 1e-8));
+    auto e = g->dup();
+    e->rotateGrid(0.9999999999999999, 0.0, 0.0, 0.0);
+    dump_verts("sg.rotq.justunder", e->vertices);
+}
+
+// ------------------------------------------------------------------
+// sg.rot.* — the two inherited Grid.rotate entries (probe_sgrid.d:1264-1287,
+// grid.d:443-500). The handle h is a Grid, so these replay the base implementations.
+// ------------------------------------------------------------------
+void grp_rot() {
+    auto g = std::make_shared<StructuredGrid>(3, 3, 1, "rot");
+    for (size_t j = 0; j < 3; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i), static_cast<double>(j), 0.0);
+        }
+    }
+    std::shared_ptr<Grid> h = g;
+    Quaternion q = {{1.0, 0.0, 0.0, 0.0}};
+    h->rotate(q);
+    dump_verts("sg.rot.q.ident", g->vertices);
+    Quaternion q180 = {{0.0, 0.0, 0.0, 1.0}};
+    h->rotate(q180);
+    dump_verts("sg.rot.q.pi", g->vertices);
+    h->rotate(3.141592653589793, Vector3(0.0, 0.0, 1.0));
+    dump_verts("sg.rot.a.pi", g->vertices);
+    h->rotate(1.5707963267948966, Vector3(0.0, 0.0, 1.0), Vector3(1.0, 1.0, 0.0));
+    dump_verts("sg.rot.a.pi2 ctr", g->vertices);
+    Vector3 ax = Vector3(0.0, 2.0, 0.0);
+    h->rotate(0.5, ax);
+    emit(eil::format("sg.rot.axis.after %.17g %.17g %.17g", eil::re(ax.x), eil::re(ax.y),
+                     eil::re(ax.z)));
+    dump_verts("sg.rot.a.len2", g->vertices);
+    tryit("sg.rot.q.badnorm", [&h]() {
+        Quaternion bad = {{1.0, 1.0, 0.0, 0.0}};
+        h->rotate(bad);
+    });
+    // D's `Quaternion nq;` is double[4].init, i.e. four NaNs (nomenclature.d:68).
+    Quaternion nq = eil::geom::quaternion_init();
+    tryit("sg.rot.q.naninit", [&h, &nq]() { h->rotate(nq); });
+    dump_verts("sg.rot.q.naninit.after", g->vertices);
+}
+
+// ------------------------------------------------------------------
+// probe-side stand-in for D's `File(name, "r")`. The constructor itself raises when
+// the open fails (T-923: a *failed* open is a StdioException/ErrnoException whose msg
+// is `Cannot open file `NAME' in mode `MODE' (strerror)`, distinct from readln() at EOF
+// which returns an empty string and raises nothing). This is the probe's own call, not
+// an expected output, so reproducing it here keeps the gate honest.
+std::FILE* d_file(const std::string& name, const char* mode) {
+    std::FILE* h = std::fopen(name.c_str(), mode);
+    if (h == nullptr) {
+        throw eil::ExceptionBase("Cannot open file `" + name + "' in mode `" + mode + "' (" +
+                                 std::strerror(errno) + ")");
+    }
+    return h;
+}
+
+// ------------------------------------------------------------------
+// sg.uflowz.* — the underflow/overflow guard (probe_sgrid.d:1290-1306, D:1534-1540)
+// ------------------------------------------------------------------
+void grp_uflowz() {
+    const double vals[] = {1.0, 1.0e-32, 1.0e-29, 1.0e+29, 1.0e+32,
+                           -1.0, -1.0e-32, -1.0e-29, -1.0e+29, -1.0e+32,
+                           0.0, -0.0, 1.0e-30, 1.0e30, 1.0e-31, 1.0e31,
+                           std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::quiet_NaN(),
+                           std::numeric_limits<double>::infinity(),
+                           -std::numeric_limits<double>::infinity(),
+                           9.999999999999999e+29};
+    for (const double v : vals) {
+        emit(eil::format("sg.uflowz %.17g -> %.17g", v, eil::geom::uflowz(v)));
+    }
+    emit(eil::format("sg.uflowz.custom %.17g %.17g -> %.17g", 1.0e-5, 1.0e-4,
+                     eil::geom::uflowz(1.0e-5, 1.0e-4)));
+    emit(eil::format("sg.uflowz.custom2 %.17g -> %.17g", 5.0,
+                     eil::geom::uflowz(5.0, 1.0e-30, 4.0)));
+    emit(eil::format("sg.uflowz.negcustom %.17g -> %.17g", -5.0,
+                     eil::geom::uflowz(-5.0, 1.0e-30, 4.0)));
+    // sign of the zero that comes out of the underflow branch.
+    emit(eil::format("sg.uflowz.sign %.17g -> %.17g signbit=%d", -1.0e-32,
+                     eil::geom::uflowz(-1.0e-32),
+                     static_cast<int>(std::signbit(eil::geom::uflowz(-1.0e-32)))));
+}
+
+// ------------------------------------------------------------------
+// sg.vtkhdr.* — read_VTK_header_line (probe_sgrid.d:1308-1339, D:1544-1561)
+// ------------------------------------------------------------------
+void grp_vtkhdr() {
+    const std::string p = TD + "/hdr.vtk";
+    mkr(p, "# vtk DataFile Version 2.0\nLabel Line\nascii\ndataset structured_grid\n"
+           "DIMENSIONS 3 2 1\nPOINTS 6 float\n");
+    {
+        std::FILE* f = d_file(p, "r");
+        emit(eil::format("sg.vtkhdr.0=%s", eil::geom::read_VTK_header_line("vtk", f)));
+        emit(eil::format("sg.vtkhdr.1=%s", eil::geom::read_VTK_header_line("ASCII", f)));
+        emit(eil::format("sg.vtkhdr.2=%s", eil::geom::read_VTK_header_line("STRUCTURED_GRID", f)));
+        emit(eil::format("sg.vtkhdr.3=%s", eil::geom::read_VTK_header_line("DIMENSIONS", f)));
+        emit(eil::format("sg.vtkhdr.4=%s", eil::geom::read_VTK_header_line("POINTS", f)));
+        tryit("sg.vtkhdr.eof", [f]() { (void)eil::geom::read_VTK_header_line("CELLS", f); });
+        std::fclose(f);
+    }
+    // A target that appears mid-word, and one that never appears.
+    {
+        std::FILE* f = d_file(p, "r");
+        emit(eil::format("sg.vtkhdr.mid=%s", eil::geom::read_VTK_header_line("structured", f)));
+        std::fclose(f);
+    }
+    {
+        std::FILE* f = d_file(p, "r");
+        tryit("sg.vtkhdr.absent", [f]() { (void)eil::geom::read_VTK_header_line("LOOKUP", f); });
+        std::fclose(f);
+    }
+    tryit("sg.vtkhdr.missing", [&]() {
+        std::FILE* f = d_file(TD + "/nope.vtk", "r");
+        (void)eil::geom::read_VTK_header_line("vtk", f);
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.gridpro.* — import_gridpro_grid (probe_sgrid.d:1341-1366, D:1565-1612).
+// Two of these rows are printed from INSIDE the ported function (D's own writefln),
+// which is why main() redirects stdout into the capture file.
+// ------------------------------------------------------------------
+void grp_gridpro() {
+    const std::string p = TD + "/gp.dat";
+    {
+        std::string body = "# a comment line\n2 2 1\n";
+        body += "0.0 0.0 0.0\n1000.0 0.0 0.0\n0.0 1000.0 0.0\n1000.0 1000.0 1.0e-40\n";
+        body += "2 2 1\n";
+        body += "1.0e+40 0.0 0.0\n2.0 3.0 4.0\n5.0 6.0 7.0\n8.0 9.0 1.0e-35\n";
+        mkr(p, body);
+    }
+    auto gr = eil::geom::import_gridpro_grid(p);
+    emit(eil::format("sg.gridpro.count=%d", gr.length()));
+    for (size_t i = 0; i < gr.length(); ++i) {
+        dump_grid(eil::format("sg.gridpro[%d]", i), gr[i]);
+    }
+    auto gr2 = eil::geom::import_gridpro_grid(p, 0.001);
+    emit(eil::format("sg.gridpro.count2=%d", gr2.length()));
+    for (size_t i = 0; i < gr2.length(); ++i) {
+        dump_grid(eil::format("sg.gridpro.scale[%d]", i), gr2[i]);
+    }
+    tryit("sg.gridpro.missing", [&]() { (void)eil::geom::import_gridpro_grid(TD + "/nope.dat"); });
+    // A single block with no trailing blank line.
+    const std::string p1 = TD + "/gp1.dat";
+    mkr(p1, "2 1 1\n1.0 2.0 3.0\n4.0 5.0 6.0\n");
+    auto g1 = eil::geom::import_gridpro_grid(p1, 1.0);
+    emit(eil::format("sg.gridpro.1=%d", g1.length()));
+    dump_grid("sg.gridpro.1blk", g1[0]);
+}
+
+// ------------------------------------------------------------------
+// sg.rsgp.* — rotate_gridpro_blocks (probe_sgrid.d:1368-1383, D:1756-1798)
+// ------------------------------------------------------------------
+void grp_rsgp() {
+    auto g = mk2d(3, 2, "gp");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 10.0,
+                                  static_cast<double>(i + j) * 0.25);
+        }
+    }
+    auto r1 = eil::geom::rotate_gridpro_blocks(g, "East", "South");
+    dump_grid("sg.rsgp.east.south", r1);
+    emit(eil::format("sg.rsgp.east.south.aliased=%s", r1 == g));
+    auto r2 = eil::geom::rotate_gridpro_blocks(g, "North", "East");
+    dump_grid("sg.rsgp.north.east", r2);
+    auto r3 = eil::geom::rotate_gridpro_blocks(g, "West", "North");
+    dump_grid("sg.rsgp.west.north", r3);
+    auto r4 = eil::geom::rotate_gridpro_blocks(g);
+    emit(eil::format("sg.rsgp.default.aliased=%s", r4 == g));
+    auto r5 = eil::geom::rotate_gridpro_blocks(g, "North", "South");
+    emit(eil::format("sg.rsgp.other.aliased=%s", r5 == g));
+    emit(eil::format("sg.rsgp.north.west=%s",
+                    eil::geom::rotate_gridpro_blocks(g, "North", "West")->toString()));
+}
+
+// ------------------------------------------------------------------
+// sg.fswap.* — grid_faceswap (probe_sgrid.d:1385-1398, D:1800-1828)
+// ------------------------------------------------------------------
+void grp_fswap() {
+    auto g = mk2d(3, 2, "fs");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 1.0,
+                                  static_cast<double>(j) * 10.0, 0.0);
+        }
+    }
+    dump_grid("sg.fswap.ns", eil::geom::grid_faceswap(g, true, false));
+    dump_grid("sg.fswap.ew", eil::geom::grid_faceswap(g, false, true));
+    dump_grid("sg.fswap.both", eil::geom::grid_faceswap(g, true, true));
+    dump_grid("sg.fswap.none", eil::geom::grid_faceswap(g, false, false));
+    dump_grid("sg.fswap.default", eil::geom::grid_faceswap(g));
+    // 3D source: the readers only touch the (i,j) lattice, so z survives oddly.
+    auto g3 = vol_grid3d("fs3d");
+    dump_grid("sg.fswap.3d", eil::geom::grid_faceswap(g3, true, false));
+}
+
+// ------------------------------------------------------------------
+// sg.plot3d.* — writeGridsAsPlot3D / importPlot3DGrid
+// (probe_sgrid.d:1400-1471, D:1614-1754). The gzipped read goes through
+// popen("gunzip -c ...") exactly as D's pipeShell does (D:1623).
+// ------------------------------------------------------------------
+void grp_plot3d() {
+    StructuredGridArray gs;
+    gs.append(mk2d(3, 2, "p1"));
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            gs[0]->opIndex(i, j)->set(static_cast<double>(i) * 1.25,
+                                      static_cast<double>(j) * 2.5, 0.0);
+        }
+    }
+    gs.append(std::make_shared<StructuredGrid>(2, 2, 2, "p2"));
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                gs[1]->opIndex(i, j, k)->set(static_cast<double>(i) + 0.1,
+                                             static_cast<double>(j) + 0.2,
+                                             static_cast<double>(k) + 0.3);
+            }
+        }
+    }
+    const std::string f2 = TD + "/out2.dat";
+    {
+        StructuredGridArray one;
+        one.append(gs[0]);
+        eil::geom::writeGridsAsPlot3D(f2, one, 2);
+    }
+    emit(eil::format("sg.plot3d.2d.len=%d body=%s", len_of(f2), body_of(f2)));
+    const std::string f3 = TD + "/out3.dat";
+    eil::geom::writeGridsAsPlot3D(f3, gs, 3);
+    emit(eil::format("sg.plot3d.3d.len=%d body=%s", len_of(f3), body_of(f3)));
+    tryit("sg.plot3d.baddim.write", [&f3, &gs]() { eil::geom::writeGridsAsPlot3D(f3, gs, 4); });
+    tryit("sg.plot3d.dim1.write", [&f3, &gs]() { eil::geom::writeGridsAsPlot3D(f3, gs, 1); });
+    // Round trip through the reader.
+    auto rb2 = eil::geom::importPlot3DGrid(f2, 2);
+    emit(eil::format("sg.plot3d.read2.count=%d", rb2.length()));
+    for (size_t i = 0; i < rb2.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read2[%d]", i), rb2[i]);
+    }
+    auto rb3 = eil::geom::importPlot3DGrid(f3, 3);
+    emit(eil::format("sg.plot3d.read3.count=%d", rb3.length()));
+    for (size_t i = 0; i < rb3.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read3[%d]", i), rb3[i]);
+    }
+    auto rb3as2 = eil::geom::importPlot3DGrid(f3, 2);
+    emit(eil::format("sg.plot3d.read3as2.count=%d", rb3as2.length()));
+    for (size_t i = 0; i < rb3as2.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.read3as2[%d]", i), rb3as2[i]);
+    }
+    tryit("sg.plot3d.baddim.read", [&f2]() { (void)eil::geom::importPlot3DGrid(f2, 5); });
+    // A single-block file (the size line has more than one token).
+    const std::string s1 = TD + "/single.dat";
+    {
+        std::string body = "2 2 1\n";
+        for (size_t n = 0; n < 4; ++n) body += eil::format(" %.18e\n", static_cast<double>(n) * 0.5);
+        for (size_t n = 0; n < 4; ++n) body += eil::format(" %.18e\n", static_cast<double>(n) * 0.25);
+        body += " 0.0 0.0 0.0 0.0\n";
+        mkr(s1, body);
+    }
+    auto rs = eil::geom::importPlot3DGrid(s1, 2);
+    emit(eil::format("sg.plot3d.single.count=%d", rs.length()));
+    for (size_t i = 0; i < rs.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.single[%d]", i), rs[i]);
+    }
+    // Values spread over several lines and in scientific format.
+    const std::string s2 = TD + "/messy.dat";
+    mkr(s2, " 2 2 \n1.0 2.0\n  3.0,4.0\n");
+    mkr(s2, "2 2 1\n1.0 2.0 3.0 4.0\n1.0e+0 2.0e+0 3.0e+0\n4.0e+0\n");
+    auto rm = eil::geom::importPlot3DGrid(s2, 2);
+    dump_grid("sg.plot3d.messy", rm[0]);
+    // The gzipped path, through pipeShell("gunzip -c ...") (D:1623).
+    const std::string gzf = TD + "/out3.dat.gz";
+    {
+        eil::gzip::GzipOut o(gzf);
+        bool ok = false;
+        o.compress(read_whole(f3, ok));
+        o.finish();
+    }
+    auto rg = eil::geom::importPlot3DGrid(gzf, 3, 1.0, true);
+    emit(eil::format("sg.plot3d.gz.count=%d", rg.length()));
+    for (size_t i = 0; i < rg.length(); ++i) {
+        dump_grid(eil::format("sg.plot3d.gz[%d]", i), rg[i]);
+    }
+    auto rgsc = eil::geom::importPlot3DGrid(gzf, 3, 0.001, true);
+    dump_grid("sg.plot3d.gz.scale", rgsc[0]);
+    tryit("sg.plot3d.gz.missing", [&]() {
+        (void)eil::geom::importPlot3DGrid(TD + "/nope.dat.gz", 3, 1.0, true);
+    });
+    tryit("sg.plot3d.missing", [&]() { (void)eil::geom::importPlot3DGrid(TD + "/nope.dat", 3); });
+    std::remove(gzf.c_str());
+}
+
+// ------------------------------------------------------------------
+// sg.ccp.* — compute_cell_properties on a real lattice
+// (probe_sgrid.d:1473-1516, grid.d:124)
+// ------------------------------------------------------------------
+void grp_ccp() {
+    std::shared_ptr<Grid> g3 = std::make_shared<StructuredGrid>(2, 2, 2, "ccp3d");
+    auto sg = std::static_pointer_cast<StructuredGrid>(g3);
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                sg->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                          static_cast<double>(k));
+            }
+        }
+    }
+    Vector3 c;
+    double vol = eil::d_init<double>();
+    for (const bool tc : {true, false}) {
+        g3->compute_cell_properties(0, tc, c, vol);
+        emit(eil::format("sg.ccp.hex tc=%s %.17g %.17g %.17g %.17g", tc, eil::re(c.x),
+                         eil::re(c.y), eil::re(c.z), eil::re(vol)));
+    }
+    // Degenerate: all 8 vertices coincident -> zero volume.
+    auto deg = std::make_shared<StructuredGrid>(2, 2, 2, "ccpdeg");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                deg->opIndex(i, j, k)->set(1.0, 2.0, 3.0);
+            }
+        }
+    }
+    std::shared_ptr<Grid> dh = deg;
+    dh->compute_cell_properties(0, true, c, vol);
+    emit(eil::format("sg.ccp.degenerate %.17g %.17g %.17g %.17g", eil::re(c.x), eil::re(c.y),
+                     eil::re(c.z), eil::re(vol)));
+    // Inverted (mirrored) cell: negative volume.
+    auto inv = std::make_shared<StructuredGrid>(2, 2, 2, "ccpinv");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 2; ++j) {
+            for (size_t i = 0; i < 2; ++i) {
+                inv->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                           -static_cast<double>(k));
+            }
+        }
+    }
+    std::shared_ptr<Grid> ih = inv;
+    ih->compute_cell_properties(0, true, c, vol);
+    emit(eil::format("sg.ccp.inverted %.17g %.17g %.17g %.17g", eil::re(c.x), eil::re(c.y),
+                     eil::re(c.z), eil::re(vol)));
+    ih->compute_cell_properties(0, false, c, vol);
+    emit(eil::format("sg.ccp.inverted.false %.17g %.17g %.17g %.17g", eil::re(c.x),
+                     eil::re(c.y), eil::re(c.z), eil::re(vol)));
+    // 2D lattice cells.
+    std::shared_ptr<Grid> g2 = surf_grid2d("ccp2d");
+    for (size_t n = 0; n < g2->ncells; ++n) {
+        g2->compute_cell_properties(n, true, c, vol);
+        emit(eil::format("sg.ccp.2d n=%d %.17g %.17g %.17g %.17g", n, eil::re(c.x), eil::re(c.y),
+                         eil::re(c.z), eil::re(vol)));
+    }
+    // 1D lattice: nvtx==2 falls to the default arm of the 2D/3D switch.
+    std::shared_ptr<Grid> g1 = std::make_shared<StructuredGrid>(3, 1, 1, "ccp1d");
+    tryit("sg.ccp.1d", [&g1, &c, &vol]() { g1->compute_cell_properties(0, true, c, vol); });
+    tryit("sg.ccp.oob", [&g3, &c, &vol]() { g3->compute_cell_properties(1, true, c, vol); });
+}
+
+// ------------------------------------------------------------------
+// sg.pic / sg.cbc / sg.bin / sg.fsc / sg.fncc — the search services
+// (probe_sgrid.d:1518-1626, grid.d:198-420)
+// ------------------------------------------------------------------
+void grp_search() {
+    auto g = std::make_shared<StructuredGrid>(3, 3, 2, "srch");
+    for (size_t k = 0; k < 2; ++k) {
+        for (size_t j = 0; j < 3; ++j) {
+            for (size_t i = 0; i < 3; ++i) {
+                g->opIndex(i, j, k)->set(static_cast<double>(i) * 1.0,
+                                         static_cast<double>(j) * 2.0,
+                                         static_cast<double>(k) * 3.0);
+            }
+        }
+    }
+    std::shared_ptr<Grid> h = g;
+    const std::vector<Vector3> probes = {
+        Vector3(0.5, 1.0, 1.5), Vector3(1.0, 1.0, 1.5), Vector3(1.5, 3.0, 1.5),
+        Vector3(0.5, 1.0, 3.0), Vector3(0.0, 0.0, 0.0), Vector3(2.0, 4.0, 3.0),
+        Vector3(2.5, 4.5, 3.5), Vector3(0.5, 1.0, 1.5)};
+    // point_is_inside_cell at inside / face / edge / vertex / outside points.
+    for (size_t i = 0; i < probes.size(); ++i) {
+        for (size_t c = 0; c < h->ncells; ++c) {
+            emit(eil::format("sg.pic p=%d c=%d inside=%s", i, c,
+                             h->point_is_inside_cell(probes[i], c)));
+        }
+    }
+    // cell_barycentre and find_nearest_cell_centre.
+    for (size_t c = 0; c < h->ncells; ++c) {
+        const Vector3 b = h->cell_barycentre(c);
+        emit(eil::format("sg.cbc c=%d %.17g %.17g %.17g", c, eil::re(b.x), eil::re(b.y),
+                         eil::re(b.z)));
+    }
+    // Binning.
+    h->sort_cells_into_bins();
+    emit(eil::format("sg.bin.default nbx=%d nby=%d nbz=%d dx=%.17g dy=%.17g dz=%.17g", h->nbx,
+                     h->nby, h->nbz, h->deltax, h->deltay, h->deltaz));
+    emit(eil::format("sg.bin.bb0 %.17g %.17g %.17g", eil::re(h->bb0.x), eil::re(h->bb0.y),
+                     eil::re(h->bb0.z)));
+    emit(eil::format("sg.bin.bb1 %.17g %.17g %.17g", eil::re(h->bb1.x), eil::re(h->bb1.y),
+                     eil::re(h->bb1.z)));
+    for (size_t c = 0; c < h->ncells; ++c) {
+        const Vector3 b = h->cell_barycentre(c);
+        emit(eil::format("sg.bin.ix c=%d b=%.17g %.17g %.17g ix=%d iy=%d iz=%d", c, eil::re(b.x),
+                         eil::re(b.y), eil::re(b.z), h->get_bin_ix(b), h->get_bin_iy(b),
+                         h->get_bin_iz(b)));
+    }
+    const auto dump_bins = [&h](const std::string& tag) {
+        for (size_t ix = 0; ix < h->nbx; ++ix) {
+            for (size_t iy = 0; iy < h->nby; ++iy) {
+                for (size_t iz = 0; iz < h->nbz; ++iz) {
+                    emit(eil::format("%s bin[%d][%d][%d]=%s", tag, ix, iy, iz,
+                                     h->bins[ix][iy][iz]));
+                }
+            }
+        }
+    };
+    dump_bins("sg.bin.contents");
+    // Points exactly on a bin boundary and one ULP either side of it.
+    std::vector<double> bx;
+    for (size_t ix = 1; ix < h->nbx; ++ix) {
+        bx.push_back(eil::re(h->bb0.x) + static_cast<double>(ix) * h->deltax);
+    }
+    for (const double v : bx) {
+        for (const char* off : {"exact", "nextup", "nextdown"}) {
+            const double x = (std::strcmp(off, "nextup") == 0)
+                                 ? std::nextafter(v, std::numeric_limits<double>::infinity())
+                                 : ((std::strcmp(off, "nextdown") == 0)
+                                        ? std::nextafter(v, -std::numeric_limits<double>::infinity())
+                                        : v);
+            const Vector3 p = Vector3(x, 1.0, 1.5);
+            emit(eil::format("sg.bin.edge v=%.17g off=%s ix=%d iy=%d iz=%d", x, off,
+                             h->get_bin_ix(p), h->get_bin_iy(p), h->get_bin_iz(p)));
+        }
+    }
+    // y and z boundaries too.
+    const Vector3 py = Vector3(0.5, eil::re(h->bb0.y) + h->deltay, 1.5);
+    emit(eil::format("sg.bin.edgey iy=%d", h->get_bin_iy(py)));
+    const Vector3 pyn = Vector3(0.5, std::nextafter(eil::re(h->bb0.y) + h->deltay,
+                                                    -std::numeric_limits<double>::infinity()),
+                                1.5);
+    emit(eil::format("sg.bin.edgey.down iy=%d", h->get_bin_iy(pyn)));
+    const Vector3 pz = Vector3(0.5, 1.0, eil::re(h->bb0.z) + h->deltaz);
+    emit(eil::format("sg.bin.edgez iz=%d", h->get_bin_iz(pz)));
+    const Vector3 pzn = Vector3(0.5, 1.0, std::nextafter(eil::re(h->bb0.z) + h->deltaz,
+                                                         -std::numeric_limits<double>::infinity()));
+    emit(eil::format("sg.bin.edgez.down iz=%d", h->get_bin_iz(pzn)));
+    // far outside / left of the box (the clamp rows).
+    const Vector3 far = Vector3(-1.0, -1.0, -1.0);
+    emit(eil::format("sg.bin.far ix=%d iy=%d iz=%d", h->get_bin_ix(far), h->get_bin_iy(far),
+                     h->get_bin_iz(far)));
+    const Vector3 over = Vector3(1.0e6, 1.0e6, 1.0e6);
+    emit(eil::format("sg.bin.over ix=%d iy=%d iz=%d", h->get_bin_ix(over), h->get_bin_iy(over),
+                     h->get_bin_iz(over)));
+    const Vector3 nanp = Vector3(std::numeric_limits<double>::quiet_NaN(), 1.0, 1.5);
+    emit(eil::format("sg.bin.nan ix=%d iy=%d iz=%d", h->get_bin_ix(nanp), h->get_bin_iy(nanp),
+                     h->get_bin_iz(nanp)));
+    // fast / slow / dispatcher search at a set of points
+    size_t idx = 0;
+    bool found = false;
+    for (const Vector3& p : probes) {
+        h->find_enclosing_cell_fast(p, idx, found);
+        emit(eil::format("sg.fsc.fast p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+        h->find_enclosing_cell_slow(p, idx, found);
+        emit(eil::format("sg.fsc.slow p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+        h->find_enclosing_cell(p, idx, found);
+        emit(eil::format("sg.fsc.dis p=%.17g %.17g %.17g idx=%d found=%s", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, found));
+    }
+    // On-boundary cells searched at a shared face of two cells.
+    const Vector3 onface = Vector3(1.0, 1.0, 1.5);
+    h->find_enclosing_cell_fast(onface, idx, found);
+    emit(eil::format("sg.fsc.shared fast idx=%d found=%s", idx, found));
+    h->find_enclosing_cell_slow(onface, idx, found);
+    emit(eil::format("sg.fsc.shared slow idx=%d found=%s", idx, found));
+    // A 1x1x1 bin grid (the degenerate delta floor of grid.d:301-304).
+    std::shared_ptr<Grid> s1 = std::make_shared<StructuredGrid>(2, 2, 1, "singlebin");
+    s1->sort_cells_into_bins(1, 1, 1);
+    emit(eil::format("sg.bin.one nbx=%d dx=%.17g contents=%s", s1->nbx, s1->deltax,
+                     s1->bins[0][0][0]));
+    tryit("sg.bin.zero", [&s1]() { s1->sort_cells_into_bins(0, 1, 1); });
+    // A second sort appends into the same bins (grid.d:306-310 keeps contents).
+    std::shared_ptr<Grid> app = std::make_shared<StructuredGrid>(2, 2, 1, "append");
+    app->sort_cells_into_bins(2, 2, 1);
+    emit(eil::format("sg.bin.twice a=%s b=%s", app->bins[0][0][0], app->bins[1][1][0]));
+    app->sort_cells_into_bins(2, 2, 1);
+    emit(eil::format("sg.bin.thrice a=%s b=%s", app->bins[0][0][0], app->bins[1][1][0]));
+    // 2D: nbinz is forced to 1 (grid.d:280).
+    std::shared_ptr<Grid> g2d = surf_grid2d("bin2d");
+    g2d->sort_cells_into_bins(3, 2, 7);
+    emit(eil::format("sg.bin.2d nbz=%d nby=%d contents0=%s", g2d->nbz, g2d->nby,
+                     g2d->bins[0][0][0]));
+    // nearest cell centre
+    double dist = 0.0;
+    for (const Vector3& p : probes) {
+        h->find_nearest_cell_centre(p, idx, dist);
+        emit(eil::format("sg.fncc p=%.17g %.17g %.17g idx=%d d=%.17g", eil::re(p.x),
+                         eil::re(p.y), eil::re(p.z), idx, dist));
+    }
+}
+
+// ------------------------------------------------------------------
+// sg.unit.* — sgrid.d's own unittest (probe_sgrid.d:1628-1656, D:1833-1865).
+// The unittest's 15 asserts are put in as executable assertions, in source order with
+// their D line numbers, exactly as the probe header asks (probe:115-118); the corpus
+// shows every one of them holding.
+// ------------------------------------------------------------------
+void grp_unit() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    auto my_patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf;
+    for (int n = 0; n < 4; ++n) cf.append(std::make_shared<LinearFunction>());
+    auto my_grid = std::make_shared<StructuredGrid>(*my_patch, 11, 21, cf);
+    my_grid->set_tag(eil::geom::Face::north, "north-face");
+    my_grid->set_tags(tags({{"south", "south-face-here-sir"},
+                            {"west", "west-face-here-sir!"}}));
+    const std::string repr = my_grid->toString();
+    emit("my_grid=" + repr);
+    emit(eil::format("sg.unit.canFind.north=%s", repr.find("north-face") != std::string::npos));
+    emit(eil::format("sg.unit.canFind.south=%s",
+                     repr.find("south-face-here-sir") != std::string::npos));
+    emit(eil::format("sg.unit.canFind.west=%s",
+                     repr.find("west-face-here-sir!") != std::string::npos));
+    // D:1846-1847 assert(repr.canFind(...)) x3, D:1848 the vector comparison
+    eil_assert(repr.find("north-face") != std::string::npos); // D:1846;
+    eil_assert(repr.find("south-face-here-sir") != std::string::npos); // D:1847;
+    eil_assert(repr.find("west-face-here-sir!") != std::string::npos); // D:1848;
+    emit(eil::format("sg.unit.v55=%.17g %.17g %.17g", eil::re(my_grid->opIndex(5, 5)->x),
+                     eil::re(my_grid->opIndex(5, 5)->y), eil::re(my_grid->opIndex(5, 5)->z)));
+    emit(eil::format("sg.unit.v55.approx=%s",
+                     eil::geom::approxEqualVectors(*my_grid->opIndex(5, 5),
+                                                   Vector3(0.5, 0.35, 0.0))));
+    eil_assert(eil::geom::approxEqualVectors(*my_grid->opIndex(5, 5),
+                                            Vector3(0.5, 0.35, 0.0))); // D:1851
+    auto my_subgrid = my_grid->subgrid(4, 3, 4, 5);
+    emit(eil::format("sg.unit.sub=%.17g %.17g %.17g", eil::re(my_subgrid->opIndex(1, 1)->x),
+                     eil::re(my_subgrid->opIndex(1, 1)->y),
+                     eil::re(my_subgrid->opIndex(1, 1)->z)));
+    emit(eil::format("sg.unit.sub.approx=%s",
+                     eil::geom::approxEqualVectors(*my_subgrid->opIndex(1, 1),
+                                                   Vector3(0.5, 0.35, 0.0))));
+    eil_assert(eil::geom::approxEqualVectors(*my_subgrid->opIndex(1, 1),
+                                            Vector3(0.5, 0.35, 0.0))); // D:1855
+    // D:1857-1864, the ten uflowz asserts of the unittest
+    eil_assert(eil::geom::uflowz(1.0) == 1.0); // D:1857;
+    eil_assert(eil::geom::uflowz(1.0e-32) == 0.0); // D:1858;
+    eil_assert(eil::geom::uflowz(1.0e-29) == 1.0e-29); // D:1859;
+    eil_assert(eil::geom::uflowz(1.0e+29) == 1.0e+29); // D:1860;
+    eil_assert(eil::geom::uflowz(1.0e+32) == 1.0e+30); // D:1861;
+    eil_assert(eil::geom::uflowz(-1.0) == -1.0); // D:1863;
+    eil_assert(eil::geom::uflowz(-1.0e-32) == 0.0); // D:1864;
+    eil_assert(eil::geom::uflowz(-1.0e-29) == -1.0e-29); // D:1865;
+    eil_assert(eil::geom::uflowz(-1.0e+29) == -1.0e+29); // D:1866;
+    eil_assert(eil::geom::uflowz(-1.0e+32) == -1.0e+30); // D:1867;
+    emit(eil::format("sg.unit.niv=%d njv=%d nkv=%d ncells=%d label=%s", my_grid->niv,
+                     my_grid->njv, my_grid->nkv, my_grid->ncells, my_grid->label));
+}
+
 //<<<SECTIONS-NOW>>>
+
+// ------------------------------------------------------------------
+// sg.vol.* — the ParametricVolume constructor (probe_sgrid.d:727-747, sgrid.d:115-136)
+// ------------------------------------------------------------------
+void grp_vol() {
+    auto vol = std::make_shared<ProbeVolume>(Vector3(0.1, 0.2, 0.3), Vector3(1.0, 0.0, 0.0),
+                                             Vector3(0.0, 1.0, 0.0), Vector3(0.0, 0.0, 1.0));
+    ClusterF cf;  // empty, so D:123 pads it to 12 LinearFunctions
+    auto gs = std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "simple", "volS");
+    dump_grid("sg.vol.simple", gs);
+    auto gt = std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "trilinear", "volT");
+    dump_grid("sg.vol.trilinear", gt);
+    auto gl = std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "linear", "volL");
+    dump_grid("sg.vol.linear", gl);
+    auto gtfi = std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "tfi", "volTFI");
+    dump_grid("sg.vol.tfi", gtfi);
+    ClusterF cf2;
+    cf2.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf2.append(std::make_shared<eil::geom::QuadraticFunction>(0.4, false));
+    auto gc = std::make_shared<StructuredGrid>(*vol, 3, 4, 2, cf2, "simple", "volC");
+    dump_grid("sg.vol.cluster", gc);
+    tryit("sg.vol.unknown", [&vol, &cf]() {
+        (void)std::make_shared<StructuredGrid>(*vol, 2, 2, 2, cf, "quad", "x");
+    });
+    tryit("sg.vol.n1", [&vol, &cf]() {
+        (void)std::make_shared<StructuredGrid>(*vol, 1, 1, 1, cf, "simple", "x");
+    });
+    emit(eil::format("sg.vol.dims=%d nkv=%d", gs->dimensions, gs->nkv));
+}
+
+// ------------------------------------------------------------------
+// sg.readtxt.* — read_from_text_file (probe_sgrid.d:749-809, sgrid.d:783-852)
+// and the format dispatch of the import constructor (sgrid.d:138-160)
+// ------------------------------------------------------------------
+void grp_readtxt() {
+    const std::string plain = TD + "/plain.txt";
+    {
+        std::string body = "4 3 2\n";
+        for (size_t k = 0; k < 2; ++k) {
+            for (size_t j = 0; j < 3; ++j) {
+                for (size_t i = 0; i < 4; ++i) {
+                    body += eil::format("%.17g %.17g %.17g\n", static_cast<double>(i) + 0.5,
+                                        static_cast<double>(j) * 2.0,
+                                        static_cast<double>(k) * 4.0);
+                }
+            }
+        }
+        mkr(plain, body);
+    }
+    {
+        auto g = std::make_shared<StructuredGrid>(plain, "text", "plain");
+        dump_grid("sg.readtxt.plain", g);
+    }
+    const std::string vtk = TD + "/head.vtk";
+    {
+        std::string body = "# vtk DataFile Version 2.0\nmy label here\nASCII\n"
+                           "DATASET STRUCTURED_GRID\nDIMENSIONS 5 4 1\nPOINTS 20 float\n";
+        for (size_t j = 0; j < 4; ++j) {
+            for (size_t i = 0; i < 5; ++i) {
+                body += eil::format("%.17g %.17g %.17g\n", static_cast<double>(i) * 0.25,
+                                    static_cast<double>(j) * 0.5, 0.0);
+            }
+        }
+        mkr(vtk, body);
+        auto g = std::make_shared<StructuredGrid>(vtk, "vtk", "vtklabel");
+        dump_grid("sg.readtxt.vtk", g);
+        emit(eil::format("sg.readtxt.vtk.label=%s", g->label));
+        auto gh = std::make_shared<StructuredGrid>(5, 4, 1, "nohdr");
+        gh->read_from_text_file(vtk, true);
+        dump_grid("sg.readtxt.vtk.over", gh);
+    }
+    // dimension inference (D:805-819): 1D, degenerate, and nkv>1 with njv==1.
+    for (const std::array<std::string, 3> spec :
+         {std::array<std::string, 3>{"3", "1", "1"}, std::array<std::string, 3>{"1", "1", "1"},
+          std::array<std::string, 3>{"1", "4", "2"}, std::array<std::string, 3>{"4", "1", "2"}}) {
+        const std::string p = TD + "/dim_" + spec[0] + "_" + spec[1] + "_" + spec[2] + ".txt";
+        const std::string body = spec[0] + " " + spec[1] + " " + spec[2] + "\n";
+        const size_t nv = static_cast<size_t>(eil::to_int(spec[0])) *
+                          static_cast<size_t>(eil::to_int(spec[1])) *
+                          static_cast<size_t>(eil::to_int(spec[2]));
+        std::string full = body;
+        for (size_t n = 0; n < nv; ++n) {
+            full += eil::format("%d %d %d\n", n, n + 1, n + 2);
+        }
+        mkr(p, full);
+        tryit(eil::format("sg.readtxt.dim %s %s %s", spec[0], spec[1], spec[2]), [&p]() {
+            auto g = std::make_shared<StructuredGrid>(p, "text", "d");
+            emit(eil::format("sg.readtxt.dim.done dims=%d ncells=%d nvertices=%d", g->dimensions,
+                             g->ncells, g->nvertices));
+        });
+    }
+    // Bad tokens: two tokens only, and a non-numeric token.
+    const std::string bad1 = TD + "/bad1.txt";
+    mkr(bad1, "2 1 1\n1.0 2.0\n3.0 4.0\n");
+    tryit_cut("sg.readtxt.bad.tokens", [&bad1]() {
+        (void)std::make_shared<StructuredGrid>(bad1, "text", "b");
+    });
+    const std::string bad2 = TD + "/bad2.txt";
+    mkr(bad2, "2 1 1\n1.0 xx 3.0\n3.0 4.0 5.0\n");
+    tryit_cut("sg.readtxt.bad.conv", [&bad2]() {
+        (void)std::make_shared<StructuredGrid>(bad2, "text", "b");
+    });
+    // Missing file: the measured Phobos open-failure text.
+    tryit("sg.readtxt.missing", [&]() {
+        (void)std::make_shared<StructuredGrid>(TD + "/nope.txt", "text", "m");
+    });
+    // Unknown format and the not-implemented VTK XML arm (D:142-159).
+    tryit("sg.file.vtkxml", [&vtk]() { (void)std::make_shared<StructuredGrid>(vtk, "vtkxml", "x"); });
+    tryit("sg.file.unknown", [&vtk]() { (void)std::make_shared<StructuredGrid>(vtk, "su2", "x"); });
+    tryit("sg.file.empty", [&vtk]() { (void)std::make_shared<StructuredGrid>(vtk, "", "x"); });
+    // A file that ends early (D's readln past EOF gives null).
+    const std::string short_file = TD + "/short.txt";
+    mkr(short_file, "3 3 1\n1.0 1.0 1.0\n");
+    tryit("sg.readtxt.eof", [&short_file]() {
+        (void)std::make_shared<StructuredGrid>(short_file, "text", "s");
+    });
+}
+
+// ------------------------------------------------------------------
+// sg.wgz.* / sg.readgz.* — the gzip round trip (probe_sgrid.d:812-894,
+// read D:854-922, write D:999-1040)
+// ------------------------------------------------------------------
+void grp_wgz() {
+    auto g = surf_grid2d("gzlabel");
+    g->set_tag(eil::geom::Face::west, "west-tag");
+    g->set_tag(eil::geom::Face::top, "top-tag");
+    const std::string gz = TD + "/grid.gz";
+    g->write_to_gzip_file(gz);
+    emit(eil::format("sg.wgz.len=%d", len_of(gz)));
+    emit(eil::format("sg.wgz.body=%s", gunzip_body_of(gz)));
+    {
+        auto r = std::make_shared<StructuredGrid>(gz, "gziptext", "ignored");
+        dump_grid("sg.readgz.roundtrip", r);
+        emit(eil::format("sg.readgz.repr=%s", r->toString()));
+    }
+    // scale on read (D:854 default 1.0; the reader multiplies each coordinate).
+    {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "s");
+        r->read_from_gzip_file(gz, 0.001);
+        dump_grid("sg.readgz.scale", r);
+    }
+    // A gzip file with an unsupported version line.
+    const std::string gzbad = TD + "/badver.gz";
+    {
+        eil::gzip::GzipOut o(gzbad);
+        o.compress("structured_grid 2.0\nlabel: x\ndimensions: 2\nniv: 2\nnjv: 2\nnkv: 1\n");
+        o.compress(" 0 0 0\n 1 0 0\n 0 1 0\n 1 1 0\n");
+        o.finish();
+    }
+    tryit("sg.readgz.badver", [&gzbad]() {
+        (void)std::make_shared<StructuredGrid>(gzbad, "gziptext", "b");
+    });
+    tryit("sg.readgz.badver.direct", [&gzbad]() {
+        auto r = std::make_shared<StructuredGrid>(2, 2, 1, "b");
+        r->read_from_gzip_file(gzbad);
+    });
+    // A gzip file with no tag section at all (version 1.0).
+    const std::string gz10 = TD + "/v10.gz";
+    {
+        eil::gzip::GzipOut o(gz10);
+        o.compress("structured_grid 1.0\nlabel: ten\ndimensions: 2\nniv: 2\nnjv: 2\nnkv: 1\n");
+        o.compress(" 0 0 0\n 0.5 0 0\n 0 0.25 0\n 0.5 0.25 0\n");
+        o.finish();
+    }
+    {
+        auto r = std::make_shared<StructuredGrid>(gz10, "gziptext", "ten");
+        dump_grid("sg.readgz.v10", r);
+    }
+    tryit("sg.readgz.missing", [&]() {
+        auto r = std::make_shared<StructuredGrid>(2, 2, 1, "m");
+        r->read_from_gzip_file(TD + "/nope.gz");
+    });
+    // Truncated file: fewer lines than the header promises.
+    const std::string gztr = TD + "/trunc.gz";
+    {
+        eil::gzip::GzipOut o(gztr);
+        o.compress("structured_grid 1.1\nlabel: t\ndimensions: 2\nniv: 3\nnjv: 3\nnkv: 1\n");
+        o.compress(" 0 0 0\n 1 0 0\n");
+        o.compress("ntags: 4\ntag[0]: a\ntag[1]: b\ntag[2]: c\ntag[3]: d\n");
+        o.finish();
+    }
+    tryit("sg.readgz.trunc", [&gztr]() {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "t");
+        r->read_from_gzip_file(gztr);
+    });
+    // A grid with an empty bcTags list writes ntags: 0 (D:1029).
+    {
+        auto e = std::make_shared<StructuredGrid>(2, 2, 1, "notags");
+        e->bcTags = eil::Array<std::string>();
+        const std::string gz2 = TD + "/notags.gz";
+        e->write_to_gzip_file(gz2);
+        emit(eil::format("sg.wgz.notags=%s", gunzip_body_of(gz2)));
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "x");
+        r->read_from_gzip_file(gz2);
+        emit(eil::format("sg.readgz.notags bcTags=%s ntagsread=true", r->bcTags));
+    }
+    // The dispatch of Grid.write (grid.d:104-111) with fmt "gziptext".
+    {
+        std::shared_ptr<Grid> h = surf_grid2d("via.write");
+        const std::string gz3 = TD + "/via.write.gz";
+        h->write(gz3, "gziptext");
+        emit(eil::format("sg.wgz.viafmt=%s", gunzip_body_of(gz3)));
+        h->write(gz3, "unknown-format");
+        emit(eil::format("sg.wgz.viaunknown=%s", gunzip_body_of(gz3)));
+    }
+}
+
+// ------------------------------------------------------------------
+// sg.frmt.* — the formattedRead patterns of read_from_gzip_file
+// (probe_sgrid.d:896-955, D:861-914). One crafted .gz per shape: literal
+// mismatch, %s on an empty remainder, %d on non-digits, %d out of range for the
+// target type, and %g with too few numbers on the vertex line.
+// ------------------------------------------------------------------
+void grp_frmt() {
+    const auto probe_case = [](const std::string& name,
+                               const std::vector<std::string>& lines) {
+        std::string body;
+        for (const std::string& l : lines) body += l + "\n";
+        const std::string path = TD + "/frmt_" + name + ".gz";
+        {
+            eil::gzip::GzipOut o(path);
+            o.compress(body);
+            o.finish();
+        }
+        tryit("sg.frmt." + name, [&path, &name]() {
+            auto r = std::make_shared<StructuredGrid>(1, 1, 1, "x");
+            r->read_from_gzip_file(path);
+            emit(eil::format("sg.frmt.%s.after dims=%d niv=%d njv=%d nkv=%d label=%s bcTags=%s",
+                             name, r->dimensions, r->niv, r->njv, r->nkv, r->label, r->bcTags));
+        });
+    };
+    probe_case("badfirst", {"not_a_grid 1.1", "label: f", "dimensions: 2", "niv: 2", "njv: 2",
+                            "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("emptyver", {"structured_grid", "label: f", "dimensions: 2", "niv: 2", "njv: 2",
+                            "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("twospace", {"structured_grid  1.1", "label: f", "dimensions: 2", "niv: 2",
+                            "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("nolabel", {"structured_grid 1.1", "dimensions: 2", "niv: 2", "njv: 2", "nkv: 1",
+                           " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("dimsword", {"structured_grid 1.1", "label: f", "dimensions: two", "niv: 2",
+                            "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("dimsfloat", {"structured_grid 1.1", "label: f", "dimensions: 2.5", "niv: 2",
+                             "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("dimsneg", {"structured_grid 1.1", "label: f", "dimensions: -2", "niv: 2",
+                           "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("nivbig", {"structured_grid 1.1", "label: f", "dimensions: 2",
+                          "niv: 99999999999999", "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0",
+                          " 0 1 0", " 1 1 0"});
+    probe_case("shortvtx", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                            "njv: 2", "nkv: 1", " 0 0 0", " 1 0"});
+    probe_case("wordvtx", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                           "njv: 2", "nkv: 1", " 0 0 0", " a b c", " 0 1 0", " 1 1 0"});
+    probe_case("nospaces", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                            "njv: 2", "nkv: 1", "0 0 01 0 00 1 01 1 0"});
+    probe_case("extraspace", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                               "njv: 2", "nkv: 1", "   0   0   0  ", " 1 0 0", " 0 1 0",
+                               " 1 1 0"});
+    probe_case("extrainline", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                               "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0",
+                               "ntags: 2", "tag[0]: A", "tag[1]: B", "extra line"});
+    probe_case("notagsline", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                              "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0",
+                              "ntags: 3", "tag[0]: A"});
+    probe_case("tagcountbad", {"structured_grid 1.1", "label: f", "dimensions: 2", "niv: 2",
+                               "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0",
+                               "tags: 4"});
+    probe_case("emptylabel", {"structured_grid 1.1", "label:", "dimensions: 2", "niv: 2",
+                              "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+    probe_case("version10x", {"structured_grid 1.01", "label: f", "dimensions: 2", "niv: 2",
+                              "njv: 2", "nkv: 1", " 0 0 0", " 1 0 0", " 0 1 0", " 1 1 0"});
+}
+
+// ------------------------------------------------------------------
+// sg.wraw.* / sg.readraw.* — raw binary (probe_sgrid.d:959-1021,
+// write D:1042-1082, read D:924-997)
+// ------------------------------------------------------------------
+void grp_raw() {
+    auto g = surf_grid2d("rawlabel");
+    g->set_tag(eil::geom::Face::east, "E-tag");
+    const std::string rb = TD + "/grid.raw";
+    g->write_to_raw_binary_file(rb);
+    emit(eil::format("sg.wraw.len=%d", len_of(rb)));
+    emit(eil::format("sg.wraw.hex=%s", hex_of(rb)));
+    {
+        auto r = std::make_shared<StructuredGrid>(rb, "rawbinary", "ignored");
+        dump_grid("sg.readraw.roundtrip", r);
+    }
+    {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "s");
+        r->read_from_raw_binary_file(rb, 2.0);
+        dump_grid("sg.readraw.scale", r);
+    }
+    // Empty label (D:940 `if (label_length > 0)`).
+    {
+        auto e = std::make_shared<StructuredGrid>(2, 2, 1, "");
+        const std::string rb2 = TD + "/nolog.raw";
+        e->write_to_raw_binary_file(rb2);
+        emit(eil::format("sg.wraw.nolabel.hex=%s", hex_of(rb2)));
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "x");
+        r->read_from_raw_binary_file(rb2);
+        emit(eil::format("sg.readraw.nolabel label=%s bcTags=%s", r->label, r->bcTags));
+    }
+    // Bad version in the header, and a missing file.
+    const std::string badraw = TD + "/badver.raw";
+    {
+        std::FILE* fp = std::fopen(badraw.c_str(), "wb");
+        const char hdr[] = "structured_grid 7.7";
+        std::fwrite(hdr, 1, sizeof hdr - 1, fp);
+        const int zero = 0;
+        std::fwrite(&zero, 1, sizeof zero, fp);
+        std::fclose(fp);
+    }
+    tryit("sg.readraw.badver", [&badraw]() {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "b");
+        r->read_from_raw_binary_file(badraw);
+    });
+    tryit("sg.readraw.missing", [&]() {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "m");
+        r->read_from_raw_binary_file(TD + "/nope.raw");
+    });
+    tryit("sg.file.rawviafmt", [&badraw]() {
+        (void)std::make_shared<StructuredGrid>(badraw, "rawbinary", "b");
+    });
+    // Truncated: header only, then the readers run out of data.
+    const std::string trh = TD + "/trunchead.raw";
+    {
+        std::FILE* fp = std::fopen(trh.c_str(), "wb");
+        const char hdr[] = "structured_grid 1.1";
+        std::fwrite(hdr, 1, sizeof hdr - 1, fp);
+        std::fclose(fp);
+    }
+    tryit("sg.readraw.trunc", [&trh]() {
+        auto r = std::make_shared<StructuredGrid>(1, 1, 1, "t");
+        r->read_from_raw_binary_file(trh);
+    });
+    // Grid.write with "rawbinary" goes to the raw writer (grid.d:106).
+    {
+        std::shared_ptr<Grid> h = surf_grid2d("rw");
+        const std::string rb3 = TD + "/via.write.raw";
+        h->write(rb3, "rawbinary");
+        emit(eil::format("sg.wraw.viafmt.hex=%s", hex_of(rb3)));
+    }
+}
+
+// ------------------------------------------------------------------
+// sg.vtk.* — write_to_vtk_file (probe_sgrid.d:1023-1036, D:1084-1102)
+// sg.su2.* — write_to_su2_file (probe_sgrid.d:1038-1049, D:1312-1318), which
+// delegates to UnstructuredGrid (grid brief section 10.1).
+// ------------------------------------------------------------------
+void grp_vtk_su2() {
+    auto g = surf_grid2d("vtklabel");
+    const std::string v = TD + "/grid.vtk";
+    g->write_to_vtk_file(v);
+    emit(eil::format("sg.vtk.len=%d body=%s", len_of(v), body_of(v)));
+    std::shared_ptr<Grid> h = std::make_shared<StructuredGrid>(3, 2, 1, "vtk3d");
+    for (size_t j = 0; j < 2; ++j) {
+        for (size_t i = 0; i < 3; ++i) {
+            h->opIndex(i, j, 0)->set(static_cast<double>(i) / 3.0, static_cast<double>(j),
+                                     1.0e-40);
+        }
+    }
+    const std::string v2 = TD + "/grid2.vtk";
+    h->write_to_vtk_file(v2);
+    emit(eil::format("sg.vtk.len2=%d body2=%s", len_of(v2), body_of(v2)));
+    // ---- sg.su2.*
+    auto gs = surf_grid2d("su2label");
+    const std::string s = TD + "/grid.su2";
+    gs->write_to_su2_file(s);
+    emit(eil::format("sg.su2.len=%d body=%s", len_of(s), body_of(s)));
+    gs->write_to_su2_file(s, 0.001);
+    emit(eil::format("sg.su2.scaled.len=%d body=%s", len_of(s), body_of(s)));
+    auto g3 = vol_grid3d("su23d");
+    const std::string s3 = TD + "/grid3.su2";
+    g3->write_to_su2_file(s3);
+    emit(eil::format("sg.su2.3d.len=%d body=%s", len_of(s3), body_of(s3)));
+}
 
 } // namespace
 
@@ -894,6 +2147,29 @@ int main(int argc, char** argv) {
     grp_path();
     grp_surf();
     grp_rgrid();
+    grp_vol();
+    grp_readtxt();
+    grp_wgz();
+    grp_frmt();
+    grp_raw();
+    grp_vtk_su2();
+    grp_join();
+    grp_slab_wedge();
+    grp_bad();
+    grp_rs();
+    grp_determ();
+    grp_rotq();
+    grp_rot();
+    grp_uflowz();
+    grp_vtkhdr();
+    grp_gridpro();
+    grp_rsgp();
+    grp_fswap();
+    grp_plot3d();
+    grp_ccp();
+    grp_search();
+    grp_unit();
+    emit("sg.done");   // probe_sgrid.d:1627, the last corpus row (2097)
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
