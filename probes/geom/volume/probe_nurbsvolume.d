@@ -505,8 +505,20 @@ void main()
     writefln("nv.cntrl.len=%d", (cast(string) read(fvtk)).length);
     writefln("nv.cntrl.body=%s", oneLine(fvtk));
     remove(fvtk);
+    // writeAsVtkXml DOES evaluate the volume (2x2x3 points through the base writer), so it
+    // must run on a handle whose degrees match the shared static buffers. dup() goes
+    // through the validating constructor and re-sizes them to 1/2/3, which is what makes
+    // the writer complete instead of throwing halfway through.
+    // (Measured on the way: with the degree-0 buffers still in place, the very first
+    // opCall inside writeVolumeAsVtkXml raises ArrayIndexError after the five header lines
+    // have been written, and D's File destructor flushes them, so the file read back is
+    // 247 bytes of header and no points. src/geom/volume/parametricvolume.cpp holds its
+    // FILE* in a raw pointer with fclose only on the normal path, so the port leaves the
+    // same file at 0 bytes on that exceptional path — a base-class finding, reported
+    // rather than papered over here.)
     string fvol = "/tmp/probe_nvol_vtk.vtk";
-    attempt("nv.vtk", () { uneq.writeAsVtkXml(fvol, 2, 2, 3); });
+    auto uneqFresh = uneq.dup();
+    attempt("nv.vtk", () { uneqFresh.writeAsVtkXml(fvol, 2, 2, 3); });
     writefln("nv.vtk.len=%d", (cast(string) read(fvol)).length);
     writefln("nv.vtk.body=%s", oneLine(fvol));
     remove(fvol);

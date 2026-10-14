@@ -21,3 +21,36 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_surface_spherepatch.cpp)
            COMMAND test_geom_surface_spherepatch
                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_surface_spherepatch.txt)
 endif()
+
+# --- geom/surface/aopatch.d (T-012 stage btp_surf2, 240 D lines) ------------------
+# Composes the already-ported CoonsPatch as its near-boundary fall-back. Its copy
+# constructor (D:90-102) leaves _nx/_ny at int.init == 0, which is measured rather than
+# "fixed" — see the header note.
+target_sources(eil_geom PRIVATE
+    src/geom/surface/aopatch.cpp
+)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_surface_aopatch.cpp)
+  add_executable(test_geom_surface_aopatch tests/test_geom_surface_aopatch.cpp)
+  target_link_libraries(test_geom_surface_aopatch PRIVATE eil_geom eil_nm eil_substrate)
+  add_test(NAME geom_surface_aopatch
+           COMMAND test_geom_surface_aopatch
+                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_surface_aopatch.txt)
+endif()
+
+# --- geom/surface/controlpointpatch.d (T-012 stage btp_surf2, 340 D lines) --------
+# Composes the already-ported CoonsPatch, ChannelPatch and this stage's AOPatch as its
+# four guide-patch branches; the boundary Paths are optional (D:46-49).
+target_sources(eil_geom PRIVATE
+    src/geom/surface/controlpointpatch.cpp
+)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_surface_controlpointpatch.cpp)
+  add_executable(test_geom_surface_controlpointpatch
+                 tests/test_geom_surface_controlpointpatch.cpp)
+  target_link_libraries(test_geom_surface_controlpointpatch
+                        PRIVATE eil_geom eil_nm eil_substrate)
+  add_test(NAME geom_surface_controlpointpatch
+           COMMAND test_geom_surface_controlpointpatch
+                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_surface_controlpointpatch.txt)
+endif()

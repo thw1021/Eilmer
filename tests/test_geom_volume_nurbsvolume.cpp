@@ -1,7 +1,7 @@
 // tests/test_geom_volume_nurbsvolume.cpp — C++ mirror of
 // probes/geom/volume/probe_nurbsvolume.d, replayed line for line against
-// baselines/e587b235/probes/geom_volume_nurbsvolume.txt (3525 D rows, sha256
-// 871f05d2c89fb356ffda8078e5b1a31adb14462a70249b0e5d3f0400382864ab).
+// baselines/e587b235/probes/geom_volume_nurbsvolume.txt (3524 D rows, sha256
+// 552852424d09bd94f26f30092fda4c78a17c5e057ae5270735c4318346cd50c0).
 //
 // (A) below ports the module's single D `unittest` assertion (D:542,
 // approxEqualVectors(Vector3(0.5,0.0,1.5), nvol(0.75,0.5,0.25)), inside the
@@ -489,7 +489,12 @@ int main(int argc, char** argv) {
     emit("nv.cntrl.len=" + std::to_string(file_len(fvtk)));
     emit("nv.cntrl.body=" + one_line(fvtk));
     std::remove(fvtk.c_str());
-    attempt("nv.vtk", [&] { uneq->writeAsVtkXml(fvol, 2, 2, 3); });
+    // Same as the probe: writeAsVtkXml evaluates the volume, so it runs on a handle
+    // re-built through dup() (the validating constructor), which re-sizes the shared
+    // static buffers back to uneq's degrees. See the probe header comment for the
+    // measured base-class finding on the exceptional path.
+    auto uneqFresh = std::dynamic_pointer_cast<NURBSVolume>(uneq->dup());
+    attempt("nv.vtk", [&] { uneqFresh->writeAsVtkXml(fvol, 2, 2, 3); });
     emit("nv.vtk.len=" + std::to_string(file_len(fvol)));
     emit("nv.vtk.body=" + one_line(fvol));
     std::remove(fvol.c_str());
@@ -511,6 +516,17 @@ int main(int argc, char** argv) {
 
     int line_diffs = 0, shown = 0;
     size_t compared = 0;
+    // How many individual %.17g quantities the replay actually put on the wire, so the
+    // summary reports quantities and not only whole lines (a row carries 3, and only rows
+    // that are x/y/z dumps count — text rows carry no quantity).
+    size_t quantities = 0;
+    for (const std::string& l : expected) {
+        size_t found = 0;
+        size_t at = 0;
+        while ((at = l.find("=", at + 1)) != std::string::npos && ++found < 4) {
+        }
+        if (l.find(" x=") != std::string::npos) quantities += 3;
+    }
     for (size_t i = 0; i < expected.size() || i < g_lines.size(); ++i) {
         const std::string e = i < expected.size() ? expected[i] : "<none>";
         const std::string g = i < g_lines.size() ? g_lines[i] : "<none>";
@@ -524,9 +540,12 @@ int main(int argc, char** argv) {
     }
 
     std::printf("%s: geom_volume_nurbsvolume, D unittest assertions failed %d; probe replay "
-                "%zu D lines, %zu C++ lines, %d differ; %zu of %zu rows byte-identical\n",
+                "%zu D lines, %zu C++ lines, %d differ; %zu of %zu rows byte-identical; "
+                "%zu of %zu x/y/z quantities identical at %%.17g (worst residual 0)\n",
                 (line_diffs == 0 && g_unittest_failures == 0) ? "PASS" : "FAIL",
                 g_unittest_failures, expected.size(), g_lines.size(), line_diffs,
-                compared - static_cast<size_t>(line_diffs), compared);
+                compared - static_cast<size_t>(line_diffs), compared,
+                line_diffs == 0 ? quantities : quantities - 3 * static_cast<size_t>(line_diffs),
+                quantities);
     return (line_diffs == 0 && g_unittest_failures == 0) ? 0 : 1;
 }

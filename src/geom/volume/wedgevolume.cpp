@@ -25,6 +25,33 @@ std::string tostr(const ParametricSurface::Ptr& s) {
     return s ? s->toString() : std::string("null");
 }
 
+// ---------------------------------------------------------------------------
+// d_cos / d_sin — why the two calls go through a volatile pointer.
+//
+// D calls cos() and sin() as two separate libm entries: std/math/trigonometry.d:74 and
+// :132 forward to core.math, LDC lowers those to llvm.cos.f64 / llvm.sin.f64, and LLVM
+// emits two calls. GCC at -O1 and above recognises a cos(x)/sin(x) pair in one
+// expression and rewrites it into a single call to glibc's `sincos` — which is NOT the
+// same function. Measured on this machine with the argument this module actually
+// produces, x = theta1 = 0x3fcc185df5fdd150 (0.21949362288763511):
+//
+//   ldc2 binary, cos(x)            0x3fef3b74c62efebb  0.97600783069352515
+//   g++ -O0, std::cos(x)           0x3fef3b74c62efebb  (same function, same answer)
+//   g++ -O1/-O2/-O3, fused sincos  0x3fef3b74c62efeba  0.97600783069352504  (1 ULP low)
+//
+// and the wedge's y lands at 0x3fc0d1af56120768 against D's 0x3fc0d1af56120769 — 20 of
+// the 4594 corpus rows differ at -O3, 0 of 4594 at -O0 (objdump of the -O1 object shows
+// one `sincos@plt` where the -O0 object has none). The volatile pointers keep the two
+// calls two calls; nothing else in sweep_through_arc changes. This is the same class of
+// compiler substitution as the atan2 one in wave-02-brief section 5 (T-910), so it is
+// fixed on the port side, not by widening a tolerance.
+// ---------------------------------------------------------------------------
+double (*volatile d_cos_ptr)(double) = &std::cos;
+double (*volatile d_sin_ptr)(double) = &std::sin;
+
+inline eil::number d_cos(eil::number x) { return d_cos_ptr(x); }
+inline eil::number d_sin(eil::number x) { return d_sin_ptr(x); }
+
 } // namespace
 
 namespace eil {
@@ -82,12 +109,13 @@ std::string WedgeVolume::toString() const {
 // then theta1, then the two products. sqrt is eil::sqrt (positive NaN on a domain
 // error), atan2 is eil::atan2 (Phobos' own implementation — see the header note; using
 // std::atan2 here is the T-910 mistake), `^^2` is eil::pow, and cos/sin are the library
-// ones because D's sin(double)/cos(double) were measured bit-identical to them.
+// ones because D's sin(double)/cos(double) were measured bit-identical to them — as
+// long as they stay two separate calls, which is what d_cos/d_sin above arrange.
 Vector3 WedgeVolume::sweep_through_arc(const Vector3& p0, number theta) const {
     number r = eil::sqrt(eil::pow(p0.y, 2) + eil::pow(p0.z, 2)); // D:76
     number theta0 = eil::atan2(p0.z, p0.y);                       // D:77
     number theta1 = theta0 + theta;                               // D:78
-    return Vector3(p0.x, r * std::cos(theta1), r * std::sin(theta1)); // D:79
+    return Vector3(p0.x, r * d_cos(theta1), r * d_sin(theta1));     // D:79
 } // end sweep_through_arc()
 
 } // namespace geom

@@ -1,0 +1,643 @@
+gt.name structured=structured_grid unstructured=unstructured_grid
+gt.from structured=0 unstructured=1
+gt.from.empty err=Unknown type of grid: 
+gt.from.unknown err=Unknown type of grid: tetrahedral
+gt.from.nearmiss err=Unknown type of grid: Structured_grid
+gt.from.dash err=Unknown type of grid: structured-grid
+gt.from.spaces err=Unknown type of grid:  structured_grid 
+gt.nocatch ERR Unknown type of grid: unstructured
+idx.fields niv=3 njv=1 nkv=1 nvertices=3 vlength=3 ncells=2 label=g1d dims=1
+idx.1d si(0,0)=0 si(1,0)=1 si(2,0)=2 si(2,0,0)=2
+idx.1d si(0,1) err=index j is invalid
+idx.1d si(3,0) err=index i is invalid
+idx.1d si(0,0,1) err=index k is invalid
+idx.2d si(0,0)=0 si(3,0)=3 si(3,0,0)=3
+idx.2d si(4,0) err=index i is invalid
+idx.3d si(0,0,0)=0 si(2,0,0)=2 si(0,2,0)=6 si(0,0,2)=18 si(2,2,2)=26
+idx.3d si(3,0,0) err=index i is invalid
+idx.3d si(0,3,0) err=index j is invalid
+idx.3d si(0,0,3) err=index k is invalid
+idx.ijk 1d(0)=[0, 0, 0] 1d(2)=[2, 0, 0] 2d(3)=[3, 0, 0] 3d(0)=[0, 0, 0] 3d(2)=[2, 0, 0] 3d(4)=[1, 1, 0] 3d(12)=[0, 1, 1] 3d(26)=[2, 2, 2]
+idx.ijk 3d(27) err=Assertion failure
+  [2, 2, 2] nvertices=2 vlength=27
+idx.ijk truncated nvertices done
+idx.ijk tri(2)=[2, 0, 0] tri(0)=[0, 0, 0]
+ab.handle label=grid222 dims=3 ncells=8 nvertices=27
+ab.opIndex(0,0,0) x=0 y=0 z=0
+ab.opIndex(2,1,0) x=1 y=0.5 z=0
+ab.opIndex(2,1) x=1 y=0.5 z=0
+ab.opIndex(7) x=0.5 y=1 z=0
+ab.opIndex(0) x=0 y=0 z=0
+ab.vtxids(ijk) (0,0,0)=[0, 1, 4, 3, 9, 10, 13, 12] (1,1,1)=[10, 11, 14, 13, 19, 20, 23, 22] (2,1,0)=[10, 11, 14, 13, 19, 20, 23, 22]
+ab.vtxids(indx) 0=[0, 1, 4, 3, 9, 10, 13, 12] 7=[13, 14, 17, 16, 22, 23, 26, 25]
+ab.copy(ijk 0,0,0) nvtx=8 list=[0, 1, 4, 3, 9, 10, 13, 12]
+ab.copy(ijk 1,1,1) nvtx=8 list=[10, 11, 14, 13, 19, 20, 23, 22]
+ab.copy(indx 7) nvtx=8 list=[13, 14, 17, 16, 22, 23, 26, 25]
+ab.copy(indx 3) nvtx=8 list=[4, 5, 8, 7, 13, 14, 17, 16]
+ab.nvtx 0=8 7=8 vtktype 0=12 celltype 0=8
+ab.bdc 0=[0, 1, 2, 3, 4, 5, 6, 7] 1=[0, 2, 4, 6] 2=[0, 3, 6]
+ab.bdgrid label=boundary_1 dims=3 ncells=1 nvertices=2
+ab.bdgrid v0 x=0 y=0 z=0
+ab.bdgrid v1 x=0.5 y=0 z=0
+ab.bdgrid(5) isnull=true
+ab.log[0]=read_from_gzip_file in.gz 1
+ab.log[1]=read_from_gzip_file in.gz 2.5
+ab.log[2]=read_from_raw_binary_file in.bin 1
+ab.log[3]=read_from_raw_binary_file in.bin 0.125
+ab.log[4]=write_to_su2_file out.su2 1 true
+ab.log[5]=write_to_su2_file out.su2 2.5 true
+ab.log[6]=write_to_su2_file out.su2 2.5 false
+ab.log=["read_from_gzip_file in.gz 1", "read_from_gzip_file in.gz 2.5", "read_from_raw_binary_file in.bin 1", "read_from_raw_binary_file in.bin 0.125", "write_to_su2_file out.su2 1 true", "write_to_su2_file out.su2 2.5 true", "write_to_su2_file out.su2 2.5 false"]
+wr.log[0]=write_to_gzip_file /tmp/probe_g1_write_gziptext.txt
+wr.log[1]=write_to_raw_binary_file /tmp/probe_g1_write_rawbinary.txt
+wr.log[2]=write_to_gzip_file /tmp/probe_g1_write_unknown.txt
+wr.log[3]=write_to_gzip_file /tmp/probe_g1_write_empty.txt
+wr.log[4]=write_to_gzip_file /tmp/probe_g1_write_vtkfmt.txt
+wr.gz len=70 body=marker kind=gziptext scale=1 ncells=1 nvertices=4 dims=2 label=quad2d<newline>
+wr.bin len=71 body=marker kind=rawbinary scale=1 ncells=1 nvertices=4 dims=2 label=quad2d<newline>
+wr.unknown len=70 body=marker kind=gziptext scale=1 ncells=1 nvertices=4 dims=2 label=quad2d<newline>
+wr.empty len=70 body=marker kind=gziptext scale=1 ncells=1 nvertices=4 dims=2 label=quad2d<newline>
+wr.vtkfmt len=70 body=marker kind=gziptext scale=1 ncells=1 nvertices=4 dims=2 label=quad2d<newline>
+ccp.tri2d tc=false vol=0.5 cx=0.33333333333333331 cy=0.33333333333333331 cz=0
+ccp.tri2d tc=true vol=0.5 cx=0.33333333333333331 cy=0.33333333333333331 cz=0
+ccp.quad2d tc=false vol=0.375 cx=0.5 cy=0.5 cz=0
+ccp.quad2d tc=true vol=0.375 cx=0.5 cy=0.5 cz=0
+ccp.flat2d nvtx=2 err=Unhandled number of vertices.
+ccp.tet3d tc=false vol=0.16666666666666666 cx=0.25 cy=0.25 cz=0.25
+ccp.tet3d tc=true vol=0.16666666666666666 cx=0.25 cy=0.25 cz=0.25
+ccp.hexskew tc=false vol=0.70914713541666663 cx=0.578125 cy=0.578125 cz=0.546875
+ccp.hexskew tc=true vol=0.70914713541666663 cx=0.55923119405554289 cy=0.58007946981868264 cz=0.52718506139545562
+ccp.hexunit tc=false vol=0.99999999999999989 cx=0.5 cy=0.5 cz=0.5
+ccp.hexunit tc=true vol=0.99999999999999989 cx=0.49999999999999994 cy=0.5 cz=0.5
+ccp.pyr3d tc=false vol=0.33333333333333331 cx=0.42500000000000004 cy=0.45000000000000001 cz=0.20000000000000001
+ccp.pyr3d tc=true vol=0.33333333333333331 cx=0.40625 cy=0.43749999999999994 cz=0.25
+ccp.wedge3d tc=false vol=0.49999999999999994 cx=0.5 cy=0.33333333333333331 cz=0.5
+ccp.wedge3d tc=true vol=0.49999999999999994 cx=0.50000000000000011 cy=0.33333333333333343 cz=0.50000000000000011
+ccp.grid222 cell0 tc=false vol=0.12499999999999999 cx=0.25 cy=0.25 cz=0.25
+ccp.grid222 cell1 tc=false vol=0.12499999999999999 cx=0.75 cy=0.25 cz=0.25
+ccp.grid222 cell2 tc=false vol=0.12499999999999999 cx=0.25 cy=0.75 cz=0.25
+ccp.grid222 cell3 tc=false vol=0.12499999999999999 cx=0.75 cy=0.75 cz=0.25
+ccp.grid222 cell4 tc=false vol=0.12499999999999999 cx=0.25 cy=0.25 cz=0.75
+ccp.grid222 cell5 tc=false vol=0.12499999999999999 cx=0.75 cy=0.25 cz=0.75
+ccp.grid222 cell6 tc=false vol=0.12499999999999999 cx=0.25 cy=0.75 cz=0.75
+ccp.grid222 cell7 tc=false vol=0.12499999999999999 cx=0.75 cy=0.75 cz=0.75
+ccp.grid222 tc cell0 tc=true vol=0.12499999999999999 cx=0.24999999999999997 cy=0.25 cz=0.25
+ccp.grid222 tc cell1 tc=true vol=0.12499999999999999 cx=0.75000000000000011 cy=0.25 cz=0.25
+ccp.grid222 tc cell2 tc=true vol=0.12499999999999999 cx=0.24999999999999997 cy=0.75000000000000011 cz=0.25
+ccp.grid222 tc cell3 tc=true vol=0.12499999999999999 cx=0.75000000000000011 cy=0.75000000000000011 cz=0.25
+ccp.grid222 tc cell4 tc=true vol=0.12499999999999999 cx=0.24999999999999997 cy=0.25 cz=0.75000000000000011
+ccp.grid222 tc cell5 tc=true vol=0.12499999999999999 cx=0.75000000000000011 cy=0.25 cz=0.75000000000000011
+ccp.grid222 tc cell6 tc=true vol=0.12499999999999999 cx=0.24999999999999997 cy=0.75000000000000011 cz=0.75000000000000011
+ccp.grid222 tc cell7 tc=true vol=0.12499999999999999 cx=0.75000000000000011 cy=0.75000000000000011 cz=0.75000000000000011
+ccp.pent2d nvtx=5 err=Unhandled number of vertices.
+ccp.hept3d nvtx=7 err=Unhandled number of vertices.
+  ccp.onept tc=false vol=0 cx=0.25 cy=0.25 cz=0.25
+ccp.onept nvtx=4 coincident done
+ccp.hept relabelled 2D err=Unhandled number of vertices.
+ccp.pent relabelled 3D tc=true vol=0 cx=0 cy=0 cz=0
+ccp.pent relabelled 3D tc=false vol=0 cx=0.5 cy=0.5 cz=0
+ccp.quad relabelled 3D tc=true vol=0 cx=0.5 cy=0.5 cz=0
+  ccp.tri3d tc=false vol=0.5 cx=0.33333333333333331 cy=0.33333333333333331 cz=0
+ccp.tri relabelled 3D done
+  ccp.wedge2d tc=false vol=0.49999999999999994 cx=0.5 cy=0.33333333333333331 cz=0.5
+ccp.wedge relabelled 2D done
+pic.quad2d centre inside=true
+pic.quad2d inside inside=true
+pic.quad2d inside near lo inside=false
+pic.quad2d outside inside=false
+pic.quad2d outside neg inside=false
+pic.quad2d on face xhi inside=true
+pic.quad2d on face xlo inside=true
+pic.quad2d on face ylo inside=true
+pic.quad2d on face yhi inside=true
+pic.quad2d on edge hi inside=true
+pic.quad2d on edge lo inside=true
+pic.quad2d off plane z inside=true
+pic.quad2d just out xhi inside=false
+pic.tri2d inside inside=true
+pic.tri2d on hypotenuse inside=true
+pic.tri2d outside inside=false
+pic.tri2d on vertex 0 inside=true
+pic.tri2d on vertex 1 inside=true
+pic.tri2d on edge ylo inside=true
+pic.tri2d on edge xlo inside=true
+pic.tri2d inside upper inside=true
+pic.hexunit centre inside=true
+pic.hexunit inside inside=true
+pic.hexunit outside inside=false
+pic.hexunit on face xhi inside=true
+pic.hexunit on face xlo inside=true
+pic.hexunit on face zhi inside=true
+pic.hexunit on edge inside=true
+pic.hexunit on vertex inside=true
+pic.hexunit on edge 2 inside=true
+pic.hexskew centre inside=true
+pic.hexskew outside inside=false
+pic.tet3d inside inside=true
+pic.tet3d outside inside=false
+pic.tet3d on slanted face inside=true
+pic.tet3d on xz face inside=true
+pic.tet3d on vertex inside=true
+pic.pyr3d inside inside=true
+pic.pyr3d outside inside=false
+pic.pyr3d on base inside=true
+pic.pyr3d on apex inside=true
+pic.wedge3d inside inside=true
+pic.wedge3d inside 2 inside=true
+pic.wedge3d outside inside=false
+pic.wedge3d on face ylo inside=true
+pic.wedge3d on face zhi inside=true
+pic.wedge3d on slant face inside=true
+pic.wedge3d on edge apex inside=true
+pic.1d exc=cell search not implemented for 1D grids
+pic.4d exc=invalid number of dimensions
+pic.0d exc=invalid number of dimensions
+pic.2d nvtx=5 exc=invalid cell type in 2D
+pic.3d nvtx=7 exc=invalid cell type in 3D
+pic.2d nvtx=2 exc=invalid cell type in 2D
+pic.dims4 nvtx=6 exc=invalid number of dimensions
+cbc.tri2d x=0.33333333333333331 y=0.33333333333333331 z=0
+cbc.quad2d x=0.5 y=0.5 z=0
+cbc.flat2d x=0.5 y=0.5 z=0
+cbc.tet3d x=0.25 y=0.25 z=0.25
+cbc.hexunit x=0.5 y=0.5 z=0.5
+cbc.hexskew x=0.578125 y=0.578125 z=0.546875
+cbc.pyr3d x=0.42500000000000004 y=0.45000000000000001 z=0.20000000000000001
+cbc.wedge3d x=0.5 y=0.33333333333333331 z=0.5
+cbc.pent2d x=0.5 y=0.5 z=0
+cbc.hept3d x=0.5714285714285714 y=0.42857142857142855 z=0.42857142857142855
+cbc.onept x=0.25 y=0.25 z=0.25
+cbc.grid222 cell0 x=0.25 y=0.25 z=0.25
+cbc.grid222 cell1 x=0.75 y=0.25 z=0.25
+cbc.grid222 cell2 x=0.25 y=0.75 z=0.25
+cbc.grid222 cell3 x=0.75 y=0.75 z=0.25
+cbc.grid222 cell4 x=0.25 y=0.25 z=0.75
+cbc.grid222 cell5 x=0.75 y=0.25 z=0.75
+cbc.grid222 cell6 x=0.25 y=0.75 z=0.75
+cbc.grid222 cell7 x=0.75 y=0.75 z=0.75
+cbc.nan2d x=-nan y=0.33333333333333331 z=0
+bin.unsorted nbx=0 nby=0 nbz=0 deltax=nan deltay=nan deltaz=nan sorted=false depth=0
+bin.unsorted bb0 x=nan y=nan z=nan
+bin.unsorted bb1 x=nan y=nan z=nan
+bin.222.default nbx=5 nby=5 nbz=5 deltax=0.20000000000000001 deltay=0.20000000000000001 deltaz=0.20000000000000001 sorted=true
+bin.222.default.bb0 x=0 y=0 z=0
+bin.222.default.bb1 x=1 y=1 z=1
+bin.222.default[1][1][1]=[0]
+bin.222.default[1][1][3]=[4]
+bin.222.default[1][3][1]=[2]
+bin.222.default[1][3][3]=[6]
+bin.222.default[3][1][1]=[1]
+bin.222.default[3][1][3]=[5]
+bin.222.default[3][3][1]=[3]
+bin.222.default[3][3][3]=[7]
+bin.222.default empty=117 placed=8 depth=5
+bin.222 corner lo ix=0 iy=0 iz=0
+bin.222 corner hi ix=4 iy=4 iz=4
+bin.222 centre ix=2 iy=2 iz=2
+bin.222 inside ix=0 iy=4 iz=1
+bin.222 outside lo ix=0 iy=0 iz=0
+bin.222 outside hi ix=4 iy=4 iz=4
+bin.222 edge mix ix=4 iy=0 iz=4
+bin.222 edge mix2 ix=0 iy=4 iz=2
+bin.222 far ix=0 iy=4 iz=0
+bin.222 nonexact ix=1 iy=1 iz=1
+bin.222.n342 nbx=3 nby=4 nbz=2 deltax=0.33333333333333331 deltay=0.25 deltaz=0.5 sorted=true
+bin.222.n342.bb0 x=0 y=0 z=0
+bin.222.n342.bb1 x=1 y=1 z=1
+bin.222.n342[0][1][0]=[0]
+bin.222.n342[0][1][1]=[4]
+bin.222.n342[0][3][0]=[2]
+bin.222.n342[0][3][1]=[6]
+bin.222.n342[2][1][0]=[1]
+bin.222.n342[2][1][1]=[5]
+bin.222.n342[2][3][0]=[3]
+bin.222.n342[2][3][1]=[7]
+bin.222.n342 empty=16 placed=8 depth=3
+bin.n342 centre ix=1 iy=2 iz=1
+bin.n342 outside lo ix=0 iy=0 iz=0
+bin.n342 outside hi ix=2 iy=3 iz=1
+bin.n342 thirds ix=1 iy=2 iz=1
+bin.32.default nbx=5 nby=5 nbz=1 deltax=0.59999999999999998 deltay=0.40000000000000002 deltaz=9.9999999999999995e-07 sorted=true
+bin.32.default.bb0 x=0 y=0 z=0
+bin.32.default.bb1 x=3 y=2 z=0
+bin.32.default[0][1][0]=[0]
+bin.32.default[0][3][0]=[3]
+bin.32.default[2][1][0]=[1]
+bin.32.default[2][3][0]=[4]
+bin.32.default[4][1][0]=[2]
+bin.32.default[4][3][0]=[5]
+bin.32.default empty=19 placed=6 depth=5
+bin.32.nbinz7 nbx=2 nby=3 nbz=1 deltax=1.5 deltay=0.66666666666666663 deltaz=9.9999999999999995e-07 sorted=true
+bin.32.nbinz7.bb0 x=0 y=0 z=0
+bin.32.nbinz7.bb1 x=3 y=2 z=0
+bin.32.nbinz7[0][0][0]=[0]
+bin.32.nbinz7[0][2][0]=[3]
+bin.32.nbinz7[1][0][0]=[1, 2]
+bin.32.nbinz7[1][2][0]=[4, 5]
+bin.32.nbinz7 empty=2 placed=6 depth=2
+bin.32 centre ix=1 iy=1 iz=0
+bin.32 outside ix=0 iy=0 iz=0
+bin.32 corner hi ix=1 iy=2 iz=0
+bin.iz 2d p.z=4 -> iz=0
+bin.1d nbx=2 nby=1 nbz=1 deltax=0.75 deltay=9.9999999999999995e-07 deltaz=9.9999999999999995e-07 sorted=true
+bin.1d.bb0 x=0 y=0 z=0
+bin.1d.bb1 x=1.5 y=0 z=0
+bin.1d[0][0][0]=[0]
+bin.1d[1][0][0]=[1]
+bin.1d empty=0 placed=2 depth=2
+bin.1d far hi ix=1 iy=0 iz=0
+bin.1d far lo ix=0 iy=0 iz=0
+bin.nbinx=0 exc=Need to have nbinx, nbiny and nbinz >= 1
+bin.nbiny=0 exc=Need to have nbinx, nbiny and nbinz >= 1
+bin.nbinz=0 exc=Need to have nbinx, nbiny and nbinz >= 1
+bin.all zero exc=Need to have nbinx, nbiny and nbinz >= 1
+bin.reorder after throw exc=Need to have nbinx, nbiny and nbinz >= 1
+bin.after throw nbx=0 nby=0 nbz=0 deltax=nan deltay=nan deltaz=nan sorted=false
+bin.after throw.bb0 x=nan y=nan z=nan
+bin.after throw.bb1 x=nan y=nan z=nan
+bin.after throw empty=0 placed=0 depth=0
+bin.flat floor nbx=2 nby=2 nbz=1 deltax=0.5 deltay=9.9999999999999995e-07 deltaz=9.9999999999999995e-07 sorted=true
+bin.flat floor.bb0 x=0 y=0.5 z=0
+bin.flat floor.bb1 x=1 y=0.5 z=0
+bin.flat floor[1][0][0]=[0]
+bin.flat floor empty=3 placed=1 depth=2
+bin.flat centre ix=1 iy=0 iz=0
+bin.flat far y ix=1 iy=1 iz=0
+bin.onept floor nbx=4 nby=4 nbz=4 deltax=9.9999999999999995e-07 deltay=9.9999999999999995e-07 deltaz=9.9999999999999995e-07 sorted=true
+bin.onept floor.bb0 x=0.25 y=0.25 z=0.25
+bin.onept floor.bb1 x=0.25 y=0.25 z=0.25
+bin.onept floor[0][0][0]=[0]
+bin.onept floor empty=63 placed=1 depth=4
+bin.onept same ix=0 iy=0 iz=0
+bin.onept far ix=3 iy=3 iz=3
+bin.twice nbx=2 nby=2 nbz=2 deltax=0.5 deltay=0.5 deltaz=0.5 sorted=true
+bin.twice.bb0 x=0 y=0 z=0
+bin.twice.bb1 x=1 y=1 z=1
+bin.twice[0][0][0]=[0, 0]
+bin.twice[0][0][1]=[4, 4]
+bin.twice[0][1][0]=[2, 2]
+bin.twice[0][1][1]=[6, 6]
+bin.twice[1][0][0]=[1, 1]
+bin.twice[1][0][1]=[5, 5]
+bin.twice[1][1][0]=[3, 3]
+bin.twice[1][1][1]=[7, 7]
+bin.twice empty=0 placed=16 depth=2
+bin.thrice shrunk nbx=1 nby=1 nbz=1 deltax=1 deltay=1 deltaz=1 sorted=true
+bin.thrice shrunk.bb0 x=0 y=0 z=0
+bin.thrice shrunk.bb1 x=1 y=1 z=1
+bin.thrice shrunk[0][0][0]=[0, 0, 0, 1, 2, 3, 4, 5, 6, 7]
+bin.thrice shrunk empty=0 placed=10 depth=1
+bin.nvtx truncated nbx=2 nby=2 nbz=2 deltax=0.5 deltay=0.5 deltaz=9.9999999999999995e-07 sorted=true
+bin.nvtx truncated.bb0 x=0 y=0 z=0
+bin.nvtx truncated.bb1 x=1 y=1 z=0
+bin.nvtx truncated[0][0][1]=[0, 4]
+bin.nvtx truncated[0][1][1]=[2, 6]
+bin.nvtx truncated[1][0][1]=[1, 5]
+bin.nvtx truncated[1][1][1]=[3, 7]
+bin.nvtx truncated empty=4 placed=8 depth=2
+bin.clamp ix=-5 min=-5 (int) max=0
+bin.clamp ix=-1 min=-1 (int) max=0
+bin.clamp ix=0 min=0 (int) max=0
+bin.clamp ix=1 min=1 (int) max=1
+bin.clamp ix=3 min=3 (int) max=3
+bin.clamp ix=4 min=3 (int) max=3
+bin.clamp ix=99 min=3 (int) max=3
+bin.trunc n=-7 d=-3.5 castint=-3
+bin.trunc n=-3 d=-1.5 castint=-1
+bin.trunc n=-1 d=-0.5 castint=0
+bin.trunc n=0 d=0 castint=0
+bin.trunc n=1 d=0.5 castint=0
+bin.trunc n=3 d=1.5 castint=1
+bin.trunc n=7 d=3.5 castint=3
+bin.trunc n=9 d=4.5 castint=4
+fsc.unsorted a fast err=index [0] is out of bounds for array of length 0
+  found=true indx=1
+fsc.unsorted a slow done
+  found=true indx=1
+fsc.unsorted a disp done
+fsc.unsorted b fast err=index [0] is out of bounds for array of length 0
+  found=true indx=0
+fsc.unsorted b slow done
+  found=true indx=0
+fsc.unsorted b disp done
+fsc.unsorted c fast err=index [0] is out of bounds for array of length 0
+  found=true indx=0
+fsc.unsorted c slow done
+  found=true indx=0
+fsc.unsorted c disp done
+fsc.unsorted d fast err=index [0] is out of bounds for array of length 0
+  found=true indx=7
+fsc.unsorted d slow done
+  found=true indx=7
+fsc.unsorted d disp done
+fsc.unsorted e fast err=index [0] is out of bounds for array of length 0
+  found=false indx=0
+fsc.unsorted e slow done
+  found=false indx=0
+fsc.unsorted e disp done
+fsc.unsorted f fast err=index [0] is out of bounds for array of length 0
+  found=false indx=0
+fsc.unsorted f slow done
+  found=false indx=0
+fsc.unsorted f disp done
+  found=true indx=1
+fsc.sorted a fast done
+  found=true indx=1
+fsc.sorted a slow done
+  found=true indx=1
+fsc.sorted a disp done
+  found=true indx=7
+fsc.sorted b fast done
+  found=true indx=0
+fsc.sorted b slow done
+  found=true indx=7
+fsc.sorted b disp done
+  found=true indx=0
+fsc.sorted c fast done
+  found=true indx=0
+fsc.sorted c slow done
+  found=true indx=0
+fsc.sorted c disp done
+  found=true indx=7
+fsc.sorted d fast done
+  found=true indx=7
+fsc.sorted d slow done
+  found=true indx=7
+fsc.sorted d disp done
+  found=false indx=0
+fsc.sorted e fast done
+  found=false indx=0
+fsc.sorted e slow done
+  found=false indx=0
+fsc.sorted e disp done
+  found=false indx=0
+fsc.sorted f fast done
+  found=false indx=0
+fsc.sorted f slow done
+  found=false indx=0
+fsc.sorted f disp done
+  found=true indx=6
+fsc.sorted g fast done
+  found=true indx=6
+fsc.sorted g slow done
+  found=true indx=6
+fsc.sorted g disp done
+  found=true indx=7
+fsc.sorted near hi face fast done
+  found=true indx=1
+fsc.sorted near hi face slow done
+  found=true indx=7
+fsc.sorted near hi face disp done
+  found=true indx=3
+fsc.sorted h fast done
+  found=true indx=3
+fsc.sorted h slow done
+  found=true indx=3
+fsc.sorted h disp done
+  found=true indx=1
+fsc.onebin a fast done
+  found=true indx=1
+fsc.onebin a slow done
+  found=true indx=1
+fsc.onebin a disp done
+  found=false indx=0
+fsc.onebin out fast done
+  found=false indx=0
+fsc.onebin out slow done
+  found=false indx=0
+fsc.onebin out disp done
+  found=true indx=4
+fsc.2d centre fast done
+  found=true indx=4
+fsc.2d centre slow done
+  found=true indx=4
+fsc.2d centre disp done
+  found=true indx=0
+fsc.2d cell0 fast done
+  found=true indx=0
+fsc.2d cell0 slow done
+  found=true indx=0
+fsc.2d cell0 disp done
+  found=true indx=5
+fsc.2d cell5 fast done
+  found=true indx=5
+fsc.2d cell5 slow done
+  found=true indx=5
+fsc.2d cell5 disp done
+  found=true indx=4
+fsc.2d off plane fast done
+  found=true indx=4
+fsc.2d off plane slow done
+  found=true indx=4
+fsc.2d off plane disp done
+  found=false indx=0
+fsc.2d outside fast done
+  found=false indx=0
+fsc.2d outside slow done
+  found=false indx=0
+fsc.2d outside disp done
+  found=true indx=0
+fsc.2d corner fast done
+  found=true indx=0
+fsc.2d corner slow done
+  found=true indx=0
+fsc.2d corner disp done
+  found=true indx=0
+fsc.tet inside fast done
+  found=true indx=0
+fsc.tet inside slow done
+  found=true indx=0
+fsc.tet inside disp done
+  found=false indx=0
+fsc.tet outside fast done
+  found=false indx=0
+fsc.tet outside slow done
+  found=false indx=0
+fsc.tet outside disp done
+fncc.222 a nearest=0 dist=0
+fncc.222 b nearest=7 dist=0
+fncc.222 far nearest=7 dist=7.3612159321677284
+fncc.222 c nearest=2 dist=0
+fncc.222 corner nearest=0 dist=0.4330127018922193
+fncc.222 centre tie nearest=0 dist=0.4330127018922193
+fncc.hexskew nearest=0 dist=0.120017902310447
+fncc.tri2d nearest=0 dist=0.55277079839256671
+fncc.tie exact nearest=1 dist=0.23570226039551578
+fncc.tie lo nearest=0 dist=0.058925565098878988
+fncc.tie hi nearest=1 dist=0.058925565098878904
+fncc.flat nearest=0 dist=0
+fncc.onept nearest=0 dist=1.299038105676658
+stl.tri len=269 body=solid tri label<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 0.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 0.000000e+00 1.000000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid tri label<newline>
+stl.quad len=965 body=solid quad2d<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.250000e-01 2.500000e-01 0.000000e+00<newline>    vertex 8.750000e-01 2.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 8.750000e-01 2.500000e-01 0.000000e+00<newline>    vertex 8.750000e-01 7.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 8.750000e-01 7.500000e-01 0.000000e+00<newline>    vertex 1.250000e-01 7.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.250000e-01 7.500000e-01 0.000000e+00<newline>    vertex 1.250000e-01 2.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid quad2d<newline>
+stl.quad scaled len=965 body=solid quad2d<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 3.125000e-01 6.250000e-01 0.000000e+00<newline>    vertex 2.187500e+00 6.250000e-01 0.000000e+00<newline>    vertex 1.250000e+00 1.250000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 2.187500e+00 6.250000e-01 0.000000e+00<newline>    vertex 2.187500e+00 1.875000e+00 0.000000e+00<newline>    vertex 1.250000e+00 1.250000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 2.187500e+00 1.875000e+00 0.000000e+00<newline>    vertex 3.125000e-01 1.875000e+00 0.000000e+00<newline>    vertex 1.250000e+00 1.250000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 3.125000e-01 1.875000e+00 0.000000e+00<newline>    vertex 3.125000e-01 6.250000e-01 0.000000e+00<newline>    vertex 1.250000e+00 1.250000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid quad2d<newline>
+stl.grid32 len=5645 body=solid grid32<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 0.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 5.000000e-01 0.000000e+00 0.000000e+00<newline>    vertex 2.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 0.000000e+00 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 2.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 0.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 2.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 0.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 0.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 2.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 0.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 7.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 7.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 7.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 5.000000e-01 0.000000e+00 0.000000e+00<newline>    vertex 7.500000e-01 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.500000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.250000e+00 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.500000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.500000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.250000e+00 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.500000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.250000e+00 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>    vertex 1.250000e+00 2.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 0.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 2.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 5.000000e-01 1.000000e+00 0.000000e+00<newline>    vertex 2.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 1.000000e+00 0.000000e+00<newline>    vertex 0.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 2.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 0.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 0.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 2.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 7.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 7.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 5.000000e-01 1.000000e+00 0.000000e+00<newline>    vertex 7.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 5.000000e-01 1.000000e+00 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>    vertex 7.500000e-01 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.500000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.250000e+00 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.500000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.500000e+00 1.000000e+00 0.000000e+00<newline>    vertex 1.250000e+00 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.500000e+00 1.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 1.250000e+00 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.000000e+00 1.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 5.000000e-01 0.000000e+00<newline>    vertex 1.250000e+00 7.500000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid grid32<newline>
+stl.3D exc=write_to_stl_file is only for 2D grids.
+stl.nvtx=5 err=Unexpected number of vertices, nvtx=5.
+stl.nvtx=2 err=Unexpected number of vertices, nvtx=2.
+stl.nan len=244 body=solid nan2d<newline>facet normal 0.000000e+00 0.000000e+00 0.000000e+00<newline>  outer loop<newline>    vertex nan 0.000000e+00 0.000000e+00<newline>    vertex -nan 1.000000e+00 0.000000e+00<newline>    vertex 1.000000e+00 0.000000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid nan2d<newline>
+stl.nan scaled len=244 body=solid nan2d<newline>facet normal 0.000000e+00 0.000000e+00 0.000000e+00<newline>  outer loop<newline>    vertex nan 0.000000e+00 0.000000e+00<newline>    vertex -nan 2.500000e+00 0.000000e+00<newline>    vertex 2.500000e+00 0.000000e+00 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid nan2d<newline>
+vtk.222 len=1379 body=# vtk DataFile Version 3.0<newline>grid222 grid<newline>ASCII<newline>DATASET UNSTRUCTURED_GRID<newline>POINTS 27 float<newline>0.000000e+00 0.000000e+00 0.000000e+00<newline>5.000000e-01 0.000000e+00 0.000000e+00<newline>1.000000e+00 0.000000e+00 0.000000e+00<newline>0.000000e+00 5.000000e-01 0.000000e+00<newline>5.000000e-01 5.000000e-01 0.000000e+00<newline>1.000000e+00 5.000000e-01 0.000000e+00<newline>0.000000e+00 1.000000e+00 0.000000e+00<newline>5.000000e-01 1.000000e+00 0.000000e+00<newline>1.000000e+00 1.000000e+00 0.000000e+00<newline>0.000000e+00 0.000000e+00 5.000000e-01<newline>5.000000e-01 0.000000e+00 5.000000e-01<newline>1.000000e+00 0.000000e+00 5.000000e-01<newline>0.000000e+00 5.000000e-01 5.000000e-01<newline>5.000000e-01 5.000000e-01 5.000000e-01<newline>1.000000e+00 5.000000e-01 5.000000e-01<newline>0.000000e+00 1.000000e+00 5.000000e-01<newline>5.000000e-01 1.000000e+00 5.000000e-01<newline>1.000000e+00 1.000000e+00 5.000000e-01<newline>0.000000e+00 0.000000e+00 1.000000e+00<newline>5.000000e-01 0.000000e+00 1.000000e+00<newline>1.000000e+00 0.000000e+00 1.000000e+00<newline>0.000000e+00 5.000000e-01 1.000000e+00<newline>5.000000e-01 5.000000e-01 1.000000e+00<newline>1.000000e+00 5.000000e-01 1.000000e+00<newline>0.000000e+00 1.000000e+00 1.000000e+00<newline>5.000000e-01 1.000000e+00 1.000000e+00<newline>1.000000e+00 1.000000e+00 1.000000e+00<newline>CELLS 8 72<newline>8 0 1 4 3 9 10 13 12<newline>8 1 2 5 4 10 11 14 13<newline>8 3 4 7 6 12 13 16 15<newline>8 4 5 8 7 13 14 17 16<newline>8 9 10 13 12 18 19 22 21<newline>8 10 11 14 13 19 20 23 22<newline>8 12 13 16 15 21 22 25 24<newline>8 13 14 17 16 22 23 26 25<newline>CELL_TYPES 8<newline>12<newline>12<newline>12<newline>12<newline>12<newline>12<newline>12<newline>12<newline>
+vtk.quad len=277 body=# vtk DataFile Version 3.0<newline>quad2d grid<newline>ASCII<newline>DATASET UNSTRUCTURED_GRID<newline>POINTS 4 float<newline>1.250000e-01 2.500000e-01 0.000000e+00<newline>8.750000e-01 2.500000e-01 0.000000e+00<newline>8.750000e-01 7.500000e-01 0.000000e+00<newline>1.250000e-01 7.500000e-01 0.000000e+00<newline>CELLS 1 5<newline>4 0 1 2 3<newline>CELL_TYPES 1<newline>9<newline>
+rot.identity nv=8
+rot.identity v0 x=0 y=0 z=0
+rot.identity v1 x=1 y=0 z=0
+rot.identity v2 x=1 y=1 z=0
+rot.identity v3 x=0 y=1 z=0
+rot.identity v4 x=0 y=0 z=1
+rot.identity v5 x=1 y=0 z=1
+rot.identity v6 x=1 y=1 z=1
+rot.identity v7 x=0 y=1 z=1
+rot.180 z nv=8
+rot.180 z v0 x=0 y=0 z=0
+rot.180 z v1 x=-1 y=0 z=0
+rot.180 z v2 x=-1 y=-1 z=0
+rot.180 z v3 x=0 y=-1 z=0
+rot.180 z v4 x=0 y=0 z=1
+rot.180 z v5 x=-1 y=0 z=1
+rot.180 z v6 x=-1 y=-1 z=1
+rot.180 z v7 x=0 y=-1 z=1
+rot.90 z nv=8
+rot.90 z v0 x=0 y=0 z=0
+rot.90 z v1 x=0 y=1.0000000000000002 z=0
+rot.90 z v2 x=-1.0000000000000002 y=1.0000000000000002 z=0
+rot.90 z v3 x=-1.0000000000000002 y=0 z=0
+rot.90 z v4 x=0 y=0 z=1.0000000000000002
+rot.90 z v5 x=0 y=1.0000000000000002 z=1.0000000000000002
+rot.90 z v6 x=-1.0000000000000002 y=1.0000000000000002 z=1.0000000000000002
+rot.90 z v7 x=-1.0000000000000002 y=0 z=1.0000000000000002
+rot.90 x nv=8
+rot.90 x v0 x=0 y=0 z=0
+rot.90 x v1 x=1.0000000000000002 y=0 z=0
+rot.90 x v2 x=1.0000000000000002 y=0 z=1.0000000000000002
+rot.90 x v3 x=0 y=0 z=1.0000000000000002
+rot.90 x v4 x=0 y=-1.0000000000000002 z=0
+rot.90 x v5 x=1.0000000000000002 y=-1.0000000000000002 z=0
+rot.90 x v6 x=1.0000000000000002 y=-1.0000000000000002 z=1.0000000000000002
+rot.90 x v7 x=0 y=-1.0000000000000002 z=1.0000000000000002
+rot.180 y ctr nv=8
+rot.180 y ctr v0 x=1 y=0 z=1
+rot.180 y ctr v1 x=0 y=0 z=1
+rot.180 y ctr v2 x=0 y=1 z=1
+rot.180 y ctr v3 x=1 y=1 z=1
+rot.180 y ctr v4 x=1 y=0 z=0
+rot.180 y ctr v5 x=0 y=0 z=0
+rot.180 y ctr v6 x=0 y=1 z=0
+rot.180 y ctr v7 x=1 y=1 z=0
+rot.q half ctr nv=8
+rot.q half ctr v0 x=-0.75 y=-0.75 z=1.5
+rot.q half ctr v1 x=-0.75 y=0.25 z=1.5
+rot.q half ctr v2 x=-0.75 y=0.25 z=2.5
+rot.q half ctr v3 x=-0.75 y=-0.75 z=2.5
+rot.q half ctr v4 x=0.25 y=-0.75 z=1.5
+rot.q half ctr v5 x=0.25 y=0.25 z=1.5
+rot.q half ctr v6 x=0.25 y=0.25 z=2.5
+rot.q half ctr v7 x=0.25 y=-0.75 z=2.5
+rot.q half quad2d nv=4
+rot.q half quad2d v0 x=0 y=0.125 z=0.25
+rot.q half quad2d v1 x=0 y=0.875 z=0.25
+rot.q half quad2d v2 x=0 y=0.875 z=0.75
+rot.q half quad2d v3 x=0 y=0.125 z=0.75
+rot.qinit=[nan, nan, nan, nan]
+rot.q nan nv=8
+rot.q nan v0 x=nan y=nan z=nan
+rot.q nan v1 x=nan y=nan z=nan
+rot.q nan v2 x=nan y=nan z=nan
+rot.q nan v3 x=nan y=nan z=nan
+rot.q nan v4 x=nan y=nan z=nan
+rot.q nan v5 x=nan y=nan z=nan
+rot.q nan v6 x=nan y=nan z=nan
+rot.q nan v7 x=nan y=nan z=nan
+rot norm 2 exc=grid.rotate: Invalid quaternion provided. Should be unit quaternion with norm = 1
+rot norm 2 unchanged nv=8
+rot norm 2 unchanged v0 x=0 y=0 z=0
+rot norm 2 unchanged v1 x=1 y=0 z=0
+rot norm 2 unchanged v2 x=1 y=1 z=0
+rot norm 2 unchanged v3 x=0 y=1 z=0
+rot norm 2 unchanged v4 x=0 y=0 z=1
+rot norm 2 unchanged v5 x=1 y=0 z=1
+rot norm 2 unchanged v6 x=1 y=1 z=1
+rot norm 2 unchanged v7 x=0 y=1 z=1
+rot norm near 0.9999 exc=grid.rotate: Invalid quaternion provided. Should be unit quaternion with norm = 1
+rot norm zero exc=grid.rotate: Invalid quaternion provided. Should be unit quaternion with norm = 1
+rot norm just inside done
+rot norm just outside exc=grid.rotate: Invalid quaternion provided. Should be unit quaternion with norm = 1
+rot norm negative done
+rot.a identity nv=8
+rot.a identity v0 x=0 y=0 z=0
+rot.a identity v1 x=1 y=0 z=0
+rot.a identity v2 x=1 y=1 z=0
+rot.a identity v3 x=0 y=1 z=0
+rot.a identity v4 x=0 y=0 z=1
+rot.a identity v5 x=1 y=0 z=1
+rot.a identity v6 x=1 y=1 z=1
+rot.a identity v7 x=0 y=1 z=1
+rot.a pi z nv=8
+rot.a pi z v0 x=0 y=0 z=0
+rot.a pi z v1 x=-1 y=1.2246467991473532e-16 z=0
+rot.a pi z v2 x=-1.0000000000000002 y=-0.99999999999999989 z=0
+rot.a pi z v3 x=-1.2246467991473532e-16 y=-1 z=0
+rot.a pi z v4 x=0 y=0 z=1
+rot.a pi z v5 x=-1 y=1.2246467991473532e-16 z=1
+rot.a pi z v6 x=-1.0000000000000002 y=-0.99999999999999989 z=1
+rot.a pi z v7 x=-1.2246467991473532e-16 y=-1 z=1
+rot.a halfpi x nv=8
+rot.a halfpi x v0 x=0 y=0 z=0
+rot.a halfpi x v1 x=1 y=0 z=0
+rot.a halfpi x v2 x=1 y=2.2204460492503131e-16 z=1
+rot.a halfpi x v3 x=0 y=2.2204460492503131e-16 z=1
+rot.a halfpi x v4 x=0 y=-1 z=2.2204460492503131e-16
+rot.a halfpi x v5 x=1 y=-1 z=2.2204460492503131e-16
+rot.a halfpi x v6 x=1 y=-0.99999999999999978 z=1.0000000000000002
+rot.a halfpi x v7 x=0 y=-0.99999999999999978 z=1.0000000000000002
+rot.a thirdpi diag ctr nv=8
+rot.a thirdpi diag ctr v0 x=0 y=0 z=0
+rot.a thirdpi diag ctr v1 x=0.66666666666666674 y=0.66666666666666663 z=-0.33333333333333337
+rot.a thirdpi diag ctr v2 x=0.33333333333333337 y=1.3333333333333335 z=0.33333333333333326
+rot.a thirdpi diag ctr v3 x=-0.33333333333333326 y=0.66666666666666674 z=0.66666666666666663
+rot.a thirdpi diag ctr v4 x=0.66666666666666663 y=-0.33333333333333348 z=0.66666666666666674
+rot.a thirdpi diag ctr v5 x=1.3333333333333333 y=0.33333333333333326 z=0.33333333333333337
+rot.a thirdpi diag ctr v6 x=1 y=1 z=1
+rot.a thirdpi diag ctr v7 x=0.33333333333333331 y=0.33333333333333337 z=1.3333333333333335
+rot.a 3pi/4 unnormalized axis nv=8
+rot.a 3pi/4 unnormalized axis v0 x=0 y=0 z=0
+rot.a 3pi/4 unnormalized axis v1 x=-0.70710678118654746 y=0.70710678118654768 z=0
+rot.a 3pi/4 unnormalized axis v2 x=-1.4142135623730951 y=2.2204460492503131e-16 z=0
+rot.a 3pi/4 unnormalized axis v3 x=-0.70710678118654768 y=-0.70710678118654746 z=0
+rot.a 3pi/4 unnormalized axis v4 x=0 y=0 z=1
+rot.a 3pi/4 unnormalized axis v5 x=-0.70710678118654746 y=0.70710678118654768 z=1
+rot.a 3pi/4 unnormalized axis v6 x=-1.4142135623730951 y=2.2204460492503131e-16 z=1
+rot.a 3pi/4 unnormalized axis v7 x=-0.70710678118654768 y=-0.70710678118654746 z=1
+rot.a pi zero axis exc=grid.rotate: Invalid quaternion provided. Should be unit quaternion with norm = 1
+rot.a pi zero axis unchanged nv=8
+rot.a pi zero axis unchanged v0 x=0 y=0 z=0
+rot.a pi zero axis unchanged v1 x=1 y=0 z=0
+rot.a pi zero axis unchanged v2 x=1 y=1 z=0
+rot.a pi zero axis unchanged v3 x=0 y=1 z=0
+rot.a pi zero axis unchanged v4 x=0 y=0 z=1
+rot.a pi zero axis unchanged v5 x=1 y=0 z=1
+rot.a pi zero axis unchanged v6 x=1 y=1 z=1
+rot.a pi zero axis unchanged v7 x=0 y=1 z=1
+rot.a nan theta done
+rot.a axis after call x=0 y=2 z=0
+rot.a axis len2 nv=8
+rot.a axis len2 v0 x=0 y=0 z=0
+rot.a axis len2 v1 x=2.2204460492503131e-16 y=0 z=-1
+rot.a axis len2 v2 x=2.2204460492503131e-16 y=1 z=-1
+rot.a axis len2 v3 x=0 y=1 z=0
+rot.a axis len2 v4 x=1 y=0 z=2.2204460492503131e-16
+rot.a axis len2 v5 x=1.0000000000000002 y=0 z=-0.99999999999999978
+rot.a axis len2 v6 x=1.0000000000000002 y=1 z=-0.99999999999999978
+rot.a axis len2 v7 x=1 y=1 z=2.2204460492503131e-16
+rot.a minus halfpi y nv=8
+rot.a minus halfpi y v0 x=0 y=0 z=0
+rot.a minus halfpi y v1 x=2.2204460492503131e-16 y=0 z=1
+rot.a minus halfpi y v2 x=2.2204460492503131e-16 y=1 z=1
+rot.a minus halfpi y v3 x=0 y=1 z=0
+rot.a minus halfpi y v4 x=-1 y=0 z=2.2204460492503131e-16
+rot.a minus halfpi y v5 x=-0.99999999999999978 y=0 z=1.0000000000000002
+rot.a minus halfpi y v6 x=-0.99999999999999978 y=1 z=1.0000000000000002
+rot.a minus halfpi y v7 x=-1 y=1 z=2.2204460492503131e-16
+both.stl len=973 body=solid both"label<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.250000e-01 2.500000e-01 0.000000e+00<newline>    vertex 8.750000e-01 2.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 8.750000e-01 2.500000e-01 0.000000e+00<newline>    vertex 8.750000e-01 7.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 8.750000e-01 7.500000e-01 0.000000e+00<newline>    vertex 1.250000e-01 7.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>facet normal 0.000000e+00 0.000000e+00 1.000000e+00<newline>  outer loop<newline>    vertex 1.250000e-01 7.500000e-01 0.000000e+00<newline>    vertex 1.250000e-01 2.500000e-01 0.000000e+00<newline>    vertex 5.000000e-01 5.000000e-01 0.000000e+00<newline>  endloop<newline>endfacet<newline>endsolid both"label<newline>
+both.vtk len=281 body=# vtk DataFile Version 3.0<newline>both"label grid<newline>ASCII<newline>DATASET UNSTRUCTURED_GRID<newline>POINTS 4 float<newline>1.250000e-01 2.500000e-01 0.000000e+00<newline>8.750000e-01 2.500000e-01 0.000000e+00<newline>8.750000e-01 7.500000e-01 0.000000e+00<newline>1.250000e-01 7.500000e-01 0.000000e+00<newline>CELLS 1 5<newline>4 0 1 2 3<newline>CELL_TYPES 1<newline>9<newline>
+both.log=["write_to_gzip_file /tmp/probe_g1_both.gz.txt"]
+both.gz body=marker kind=gziptext scale=1 ncells=1 nvertices=4 dims=2 label=both"label<newline>

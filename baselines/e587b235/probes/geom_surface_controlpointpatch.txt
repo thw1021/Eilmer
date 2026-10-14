@@ -1,0 +1,802 @@
+cpp.ut str=ControlPointPatch()
+cpp.ut classname=ControlPointPatch
+cpp.ut ncpi=4 ncpj=5
+cpp.ut C[0][0] x=0 y=0 z=0
+cpp.ut C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.ut C[0][2] x=0 y=0.5 z=0
+cpp.ut C[0][3] x=0 y=0.83333333333333337 z=0
+cpp.ut C[0][4] x=0 y=1 z=0
+cpp.ut C[1][0] x=0.25 y=0 z=0
+cpp.ut C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.ut C[1][2] x=0.25 y=0.5 z=0
+cpp.ut C[1][3] x=0.25 y=0.83333333333333337 z=0
+cpp.ut C[1][4] x=0.25 y=1 z=0
+cpp.ut C[2][0] x=0.75 y=0 z=0
+cpp.ut C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.ut C[2][2] x=0.75 y=0.5 z=0
+cpp.ut C[2][3] x=0.75 y=0.83333333333333337 z=0
+cpp.ut C[2][4] x=0.75 y=1 z=0
+cpp.ut C[3][0] x=1 y=0 z=0
+cpp.ut C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.ut C[3][2] x=1 y=0.5 z=0
+cpp.ut C[3][3] x=1 y=0.83333333333333337 z=0
+cpp.ut C[3][4] x=1 y=1 z=0
+cpp.ut opCall r=0 s=0 x=0 y=0 z=0
+cpp.ut opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.ut opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.ut opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.ut opCall r=0 s=1 x=0 y=1 z=0
+cpp.ut opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.ut opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.ut opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.ut opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.75 z=0
+cpp.ut opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.ut opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.ut opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.ut opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.ut opCall r=0.5 s=0.75 x=0.5 y=0.75 z=0
+cpp.ut opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.ut opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.ut opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.ut opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.ut opCall r=0.75 s=0.75 x=0.75 y=0.75 z=0
+cpp.ut opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.ut opCall r=1 s=0 x=1 y=0 z=0
+cpp.ut opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.ut opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.ut opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.ut opCall r=1 s=1 x=1 y=1 z=0
+cpp.ut area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.ut area nr=3 ns=7 x=0 y=0 z=1
+cpp.ut area nr=1 ns=1 x=0 y=0 z=1
+cpp.ut.assert r=0.5 s=0.5 x=0.5 y=0.5 z=0 str=Vector3(0.5, 0.5, 0)
+cpp.ut.assert approx=true
+cpp.ut.assert r=1 s=1 x=1 y=1 z=0 str=Vector3(1, 1, 0)
+cpp.ut.assert approx11=true
+cpp.ut str.as.base=ControlPointPatch()
+cpp.dup str=ControlPointPatch()
+cpp.dup classname=ControlPointPatch
+cpp.dup ncpi=4 ncpj=5
+cpp.dup C[0][0] x=0 y=0 z=0
+cpp.dup C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.dup C[0][2] x=0 y=0.5 z=0
+cpp.dup C[0][3] x=0 y=0.83333333333333337 z=0
+cpp.dup C[0][4] x=0 y=1 z=0
+cpp.dup C[1][0] x=0.25 y=0 z=0
+cpp.dup C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.dup C[1][2] x=0.25 y=0.5 z=0
+cpp.dup C[1][3] x=0.25 y=0.83333333333333337 z=0
+cpp.dup C[1][4] x=0.25 y=1 z=0
+cpp.dup C[2][0] x=0.75 y=0 z=0
+cpp.dup C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.dup C[2][2] x=0.75 y=0.5 z=0
+cpp.dup C[2][3] x=0.75 y=0.83333333333333337 z=0
+cpp.dup C[2][4] x=0.75 y=1 z=0
+cpp.dup C[3][0] x=1 y=0 z=0
+cpp.dup C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.dup C[3][2] x=1 y=0.5 z=0
+cpp.dup C[3][3] x=1 y=0.83333333333333337 z=0
+cpp.dup C[3][4] x=1 y=1 z=0
+cpp.dup opCall r=0 s=0 x=0 y=0 z=0
+cpp.dup opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.dup opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.dup opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.dup opCall r=0 s=1 x=0 y=1 z=0
+cpp.dup opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.dup opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.dup opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.dup opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.75 z=0
+cpp.dup opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.dup opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.dup opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.dup opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.dup opCall r=0.5 s=0.75 x=0.5 y=0.75 z=0
+cpp.dup opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.dup opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.dup opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.dup opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.dup opCall r=0.75 s=0.75 x=0.75 y=0.75 z=0
+cpp.dup opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.dup opCall r=1 s=0 x=1 y=0 z=0
+cpp.dup opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.dup opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.dup opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.dup opCall r=1 s=1 x=1 y=1 z=0
+cpp.dup area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.copy str=ControlPointPatch()
+cpp.copy classname=ControlPointPatch
+cpp.copy ncpi=4 ncpj=5
+cpp.copy C[0][0] x=0 y=0 z=0
+cpp.copy C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.copy C[0][2] x=0 y=0.5 z=0
+cpp.copy C[0][3] x=0 y=0.83333333333333337 z=0
+cpp.copy C[0][4] x=0 y=1 z=0
+cpp.copy C[1][0] x=0.25 y=0 z=0
+cpp.copy C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.copy C[1][2] x=0.25 y=0.5 z=0
+cpp.copy C[1][3] x=0.25 y=0.83333333333333337 z=0
+cpp.copy C[1][4] x=0.25 y=1 z=0
+cpp.copy C[2][0] x=0.75 y=0 z=0
+cpp.copy C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.copy C[2][2] x=0.75 y=0.5 z=0
+cpp.copy C[2][3] x=0.75 y=0.83333333333333337 z=0
+cpp.copy C[2][4] x=0.75 y=1 z=0
+cpp.copy C[3][0] x=1 y=0 z=0
+cpp.copy C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.copy C[3][2] x=1 y=0.5 z=0
+cpp.copy C[3][3] x=1 y=0.83333333333333337 z=0
+cpp.copy C[3][4] x=1 y=1 z=0
+cpp.copy opCall r=0 s=0 x=0 y=0 z=0
+cpp.copy opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.copy opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.copy opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.copy opCall r=0 s=1 x=0 y=1 z=0
+cpp.copy opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.copy opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.copy opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.copy opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.75 z=0
+cpp.copy opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.copy opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.copy opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.copy opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.copy opCall r=0.5 s=0.75 x=0.5 y=0.75 z=0
+cpp.copy opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.copy opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.copy opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.copy opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.copy opCall r=0.75 s=0.75 x=0.75 y=0.75 z=0
+cpp.copy opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.copy opCall r=1 s=0 x=1 y=0 z=0
+cpp.copy opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.copy opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.copy opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.copy opCall r=1 s=1 x=1 y=1 z=0
+cpp.copy area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.aftermut C[0][0] x=0 y=0 z=0
+cpp.aftermut C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.aftermut C[0][2] x=0 y=0.5 z=0
+cpp.aftermut C[0][3] x=0 y=0.83333333333333337 z=0
+cpp.aftermut C[0][4] x=0 y=1 z=0
+cpp.aftermut C[1][0] x=0.25 y=0 z=0
+cpp.aftermut C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.aftermut C[1][2] x=0.25 y=0.5 z=0
+cpp.aftermut C[1][3] x=0.25 y=0.83333333333333337 z=0
+cpp.aftermut C[1][4] x=0.25 y=1 z=0
+cpp.aftermut C[2][0] x=0.75 y=0 z=0
+cpp.aftermut C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.aftermut C[2][2] x=0.75 y=0.5 z=0
+cpp.aftermut C[2][3] x=0.75 y=0.83333333333333337 z=0
+cpp.aftermut C[2][4] x=0.75 y=1 z=0
+cpp.aftermut C[3][0] x=1 y=0 z=0
+cpp.aftermut C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.aftermut C[3][2] x=1 y=0.5 z=0
+cpp.aftermut C[3][3] x=1 y=0.83333333333333337 z=0
+cpp.aftermut C[3][4] x=1 y=1 z=0
+cpp.aftermut callerC x=7 y=7 z=7
+cpp.afterset C[0][0] x=0 y=0 z=0
+cpp.afterset C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.afterset C[0][2] x=0 y=0.5 z=0
+cpp.afterset C[0][3] x=0 y=0.83333333333333337 z=0
+cpp.afterset C[0][4] x=0 y=1 z=0
+cpp.afterset C[1][0] x=0.25 y=0 z=0
+cpp.afterset C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.afterset C[1][2] x=0.25 y=0.5 z=0
+cpp.afterset C[1][3] x=-4 y=-5 z=-6
+cpp.afterset C[1][4] x=0.25 y=1 z=0
+cpp.afterset C[2][0] x=0.75 y=0 z=0
+cpp.afterset C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.afterset C[2][2] x=0.75 y=0.5 z=0
+cpp.afterset C[2][3] x=0.75 y=0.83333333333333337 z=0
+cpp.afterset C[2][4] x=0.75 y=1 z=0
+cpp.afterset C[3][0] x=1 y=0 z=0
+cpp.afterset C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.afterset C[3][2] x=1 y=0.5 z=0
+cpp.afterset C[3][3] x=1 y=0.83333333333333337 z=0
+cpp.afterset C[3][4] x=1 y=1 z=0
+cpp.afterset callerC x=0.25 y=0.83333333333333337 z=0
+cpp.vtk.ut size=1848 body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 3 0 4 0 0"><newline>    <Piece Extent="0 3 0 4 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       2.5000000000000000e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       7.5000000000000000e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.6666666666666666e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 1.6666666666666666e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 1.6666666666666666e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 1.6666666666666666e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 8.3333333333333337e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 8.3333333333333337e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 8.3333333333333337e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>       2.5000000000000000e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       7.5000000000000000e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+cpp.vtk.coons body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 3 0 4 0 0"><newline>    <Piece Extent="0 3 0 4 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       0.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       2.5000000000000000e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       7.5000000000000000e-01 0.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 0.0000000000000000e+00 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.6666666666666666e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 1.6666666666666666e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 1.6666666666666666e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 1.6666666666666666e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 5.0000000000000000e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 5.0000000000000000e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 8.3333333333333326e-01 0.0000000000000000e+00<newline>       2.5000000000000000e-01 8.3333333333333326e-01 0.0000000000000000e+00<newline>       7.5000000000000000e-01 8.3333333333333326e-01 0.0000000000000000e+00<newline>       1.0000000000000000e+00 8.3333333333333326e-01 0.0000000000000000e+00<newline>       0.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>       2.5000000000000000e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       7.5000000000000000e-01 1.0000000000000000e+00 0.0000000000000000e+00<newline>       1.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+cpp.vtk.one body=<VTKFile type="StructuredGrid" version="1.0" header_type="UInt64"><newline>  <StructuredGrid WholeExtent="0 0 0 0 0 0"><newline>    <Piece Extent="0 0 0 0 0 0"><newline>      <Points><newline>        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii"><newline>       1.0000000000000000e+00 1.0000000000000000e+00 0.0000000000000000e+00<newline>        </DataArray><newline>      </Points><newline>    </Piece><newline>  </StructuredGrid><newline></VTKFile><newline>
+cpp.gcoons str=ControlPointPatch()
+cpp.gcoons classname=ControlPointPatch
+cpp.gcoons ncpi=4 ncpj=5
+cpp.gcoons C[0][0] x=0 y=0 z=0
+cpp.gcoons C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.gcoons C[0][2] x=0 y=0.5 z=0
+cpp.gcoons C[0][3] x=0 y=0.83333333333333326 z=0
+cpp.gcoons C[0][4] x=0 y=1 z=0
+cpp.gcoons C[1][0] x=0.25 y=0 z=0
+cpp.gcoons C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.gcoons C[1][2] x=0.25 y=0.5 z=0
+cpp.gcoons C[1][3] x=0.25 y=0.83333333333333326 z=0
+cpp.gcoons C[1][4] x=0.25 y=1 z=0
+cpp.gcoons C[2][0] x=0.75 y=0 z=0
+cpp.gcoons C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.gcoons C[2][2] x=0.75 y=0.5 z=0
+cpp.gcoons C[2][3] x=0.75 y=0.83333333333333326 z=0
+cpp.gcoons C[2][4] x=0.75 y=1 z=0
+cpp.gcoons C[3][0] x=1 y=0 z=0
+cpp.gcoons C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.gcoons C[3][2] x=1 y=0.5 z=0
+cpp.gcoons C[3][3] x=1 y=0.83333333333333326 z=0
+cpp.gcoons C[3][4] x=1 y=1 z=0
+cpp.gcoons opCall r=0 s=0 x=0 y=0 z=0
+cpp.gcoons opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.gcoons opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.gcoons opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.gcoons opCall r=0 s=1 x=0 y=1 z=0
+cpp.gcoons opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.gcoons opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.gcoons opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.gcoons opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.74999999999999989 z=0
+cpp.gcoons opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.gcoons opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.gcoons opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.gcoons opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.gcoons opCall r=0.5 s=0.75 x=0.5 y=0.74999999999999989 z=0
+cpp.gcoons opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.gcoons opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.gcoons opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.gcoons opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.gcoons opCall r=0.75 s=0.75 x=0.75 y=0.74999999999999989 z=0
+cpp.gcoons opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.gcoons opCall r=1 s=0 x=1 y=0 z=0
+cpp.gcoons opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.gcoons opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.gcoons opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.gcoons opCall r=1 s=1 x=1 y=1 z=0
+cpp.gcoons area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.gcoons area nr=3 ns=7 x=0 y=0 z=1
+cpp.gcoons area nr=1 ns=1 x=0 y=0 z=1
+cpp.gchannel str=ControlPointPatch()
+cpp.gchannel classname=ControlPointPatch
+cpp.gchannel ncpi=4 ncpj=5
+cpp.gchannel C[0][0] x=0 y=0 z=0
+cpp.gchannel C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.gchannel C[0][2] x=0 y=0.5 z=0
+cpp.gchannel C[0][3] x=0 y=0.83333333333333326 z=0
+cpp.gchannel C[0][4] x=0 y=1 z=0
+cpp.gchannel C[1][0] x=0.25 y=0 z=0
+cpp.gchannel C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.gchannel C[1][2] x=0.25 y=0.5 z=0
+cpp.gchannel C[1][3] x=0.25 y=0.83333333333333326 z=0
+cpp.gchannel C[1][4] x=0.25 y=1 z=0
+cpp.gchannel C[2][0] x=0.75 y=0 z=0
+cpp.gchannel C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.gchannel C[2][2] x=0.75 y=0.5 z=0
+cpp.gchannel C[2][3] x=0.75 y=0.83333333333333326 z=0
+cpp.gchannel C[2][4] x=0.75 y=1 z=0
+cpp.gchannel C[3][0] x=1 y=0 z=0
+cpp.gchannel C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.gchannel C[3][2] x=1 y=0.5 z=0
+cpp.gchannel C[3][3] x=1 y=0.83333333333333326 z=0
+cpp.gchannel C[3][4] x=1 y=1 z=0
+cpp.gchannel opCall r=0 s=0 x=0 y=0 z=0
+cpp.gchannel opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.gchannel opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.gchannel opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.gchannel opCall r=0 s=1 x=0 y=1 z=0
+cpp.gchannel opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.gchannel opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.gchannel opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.gchannel opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.74999999999999989 z=0
+cpp.gchannel opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.gchannel opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.gchannel opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.gchannel opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.gchannel opCall r=0.5 s=0.75 x=0.5 y=0.74999999999999989 z=0
+cpp.gchannel opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.gchannel opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.gchannel opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.gchannel opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.gchannel opCall r=0.75 s=0.75 x=0.75 y=0.74999999999999989 z=0
+cpp.gchannel opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.gchannel opCall r=1 s=0 x=1 y=0 z=0
+cpp.gchannel opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.gchannel opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.gchannel opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.gchannel opCall r=1 s=1 x=1 y=1 z=0
+cpp.gchannel area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.gchannel area nr=3 ns=7 x=0 y=0 z=1
+cpp.ge2w str=ControlPointPatch()
+cpp.ge2w classname=ControlPointPatch
+cpp.ge2w ncpi=4 ncpj=5
+cpp.ge2w C[0][0] x=0 y=0 z=0
+cpp.ge2w C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.ge2w C[0][2] x=0 y=0.5 z=0
+cpp.ge2w C[0][3] x=0 y=0.83333333333333326 z=0
+cpp.ge2w C[0][4] x=0 y=1 z=0
+cpp.ge2w C[1][0] x=0.25 y=0 z=0
+cpp.ge2w C[1][1] x=0.25 y=0.16666666666666666 z=0
+cpp.ge2w C[1][2] x=0.25 y=0.5 z=0
+cpp.ge2w C[1][3] x=0.25 y=0.83333333333333326 z=0
+cpp.ge2w C[1][4] x=0.25 y=1 z=0
+cpp.ge2w C[2][0] x=0.75 y=0 z=0
+cpp.ge2w C[2][1] x=0.75 y=0.16666666666666666 z=0
+cpp.ge2w C[2][2] x=0.75 y=0.5 z=0
+cpp.ge2w C[2][3] x=0.75 y=0.83333333333333326 z=0
+cpp.ge2w C[2][4] x=0.75 y=1 z=0
+cpp.ge2w C[3][0] x=1 y=0 z=0
+cpp.ge2w C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.ge2w C[3][2] x=1 y=0.5 z=0
+cpp.ge2w C[3][3] x=1 y=0.83333333333333326 z=0
+cpp.ge2w C[3][4] x=1 y=1 z=0
+cpp.ge2w opCall r=0 s=0 x=0 y=0 z=0
+cpp.ge2w opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.ge2w opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.ge2w opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.ge2w opCall r=0 s=1 x=0 y=1 z=0
+cpp.ge2w opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.ge2w opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.ge2w opCall r=0.20000000000000001 s=0.5 x=0.19999999999999996 y=0.5 z=0
+cpp.ge2w opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.74999999999999989 z=0
+cpp.ge2w opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.ge2w opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.ge2w opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.ge2w opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.ge2w opCall r=0.5 s=0.75 x=0.5 y=0.74999999999999989 z=0
+cpp.ge2w opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.ge2w opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.ge2w opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.ge2w opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.ge2w opCall r=0.75 s=0.75 x=0.75 y=0.74999999999999989 z=0
+cpp.ge2w opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.ge2w opCall r=1 s=0 x=1 y=0 z=0
+cpp.ge2w opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.ge2w opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.ge2w opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.ge2w opCall r=1 s=1 x=1 y=1 z=0
+cpp.ge2w area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.ge2w area nr=3 ns=7 x=0 y=0 z=1
+cpp.gaopatch str=ControlPointPatch()
+cpp.gaopatch classname=ControlPointPatch
+cpp.gaopatch ncpi=4 ncpj=5
+cpp.gaopatch C[0][0] x=0 y=0 z=0
+cpp.gaopatch C[0][1] x=0 y=0.16666666666666666 z=0
+cpp.gaopatch C[0][2] x=0 y=0.5 z=0
+cpp.gaopatch C[0][3] x=0 y=0.83333333333333326 z=0
+cpp.gaopatch C[0][4] x=0 y=1 z=0
+cpp.gaopatch C[1][0] x=0.25 y=0 z=0
+cpp.gaopatch C[1][1] x=0.25 y=0.16666666666666663 z=0
+cpp.gaopatch C[1][2] x=0.25000000000000006 y=0.5 z=0
+cpp.gaopatch C[1][3] x=0.25 y=0.83333333333333304 z=0
+cpp.gaopatch C[1][4] x=0.25 y=1 z=0
+cpp.gaopatch C[2][0] x=0.75 y=0 z=0
+cpp.gaopatch C[2][1] x=0.75 y=0.16666666666666669 z=0
+cpp.gaopatch C[2][2] x=0.75 y=0.5 z=0
+cpp.gaopatch C[2][3] x=0.75 y=0.83333333333333326 z=0
+cpp.gaopatch C[2][4] x=0.75 y=1 z=0
+cpp.gaopatch C[3][0] x=1 y=0 z=0
+cpp.gaopatch C[3][1] x=1 y=0.16666666666666666 z=0
+cpp.gaopatch C[3][2] x=1 y=0.5 z=0
+cpp.gaopatch C[3][3] x=1 y=0.83333333333333326 z=0
+cpp.gaopatch C[3][4] x=1 y=1 z=0
+cpp.gaopatch opCall r=0 s=0 x=0 y=0 z=0
+cpp.gaopatch opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.gaopatch opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.gaopatch opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.gaopatch opCall r=0 s=1 x=0 y=1 z=0
+cpp.gaopatch opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.gaopatch opCall r=0.20000000000000001 s=0.25 x=0.19999999999999996 y=0.25 z=0
+cpp.gaopatch opCall r=0.20000000000000001 s=0.5 x=0.19999999999999998 y=0.49999999999999994 z=0
+cpp.gaopatch opCall r=0.20000000000000001 s=0.75 x=0.19999999999999996 y=0.74999999999999989 z=0
+cpp.gaopatch opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.gaopatch opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.gaopatch opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.gaopatch opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.gaopatch opCall r=0.5 s=0.75 x=0.5 y=0.74999999999999989 z=0
+cpp.gaopatch opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.gaopatch opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.gaopatch opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.gaopatch opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.gaopatch opCall r=0.75 s=0.75 x=0.75 y=0.74999999999999989 z=0
+cpp.gaopatch opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.gaopatch opCall r=1 s=0 x=1 y=0 z=0
+cpp.gaopatch opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.gaopatch opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.gaopatch opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.gaopatch opCall r=1 s=1 x=1 y=1 z=0
+cpp.gaopatch area nr=10 ns=10 x=0 y=0 z=1.0000000000000007
+cpp.alias.Coons str=ControlPointPatch()
+cpp.alias.Coons ncpi=4 ncpj=5
+cpp.alias.Coons C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.Coons opCall x=0.5 y=0.25 z=0
+cpp.alias.Coons threw=none
+cpp.alias.COONS str=ControlPointPatch()
+cpp.alias.COONS ncpi=4 ncpj=5
+cpp.alias.COONS C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.COONS opCall x=0.5 y=0.25 z=0
+cpp.alias.COONS threw=none
+cpp.alias.tfi str=ControlPointPatch()
+cpp.alias.tfi ncpi=4 ncpj=5
+cpp.alias.tfi C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.tfi opCall x=0.5 y=0.25 z=0
+cpp.alias.tfi threw=none
+cpp.alias.TFI str=ControlPointPatch()
+cpp.alias.TFI ncpi=4 ncpj=5
+cpp.alias.TFI C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.TFI opCall x=0.5 y=0.25 z=0
+cpp.alias.TFI threw=none
+cpp.alias.Channel str=ControlPointPatch()
+cpp.alias.Channel ncpi=4 ncpj=5
+cpp.alias.Channel C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.Channel opCall x=0.5 y=0.25 z=0
+cpp.alias.Channel threw=none
+cpp.alias.CHANNEL str=ControlPointPatch()
+cpp.alias.CHANNEL ncpi=4 ncpj=5
+cpp.alias.CHANNEL C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.CHANNEL opCall x=0.5 y=0.25 z=0
+cpp.alias.CHANNEL threw=none
+cpp.alias.Channel-e2w str=ControlPointPatch()
+cpp.alias.Channel-e2w ncpi=4 ncpj=5
+cpp.alias.Channel-e2w C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.Channel-e2w opCall x=0.5 y=0.25 z=0
+cpp.alias.Channel-e2w threw=none
+cpp.alias.CHANNEL-E2W str=ControlPointPatch()
+cpp.alias.CHANNEL-E2W ncpi=4 ncpj=5
+cpp.alias.CHANNEL-E2W C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.CHANNEL-E2W opCall x=0.5 y=0.25 z=0
+cpp.alias.CHANNEL-E2W threw=none
+cpp.alias.channel_e2w str=ControlPointPatch()
+cpp.alias.channel_e2w ncpi=4 ncpj=5
+cpp.alias.channel_e2w C[1][2] x=0.25 y=0.5 z=0
+cpp.alias.channel_e2w opCall x=0.5 y=0.25 z=0
+cpp.alias.channel_e2w threw=none
+cpp.alias.AOPatch str=ControlPointPatch()
+cpp.alias.AOPatch ncpi=4 ncpj=5
+cpp.alias.AOPatch C[1][2] x=0.25000000000000006 y=0.5 z=0
+cpp.alias.AOPatch opCall x=0.5 y=0.25 z=0
+cpp.alias.AOPatch threw=none
+cpp.alias.AOPATCH str=ControlPointPatch()
+cpp.alias.AOPATCH ncpi=4 ncpj=5
+cpp.alias.AOPATCH C[1][2] x=0.25000000000000006 y=0.5 z=0
+cpp.alias.AOPATCH opCall x=0.5 y=0.25 z=0
+cpp.alias.AOPATCH threw=none
+cpp.alias.area-orthogonal str=ControlPointPatch()
+cpp.alias.area-orthogonal ncpi=4 ncpj=5
+cpp.alias.area-orthogonal C[1][2] x=0.25000000000000006 y=0.5 z=0
+cpp.alias.area-orthogonal opCall x=0.5 y=0.25 z=0
+cpp.alias.area-orthogonal threw=none
+cpp.alias.area_orthogonal str=ControlPointPatch()
+cpp.alias.area_orthogonal ncpi=4 ncpj=5
+cpp.alias.area_orthogonal C[1][2] x=0.25000000000000006 y=0.5 z=0
+cpp.alias.area_orthogonal opCall x=0.5 y=0.25 z=0
+cpp.alias.area_orthogonal threw=none
+cpp.bad.empty threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type '' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.bogus threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'bogus' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.CoonsPatch threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'CoonsPatch' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.channel-e2 threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'channel-e2' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.e2w-channel threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'e2w-channel' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.AOpatch threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'AOpatch' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.channel_e2w_x threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'channel_e2w_x' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.area orthogonal threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'area orthogonal' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.bad.area-orthogonol threw=Error type=object.Error msg=Error in constructor to ControlPointPatch.<newline>The guide patch type 'area-orthogonol' is not supported.<newline>Check the spelling or what you are requesting.Supported guide patches are: 'coons', 'channel', 'channel-e2w' and 'aopatch'
+cpp.nonull str=ControlPointPatch()
+cpp.nonull classname=ControlPointPatch
+cpp.nonull ncpi=4 ncpj=5
+cpp.nonull opCall r=0 s=0 x=0 y=0 z=0
+cpp.nonull opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.nonull opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.nonull opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.nonull opCall r=0 s=1 x=0 y=1 z=0
+cpp.nonull opCall r=0.20000000000000001 s=0 x=0.19999999999999996 y=0 z=0
+cpp.nonull opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.nonull opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.nonull opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.nonull opCall r=0.20000000000000001 s=1 x=0.19999999999999996 y=1 z=0
+cpp.nonull opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.nonull opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.nonull opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.nonull opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.nonull opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.nonull opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.nonull opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.nonull opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.nonull opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.nonull opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.nonull opCall r=1 s=0 x=1 y=0 z=0
+cpp.nonull opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.nonull opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.nonull opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.nonull opCall r=1 s=1 x=1 y=1 z=0
+cpp.nonull area nr=10 ns=10 x=2.7148422399037031e-15 y=-9.2460761269563818e-16 z=1
+cpp.nonull.dup str=ControlPointPatch()
+cpp.nonull.dup classname=ControlPointPatch
+cpp.nonull.dup ncpi=4 ncpj=5
+cpp.nonull.dup opCall r=0 s=0 x=0 y=0 z=0
+cpp.nonull.dup opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.nonull.dup opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.nonull.dup opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.nonull.dup opCall r=0 s=1 x=0 y=1 z=0
+cpp.nonull.dup opCall r=0.20000000000000001 s=0 x=0.19999999999999996 y=0 z=0
+cpp.nonull.dup opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.nonull.dup opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.nonull.dup opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.nonull.dup opCall r=0.20000000000000001 s=1 x=0.19999999999999996 y=1 z=0
+cpp.nonull.dup opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.nonull.dup opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.nonull.dup opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.nonull.dup opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.nonull.dup opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.nonull.dup opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.nonull.dup opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.nonull.dup opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.nonull.dup opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.nonull.dup opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.nonull.dup opCall r=1 s=0 x=1 y=0 z=0
+cpp.nonull.dup opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.nonull.dup opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.nonull.dup opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.nonull.dup opCall r=1 s=1 x=1 y=1 z=0
+cpp.no.west str=ControlPointPatch()
+cpp.no.west classname=ControlPointPatch
+cpp.no.west ncpi=4 ncpj=5
+cpp.no.west opCall r=0 s=0 x=0 y=0 z=0
+cpp.no.west opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.no.west opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.no.west opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.no.west opCall r=0 s=1 x=0 y=1 z=0
+cpp.no.west opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.no.west opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.no.west opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.no.west opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.no.west opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.no.west opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.no.west opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.no.west opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.no.west opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.no.west opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.no.west opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.no.west opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.no.west opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.no.west opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.no.west opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.no.west opCall r=1 s=0 x=1 y=0 z=0
+cpp.no.west opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.no.west opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.no.west opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.no.west opCall r=1 s=1 x=1 y=1 z=0
+cpp.no.east str=ControlPointPatch()
+cpp.no.east classname=ControlPointPatch
+cpp.no.east ncpi=4 ncpj=5
+cpp.no.east opCall r=0 s=0 x=0 y=0 z=0
+cpp.no.east opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.no.east opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.no.east opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.no.east opCall r=0 s=1 x=0 y=1 z=0
+cpp.no.east opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.no.east opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.no.east opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.no.east opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.no.east opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.no.east opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.no.east opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.no.east opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.no.east opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.no.east opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.no.east opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.no.east opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.no.east opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.no.east opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.no.east opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.no.east opCall r=1 s=0 x=1 y=0 z=0
+cpp.no.east opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.no.east opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.no.east opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.no.east opCall r=1 s=1 x=1 y=1 z=0
+cpp.no.south str=ControlPointPatch()
+cpp.no.south classname=ControlPointPatch
+cpp.no.south ncpi=4 ncpj=5
+cpp.no.south opCall r=0 s=0 x=0 y=0 z=0
+cpp.no.south opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.no.south opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.no.south opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.no.south opCall r=0 s=1 x=0 y=1 z=0
+cpp.no.south opCall r=0.20000000000000001 s=0 x=0.19999999999999996 y=0 z=0
+cpp.no.south opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.no.south opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.no.south opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.no.south opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.no.south opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.no.south opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.no.south opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.no.south opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.no.south opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.no.south opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.no.south opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.no.south opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.no.south opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.no.south opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.no.south opCall r=1 s=0 x=1 y=0 z=0
+cpp.no.south opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.no.south opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.no.south opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.no.south opCall r=1 s=1 x=1 y=1 z=0
+cpp.no.north str=ControlPointPatch()
+cpp.no.north classname=ControlPointPatch
+cpp.no.north ncpi=4 ncpj=5
+cpp.no.north opCall r=0 s=0 x=0 y=0 z=0
+cpp.no.north opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.no.north opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.no.north opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.no.north opCall r=0 s=1 x=0 y=1 z=0
+cpp.no.north opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.no.north opCall r=0.20000000000000001 s=0.25 x=0.3406249999999999 y=0.39624999999999999 z=0.15749999999999992
+cpp.no.north opCall r=0.20000000000000001 s=0.5 x=0.57499999999999973 y=0.88999999999999979 z=0.41999999999999982
+cpp.no.north opCall r=0.20000000000000001 s=0.75 x=0.3406249999999999 y=0.89624999999999988 z=0.15749999999999992
+cpp.no.north opCall r=0.20000000000000001 s=1 x=0.19999999999999996 y=1 z=0
+cpp.no.north opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.no.north opCall r=0.5 s=0.25 x=1.37890625 y=1.1640625 z=0.984375
+cpp.no.north opCall r=0.5 s=0.5 x=2.84375 y=2.9375 z=2.625
+cpp.no.north opCall r=0.5 s=0.75 x=1.37890625 y=1.6640625000000002 z=0.984375
+cpp.no.north opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.no.north opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.no.north opCall r=0.75 s=0.25 x=1.8486328125 y=1.392578125 z=1.23046875
+cpp.no.north opCall r=0.75 s=0.5 x=3.6796875 y=3.5468749999999996 z=3.28125
+cpp.no.north opCall r=0.75 s=0.75 x=1.8486328125 y=1.8925781250000002 z=1.23046875
+cpp.no.north opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.no.north opCall r=1 s=0 x=1 y=0 z=0
+cpp.no.north opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.no.north opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.no.north opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.no.north opCall r=1 s=1 x=1 y=1 z=0
+cpp.ragged str=ControlPointPatch()
+cpp.ragged classname=ControlPointPatch
+cpp.ragged ncpi=3 ncpj=4
+cpp.ragged C[0][0] x=0 y=0 z=0
+cpp.ragged C[0][1] x=0.5 y=1 z=0
+cpp.ragged C[0][2] x=1 y=2 z=0
+cpp.ragged C[0][3] x=1.5 y=3 z=0
+cpp.ragged C[1][0] x=1 y=0 z=0
+cpp.ragged C[1][1] x=1.5 y=1 z=0
+cpp.ragged.pts threw=Error type=core.exception.ArrayIndexError msg=index [2] is out of bounds for array of length 2
+cpp.ragged.sweep threw=Error type=core.exception.ArrayIndexError msg=index [2] is out of bounds for array of length 2
+cpp.n1m1 str=ControlPointPatch()
+cpp.n1m1 classname=ControlPointPatch
+cpp.n1m1 ncpi=1 ncpj=1
+cpp.n1m1 opCall r=0 s=0 x=-13 y=-18 z=-25
+cpp.n1m1 opCall r=0 s=0.25 x=-14.125 y=-18.8125 z=-26.875
+cpp.n1m1 opCall r=0 s=0.5 x=-14.5 y=-18.75 z=-27.5
+cpp.n1m1 opCall r=0 s=0.75 x=-14.125 y=-17.8125 z=-26.875
+cpp.n1m1 opCall r=0 s=1 x=-13 y=-16 z=-25
+cpp.n1m1 opCall r=0.20000000000000001 s=0 x=-13.399999999999999 y=-19.280000000000001 z=-26.600000000000001
+cpp.n1m1 opCall r=0.20000000000000001 s=0.25 x=-14.449999999999999 y=-20.012499999999999 z=-28.475000000000001
+cpp.n1m1 opCall r=0.20000000000000001 s=0.5 x=-14.799999999999997 y=-19.869999999999997 z=-29.100000000000001
+cpp.n1m1 opCall r=0.20000000000000001 s=0.75 x=-14.449999999999999 y=-18.852499999999999 z=-28.475000000000001
+cpp.n1m1 opCall r=0.20000000000000001 s=1 x=-13.399999999999999 y=-16.960000000000001 z=-26.600000000000001
+cpp.n1m1 opCall r=0.5 s=0 x=-13.25 y=-20 z=-27.5
+cpp.n1m1 opCall r=0.5 s=0.25 x=-14.1875 y=-20.6875 z=-29.375
+cpp.n1m1 opCall r=0.5 s=0.5 x=-14.5 y=-20.5 z=-30
+cpp.n1m1 opCall r=0.5 s=0.75 x=-14.1875 y=-19.4375 z=-29.375
+cpp.n1m1 opCall r=0.5 s=1 x=-13.25 y=-17.5 z=-27.5
+cpp.n1m1 opCall r=0.75 s=0 x=-12.4375 y=-19.5 z=-26.875
+cpp.n1m1 opCall r=0.75 s=0.25 x=-13.28125 y=-20.21875 z=-28.75
+cpp.n1m1 opCall r=0.75 s=0.5 x=-13.5625 y=-20.0625 z=-29.375
+cpp.n1m1 opCall r=0.75 s=0.75 x=-13.28125 y=-19.03125 z=-28.75
+cpp.n1m1 opCall r=0.75 s=1 x=-12.4375 y=-17.125 z=-26.875
+cpp.n1m1 opCall r=1 s=0 x=-11 y=-18 z=-25
+cpp.n1m1 opCall r=1 s=0.25 x=-11.75 y=-18.8125 z=-26.875
+cpp.n1m1 opCall r=1 s=0.5 x=-12 y=-18.75 z=-27.5
+cpp.n1m1 opCall r=1 s=0.75 x=-11.75 y=-17.8125 z=-26.875
+cpp.n1m1 opCall r=1 s=1 x=-11 y=-16 z=-25
+cpp.n1m1 area nr=1 ns=1 x=0 y=0 z=4
+cpp.n2m2 str=ControlPointPatch()
+cpp.n2m2 classname=ControlPointPatch
+cpp.n2m2 ncpi=2 ncpj=2
+cpp.n2m2 opCall r=0 s=0 x=0 y=0 z=0
+cpp.n2m2 opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.n2m2 opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.n2m2 opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.n2m2 opCall r=0 s=1 x=0 y=1 z=0
+cpp.n2m2 opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.n2m2 opCall r=0.20000000000000001 s=0.25 x=0.20000000000000001 y=0.25 z=0
+cpp.n2m2 opCall r=0.20000000000000001 s=0.5 x=0.20000000000000001 y=0.5 z=0
+cpp.n2m2 opCall r=0.20000000000000001 s=0.75 x=0.20000000000000001 y=0.75 z=0
+cpp.n2m2 opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.n2m2 opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.n2m2 opCall r=0.5 s=0.25 x=0.5 y=0.25 z=0
+cpp.n2m2 opCall r=0.5 s=0.5 x=0.5 y=0.5 z=0
+cpp.n2m2 opCall r=0.5 s=0.75 x=0.5 y=0.75 z=0
+cpp.n2m2 opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.n2m2 opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.n2m2 opCall r=0.75 s=0.25 x=0.75 y=0.25 z=0
+cpp.n2m2 opCall r=0.75 s=0.5 x=0.75 y=0.5 z=0
+cpp.n2m2 opCall r=0.75 s=0.75 x=0.75 y=0.75 z=0
+cpp.n2m2 opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.n2m2 opCall r=1 s=0 x=1 y=0 z=0
+cpp.n2m2 opCall r=1 s=0.25 x=1 y=0.25 z=0
+cpp.n2m2 opCall r=1 s=0.5 x=1 y=0.5 z=0
+cpp.n2m2 opCall r=1 s=0.75 x=1 y=0.75 z=0
+cpp.n2m2 opCall r=1 s=1 x=1 y=1 z=0
+cpp.n2m2 area nr=3 ns=7 x=0 y=0 z=1.0000000000000002
+cpp.g1 str=ControlPointPatch()
+cpp.g1 classname=ControlPointPatch
+cpp.g1 ncpi=1 ncpj=1
+cpp.g1 C[0][0] x=1 y=1 z=0
+cpp.g1 opCall r=0 s=0 x=-3 y=-3 z=0
+cpp.g1 opCall r=0 s=0.25 x=-3.375 y=-2.6875 z=0
+cpp.g1 opCall r=0 s=0.5 x=-3.5 y=-2.25 z=0
+cpp.g1 opCall r=0 s=0.75 x=-3.375 y=-1.6875 z=0
+cpp.g1 opCall r=0 s=1 x=-3 y=-1 z=0
+cpp.g1 opCall r=0.20000000000000001 s=0 x=-2.7599999999999998 y=-3.3199999999999998 z=0
+cpp.g1 opCall r=0.20000000000000001 s=0.25 x=-3.0600000000000001 y=-2.9275000000000002 z=0
+cpp.g1 opCall r=0.20000000000000001 s=0.5 x=-3.1600000000000001 y=-2.4100000000000001 z=0
+cpp.g1 opCall r=0.20000000000000001 s=0.75 x=-3.0600000000000001 y=-1.7675000000000001 z=0
+cpp.g1 opCall r=0.20000000000000001 s=1 x=-2.7599999999999998 y=-1 z=0
+cpp.g1 opCall r=0.5 s=0 x=-2.25 y=-3.5 z=0
+cpp.g1 opCall r=0.5 s=0.25 x=-2.4375 y=-3.0625 z=0
+cpp.g1 opCall r=0.5 s=0.5 x=-2.5 y=-2.5 z=0
+cpp.g1 opCall r=0.5 s=0.75 x=-2.4375 y=-1.8125 z=0
+cpp.g1 opCall r=0.5 s=1 x=-2.25 y=-1 z=0
+cpp.g1 opCall r=0.75 s=0 x=-1.6875 y=-3.375 z=0
+cpp.g1 opCall r=0.75 s=0.25 x=-1.78125 y=-2.96875 z=0
+cpp.g1 opCall r=0.75 s=0.5 x=-1.8125 y=-2.4375 z=0
+cpp.g1 opCall r=0.75 s=0.75 x=-1.78125 y=-1.78125 z=0
+cpp.g1 opCall r=0.75 s=1 x=-1.6875 y=-1 z=0
+cpp.g1 opCall r=1 s=0 x=-1 y=-3 z=0
+cpp.g1 opCall r=1 s=0.25 x=-1 y=-2.6875 z=0
+cpp.g1 opCall r=1 s=0.5 x=-1 y=-2.25 z=0
+cpp.g1 opCall r=1 s=0.75 x=-1 y=-1.6875 z=0
+cpp.g1 opCall r=1 s=1 x=-1 y=-1 z=0
+cpp.g2 str=ControlPointPatch()
+cpp.g2 classname=ControlPointPatch
+cpp.g2 ncpi=2 ncpj=3
+cpp.g2 C[0][0] x=0 y=0 z=0
+cpp.g2 C[0][1] x=0 y=0.5 z=0
+cpp.g2 C[0][2] x=0 y=1 z=0
+cpp.g2 C[1][0] x=1 y=0 z=0
+cpp.g2 C[1][1] x=1 y=0.5 z=0
+cpp.g2 C[1][2] x=1 y=1 z=0
+cpp.g2 opCall r=0 s=0 x=0 y=0 z=0
+cpp.g2 opCall r=0 s=0.25 x=0 y=0.25 z=0
+cpp.g2 opCall r=0 s=0.5 x=0 y=0.5 z=0
+cpp.g2 opCall r=0 s=0.75 x=0 y=0.75 z=0
+cpp.g2 opCall r=0 s=1 x=0 y=1 z=0
+cpp.g2 opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0 z=0
+cpp.g2 opCall r=0.20000000000000001 s=0.25 x=0.125 y=0.25 z=0
+cpp.g2 opCall r=0.20000000000000001 s=0.5 x=0.10000000000000001 y=0.5 z=0
+cpp.g2 opCall r=0.20000000000000001 s=0.75 x=0.125 y=0.75 z=0
+cpp.g2 opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1 z=0
+cpp.g2 opCall r=0.5 s=0 x=0.5 y=0 z=0
+cpp.g2 opCall r=0.5 s=0.25 x=0.3125 y=0.25 z=0
+cpp.g2 opCall r=0.5 s=0.5 x=0.25 y=0.5 z=0
+cpp.g2 opCall r=0.5 s=0.75 x=0.3125 y=0.75 z=0
+cpp.g2 opCall r=0.5 s=1 x=0.5 y=1 z=0
+cpp.g2 opCall r=0.75 s=0 x=0.75 y=0 z=0
+cpp.g2 opCall r=0.75 s=0.25 x=0.46875 y=0.25 z=0
+cpp.g2 opCall r=0.75 s=0.5 x=0.375 y=0.5 z=0
+cpp.g2 opCall r=0.75 s=0.75 x=0.46875 y=0.75 z=0
+cpp.g2 opCall r=0.75 s=1 x=0.75 y=1 z=0
+cpp.g2 opCall r=1 s=0 x=1 y=0 z=0
+cpp.g2 opCall r=1 s=0.25 x=0.625 y=0.25 z=0
+cpp.g2 opCall r=1 s=0.5 x=0.5 y=0.5 z=0
+cpp.g2 opCall r=1 s=0.75 x=0.625 y=0.75 z=0
+cpp.g2 opCall r=1 s=1 x=1 y=1 z=0
+cpp.g0 threw=Error type=core.exception.ArrayIndexError msg=index [0] is out of bounds for array of length 0
+cpp.gneg threw=Error type=core.exception.OutOfMemoryError msg=Memory allocation failed
+cpp.gnegj threw=Error type=core.exception.OutOfMemoryError msg=Memory allocation failed
+cpp.empty.grid threw=Error type=core.exception.ArrayIndexError msg=index [0] is out of bounds for array of length 0
+cpp.get.oob threw=Error type=core.exception.ArrayIndexError msg=index [4] is out of bounds for array of length 4
+cpp.get.neg threw=Error type=core.exception.ArrayIndexError msg=index [18446744073709551615] is out of bounds for array of length 4
+cpp.get.oob2 threw=Error type=core.exception.ArrayIndexError msg=index [5] is out of bounds for array of length 5
+cpp.set.oob threw=Error type=core.exception.ArrayIndexError msg=index [5] is out of bounds for array of length 5
+cpp.vtk.badpath threw=Exception type=std.exception.ErrnoException msg=Cannot open file `/no_such_dir_xyz/out.vts' in mode `w' (No such file or directory)
+cpp.oor r=-1 s=-1 x=-1.75 y=-1.8333333333333335 z=0
+cpp.oor r=-1 s=-0.5 x=-1.75 y=-0.83333333333333337 z=0
+cpp.oor r=-1 s=1.5 x=-1.75 y=1.5000000000000002 z=0
+cpp.oor r=-1 s=2 x=-1.75 y=2.5 z=0
+cpp.oor r=-0.5 s=-1 x=-0.75 y=-1.8333333333333335 z=0
+cpp.oor r=-0.5 s=-0.5 x=-0.75 y=-0.83333333333333337 z=0
+cpp.oor r=-0.5 s=1.5 x=-0.75 y=1.5000000000000002 z=0
+cpp.oor r=-0.5 s=2 x=-0.75 y=2.5 z=0
+cpp.oor r=1.5 s=-1 x=1.75 y=-1.8333333333333335 z=0
+cpp.oor r=1.5 s=-0.5 x=1.75 y=-0.83333333333333337 z=0
+cpp.oor r=1.5 s=1.5 x=1.75 y=1.8333333333333335 z=0
+cpp.oor r=1.5 s=2 x=1.75 y=2.8333333333333335 z=0
+cpp.oor r=2 s=-1 x=2.75 y=-1.8333333333333335 z=0
+cpp.oor r=2 s=-0.5 x=2.75 y=-0.83333333333333337 z=0
+cpp.oor r=2 s=1.5 x=2.75 y=1.8333333333333335 z=0
+cpp.oor r=2 s=2 x=2.75 y=2.8333333333333335 z=0
+cpp.naninf r=nan x=nan y=nan z=nan
+cpp.naninf r=inf x=-nan y=-nan z=-nan
+cpp.naninf r=-inf x=-nan y=-nan z=-nan
