@@ -97,37 +97,58 @@ Vector3& Vector3::add(number px, number py, number pz, number factor) {
 }
 
 Vector3& Vector3::add(const Vector3& other) {
-    x += other.x; y += other.y; z += other.z;
+    // eil::add_rhs_nan, not `+=`: with both operands NaN the hardware propagates the
+    // NaN sitting in the add instruction's destination register, and which one that
+    // is flips between -O0 and -O1 (see the block comment in eil/math.hpp). Row 178
+    // of geom_grid_grid is that flip.
+    x = eil::add_rhs_nan(x, other.x);
+    y = eil::add_rhs_nan(y, other.y);
+    z = eil::add_rhs_nan(z, other.z);
     return *this;
 }
 
 Vector3& Vector3::add(Vector3* other) {
-    x += other->x; y += other->y; z += other->z;
+    x = eil::add_rhs_nan(x, other->x);
+    y = eil::add_rhs_nan(y, other->y);
+    z = eil::add_rhs_nan(z, other->z);
     return *this;
 }
 
 Vector3& Vector3::add(const Vector3* other) {
-    x += other->x; y += other->y; z += other->z;
+    x = eil::add_rhs_nan(x, other->x);
+    y = eil::add_rhs_nan(y, other->y);
+    z = eil::add_rhs_nan(z, other->z);
     return *this;
 }
 
 Vector3& Vector3::add(const Vector3& other, number factor) {
-    x += other.x * factor; y += other.y * factor; z += other.z * factor;
+    x = eil::add_rhs_nan(x, other.x * factor);
+    y = eil::add_rhs_nan(y, other.y * factor);
+    z = eil::add_rhs_nan(z, other.z * factor);
     return *this;
 }
 
 Vector3& Vector3::add(Vector3* other, number factor) {
-    x += other->x * factor; y += other->y * factor; z += other->z * factor;
+    x = eil::add_rhs_nan(x, other->x * factor);
+    y = eil::add_rhs_nan(y, other->y * factor);
+    z = eil::add_rhs_nan(z, other->z * factor);
     return *this;
 }
 
 Vector3& Vector3::add(const Vector3* other, number factor) {
-    x += other->x * factor; y += other->y * factor; z += other->z * factor;
+    x = eil::add_rhs_nan(x, other->x * factor);
+    y = eil::add_rhs_nan(y, other->y * factor);
+    z = eil::add_rhs_nan(z, other->z * factor);
     return *this;
 }
 
 Vector3& Vector3::scale(number factor) {
-    x *= factor; y *= factor; z *= factor;
+    // eil::add_rhs_nan's multiplicative twin: at ldc2 -O0 the FACTOR's NaN wins a
+    // both-NaN multiply, which is what g++ -O1..-O3 already did and what g++ -O0 did
+    // not. Pinning it makes Debug agree with the -O0 capture too.
+    x = eil::mul_rhs_nan(x, factor);
+    y = eil::mul_rhs_nan(y, factor);
+    z = eil::mul_rhs_nan(z, factor);
     return *this;
 }
 
@@ -175,7 +196,9 @@ Vector3 Vector3::operator*(number rhs) const { return Vector3(x * rhs, y * rhs, 
 Vector3 Vector3::operator/(number rhs) const { return Vector3(x / rhs, y / rhs, z / rhs); }
 
 Vector3& Vector3::operator+=(const Vector3& rhs) {
-    x += rhs.x; y += rhs.y; z += rhs.z;
+    x = eil::add_rhs_nan(x, rhs.x);
+    y = eil::add_rhs_nan(y, rhs.y);
+    z = eil::add_rhs_nan(z, rhs.z);
     return *this;
 }
 
@@ -185,7 +208,9 @@ Vector3& Vector3::operator-=(const Vector3& rhs) {
 }
 
 Vector3& Vector3::operator*=(number rhs) {
-    x *= rhs; y *= rhs; z *= rhs;
+    x = eil::mul_rhs_nan(x, rhs);
+    y = eil::mul_rhs_nan(y, rhs);
+    z = eil::mul_rhs_nan(z, rhs);
     return *this;
 }
 

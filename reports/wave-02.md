@@ -14,13 +14,14 @@
 
 | 指标 | 值 |
 |---|---|
-| 已转写 C++ 模块头文件 | **74** 个（`find src -name '*.hpp'`） |
-| C++ 源码行（src + substrate） | **25,213** |
-| 测试/demo 行 | **22,077** |
-| D 对照语料总行数 | **78,136**（`cat baselines/e587b235/probes/*.txt`） |
-| CTest | **87 个测试：Debug 87/87、`-DEIL_SLICE_CHECK=ON` 87/87、Release 86/87**（唯一红行是 `geom_grid_grid` 行 178 的 Release-only NaN 符号位，已立案 T-919 且**故意不销**） |
+| 已转写 C++ 模块头文件 | **75** 个（`find src -name '*.hpp'`） |
+| C++ 源码行（src + substrate） | **25,856** |
+| 测试/demo 行 | **27,750** |
+| D 对照语料总行数 | **83,425**（`cat baselines/e587b235/probes/*.txt`） |
+| CTest | **92 个测试：Debug 92/92、`-DEIL_SLICE_CHECK=ON` 92/92、Release 92/92**；T-919 钉住的那条另在手工 `-flto -O3` 构建里复跑，`geom_grid_grid` **643/643**、`geom_grid_nanadd` **638/638** 四档一致。（上一版此处记的是"87 个、Release 86/87、故意留红"——红行即 T-919，现已闭合，见 `task-log.md`） |
 | 溯源 | `provenance/manifest.yml` 每条带 `d_blob`；`tools/check_staleness.sh` → `no drift` |
 | gdtk 树写入 | **0**（探针一律编 `/tmp/gdtk_shadow` 副本） |
+| 不在构建图内的半成品 | `wip/geom-grid-paver/` **2,638 行**（G2 `paver.d`，见 T-011 与本节末） |
 
 转写清单（本 Wave）：
 - `geom/elements/`：vector3、properties、projection、nomenclature + geometry_exception
@@ -101,12 +102,19 @@ CoonsPatch 角点检查只报第一个开角；`channelpatch` 零叉乘得 `[pA,
 ## 3. 待完成
 
 **一律见 `reports/backlog.md`（唯一权威清单）**。本 Wave 尚未闭合的 ID：
-T-011（geom/grid：G1 `grid.d` 在转，G2 `paver.d`、G3 `paver2d.d`、G4 `sgrid.d`、
-G5 `usgrid.d`、G6 四个 demo + `gmopatch`/`meshpatch` 依序待启）、
-T-012 余量（spherepatch、aopatch、controlpointpatch、surface_demo、
-sweptsurfacevolume、wedgevolume、tfivolume、nurbsvolume、volume_demo）、
+T-011（geom/grid：G1 `grid.d` 490 与 G3 `paver2d.d` 52 **已闭合**；
+余 G2 `paver.d` 1737（半成品在 `wip/geom-grid-paver/`，回放只发出 219/1961 行，
+缺的是测试侧 `make.*` 之后的各节）、G4 `sgrid.d` 1865、G5 `usgrid.d` 2524、
+G6 四个 demo + `gmopatch.d` 171 / `meshpatch.d` 100）、
+**T-920**（本轮实测新立：g++ -O2/-O3 把同一自变量的 `sin`+`cos` 合并成 glibc
+`sincos()`，与 ldc2 的两次独立 libm 调用差 1 ULP，约 1/1466 个分量；
+Release 下 **11 个已入库 .o 引用 `sincos`**，含 `vector3.cpp`、`arc.cpp`、`helix.cpp`、
+`grid.cpp`、`projection.cpp`、`idealgasflow.cpp`。现有语料全绿是没踩到，不是不存在）、
 T-016（本报告收尾 + `wave-02` tag）、T-019（`geom/misc/sketch`）、
 T-902/903/904/905/907/909/911/912/914/915。
+**T-012 与 T-910/911/913/917/918/919 已闭合**（T-012 的核对方式与余留说明见
+`task-log.md` 同名节：`gdtk/src/geom/{surface,volume}/*.d` 逐个查同名 `.cpp`/`.hpp`，
+缺失只剩 `package.d` 聚合文件、已转成 demo_equiv 的两个 demo、以及划归 T-011 的两个 patch）。
 
 ## 4. 门禁状态
 

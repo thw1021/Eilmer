@@ -94,18 +94,18 @@ files:
   d: src/geom/elements/vector3.d
   d_blob: 9d5b6ceb9c03d954ba56efc21eb69fb3e7c4e5f0
   d_lines: 812
-  cpp_lines: 427
+  cpp_lines: 452
   fidelity: exact
-  variants: []
-  verified_by: []
+  variants: [complex_numbers]
+  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add]
 - cpp: src/geom/elements/vector3.hpp
   d: src/geom/elements/vector3.d
   d_blob: 9d5b6ceb9c03d954ba56efc21eb69fb3e7c4e5f0
   d_lines: 812
-  cpp_lines: 149
+  cpp_lines: 157
   fidelity: exact
-  variants: []
-  verified_by: []
+  variants: [complex_numbers]
+  verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check]
 - cpp: src/geom/geometry_exception.cpp
   d: src/geom/geometry_exception.d
   d_blob: 11b8fb0f896ee456b8a3aad58c7a7698c996e808
@@ -334,10 +334,10 @@ files:
   d: src/geom/grid/grid.d
   d_blob: bc92bd5817bf21ee94f4b3a9112266fc1de8f53a
   d_lines: 490
-  cpp_lines: 541
+  cpp_lines: 544
   fidelity: adapted-arrays
   variants: []
-  verified_by: [ctest:geom_grid_grid, 642 of 643 rows in Release, throw type object.Error at D:37, 144, 174, 428 + AssertError text at D:73-75, 83, GeometryException at D:284]
+  verified_by: [ctest:geom_grid_grid, 643 of 643 rows in Debug Release slice-check and -flto, ctest:geom_grid_nanadd 638 of 638 (the both-NaN operand rule this module depends on), throw type object.Error at D:37, 144, 174, 428 + AssertError text at D:73-75, 83, GeometryException at D:284]
 - cpp: src/geom/grid/grid.hpp
   d: src/geom/grid/grid.d
   d_blob: bc92bd5817bf21ee94f4b3a9112266fc1de8f53a
@@ -345,7 +345,39 @@ files:
   cpp_lines: 207
   fidelity: adapted-handles
   variants: []
-  verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug, 17 abstract members driven through a base handle]
+  verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug Release and slice-check, 17 abstract members driven through a base handle]
+- cpp: src/geom/grid/paver.cpp
+  d: src/geom/grid/paver.d
+  d_blob: 35f8624a383058116398d2960caa13024daff46b
+  d_lines: 1737
+  cpp_lines: 1720
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/grid/paver.hpp
+  d: src/geom/grid/paver.d
+  d_blob: 35f8624a383058116398d2960caa13024daff46b
+  d_lines: 1737
+  cpp_lines: 268
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/grid/paver2d.cpp
+  d: src/geom/grid/paver2d.d
+  d_blob: 17d53a36f562eecafd90f01bb9b2642be0a6ad4d
+  d_lines: 52
+  cpp_lines: 32
+  fidelity: exact
+  variants: [EIL_COMPLEX_NUMBERS not compiled]
+  verified_by: [ctest:geom_grid_paver2d, nodeTypeName out-of-range fallback measured from ldc2 (cast(NodeType)7), writeln text at D:19 and D:47 byte-identical]
+- cpp: src/geom/grid/paver2d.hpp
+  d: src/geom/grid/paver2d.d
+  d_blob: 17d53a36f562eecafd90f01bb9b2642be0a6ad4d
+  d_lines: 52
+  cpp_lines: 211
+  fidelity: adapted-templates
+  variants: []
+  verified_by: [ctest:geom_grid_paver2d, 480 of 480 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK, 396 of 396 coordinates byte-identical at %.17g, fixture transcribes usgrid.d:112, 154, 218 until G5 lands]
 - cpp: src/geom/misc/kdtree.cpp
   d: src/geom/misc/kdtree.d
   d_blob: 5d98440f1bde04722810c4fa3002d8209c25472a
@@ -719,6 +751,22 @@ files:
   d_blob: b7845dc29974ac5ce56b4bb753c6f40579c7e0c7
   d_lines: 83
   cpp_lines: 98
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/volume/tfivolume.cpp
+  d: src/geom/volume/tfivolume.d
+  d_blob: 8dea93dfa1cede954e4984d795ebdbfe38e1994f
+  d_lines: 190
+  cpp_lines: 288
+  fidelity: exact
+  variants: []
+  verified_by: []
+- cpp: src/geom/volume/tfivolume.hpp
+  d: src/geom/volume/tfivolume.d
+  d_blob: 8dea93dfa1cede954e4984d795ebdbfe38e1994f
+  d_lines: 190
+  cpp_lines: 153
   fidelity: exact
   variants: []
   verified_by: []

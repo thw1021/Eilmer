@@ -438,3 +438,111 @@
   `new SweptPathPatch(null, cB)` 在 D 侧 SIGSEGV（exit 139，不可捕获），
   端口不加防护、语料无该行；**T-012 余量** spherepatch/aopatch/controlpointpatch/
   surface_demo/sweptsurfacevolume/wedgevolume/tfivolume/volume_demo/nurbsvolume。
+
+## T-917 / T-918 / T-919 — substrate 的三条 NaN 与断言规则，以及"代理报的数我自己复跑"  (2026-10-14)
+
+- **范围**：`substrate/include/eil/math.hpp`（NaN 极性域、Phobos 的 atan/atan2、
+  双 NaN 操作数的取值规则）、`substrate/include/eil/error.hpp`（`assert` 消息）、
+  `src/geom/elements/vector3.{hpp,cpp}`。这一节的重点不是"又修了三条"，而是
+  **三条里有一条的根因记录是错的、一条的旁证注释是错的，两处都由复测纠正**。
+- **T-919 的结论：行 178 不是 D-vs-C++ 缺陷，是"参照系本身随 -O 变"**。
+  IEEE 754-2008 6.3 不规定两个 NaN 相加返回哪一个，x86-64 SSE 按**寄存器角色**回答
+  （`addsd xmm_dst, xmm_src` 返回 dst 那个 NaN），而谁进 dst 是寄存器分配决定的。
+  实测（`probes/geom/grid/probe_grid_nanadd.d`，638 行位型，基线可 0 差异复生成）：
+  - ldc2 1.40.0 自身：同一份源在 **-O1 比 -O0 基线少 90 行一致、-O2/-O3 少 103 行**。
+    动的组恰是 `add.ref`/`add.ptr`/`opplus_eq`/`scale`/`opmul_eq` 及其 `walk` 行；
+    不动的是 `opplus`/`opminus`/`opminus_eq`/`opdiv`/`opdiv_eq`/`add.fac`。
+    ⇒ 若基线当初用 -O1 抓，行 178 就会写 `x=nan`，**未打桩的 Release 反而是对的**。
+    所以这里没有"值层面的规则"可发现，只有"约定哪个优化级别"。所有基线是 ldc2 **-O0**
+    抓的，故 -O0 的取值是契约，端口把 `eil::add_rhs_nan`/`eil::mul_rhs_nan` 写出来。
+  - 钉住后：**638/638 与 643/643 在 Debug(-O0)、Release(-O3)、`-DEIL_SLICE_CHECK=ON`、
+    手工 `-flto -O3` 四种构建下全部字节相同**。
+  - 反向验证（把桩去掉重编）：nanadd 在 -O0 **差 36 行**、-O3 **差 67 行**、
+    -flto -O3 **差 90 行**，grid 行 178 在 -O3 与 -flto 各差 1 行、-O0 为 0 行。
+    即 `scale`/`operator*=` 在 g++ -O0 上取的是**接收者**，与 ldc2 -O0 的**因子**相反
+    ——这条是"Debug 与 Release 曾经不一致"的真正来源。
+- **纠正了两处过时记录**（代理无权改、由主线程改）：
+  1. `provenance/fidelity.yml` 里那段 `addpd` 理论。它写"g++ -O2/-O3 把
+     `x += other.x; y += other.y` 合成一条 `addpd`，取了 source1 的 payload"。
+     实测否证：给未打桩的端口加 `-fno-tree-slp-vectorize` 后，
+     `objdump -C -d vector3.cpp.o | grep -c addpd` = **0**，而行 178 **照旧红**
+     （`x=nan` vs D `x=-nan`），nanadd 反而从 67 行恶化到 **103 行** differ。
+     向量化从来不是机制，该段已改写成上面那条寄存器角色规则。
+  2. `substrate/include/eil/math.hpp` 的旁注里"`std::numeric_limits<double>::quiet_NaN()`
+     在本机是 `0xfff8000000000000`，符号位是 1"。**这是我在 T-917 写错的**，实测
+     g++ 11.4 在 -O0/-O2/-O3 三档都是 **`0x7ff8000000000000`（符号位 0）**，
+     `signaling_NaN()` = `0x7ff4000000000000`，而 `0.0/0.0` 与 `sqrt(-1)` 才是
+     `0xfff8000000000000`；ldc2 的 `double.nan` 也确实是 `0x7ff8...`（语料
+     `nan.init double.nan` 行），两侧一致。⇒ 旧 `canonical_nan` 并没有"发出 -nan"这个
+     二次缺陷；它的真错只有两条：**范围**（把操作数带来的 NaN 也改写掉，而 Phobos 原样
+     传播）和 **asin/acos 的极性**（这两要 -nan，被写成 +nan）。注释已按实测重写，
+     并把两种极性问题改成"必须从位型构造、不能靠 quiet_NaN() 猜"。
+- **代价（自己测，不采信代理的数）**：-O3、`-ffp-contract=off`，
+  `Vector3 cbc; cbc.set(v0); cbc.add(v1..v3); cbc.scale(0.25)` 循环 2e8 次，
+  钉住与未钉**交替**各跑 6 轮：钉住中位 **14.5 ns**（最小 12.88），
+  未钉中位 **10.4 ns**（最小 9.43）⇒ **+37% ~ +40%**。
+  代理先前报的 8.75 vs 7.10 ns（+23%）**在本机复现不了**，方向对、量级偏小。
+  这个代价买的是"同一份二进制在四种构建里与 ldc2 -O0 基线逐字节一致"，
+  按需求第 3 条（不得为求解器行为做优化）保留，不做条件编译绕过。
+- **T-918 已闭合的 substrate 面**：`d_assert`（裸 `Assertion failure`）/
+  `d_assert_msg`（原样消息）+ `eil_assert`/`eil_assert_msg` 两个宏；
+  `grid.cpp:44-48` 的本地副本改为**转发**。fidelity.yml 里"SUBSTRATE GAP 待主线程登记"
+  一段随之作废，已改写为 CLOSED。
+- **验证**：全树 **92 个测试三配置全绿**（Release / Debug / slice-check，各 100%）；
+  `tools/check_staleness.sh` → `no drift`；`provenance/manifest.yml` 重生成后
+  `src/geom/elements/vector3.{cpp,hpp}` 第一次有了 `fidelity`/`variants:
+  [complex_numbers]`/`verified_by` 记录（此前是 gen_manifest 的默认空值）。
+  `gdtk` 树零写入。
+
+## T-012 完成 / T-011 段 G1+G3 — 最后一个体单元、两个 demo、以及一份"半成品"的正确处置  (2026-10-14)
+
+- **范围**：`geom/volume/tfivolume.d`(161) 与两个目录级 demo
+  （`surface_demo.d` 55、`volume_demo.d` 50）→ T-012 收口；
+  `geom/grid/grid.d`(490) → G1、`geom/grid/paver2d.d`(52) → G3；
+  `geom/grid/paver.d`(1737) → G2 **未完成，本轮做了处置而非继续**。
+- **这一节的重点是怎么对待 4 个被配额打断的代理留下的东西**。规则只有一条：
+  **验过的入库，未验的离开构建图但保留证据**。做法是把 `paver` 的三个产物
+  （`paver.hpp` 268、`paver.cpp` 1720、`test_geom_grid_paver.cpp` 624 行）连同一份
+  现成的注册片段移到 `wip/geom-grid-paver/`，并把 `cmake/wave2_grid_g2.cmake`
+  还原到已提交状态——它的测试是 `if(EXISTS ...)` 自注册的，所以文件挪走即从构建图消失，
+  树回到全绿；**没有**删除任何人的实现，也**没有**提交一条红测试冒充进度。
+  语料侧的证据（`probes/geom/grid/probe_paver.d` 与 1,961 行 D 基线）留在原位，
+  因为那是参照系数据，与实现完成度无关。
+- **paver 的真实状态用一行说清**（下一位接手者不必重新发现）：回放只发出
+  **219 行**，其中 **217 行字节相同**，停在基线第 219 行 `sec3.ipr.emptyrow|0` 之后，
+  下一条应是 `make.npoints|4` ⇒ 缺的是**测试侧的 `make.*` 及之后各节生成代码**，
+  不是 paver.cpp 的算术。所以下一步是补节，不是改函数体。
+- **wip 里捞出一条 substrate 级发现，登记为 T-920**：`wip/.../paver.cpp:8-18` 记录
+  g++ 在 -O2/-O3 会把同一自变量的 `std::sin`+`std::cos` 合并成一次 glibc `sincos()`。
+  我自己复跑否证了"这只是 paver 的局部问题"：Release 下有 **11 个已入库 .o 引用
+  `sincos`**（`nm -u`；注意 `nm -D` 看不到，我第一次就错了），含
+  `vector3.cpp`（`rotate2d`、`rotate_about_zaxis`）、`gpath/arc.cpp:119`、
+  `gpath/helix.cpp:70`、`grid.cpp`、`projection.cpp`、`idealgasflow.cpp`。
+  2×10⁶ 个 0..2π 均匀角的对照实验：-O0 **0 差异**，-O2/-O3 **cos 差 1374 次、
+  sin 差 1353 次**（约 1/1466），最大绝对差 `1.1102230246251565e-16`＝1 ULP；
+  把自变量先经 `volatile` 拷贝即可阻止合并（同一实验的 shape_B，差异计数 0）。
+  现有语料全绿属于"没踩到"，不是"不存在"。
+- **验证**（基准全是 ldc2 1.40.0 现编 D，三配置 Release / Debug / `-DEIL_SLICE_CHECK=ON`）：
+  - `geom_grid_grid` **643/643 行字节相同**，四档构建一致（含 -flto）；
+    `geom_grid_nanadd` **638/638**（T-919 的守卫）。
+  - `geom_grid_paver2d` **480/480 行 + 396/396 坐标**逐字节相同。`fill_interior` 需要的
+    `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 全在**未转写的 usgrid.d**（G5）里，
+    所以它按模板转写并同时实例化两种容器写法，两者结果与 D 语料行 210/213/217 一致。
+    保留而不修的 D 行为都有语料行号：空边界时 `0 .. n-1` 下溢 → D 的
+    `ArrayIndexError "index [0] is out of bounds for array of length 0"`（行 fi.n0，
+    不加防护）；查未插入的 face tag → D 在**第二个 writeln 之前**死于 `RangeError`，
+    故 `[TODO]` 那行在该用例里**缺席**（行 fi.miss）；`NodeType` 越界的 D 打印是
+    `cast(NodeType)7` 这种**cast 表达式本身**，不是裸数字（实测）。
+  - `geom_volume_tfivolume` **4464/4464 行**、2/2 D unittest 断言、2/2 结构检查；
+    `demo_equiv_geom_surface_surface`（18 行）、`demo_equiv_geom_volume_volume`（13 行）
+    字节相同。**T-012 到此无缺失模块**（脚本逐个 `.d` 查同名 `.cpp`/`.hpp` 核对，
+    余下只有 `package.d` 聚合文件与已划归 T-011 的 gmopatch/meshpatch）。
+  - 全树：**92 个测试，Release 100% / Debug 100% / slice-check 100%**；
+    `tools/check_staleness.sh` → `no drift`；`provenance/manifest.yml` 重生成
+    （paver2d.hpp/cpp、tfivolume.hpp/cpp、vector3 首次带 `verified_by`）。
+  - 顺手核掉的三条过时记录：`fidelity.yml` 的 `addpd` 理论（否证）、
+    `fidelity.yml` 的 "SUBSTRATE GAP 待登记"（T-918 已闭合）、
+    `fidelity.yml` 的 "parametricvolume.cpp:235/277 仍持裸 FILE*、throw 路径丢字节"
+    （10b6bde 已加 `File_guard`，`grep -n File_guard` 在 volume/surface 两个基类各命中，
+    throw 路径 323 字节由语料行 2166 钉住）。
+  - `gdtk` 树零写入；D 侧探测一律走 `/tmp/gdtk_shadow` 副本。

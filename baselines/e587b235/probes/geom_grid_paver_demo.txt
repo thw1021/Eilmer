@@ -1,0 +1,129 @@
+importing external boundary...
+there are 214 points in the external boundary
+boundary is anti-clockwise and closed - good
+boundary does not self-intersect - good
+generating first new row...
+there are 208 points in the first new paving row
+first new row intersected itself ... 
+paving new rows until intersection...
+there are 202 points in the new paving row
+reverted back to 208 points in the new paving row because: 
+ intersection detected because a point in the new row was outside the previous row
+commencing seaming procedure...
+more than 5 cell spaces between joining nodes
+there are 196 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 190 points in the new paving row
+there are 184 points in the new paving row
+there are 176 points in the new paving row
+there are 170 points in the new paving row
+reverted back to 176 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+more than 5 cell spaces between joining nodes
+there are 164 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 158 points in the new paving row
+row end enforced to manage cell size reduction
+there are 152 points in the new paving row
+reverted back to 158 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+there are 113 remaining nodes 
+ (not closing seam)
+there are 118 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 110 points in the new paving row
+reverted back to 118 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+seaming from smallest angle node:
+there are 109 remaining nodes 
+ (not closing seam)
+there are 114 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 108 points in the new paving row
+reverted back to 114 points in the new paving row because: 
+ intersection detected because a point in the new row was outside the previous row
+commencing seaming procedure...
+there are 105 remaining nodes 
+ (not closing seam)
+there are 108 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 100 points in the new paving row
+reverted back to 108 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+seaming from smallest angle node:
+more than 5 cell spaces between joining nodes
+there are 80 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 72 points in the new paving row
+there are 64 points in the new paving row
+there are 58 points in the new paving row
+reverted back to 64 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+more than 5 cell spaces between joining nodes
+there are 46 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 40 points in the new paving row
+row end enforced to manage cell size reduction
+reverted back to 46 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+seaming from smallest angle node:
+more than 5 cell spaces between joining nodes
+there are 40 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 34 points in the new paving row
+row end enforced to manage cell size reduction
+reverted back to 40 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+seaming from smallest angle node:
+more than 5 cell spaces between joining nodes
+there are 38 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 32 points in the new paving row
+row end enforced to manage cell size reduction
+there are 24 points in the new paving row
+reverted back to 32 points in the new paving row because: 
+ intersection detected because a point in the new row was outside the previous row
+commencing seaming procedure...
+there are 29 remaining nodes 
+ (not closing seam)
+there are 32 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 24 points in the new paving row
+reverted back to 32 points in the new paving row because: 
+ intersection detected
+commencing seaming procedure...
+there are 17 remaining nodes 
+ (not closing seam)
+there are 22 points in the new paving row after seaming process
+...completed seam.
+paving new rows until intersection...
+there are 14 points in the new paving row
+there are 6 points in the new paving row
+reverted back to 14 points in the new paving row because: 
+ there were 6 or less nodes in the new paving row
+smoothing before closing
+commencing closing seam...
+less than 2 remaining nodes
+there are 1 remaining nodes
+closing final cells
+CLOSED1
+completing final smoothing...
+DONE.
+total cell count: 1382

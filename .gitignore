@@ -12,3 +12,6 @@ scratch/
 # harness/run_case.sh; only the normalized log, the case mapping and a checksum
 # manifest are kept in git (13 MB of restart files does not belong in history).
 baselines/*/tree/
+
+# Written by harness/compare_text.sh on every diff run.
+harness/.last_diff

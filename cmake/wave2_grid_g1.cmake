@@ -28,3 +28,17 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_grid.cpp)
            COMMAND test_geom_grid_grid
                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_grid.txt)
 endif()
+
+# T-919: the both-NaN operand-choice contract. geom_grid_grid row 178 was red only in
+# Release because an SSE add of two NaNs returns whichever NaN sits in the destination
+# register, and that is register allocation, not arithmetic. probes/geom/grid/
+# probe_grid_nanadd.d records ldc2 -O0's choice for every operation (638 rows of raw
+# 64-bit patterns), so the pin in substrate/include/eil/math.hpp is now guarded at every
+# -O level instead of being re-derived by whoever hits the flip next.
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_nanadd.cpp)
+  add_executable(test_geom_grid_nanadd tests/test_geom_grid_nanadd.cpp)
+  target_link_libraries(test_geom_grid_nanadd PRIVATE eil_geom eil_substrate)
+  add_test(NAME geom_grid_nanadd
+           COMMAND test_geom_grid_nanadd
+                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_nanadd.txt)
+endif()

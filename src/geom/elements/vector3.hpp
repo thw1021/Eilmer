@@ -10,6 +10,14 @@
 //     parameters that *shadow the members*, so its body `x += factor*x` operates
 //     on the parameters and the object is unchanged. The C++ port renames the
 //     parameters and keeps the no-side-effect behaviour; see the definition.
+//   * The 7 `add()` overloads, `scale()` and `operator+=`/`operator*=` write
+//     `x = eil::add_rhs_nan(x, other.x)` rather than `x += other.x`. Same value for
+//     every non-NaN and single-NaN input; for a BOTH-NaN pair the -O0 reference choice
+//     (the addend's/factor's NaN propagates) is written out instead of being left to
+//     which operand the register allocator happens to put in the add's destination.
+//     Without it the port's answer moves with -O — that is T-919, geom_grid_grid
+//     row 178. Guarded by probes/geom/grid/probe_grid_nanadd.d (638 rows of bit
+//     patterns), which is byte-identical at -O0, -O1, -O2, -O3 and -flto -O3.
 //   * `getJSONVector3` (D vector3.d:794-812) needs std.json, which has no library
 //     on this machine (backlog T-902). Its only consumers are lmr/bc/* (Wave 8),
 //     so it is not ported here.

@@ -13,7 +13,6 @@
 #include <cstdint>
 #include <cstring>
 #include <limits>
-#include <limits>
 
 #include "eil/number.hpp"
 
@@ -23,12 +22,7 @@ namespace eil {
 // "input bits -> output bits"). The first version of this block was wrong in two ways,
 // both found while closing geom_surface_aopatch:
 //
-//   1. POLARITY. It built its "positive NaN" from
-//      std::numeric_limits<double>::quiet_NaN(), but on x86-64 with libstdc++ that value
-//      is 0xfff8000000000000 — the SIGN BIT IS SET. The helper that existed to remove
-//      a "-nan" divergence was therefore emitting "-nan" and had never done what its
-//      comment claimed. Both polarities are built from bit patterns here instead.
-//   2. SCOPE. It canonicalised every NaN, including one that arrived as an *operand*.
+//   1. SCOPE. It canonicalised every NaN, including one that arrived as an *operand*.
 //      Phobos propagates an operand's NaN with sign and payload intact
 //      (sqrt(0x7ff8..) = 0x7ff8.., sqrt(0xfff8..) = 0xfff8.., sqrt(0x7ffc..) = 0x7ffc..)
 //      and substitutes its own NaN only for a domain error on a finite operand. And that
@@ -36,6 +30,15 @@ namespace eil {
 //      gives -nan, but asin/acos give -nan — the opposite polarity, which the old code
 //      got backwards for those two. (fabs clears the sign and has no domain error, so it
 //      stays unwrapped.)
+//   2. Its own claim about polarity was itself wrong, and was repeated here until
+//      someone measured it. std::numeric_limits<double>::quiet_NaN() on this machine is
+//      0x7ff8000000000000 — sign bit CLEAR, measured with g++ 11.4 at -O0, -O2 and -O3,
+//      and matched by ldc2's double.nan in probe_grid_nanadd.d. An earlier revision of
+//      this comment asserted it was 0xfff8000000000000, which would have made the old
+//      canonical_nan a second bug; it was not. The two polarities are still built from
+//      explicit bit patterns below, because asin/acos need the negative one and
+//      quiet_NaN() cannot give it. Distinguishing them by inspection is how the false
+//      claim survived as long as it did.
 inline number quiet_nan_positive() {
     const uint64_t u = 0x7ff8000000000000ull;
     number r;
@@ -67,6 +70,81 @@ inline number domain_nan2(number x, number y, number v, number filler) {
 // without an operand to consult. New code should prefer domain_nan.
 inline number canonical_nan(number v) {
     return std::isnan(v) ? quiet_nan_positive() : v;
+}
+
+// -----------------------------------------------------------------------------
+// Which NaN an operation returns when *both* operands are NaN.
+//
+// IEEE 754-2008 6.3 leaves this unspecified, and x86-64 SSE resolves it by a rule
+// about register roles rather than about values: `addsd xmm_dst, xmm_src` returns
+// xmm_dst's NaN, quieted (bit 51 set), with its sign and payload preserved. Which
+// source value the compiler loads into that destination register is register
+// allocation — so the answer depends on -O and on the surrounding code, in D as
+// much as in C++. Measured over the 49-case operand matrix of
+// probes/geom/grid/probe_grid_nanadd.d (ldc2 1.40.0 and g++ 11.4, both compiling
+// geom/elements/vector3 in its own translation unit):
+//
+//   Vector3.add(other) / add(*other) / operator+=   ldc2 -O0: the ADDEND wins
+//                                                   ldc2 -O1..-O3: the RECEIVER wins
+//                                                   g++ -O0:  the ADDEND wins
+//                                                   g++ -O1..-O3: the RECEIVER wins
+//   Vector3.scale(f) / operator*=                   ldc2 -O0: the FACTOR wins
+//                                                   ldc2 -O1..-O3: the FACTOR wins
+//                                                   g++ -O0:  the RECEIVER wins
+//                                                   g++ -O1..-O3: the FACTOR wins
+//   Vector3 operator+ / operator- / operator-=      same choice at every level, and
+//   operator/=                                      the two languages agree (the
+//                                                   operands are already in registers,
+//                                                   or the op is not commutative)
+//   add(other, factor)                              stable in D, so its choice is the
+//                                                   same one the pin writes; pinned here
+//                                                   too because the add is the same
+//                                                   instruction, not because it flips.
+//
+// The ldc2 -O1..-O3 line is the important one, and it is measured rather than assumed:
+// running the same probe source through ldc2 at -O1, -O2 and -O3 and diffing against this
+// -O0 capture loses 90, 103 and 103 rows respectively. Which groups move is exactly
+// add.ref, add.ptr, opplus_eq, scale, opmul_eq and the walk rows that go through them;
+// opplus, opminus, opminus_eq, opdiv, opdiv_eq and add.fac do not move at all. The
+// REFERENCE therefore has no fixed answer for the first set either — had the baseline been
+// captured at -O1, geom_grid_grid row 178 would read `x=nan' and the unpinned Release
+// build would have been the correct port. So there is no value-level rule to discover
+// here, only a level to contract to.
+//
+// Note that `add(other)` wants the addend while the temporary form `operator+`
+// wants the receiver, both at the same -O0: that is the proof that no value-level
+// rule is being expressed here. It is also why row 178 of geom_grid_grid was the
+// only red row in the whole suite and only in Release — `Vector3 cbc;` starts NaN,
+// `cbc.set(v0)` installs v0's NaN, and `cbc.add(v1)` sums two NaNs of opposite
+// sign, so the printed text flips between "-nan" and "nan".
+//
+// Every baseline under baselines/e587b235 is an ldc2 -O0 capture (the build line at
+// the top of probes/geom/grid/probe_grid.d has no -O flag), so the -O0 choice is the
+// contract. Writing it out here instead of leaving it to the register allocator makes
+// the port agree with that capture at -O0, -O1, -O2 and -O3, and removes the
+// Debug-vs-Release split the same artifact had created for scale(). Only the
+// both-NaN case is pinned: with one NaN operand the hardware propagates that operand
+// whatever the order, so every finite, zero, infinity and single-NaN input still
+// goes through the plain `self + addend` below, bit for bit.
+inline number quiet_copy(number v) {
+    uint64_t u;
+    std::memcpy(&u, &v, sizeof u);
+    u |= (uint64_t{1} << 51);  // sNaN -> QNaN: SSE sets the quiet bit, keeps payload
+    number r;
+    std::memcpy(&r, &u, sizeof r);
+    return r;
+}
+
+// D's `x += other.x` at ldc2 -O0: the addend's NaN propagates.
+inline number add_rhs_nan(number self, number addend) {
+    if (std::isnan(self) && std::isnan(addend)) return quiet_copy(addend);
+    return self + addend;
+}
+
+// D's `x *= factor` at ldc2 -O0: the factor's NaN propagates.
+inline number mul_rhs_nan(number self, number factor) {
+    if (std::isnan(self) && std::isnan(factor)) return quiet_copy(factor);
+    return self * factor;
 }
 
 inline number sqrt(number x) { return domain_nan(x, std::sqrt(x), quiet_nan_positive()); }

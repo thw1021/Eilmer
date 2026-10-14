@@ -75,6 +75,17 @@ src/geom/elements/properties.cpp:  {fidelity: exact, variants: [complex_numbers]
 # (projection.d:136/154) is not representable in C++ and is documented in the header.
 src/geom/elements/projection.hpp:  {fidelity: exact, verified_by: [ctest:geom_elements_projection, 88 of 88 probe quantities bit-identical]}
 src/geom/elements/projection.cpp:  {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_projection]}
+# vector3.d: "exact" here means exact against the ldc2 -O0 capture, which is the only
+# capture these baselines come from. It cannot mean "the D source's text fixes every bit",
+# because an operation on two NaN operands is not fixed by any source text: IEEE leaves it
+# open and SSE resolves it by which operand lands in the destination register, so D's own
+# answer moves with -O (measured: ldc2 -O0 gives the addend, ldc2 -O1..-O3 the receiver).
+# The 7 add() overloads, scale(), operator+= and operator*= therefore spell that choice out
+# through eil::add_rhs_nan / eil::mul_rhs_nan rather than inheriting it. operator+ / - /
+# -= /= are left as plain arithmetic: measured to make the same choice at every -O level in
+# both languages. The 4-number add() keeps D's member-shadowing no-side-effect body.
+src/geom/elements/vector3.hpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd 638 of 638 rows byte-identical at -O0 -O3 -flto and slice-check]}
+src/geom/elements/vector3.cpp: {fidelity: exact, variants: [complex_numbers], verified_by: [ctest:geom_elements_vector3, ctest:geom_grid_nanadd, ctest:geom_grid_grid 643 of 643 including the row-178 both-NaN add]}
 
 # --- geom/volume stage A (T-012): meshvolume / subrangedvolume / slabvolume /
 # --- twosurfacevolume. Verified by replaying each module's ldc2 probe corpus.
@@ -281,28 +292,89 @@ src/geom/volume/nurbsvolume.cpp: {fidelity: exact, variants: [EIL_COMPLEX_NUMBER
 # ONLY and no file/line, because a bare object.Error has .file == "" and .line == 0
 # (measured); GeometryException/Exception sites do carry the throw site, via
 # EIL_THROW_GEOM. Row gt.nocatch proves D's catch (Exception) does not catch them.
-# SUBSTRATE GAP (for the main thread to register): D's `assert(cond, "msg")` reaches the
-# caller as AssertError with .msg == "msg", and a bare `assert(cond)` with
-# .msg == "Assertion failure" (measured, rows idx.1d si(...) err=index i is invalid and
-# idx.ijk 3d(27) err=Assertion failure). eil_assert() renders
-# "Assertion failure: <stringified condition>", so grid.d's four contract asserts
-# (D:73-75, :83) go through two message-preserving helpers local to grid.cpp instead of
-# changing substrate/. geom has 297 assert sites, so this recurs.
-# OUT-OF-SCOPE FINDING (not fixed, base file): the corpus row cbc.nan2d prints
-# Vector3(nan+(-nan)) from cell_barycentre's `cbc.add(...)` (D:238). ldc2 -O0 and g++ -O0
-# both give -nan; g++ -O2/-O3 vectorise src/geom/elements/vector3.cpp:100
-# (`x += other.x; y += other.y`) into one `addpd %xmm1, %xmm0`, which returns source1's
-# payload, so the Release build prints nan. Measured triple: D -nan / C++ -O0 -nan /
-# C++ -O3 nan — one bit of sign, magnitude untouched, no other row affected (the 12 other
-# NaN rows in the corpus are products or single-operand propagations and match at every
-# -O level). Nothing in grid.d is re-scaled or loosened for it.
+# CLOSED by T-918: the substrate now carries both forms, so nothing here invents text.
+# eil::d_assert(cond, file, line) throws ErrorBase("Assertion failure", ...) and
+# eil::d_assert_msg(cond, msg, ...) throws ErrorBase(msg, ...), which are the two measured
+# .msg values above; eil_assert / eil_assert_msg are the macros. grid.d's four contract
+# asserts (D:73-75, :83) route through two thin local wrappers that forward to the
+# substrate helpers, so the messages come from the substrate and not from a per-file copy.
+# CLOSED by T-919, and the theory that was written here was WRONG. This record used to
+# say g++ -O2/-O3 vectorises src/geom/elements/vector3.cpp `x += other.x; y += other.y`
+# into one `addpd`, which "returns source1's payload". Refuted by measurement: building the
+# UNPINNED port at Release with -fno-tree-slp-vectorize leaves 0 `addpd` anywhere in
+# vector3.cpp.o and row 178 still prints `x=nan` against D's `x=-nan` (and the probe test
+# gets worse, not better: 103 differ instead of 67). The real rule is about register roles:
+# IEEE 754-2008 6.3 leaves the result of an operation on TWO NaNs unspecified, and SSE
+# answers "whichever NaN sits in the destination operand", so BOTH compilers change their
+# answer with -O. ldc2 -O0 gives the addend's NaN and ldc2 -O1..-O3 gives the receiver's
+# (measured, probes/geom/grid/probe_grid_nanadd.d) -- i.e. the reference itself would have
+# printed `nan` for row 178 had the baseline been captured at -O1. Every baseline here is
+# an ldc2 -O0 capture, so -O0's choice is the contract, and the port writes it out
+# (eil::add_rhs_nan / eil::mul_rhs_nan in substrate/include/eil/math.hpp) instead of
+# inheriting it from the register allocator. Guarded by 638 rows of raw bit patterns;
+# without the pin the probe test loses 36 rows at g++ -O0, 67 at -O3 and 90 at -flto -O3.
 # No `^^` and no atan/atan2 site in this module (grep '\^\^\|atan' over grid.d is empty),
 # so eil::pow / eil::atan2 are not exercised here; cos/sin go to std::cos/std::sin as the
 # existing ports do. `double[] Rmat; Rmat.length = 9;` (D:450-451) is a positive literal
 # length, so backlog T-914's signed `arr.length = L` case does not arise.
 # Gate = the 643-row ldc2 corpus replayed byte for byte, plus the pure-virtual table and
 # the file artefacts (STL/VTK/marker bodies) inside it: 643 of 643 rows byte-identical in
-# Debug (-O0); 642 of 643 in Release (-O3) and in -DEIL_SLICE_CHECK=ON, the single
-# exception being the vector3.cpp:100 NaN-payload row above.
-src/geom/grid/grid.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug, 17 abstract members driven through a base handle]}
-src/geom/grid/grid.cpp: {fidelity: adapted-arrays, variants: [], verified_by: [ctest:geom_grid_grid, 642 of 643 rows in Release, throw type object.Error at D:37,144,174,428 + AssertError text at D:73-75,83, GeometryException at D:284]}
+# Debug (-O0), Release (-O3), -DEIL_SLICE_CHECK=ON and a hand-made -flto -O3 build. Row 178
+# is the T-919 pin's row, and it now matches at every level because the choice is written
+# out rather than allocated.
+src/geom/grid/grid.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug Release and slice-check, 17 abstract members driven through a base handle]}
+src/geom/grid/grid.cpp: {fidelity: adapted-arrays, variants: [], verified_by: [ctest:geom_grid_grid, 643 of 643 rows in Debug Release slice-check and -flto, ctest:geom_grid_nanadd 638 of 638 (the both-NaN operand rule this module depends on), throw type object.Error at D:37,144,174,428 + AssertError text at D:73-75,83, GeometryException at D:284]}
+#
+# paver2d.d (52 lines): the "cheat" interior filler (D:19-21 says so in its own words) plus
+# `enum NodeType {side, rowend, corner, reversal}` (D:12). The cheat text itself is the
+# contract: paver2d.d:19 `Cheat by making all triangle cells connected to the mid-point.`
+# and D:47 `[TODO] Write the actual paver code` are reproduced byte for byte, and they are
+# the whole stdout of geom/grid/paver2d_demo.d (98 bytes, captured).
+# MEASURED DEPENDENCY, correcting reports/wave-02-grid-brief.md section 0: paver2d.d does
+# NOT reference PavedGrid/POINT_LIST/FACE_LIST/CELL_LIST at all (grep -n over the file is
+# empty); what fill_interior needs from another module comes from usgrid.d (stage G5):
+# USGFace D:15,33 <- usgrid.d:154, USGCell D:17,44 <- usgrid.d:218, USGCell_type.triangle
+# D:44 <- usgrid.d:40-56, makeFaceTag D:31,40-42 <- usgrid.d:112. G5 is not ported, so
+# fill_interior is a template over the two class-array containers and paver2d.hpp
+# forward-declares the two usgrid.d names. It instantiates for either spelling G5 picks
+# (eil::Array<std::shared_ptr<USGFace>>, the house convention per
+# src/geom/surface/bezierpatch.hpp:83, or eil::Array<USGFace*>); the test drives the
+# shared_ptr form for the corpus and one control case through the raw-pointer form, and
+# the two agree: nvertices=3 nfaces=3 ncells=1 naa=3 mid=0.15000000000000002,
+# 0.29999999999999999 cell0faces=[0, 2, 1] for the fi.n2b configuration, which is exactly
+# the D corpus rows 210/213/217. The enumerator is named through a defaulted template
+# parameter because two-phase lookup binds a NON-dependent name at the template
+# definition, where `enum class USGCell_type : int;` is opaque (measured with g++ 11.4:
+# "'triangle' is not a member of 'eil::geom::USGCell_type'"); no call site passes it, so
+# D's usgrid.d:502 call compiles unchanged when G5 lands.
+# NodeType's renderer is the port's counterpart of D's compiler-generated enum toString.
+# Its out-of-range fallback is MEASURED, not guessed: ldc2 prints the cast expression
+# itself ("cast(NodeType)7", "cast(NodeType)-1", "cast(NodeType)2147483647"), not the bare
+# number. NodeType is dead code everywhere else in the D tree (grep -rn NodeType
+# gdtk/src --include=*.d matches only this declaration outside extern/D-YAML), so the
+# probe is its only constraint. `.ordinal` does NOT exist on it (ldc2: "no property
+# `ordinal` for type `int`"). sizeof is 4 in both languages (corpus row nt.sizeof).
+# Kept-as-is D behaviours, all pinned by corpus rows: the mid vertex is the sum-then-divide
+# mean over bndry_vtx_ids (D:23-25), so (0.1+0.2)/2 gives 0.15000000000000002 and a
+# five-point square gives 0.40000000000000002; the cell loop bound `0 .. n-1` (D:36)
+# underflows for an empty boundary, so the mid vertex is appended and then D dies with
+# core.exception.ArrayIndexError "index [0] is out of bounds for array of length 0" (row
+# fi.n0) - no guard was added; reading a face tag the caller never inserted (D:40) dies
+# with core.exception.RangeError "Range violation" AFTER the interior faces exist and
+# BEFORE the second writeln, so the "[TODO]" line is absent from that case (row fi.miss);
+# the closing triangle (id[n-1], id[0], mid) is NOT made, because D's loop stops at n-1;
+# D's `(j+1 < n) ? ... : bndry_vtx_ids[0]` fallback at D:38 is unreachable for j < n-1 and
+# is kept verbatim; faceIndices[faceTag] = faces.length (D:32) is an insert-or-overwrite
+# assignment, measured by re-running the call on one state (row fi.twice: the mid vertex is
+# appended twice, 11 faces, 6 cells).
+# paver2d.d has no `unittest` block (grep -c unittest -> 0), same for paver2d_demo.d and
+# paver_demo.d. Gate = the 480-row ldc2 corpus replayed byte for byte: 480 of 480 rows,
+# 0 differ, in Release, Debug and -DEIL_SLICE_CHECK=ON; of those rows 132 carry three
+# coordinates each at %.17g (396 doubles) and all 132 are byte-identical, including the
+# NaN-polarity rows (fi.nanhi gives nan from Vector3.init, fi.nanlo gives -nan through
+# `mid += v` from a sign-bit-set operand, fi.n0 gives -nan from 0.0/0.0) and the
+# -inf/+inf overflow row fi.inf.
+# Both D demo captures are reproducible: two runs of each D binary compared with cmp give
+# byte-identical stdout AND byte-identical written .vtk files.
+src/geom/grid/paver2d.hpp: {fidelity: adapted-templates, verified_by: [ctest:geom_grid_paver2d, 480 of 480 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK, 396 of 396 coordinates byte-identical at %.17g, fixture transcribes usgrid.d:112,154,218 until G5 lands]}
+src/geom/grid/paver2d.cpp: {fidelity: exact, variants: [EIL_COMPLEX_NUMBERS not compiled], verified_by: [ctest:geom_grid_paver2d, nodeTypeName out-of-range fallback measured from ldc2 (cast(NodeType)7), writeln text at D:19 and D:47 byte-identical]}

@@ -45,14 +45,39 @@
   spline 156 行、splinelsq 340 行、nelmin 24 行、sort 6,889 排列、gzip 66 行均 **0 差异**；
   `ctest -R "nelmin|spline|gzip"` 6/6（三配置）。nelmin 的 `fx` 是唯一容差列，
   根因实测为两次 `exp` 各差 1 ULP
-- [ ] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
+- [~] **T-011** `geom/grid/`（`sgrid.d` 1865、`usgrid.d` 2524、`paver.d` 1737、`grid.d` 490）
   — 结构化/非结构网格核心。依赖 T-010、T-017
+  **进度（2026-10-14，四配置全绿）**：`grid.d`(490) 与 `paver2d.d`(52) **已闭合**——
+  `geom_grid_grid` **643/643** 字节相同（含 T-919 钉住的行 178，Debug/Release/
+  slice-check/-flto 四档一致）、`geom_grid_nanadd` **638/638**；
+  `geom_grid_paver2d` **480/480 行 + 396/396 坐标**（`fill_interior` 因 G5 未转而做成
+  模板，两种容器写法 `Array<shared_ptr<USGFace>>` 与 `Array<USGFace*>` 结果逐行一致）。
+  `paver.d`(1737) **未完成，已归档**：`wip/geom-grid-paver/`（paver.hpp 268、
+  paver.cpp 1720、test 624 行 + 现成的注册片段 `wave2_grid_g2.cmake.register`）。
+  它的回放**只发出了 219/1961 行**、其中 217 行字节相同，停在基线第 219 行
+  `sec3.ipr.emptyrow` 之后——`make.*`（make2DPoint/makeFace/makeCell/findFace）那一节
+  根本没写。**下一件事不是改 paver.cpp，是先确认 219 行之后的每一节有对应生成代码**。
+  wip 里有一条**已测得的 substrate 级发现**，别丢：g++ -O2/-O3 会把同一自变量的
+  `sin`+`cos` 合并成 glibc `sincos()`，与 ldc2 的两次独立 libm 调用差 1 ULP
+  → 已登记为 **T-920**（那里有我自己复跑的计数），paver 侧的规避写法是
+  `volatile` 拷贝自变量，见 `wip/geom-grid-paver/paver.cpp:8-18`。
+  **剩余**：`paver.d` 1737（G2）、`sgrid.d` 1865（G4）、`usgrid.d` 2524（G5）、
+  四个 demo（`paver2d_demo` 51、`paver_demo` 115、`sgrid_demo` 101、`usgrid_demo` 103；
+  前两者的 D 基线**已抓取并验证可复生成**，见 `cmake/wave2_grid_g3.cmake` 的头注释）、
+  以及从 T-012 挪来的 `gmopatch.d` 171 + `meshpatch.d` 100。
   **范围追加（2026-10-14 实测）**：`surface/gmopatch.d`(171) 与 `surface/meshpatch.d`(100)
   **不能进 T-012**：前者 `import geom.grid.sgrid` 且在 :87 `new StructuredGrid(...)`，
   后者 :23 的构造入参就是 `ref StructuredGrid grid`。两者改挂 **T-011**，随 sgrid 一起做完
   （否则在 Wave 2 里必须凭空造一个 StructuredGrid 桩，那就是改行为，同 T-018 的理由）
-- [ ] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
+- [x] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
+  **完成 2026-10-14**：`tfivolume.d` 最后落地（`geom_volume_tfivolume`
+  **4464/4464 行字节相同 + 2/2 D unittest 断言 + 2/2 结构检查**，三配置一致），
+  两个目录级 demo 也过（`demo_equiv_geom_surface_surface` 18 行、
+  `demo_equiv_geom_volume_volume` 13 行）。核对方式：对 `gdtk/src/geom/{surface,volume}/*.d`
+  逐个查同名 `.cpp`/`.hpp`，缺失只剩 `package.d`（模块聚合，无代码）、
+  `surface_demo.d`/`volume_demo.d`（以 demo_equiv 门禁转写）与
+  `gmopatch.d`/`meshpatch.d`（已划归 T-011）。
   **实际范围（2026-10-14 实测）**：surface 2,899 − gmopatch/meshpatch 271 = **2,628 D 行**，
   volume **1,588 D 行**，合计 **4,216**，分 4 批并行；
   两个抽象基类（`parametricsurface.d` 94、`parametricvolume.d` 304）由主线程先写，
@@ -269,21 +294,50 @@
   `grid.cpp` 的本地副本改为**转发**（两份同一规则必漂移，见 T-910 的教训）。
   D 的 `toString()` 里 `core.exception.AssertError@file(line):` 这个类名前缀仍无法一致，
   那是既有的 T-903，不在本条范围。
-- [ ] **T-919** `geom_grid_grid` 行 178 `cbc.nan2d x=`：**仅 Release 红**，
-  D `-nan` / 端口 `nan`，且 Debug 与 `-DEIL_SLICE_CHECK=ON` 两侧一致为 `-nan`。
-  643 行里唯一一条，量级是 y/z 完全相同、只有 x 的 NaN 符号位不同。
-  **已排除的假设（不要再走一遍）**：grid 代理怀疑 `vector3.cpp:99-102` 的
+- [x] **T-919** `geom_grid_grid` 行 178 `cbc.nan2d x=`：D `-nan` / 未打桩的端口 `nan`。
+  **完成 2026-10-14**，数字与复跑命令见 `task-log.md` 的 T-917/T-918/T-919 节。
+  根因**不是** `addpd`/向量化（那条理论已由实测否证，见下），而是
+  **IEEE 754-2008 6.3 对"两个 NaN 相加返回哪一个"不作规定，x86-64 SSE 按寄存器角色回答**
+  （`addsd xmm_dst, xmm_src` 返回 dst 那个），所以**两个编译器的答案都随 -O 变**：
+  同一份 probe 源在 ldc2 **-O1/-O2/-O3 比 -O0 基线分别少 90/103/103 行一致**
+  （动的组是 `add.ref`/`add.ptr`/`opplus_eq`/`scale`/`opmul_eq`；
+  `opplus`/`opminus`/`opminus_eq`/`opdiv`/`opdiv_eq`/`add.fac` 不动）。
+  ⇒ 基线是 ldc2 **-O0** 抓的，所以 -O0 的取值是契约；端口把这一条写出来
+  （`eil::add_rhs_nan` / `eil::mul_rhs_nan`，`substrate/include/eil/math.hpp`），
+  应用于 `vector3.cpp` 的 7 个 `add` 重载、`scale`、`operator+=`、`operator*=`，
+  其余算符保持原样（实测两侧在每个 -O 档取值相同）。
+  常驻守卫：`probes/geom/grid/probe_grid_nanadd.d` → 638 行位型语料 → 
+  `tests/test_geom_grid_nanadd.cpp`。**打桩后** 638/638 与 643/643 在
+  Debug / Release / slice-check / 手工 `-flto -O3` 四种构建全字节相同；
+  **去掉桩**则 nanadd 在 -O0/-O3/-flto 分别差 **36 / 67 / 90** 行。
+  代价实测：四顶点重心 14.5 ns（钉住）vs 10.4 ns（未钉），**+37~40%**，按需求第 3 条保留。
+  **已排除的假设（本条的历史错误记录，已改）**：`vector3.cpp` 的
   `x += other.x; y += other.y` 被 GCC 打成 `addpd` 因而取错 lane 的 NaN payload。
-  实测 `objdump -d CMakeFiles/eil_geom.dir/src/geom/elements/vector3.cpp.o | grep -c addpd`
-  = **0**；给该文件加 `-fno-tree-slp-vectorize` 后 Release **仍然 642/643**（该行不变），
-  所以这个 flag 不是解，已回滚不留痕。**注意** `-fno-slp-vectorize` 在 g++ 里根本不存在
-  （wave-01 教训 2 的再现，先 `g++ -O3 -fno-tree-slp-vectorize -c` 验过才用）。
-  下一步该做的：在 `-O0` 与 `-O2` 下分别打印 `cell_barycentre` 的
-  `cbc.set` 之后、每次 `add`、`scale(1.0/nvtx)` 之前的 x 位型，
-  指认符号位是在哪一步翻的；怀疑方向是 `scale` 里 `x *= factor` 与
-  `1.0/nvtx`（`nvtx==0` 时是 `inf`，`0*inf` 在两处求值顺序不同）。
-  **这条测试保持红色不销**：它是唯一一条已知未解释的门禁差异，
-  放宽比较或改基线都不允许 → **Wave 2 内解决**
+  实测：未打桩端口加 `-fno-tree-slp-vectorize` 后 `grep -c addpd` = **0**，
+  行 178 照旧红，nanadd 反而恶化到 **103 行** differ。
+  （`-fno-slp-vectorize` 在 g++ 里根本不存在——wave-01 教训 2 的再现，
+  先 `g++ -O3 -fno-tree-slp-vectorize -c` 验过才用。）
+- [ ] **T-920** **新测出的、已在已转写代码里的分歧**：g++ 在 **-O2/-O3** 会把
+  "同一个自变量既取 `std::cos` 又取 `std::sin`" 合并成一次 glibc `sincos()` 调用，
+  而 ldc2 是把 Phobos 的 sin/cos 分别下发成两次 libm 调用 —— 两者**不等价**。
+  实测（`/tmp/sc/sc2.cpp`，2×10⁶ 个 0..2π 均匀角，`-ffp-contract=off`）：
+  -O0 合并与否 **0 差异**；-O2/-O3 下 **cos 差 1374 次、sin 差 1353 次**
+  （约每 1,466 个分量一次），最大绝对差 `1.1102230246251565e-16` ＝ **1 ULP**。
+  1 ULP 在角度上不是末位噪声：T-910 已经量过，`cos(theta)` 过零附近 1 ULP 的角
+  会变成 ~2.9e-09 的**相对**变化，再乘半径进入坐标。
+  当前受影响的 TU（`nm -u *.o | grep sincos` 命中，Release）：
+  `vector3.cpp`（`rotate2d`/`rotate_about_zaxis`，:340-341 与 :346-347）、
+  `gpath/arc.cpp:119`、`gpath/helix.cpp:70`、`grid/grid.cpp`、
+  `elements/projection.cpp`、`gasdyn/idealgasflow.cpp`，以及 arcsteps/newton/
+  phobos_bits/mp_rot_chain 四个测试自身。
+  现有语料**全部没踩到**那 1/1466，所以门禁今天全绿——这是运气不是正确性。
+  修法（已验证可行，同一实验里的 shape_B）：自变量经一次 `volatile` 拷贝再调用，
+  合并即消失（`nm -u` 只剩 sin/cos，差异计数 0）。
+  ⇒ 待做：substrate 加 `eil::sin`/`eil::cos`（或 `eil::sin_cos_pair`）承载这条规则，
+  把上述站点统一改道，并补一条 D-vs-端口逐位语料（照 `probe_phobos_bits.d` 的做法）
+  把它钉住，而不是只在注释里说。**改道对现有门禁可证明是安全的**：
+  今天字节相同的行必然满足"合并值 == 分别调用值"（否则现在就红了），
+  所以换成分别调用不会让任何绿行变红 → **Wave 2 内解决**
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；

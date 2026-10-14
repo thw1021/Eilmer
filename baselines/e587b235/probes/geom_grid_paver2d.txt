@@ -1,0 +1,480 @@
+nt.writerside=side
+nt.writerrowend=rowend
+nt.writercorner=corner
+nt.writerreversal=reversal
+nt.init=side
+nt.tostring side=side
+nt.tostring rowend=rowend
+nt.tostring corner=corner
+nt.tostring reversal=reversal
+nt.text all=siderowendcornerreversal
+nt.sizeof=4
+nt.vinit=Vector3(nan, nan, nan)
+nt.dfmt side=0 rowend=1 corner=2 reversal=3
+nt.sfmt side=side rowend=rowend corner=corner reversal=reversal
+nt.cast int side=0 rowend=1 corner=2 reversal=3
+nt.cast long=0,1,2,3
+nt.cast ushort=0,1,2,3
+nt.oor7=cast(NodeType)7
+nt.oor7.tostring=cast(NodeType)7
+nt.oorminus1=cast(NodeType)-1
+nt.oormax=cast(NodeType)2147483647
+nt.cmp=1,0,1,1
+case=fi.sq4 BEGIN
+case=fi.sq4 PRE nvertices=5 nfaces=4 ncells=0 naa=4 ids=[0, 1, 2, 3, 4]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.sq4 done
+case=fi.sq4 END nvertices=6 nfaces=9 ncells=4 naa=9
+case=fi.sq4 vtx=0 x=0 y=0 z=0
+case=fi.sq4 vtx=1 x=1 y=0 z=0
+case=fi.sq4 vtx=2 x=1 y=1 z=0
+case=fi.sq4 vtx=3 x=0 y=1 z=0
+case=fi.sq4 vtx=4 x=0 y=0 z=0
+case=fi.sq4 vtx=5 x=0.40000000000000002 y=0.40000000000000002 z=0
+case=fi.sq4 face=0 ids=[0, 1] tag=0-1
+case=fi.sq4 face=1 ids=[1, 2] tag=1-2
+case=fi.sq4 face=2 ids=[2, 3] tag=2-3
+case=fi.sq4 face=3 ids=[3, 4] tag=3-4
+case=fi.sq4 face=4 ids=[0, 5] tag=0-5
+case=fi.sq4 face=5 ids=[1, 5] tag=1-5
+case=fi.sq4 face=6 ids=[2, 5] tag=2-5
+case=fi.sq4 face=7 ids=[3, 5] tag=3-5
+case=fi.sq4 face=8 ids=[4, 5] tag=4-5
+case=fi.sq4 cell=0 type=1 id=0 vtx=[0, 1, 5] faces=[0, 5, 4] outsign=[1, 1, 1]
+case=fi.sq4 cell=1 type=1 id=1 vtx=[1, 2, 5] faces=[1, 6, 5] outsign=[1, 1, 1]
+case=fi.sq4 cell=2 type=1 id=2 vtx=[2, 3, 5] faces=[2, 7, 6] outsign=[1, 1, 1]
+case=fi.sq4 cell=3 type=1 id=3 vtx=[3, 4, 5] faces=[3, 8, 7] outsign=[1, 1, 1]
+case=fi.sq4 aa=0-1 val=0
+case=fi.sq4 aa=0-5 val=4
+case=fi.sq4 aa=1-2 val=1
+case=fi.sq4 aa=1-5 val=5
+case=fi.sq4 aa=2-3 val=2
+case=fi.sq4 aa=2-5 val=6
+case=fi.sq4 aa=3-4 val=3
+case=fi.sq4 aa=3-5 val=7
+case=fi.sq4 aa=4-5 val=8
+case=fi.hex6 BEGIN
+case=fi.hex6 PRE nvertices=6 nfaces=5 ncells=0 naa=5 ids=[0, 1, 2, 3, 4, 5]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.hex6 done
+case=fi.hex6 END nvertices=7 nfaces=11 ncells=5 naa=11
+case=fi.hex6 vtx=0 x=0 y=0 z=0
+case=fi.hex6 vtx=1 x=2 y=0 z=0
+case=fi.hex6 vtx=2 x=3 y=1 z=0
+case=fi.hex6 vtx=3 x=2 y=2 z=0
+case=fi.hex6 vtx=4 x=0.5 y=3 z=0
+case=fi.hex6 vtx=5 x=0 y=0 z=0
+case=fi.hex6 vtx=6 x=1.25 y=1 z=0
+case=fi.hex6 face=0 ids=[0, 1] tag=0-1
+case=fi.hex6 face=1 ids=[1, 2] tag=1-2
+case=fi.hex6 face=2 ids=[2, 3] tag=2-3
+case=fi.hex6 face=3 ids=[3, 4] tag=3-4
+case=fi.hex6 face=4 ids=[4, 5] tag=4-5
+case=fi.hex6 face=5 ids=[0, 6] tag=0-6
+case=fi.hex6 face=6 ids=[1, 6] tag=1-6
+case=fi.hex6 face=7 ids=[2, 6] tag=2-6
+case=fi.hex6 face=8 ids=[3, 6] tag=3-6
+case=fi.hex6 face=9 ids=[4, 6] tag=4-6
+case=fi.hex6 face=10 ids=[5, 6] tag=5-6
+case=fi.hex6 cell=0 type=1 id=0 vtx=[0, 1, 6] faces=[0, 6, 5] outsign=[1, 1, 1]
+case=fi.hex6 cell=1 type=1 id=1 vtx=[1, 2, 6] faces=[1, 7, 6] outsign=[1, 1, 1]
+case=fi.hex6 cell=2 type=1 id=2 vtx=[2, 3, 6] faces=[2, 8, 7] outsign=[1, 1, 1]
+case=fi.hex6 cell=3 type=1 id=3 vtx=[3, 4, 6] faces=[3, 9, 8] outsign=[1, 1, 1]
+case=fi.hex6 cell=4 type=1 id=4 vtx=[4, 5, 6] faces=[4, 10, 9] outsign=[1, 1, 1]
+case=fi.hex6 aa=0-1 val=0
+case=fi.hex6 aa=0-6 val=5
+case=fi.hex6 aa=1-2 val=1
+case=fi.hex6 aa=1-6 val=6
+case=fi.hex6 aa=2-3 val=2
+case=fi.hex6 aa=2-6 val=7
+case=fi.hex6 aa=3-4 val=3
+case=fi.hex6 aa=3-6 val=8
+case=fi.hex6 aa=4-5 val=4
+case=fi.hex6 aa=4-6 val=9
+case=fi.hex6 aa=5-6 val=10
+case=fi.poly12 BEGIN
+case=fi.poly12 PRE nvertices=13 nfaces=12 ncells=0 naa=12 ids=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.poly12 done
+case=fi.poly12 END nvertices=14 nfaces=25 ncells=12 naa=25
+case=fi.poly12 vtx=0 x=1.5 y=0 z=0
+case=fi.poly12 vtx=1 x=1.4330127018922194 y=0.49999999999999994 z=0
+case=fi.poly12 vtx=2 x=1.25 y=0.8660254037844386 z=0
+case=fi.poly12 vtx=3 x=1 y=1 z=0
+case=fi.poly12 vtx=4 x=0.75000000000000011 y=0.86602540378443871 z=0
+case=fi.poly12 vtx=5 x=0.56698729810778059 y=0.49999999999999994 z=0
+case=fi.poly12 vtx=6 x=0.5 y=1.2246467991473532e-16 z=0
+case=fi.poly12 vtx=7 x=0.56698729810778059 y=-0.49999999999999972 z=0
+case=fi.poly12 vtx=8 x=0.74999999999999978 y=-0.86602540378443837 z=0
+case=fi.poly12 vtx=9 x=0.99999999999999989 y=-1 z=0
+case=fi.poly12 vtx=10 x=1.25 y=-0.8660254037844386 z=0
+case=fi.poly12 vtx=11 x=1.4330127018922192 y=-0.50000000000000044 z=0
+case=fi.poly12 vtx=12 x=1.5 y=0 z=0
+case=fi.poly12 vtx=13 x=1.0384615384615383 y=1.7080354225002409e-17 z=0
+case=fi.poly12 face=0 ids=[0, 1] tag=0-1
+case=fi.poly12 face=1 ids=[1, 2] tag=1-2
+case=fi.poly12 face=2 ids=[2, 3] tag=2-3
+case=fi.poly12 face=3 ids=[3, 4] tag=3-4
+case=fi.poly12 face=4 ids=[4, 5] tag=4-5
+case=fi.poly12 face=5 ids=[5, 6] tag=5-6
+case=fi.poly12 face=6 ids=[6, 7] tag=6-7
+case=fi.poly12 face=7 ids=[7, 8] tag=7-8
+case=fi.poly12 face=8 ids=[8, 9] tag=8-9
+case=fi.poly12 face=9 ids=[9, 10] tag=9-10
+case=fi.poly12 face=10 ids=[10, 11] tag=10-11
+case=fi.poly12 face=11 ids=[11, 12] tag=11-12
+case=fi.poly12 face=12 ids=[0, 13] tag=0-13
+case=fi.poly12 face=13 ids=[1, 13] tag=1-13
+case=fi.poly12 face=14 ids=[2, 13] tag=2-13
+case=fi.poly12 face=15 ids=[3, 13] tag=3-13
+case=fi.poly12 face=16 ids=[4, 13] tag=4-13
+case=fi.poly12 face=17 ids=[5, 13] tag=5-13
+case=fi.poly12 face=18 ids=[6, 13] tag=6-13
+case=fi.poly12 face=19 ids=[7, 13] tag=7-13
+case=fi.poly12 face=20 ids=[8, 13] tag=8-13
+case=fi.poly12 face=21 ids=[9, 13] tag=9-13
+case=fi.poly12 face=22 ids=[10, 13] tag=10-13
+case=fi.poly12 face=23 ids=[11, 13] tag=11-13
+case=fi.poly12 face=24 ids=[12, 13] tag=12-13
+case=fi.poly12 cell=0 type=1 id=0 vtx=[0, 1, 13] faces=[0, 13, 12] outsign=[1, 1, 1]
+case=fi.poly12 cell=1 type=1 id=1 vtx=[1, 2, 13] faces=[1, 14, 13] outsign=[1, 1, 1]
+case=fi.poly12 cell=2 type=1 id=2 vtx=[2, 3, 13] faces=[2, 15, 14] outsign=[1, 1, 1]
+case=fi.poly12 cell=3 type=1 id=3 vtx=[3, 4, 13] faces=[3, 16, 15] outsign=[1, 1, 1]
+case=fi.poly12 cell=4 type=1 id=4 vtx=[4, 5, 13] faces=[4, 17, 16] outsign=[1, 1, 1]
+case=fi.poly12 cell=5 type=1 id=5 vtx=[5, 6, 13] faces=[5, 18, 17] outsign=[1, 1, 1]
+case=fi.poly12 cell=6 type=1 id=6 vtx=[6, 7, 13] faces=[6, 19, 18] outsign=[1, 1, 1]
+case=fi.poly12 cell=7 type=1 id=7 vtx=[7, 8, 13] faces=[7, 20, 19] outsign=[1, 1, 1]
+case=fi.poly12 cell=8 type=1 id=8 vtx=[8, 9, 13] faces=[8, 21, 20] outsign=[1, 1, 1]
+case=fi.poly12 cell=9 type=1 id=9 vtx=[9, 10, 13] faces=[9, 22, 21] outsign=[1, 1, 1]
+case=fi.poly12 cell=10 type=1 id=10 vtx=[10, 11, 13] faces=[10, 23, 22] outsign=[1, 1, 1]
+case=fi.poly12 cell=11 type=1 id=11 vtx=[11, 12, 13] faces=[11, 24, 23] outsign=[1, 1, 1]
+case=fi.poly12 aa=0-1 val=0
+case=fi.poly12 aa=0-13 val=12
+case=fi.poly12 aa=1-13 val=13
+case=fi.poly12 aa=1-2 val=1
+case=fi.poly12 aa=10-11 val=10
+case=fi.poly12 aa=10-13 val=22
+case=fi.poly12 aa=11-12 val=11
+case=fi.poly12 aa=11-13 val=23
+case=fi.poly12 aa=12-13 val=24
+case=fi.poly12 aa=2-13 val=14
+case=fi.poly12 aa=2-3 val=2
+case=fi.poly12 aa=3-13 val=15
+case=fi.poly12 aa=3-4 val=3
+case=fi.poly12 aa=4-13 val=16
+case=fi.poly12 aa=4-5 val=4
+case=fi.poly12 aa=5-13 val=17
+case=fi.poly12 aa=5-6 val=5
+case=fi.poly12 aa=6-13 val=18
+case=fi.poly12 aa=6-7 val=6
+case=fi.poly12 aa=7-13 val=19
+case=fi.poly12 aa=7-8 val=7
+case=fi.poly12 aa=8-13 val=20
+case=fi.poly12 aa=8-9 val=8
+case=fi.poly12 aa=9-10 val=9
+case=fi.poly12 aa=9-13 val=21
+case=fi.n1 BEGIN
+case=fi.n1 PRE nvertices=1 nfaces=0 ncells=0 naa=0 ids=[0]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.n1 done
+case=fi.n1 END nvertices=2 nfaces=1 ncells=0 naa=1
+case=fi.n1 vtx=0 x=-0.5 y=3.25 z=0
+case=fi.n1 vtx=1 x=-0.5 y=3.25 z=0
+case=fi.n1 face=0 ids=[0, 1] tag=0-1
+case=fi.n1 aa=0-1 val=0
+case=fi.n2a BEGIN
+case=fi.n2a PRE nvertices=2 nfaces=1 ncells=0 naa=1 ids=[0, 1]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.n2a done
+case=fi.n2a END nvertices=3 nfaces=3 ncells=1 naa=3
+case=fi.n2a vtx=0 x=-0.5 y=0 z=0
+case=fi.n2a vtx=1 x=0.5 y=1 z=0
+case=fi.n2a vtx=2 x=0 y=0.5 z=0
+case=fi.n2a face=0 ids=[0, 1] tag=0-1
+case=fi.n2a face=1 ids=[0, 2] tag=0-2
+case=fi.n2a face=2 ids=[1, 2] tag=1-2
+case=fi.n2a cell=0 type=1 id=0 vtx=[0, 1, 2] faces=[0, 2, 1] outsign=[1, 1, 1]
+case=fi.n2a aa=0-1 val=0
+case=fi.n2a aa=0-2 val=1
+case=fi.n2a aa=1-2 val=2
+case=fi.n2b BEGIN
+case=fi.n2b PRE nvertices=2 nfaces=1 ncells=0 naa=1 ids=[0, 1]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.n2b done
+case=fi.n2b END nvertices=3 nfaces=3 ncells=1 naa=3
+case=fi.n2b vtx=0 x=0.10000000000000001 y=0.69999999999999996 z=0
+case=fi.n2b vtx=1 x=0.20000000000000001 y=-0.10000000000000001 z=0
+case=fi.n2b vtx=2 x=0.15000000000000002 y=0.29999999999999999 z=0
+case=fi.n2b face=0 ids=[0, 1] tag=0-1
+case=fi.n2b face=1 ids=[0, 2] tag=0-2
+case=fi.n2b face=2 ids=[1, 2] tag=1-2
+case=fi.n2b cell=0 type=1 id=0 vtx=[0, 1, 2] faces=[0, 2, 1] outsign=[1, 1, 1]
+case=fi.n2b aa=0-1 val=0
+case=fi.n2b aa=0-2 val=1
+case=fi.n2b aa=1-2 val=2
+case=fi.three BEGIN
+case=fi.three PRE nvertices=4 nfaces=3 ncells=0 naa=3 ids=[0, 1, 2, 3]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.three done
+case=fi.three END nvertices=5 nfaces=7 ncells=3 naa=7
+case=fi.three vtx=0 x=0.10000000000000001 y=0.33333333333333331 z=0
+case=fi.three vtx=1 x=0.20000000000000001 y=0.20000000000000001 z=0
+case=fi.three vtx=2 x=0.29999999999999999 y=7 z=0
+case=fi.three vtx=3 x=0.10000000000000001 y=0.33333333333333331 z=0
+case=fi.three vtx=4 x=0.17500000000000002 y=1.9666666666666666 z=0
+case=fi.three face=0 ids=[0, 1] tag=0-1
+case=fi.three face=1 ids=[1, 2] tag=1-2
+case=fi.three face=2 ids=[2, 3] tag=2-3
+case=fi.three face=3 ids=[0, 4] tag=0-4
+case=fi.three face=4 ids=[1, 4] tag=1-4
+case=fi.three face=5 ids=[2, 4] tag=2-4
+case=fi.three face=6 ids=[3, 4] tag=3-4
+case=fi.three cell=0 type=1 id=0 vtx=[0, 1, 4] faces=[0, 4, 3] outsign=[1, 1, 1]
+case=fi.three cell=1 type=1 id=1 vtx=[1, 2, 4] faces=[1, 5, 4] outsign=[1, 1, 1]
+case=fi.three cell=2 type=1 id=2 vtx=[2, 3, 4] faces=[2, 6, 5] outsign=[1, 1, 1]
+case=fi.three aa=0-1 val=0
+case=fi.three aa=0-4 val=3
+case=fi.three aa=1-2 val=1
+case=fi.three aa=1-4 val=4
+case=fi.three aa=2-3 val=2
+case=fi.three aa=2-4 val=5
+case=fi.three aa=3-4 val=6
+case=fi.hollow BEGIN
+case=fi.hollow PRE nvertices=5 nfaces=4 ncells=0 naa=4 ids=[0, 1, 2, 3, 4]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.hollow done
+case=fi.hollow END nvertices=6 nfaces=9 ncells=4 naa=9
+case=fi.hollow vtx=0 x=0 y=0 z=0
+case=fi.hollow vtx=1 x=1 y=0 z=0
+case=fi.hollow vtx=2 x=1 y=1 z=0
+case=fi.hollow vtx=3 x=0 y=1 z=0
+case=fi.hollow vtx=4 x=0 y=0 z=0
+case=fi.hollow vtx=5 x=0.40000000000000002 y=0.40000000000000002 z=0
+case=fi.hollow face=0 ids=[0, 1] tag=0-1
+case=fi.hollow face=1 ids=[1, 2] tag=1-2
+case=fi.hollow face=2 ids=[2, 3] tag=2-3
+case=fi.hollow face=3 ids=[3, 4] tag=3-4
+case=fi.hollow face=4 ids=[0, 5] tag=0-5
+case=fi.hollow face=5 ids=[1, 5] tag=1-5
+case=fi.hollow face=6 ids=[2, 5] tag=2-5
+case=fi.hollow face=7 ids=[3, 5] tag=3-5
+case=fi.hollow face=8 ids=[4, 5] tag=4-5
+case=fi.hollow cell=0 type=1 id=0 vtx=[0, 1, 5] faces=[0, 5, 4] outsign=[1, 1, 1]
+case=fi.hollow cell=1 type=1 id=1 vtx=[1, 2, 5] faces=[1, 6, 5] outsign=[1, 1, 1]
+case=fi.hollow cell=2 type=1 id=2 vtx=[2, 3, 5] faces=[2, 7, 6] outsign=[1, 1, 1]
+case=fi.hollow cell=3 type=1 id=3 vtx=[3, 4, 5] faces=[3, 8, 7] outsign=[1, 1, 1]
+case=fi.hollow aa=0-1 val=0
+case=fi.hollow aa=0-5 val=4
+case=fi.hollow aa=1-2 val=1
+case=fi.hollow aa=1-5 val=5
+case=fi.hollow aa=2-3 val=2
+case=fi.hollow aa=2-5 val=6
+case=fi.hollow aa=3-4 val=3
+case=fi.hollow aa=3-5 val=7
+case=fi.hollow aa=4-5 val=8
+case=fi.nonseq BEGIN
+case=fi.nonseq PRE nvertices=6 nfaces=2 ncells=0 naa=2 ids=[1, 3, 5]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.nonseq done
+case=fi.nonseq END nvertices=7 nfaces=5 ncells=2 naa=5
+case=fi.nonseq vtx=0 x=1 y=1 z=0
+case=fi.nonseq vtx=1 x=2 y=3 z=0
+case=fi.nonseq vtx=2 x=4 y=5 z=0
+case=fi.nonseq vtx=3 x=8 y=9 z=0
+case=fi.nonseq vtx=4 x=16 y=17 z=0
+case=fi.nonseq vtx=5 x=0 y=0 z=0
+case=fi.nonseq vtx=6 x=3.3333333333333335 y=4 z=0
+case=fi.nonseq face=0 ids=[1, 3] tag=1-3
+case=fi.nonseq face=1 ids=[3, 5] tag=3-5
+case=fi.nonseq face=2 ids=[1, 6] tag=1-6
+case=fi.nonseq face=3 ids=[3, 6] tag=3-6
+case=fi.nonseq face=4 ids=[5, 6] tag=5-6
+case=fi.nonseq cell=0 type=1 id=0 vtx=[1, 3, 6] faces=[0, 3, 2] outsign=[1, 1, 1]
+case=fi.nonseq cell=1 type=1 id=1 vtx=[3, 5, 6] faces=[1, 4, 3] outsign=[1, 1, 1]
+case=fi.nonseq aa=1-3 val=0
+case=fi.nonseq aa=1-6 val=2
+case=fi.nonseq aa=3-5 val=1
+case=fi.nonseq aa=3-6 val=3
+case=fi.nonseq aa=5-6 val=4
+case=fi.dupids BEGIN
+case=fi.dupids PRE nvertices=2 nfaces=2 ncells=0 naa=2 ids=[0, 0, 1]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.dupids done
+case=fi.dupids END nvertices=3 nfaces=5 ncells=2 naa=4
+case=fi.dupids vtx=0 x=0.25 y=0.75 z=0
+case=fi.dupids vtx=1 x=1.5 y=-2.5 z=0
+case=fi.dupids vtx=2 x=0.66666666666666663 y=-0.33333333333333331 z=0
+case=fi.dupids face=0 ids=[0, 0] tag=0-0
+case=fi.dupids face=1 ids=[0, 1] tag=0-1
+case=fi.dupids face=2 ids=[0, 2] tag=0-2
+case=fi.dupids face=3 ids=[0, 2] tag=0-2
+case=fi.dupids face=4 ids=[1, 2] tag=1-2
+case=fi.dupids cell=0 type=1 id=0 vtx=[0, 0, 2] faces=[0, 3, 3] outsign=[1, 1, 1]
+case=fi.dupids cell=1 type=1 id=1 vtx=[0, 1, 2] faces=[1, 4, 3] outsign=[1, 1, 1]
+case=fi.dupids aa=0-0 val=0
+case=fi.dupids aa=0-1 val=1
+case=fi.dupids aa=0-2 val=3
+case=fi.dupids aa=1-2 val=4
+case=fi.rev BEGIN
+case=fi.rev PRE nvertices=4 nfaces=3 ncells=0 naa=3 ids=[3, 2, 1, 0]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.rev done
+case=fi.rev END nvertices=5 nfaces=7 ncells=3 naa=7
+case=fi.rev vtx=0 x=0 y=0 z=0
+case=fi.rev vtx=1 x=3 y=0 z=0
+case=fi.rev vtx=2 x=3 y=4 z=0
+case=fi.rev vtx=3 x=1 y=2 z=0
+case=fi.rev vtx=4 x=1.75 y=1.5 z=0
+case=fi.rev face=0 ids=[3, 2] tag=2-3
+case=fi.rev face=1 ids=[2, 1] tag=1-2
+case=fi.rev face=2 ids=[1, 0] tag=0-1
+case=fi.rev face=3 ids=[3, 4] tag=3-4
+case=fi.rev face=4 ids=[2, 4] tag=2-4
+case=fi.rev face=5 ids=[1, 4] tag=1-4
+case=fi.rev face=6 ids=[0, 4] tag=0-4
+case=fi.rev cell=0 type=1 id=0 vtx=[3, 2, 4] faces=[0, 4, 3] outsign=[1, 1, 1]
+case=fi.rev cell=1 type=1 id=1 vtx=[2, 1, 4] faces=[1, 5, 4] outsign=[1, 1, 1]
+case=fi.rev cell=2 type=1 id=2 vtx=[1, 0, 4] faces=[2, 6, 5] outsign=[1, 1, 1]
+case=fi.rev aa=0-1 val=2
+case=fi.rev aa=0-4 val=6
+case=fi.rev aa=1-2 val=1
+case=fi.rev aa=1-4 val=5
+case=fi.rev aa=2-3 val=0
+case=fi.rev aa=2-4 val=4
+case=fi.rev aa=3-4 val=3
+case=fi.nanhi BEGIN
+case=fi.nanhi PRE nvertices=3 nfaces=2 ncells=0 naa=2 ids=[0, 1, 2]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.nanhi done
+case=fi.nanhi END nvertices=4 nfaces=5 ncells=2 naa=5
+case=fi.nanhi vtx=0 x=nan y=nan z=nan
+case=fi.nanhi vtx=1 x=1 y=2 z=0
+case=fi.nanhi vtx=2 x=3 y=4 z=0
+case=fi.nanhi vtx=3 x=nan y=nan z=nan
+case=fi.nanhi face=0 ids=[0, 1] tag=0-1
+case=fi.nanhi face=1 ids=[1, 2] tag=1-2
+case=fi.nanhi face=2 ids=[0, 3] tag=0-3
+case=fi.nanhi face=3 ids=[1, 3] tag=1-3
+case=fi.nanhi face=4 ids=[2, 3] tag=2-3
+case=fi.nanhi cell=0 type=1 id=0 vtx=[0, 1, 3] faces=[0, 3, 2] outsign=[1, 1, 1]
+case=fi.nanhi cell=1 type=1 id=1 vtx=[1, 2, 3] faces=[1, 4, 3] outsign=[1, 1, 1]
+case=fi.nanhi aa=0-1 val=0
+case=fi.nanhi aa=0-3 val=2
+case=fi.nanhi aa=1-2 val=1
+case=fi.nanhi aa=1-3 val=3
+case=fi.nanhi aa=2-3 val=4
+case=fi.nanlo BEGIN
+case=fi.nanlo PRE nvertices=3 nfaces=2 ncells=0 naa=2 ids=[0, 1, 2]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.nanlo done
+case=fi.nanlo END nvertices=4 nfaces=5 ncells=2 naa=5
+case=fi.nanlo vtx=0 x=-nan y=0 z=0
+case=fi.nanlo vtx=1 x=1 y=2 z=0
+case=fi.nanlo vtx=2 x=3 y=4 z=0
+case=fi.nanlo vtx=3 x=-nan y=2 z=0
+case=fi.nanlo face=0 ids=[0, 1] tag=0-1
+case=fi.nanlo face=1 ids=[1, 2] tag=1-2
+case=fi.nanlo face=2 ids=[0, 3] tag=0-3
+case=fi.nanlo face=3 ids=[1, 3] tag=1-3
+case=fi.nanlo face=4 ids=[2, 3] tag=2-3
+case=fi.nanlo cell=0 type=1 id=0 vtx=[0, 1, 3] faces=[0, 3, 2] outsign=[1, 1, 1]
+case=fi.nanlo cell=1 type=1 id=1 vtx=[1, 2, 3] faces=[1, 4, 3] outsign=[1, 1, 1]
+case=fi.nanlo aa=0-1 val=0
+case=fi.nanlo aa=0-3 val=2
+case=fi.nanlo aa=1-2 val=1
+case=fi.nanlo aa=1-3 val=3
+case=fi.nanlo aa=2-3 val=4
+case=fi.inf BEGIN
+case=fi.inf PRE nvertices=2 nfaces=1 ncells=0 naa=1 ids=[0, 1]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.inf done
+case=fi.inf END nvertices=3 nfaces=3 ncells=1 naa=3
+case=fi.inf vtx=0 x=1.7976931348623157e+308 y=-1.7976931348623157e+308 z=0
+case=fi.inf vtx=1 x=1.7976931348623157e+308 y=0 z=0
+case=fi.inf vtx=2 x=inf y=-8.9884656743115785e+307 z=0
+case=fi.inf face=0 ids=[0, 1] tag=0-1
+case=fi.inf face=1 ids=[0, 2] tag=0-2
+case=fi.inf face=2 ids=[1, 2] tag=1-2
+case=fi.inf cell=0 type=1 id=0 vtx=[0, 1, 2] faces=[0, 2, 1] outsign=[1, 1, 1]
+case=fi.inf aa=0-1 val=0
+case=fi.inf aa=0-2 val=1
+case=fi.inf aa=1-2 val=2
+case=fi.n0 BEGIN
+case=fi.n0 PRE nvertices=1 nfaces=0 ncells=0 naa=0 ids=[]
+Cheat by making all triangle cells connected to the mid-point.
+case=fi.n0 THROW class=core.exception.ArrayIndexError msg=index [0] is out of bounds for array of length 0
+case=fi.n0 END nvertices=2 nfaces=0 ncells=0 naa=0
+case=fi.n0 vtx=0 x=1 y=2 z=0
+case=fi.n0 vtx=1 x=-nan y=-nan z=-nan
+case=fi.miss BEGIN
+case=fi.miss PRE nvertices=3 nfaces=0 ncells=0 naa=0 ids=[0, 1, 2]
+Cheat by making all triangle cells connected to the mid-point.
+case=fi.miss THROW class=core.exception.RangeError msg=Range violation
+case=fi.miss END nvertices=4 nfaces=3 ncells=0 naa=3
+case=fi.miss vtx=0 x=0 y=0 z=0
+case=fi.miss vtx=1 x=1 y=0 z=0
+case=fi.miss vtx=2 x=1 y=1 z=0
+case=fi.miss vtx=3 x=0.66666666666666663 y=0.33333333333333331 z=0
+case=fi.miss face=0 ids=[0, 3] tag=0-3
+case=fi.miss face=1 ids=[1, 3] tag=1-3
+case=fi.miss face=2 ids=[2, 3] tag=2-3
+case=fi.miss aa=0-3 val=0
+case=fi.miss aa=1-3 val=1
+case=fi.miss aa=2-3 val=2
+case=fi.twice BEGIN
+case=fi.twice PRE nvertices=4 nfaces=3 ncells=0 naa=3 ids=[0, 1, 2, 3]
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.twice mid1=1 0.5
+Cheat by making all triangle cells connected to the mid-point.
+[TODO] Write the actual paver code
+case=fi.twice done
+case=fi.twice END nvertices=6 nfaces=11 ncells=6 naa=11
+case=fi.twice vtx=0 x=0 y=0 z=0
+case=fi.twice vtx=1 x=2 y=0 z=0
+case=fi.twice vtx=2 x=2 y=2 z=0
+case=fi.twice vtx=3 x=0 y=0 z=0
+case=fi.twice vtx=4 x=1 y=0.5 z=0
+case=fi.twice vtx=5 x=1 y=0.5 z=0
+case=fi.twice face=0 ids=[0, 1] tag=0-1
+case=fi.twice face=1 ids=[1, 2] tag=1-2
+case=fi.twice face=2 ids=[2, 3] tag=2-3
+case=fi.twice face=3 ids=[0, 4] tag=0-4
+case=fi.twice face=4 ids=[1, 4] tag=1-4
+case=fi.twice face=5 ids=[2, 4] tag=2-4
+case=fi.twice face=6 ids=[3, 4] tag=3-4
+case=fi.twice face=7 ids=[0, 5] tag=0-5
+case=fi.twice face=8 ids=[1, 5] tag=1-5
+case=fi.twice face=9 ids=[2, 5] tag=2-5
+case=fi.twice face=10 ids=[3, 5] tag=3-5
+case=fi.twice cell=0 type=1 id=0 vtx=[0, 1, 4] faces=[0, 4, 3] outsign=[1, 1, 1]
+case=fi.twice cell=1 type=1 id=1 vtx=[1, 2, 4] faces=[1, 5, 4] outsign=[1, 1, 1]
+case=fi.twice cell=2 type=1 id=2 vtx=[2, 3, 4] faces=[2, 6, 5] outsign=[1, 1, 1]
+case=fi.twice cell=3 type=1 id=3 vtx=[0, 1, 5] faces=[0, 8, 7] outsign=[1, 1, 1]
+case=fi.twice cell=4 type=1 id=4 vtx=[1, 2, 5] faces=[1, 9, 8] outsign=[1, 1, 1]
+case=fi.twice cell=5 type=1 id=5 vtx=[2, 3, 5] faces=[2, 10, 9] outsign=[1, 1, 1]
+case=fi.twice aa=0-1 val=0
+case=fi.twice aa=0-4 val=3
+case=fi.twice aa=0-5 val=7
+case=fi.twice aa=1-2 val=1
+case=fi.twice aa=1-4 val=4
+case=fi.twice aa=1-5 val=8
+case=fi.twice aa=2-3 val=2
+case=fi.twice aa=2-4 val=5
+case=fi.twice aa=2-5 val=9
+case=fi.twice aa=3-4 val=6
+case=fi.twice aa=3-5 val=10
