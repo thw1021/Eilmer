@@ -908,3 +908,47 @@
   三条 substrate 债（T-926①、T-928、T-929）与两条新开的 T-930/T-931 都标了实现窗口。
 
 
+
+## T-929 — `eil::Array` 增长槽位填 `T.init`（double 是 NaN），D 的 OOM 位置是 `rt/lifetime.d(1454)`  (2026-10-14)
+<a id="t-929"></a>
+
+- **提交** `dde23b3`，11 个文件 +456/-129。三配置全绿：default **111/111**、`Release` **111/111**、
+  `Release+EIL_SLICE_CHECK` **111/111**（比 T-011 闭合时的 110 多 1，即本任务新增的
+  `substrate_array_init`）。`check_staleness.sh` → "no drift"。
+- **先量后写**：`probes/substrate/probe_array_init.d`（ldc2 -O0）→
+  `baselines/e587b235/probes/substrate_array_init.txt`，**30 行、两跑逐字节相同、行内无地址**。
+  实测把此前 `array.hpp` 里"zeroed GC memory"那条**错误注释证伪**：
+  - `new double[n]` 与 `arr.length = n` **都**给 `bits=7ff8000000000000`（`isnan=true`），不是 0.0；
+  - `grow_double`：已写过的 `[0]=1.5`(`3ff8000000000000`) 保留，新增尾部 `[1..]` 是 NaN；
+  - `regrow_double`：`[0]=10.0`(`4024000000000000`) 保留，尾部 NaN；
+  - `int` 数组新增槽位 = 0、`bool` = false；
+  - `struct{double v;int i;}` 数组 = 逐字段 `T.init`（`v.bits=7ff8…`、`i=0`）；
+  - class 数组 = `isnull=1`。
+- **实现**：`substrate/include/eil/array.hpp` 的 `set_length` 对增长的槽位用
+  `detail::grow_init<T>()`——算术 `T` 走 `eil::d_init<T>()`（NaN/0/false），
+  非算术 `T` 走 `T()`（struct 逐字段、class 为 null）。`reserve` 失败与
+  `set_length_signed(-1)` **都**抛 `OutOfMemoryError("Memory allocation failed","rt/lifetime.d",1454)`，
+  即 D 的类名、文本与**运行时位置**（证据 `substrate_throw_identity.txt`）。
+- **三个替身全部从树里消失**（这是 backlog 写死的完成判定，不是"能编过"）：
+  `sgrid.cpp` 的 `d_set_length`（10 处调用改直连 `.set_length`）、`usgrid.cpp` 的
+  `set_length_d`（41 处改直连）、`tests/test_geom_grid_sgrid.cpp` 的 `d_init_doubles`
+  （8 处输入数组改走 `eil::Array<double>(n)` 生产路径）——共 51 处调用点 + 3 个 helper。
+- **"假绿变红"如期发生**（backlog 早预判到）：substrate 改动后 **2 道门禁转红**，
+  都是把旧的错误行为钉住的：
+  1. `array_semantics`：原断言 `Array(n)` 零填 → 改为断言 `isnan(a[0]) && isnan(a[3])`，
+     并验证 `set_length` 增长后 `[0]==1.5` 保留、`[5]` 是 NaN；
+  2. `geom_grid_usgrid`：**5 条 OOM 语料行**此前 C++ 侧显示
+     `file=[/tmp/gdtk_shadow/geom/grid/usgrid.d]|line=184`，D 侧是
+     `file=[rt/lifetime.d]|line=1454`。根因是 harness `classify()` 捕获 `OutOfMemoryError`
+     后用传入的模块位置覆盖了它（此前 `set_length_signed` 抛的是裸 `ErrorBase`、走的是
+     msg 特判分支）。改为直接从异常读 `e.file()/e.line()`，5 行全部对上。
+- **判别力验证**：把 `grow_init` 临时退回 `T()`，`array_semantics` 与 `substrate_array_init`
+  **两道都转红**，确认门禁真在守这条规则而非空转；随后改回。
+- **语料侧核对**：全库无 `"Array allocation failed"` 文本（所有 OOM 行都用 D 的
+  `"Memory allocation failed"`）；OOM 行分布：controlpointpatch(2)、usgrid(5)、sgrid(1)、
+  bezierpatch(1)、throw_identity(1)。
+- **产物**：新增 `probes/substrate/probe_array_init.d`、
+  `baselines/e587b235/probes/substrate_array_init.txt`(30 行)、
+  `tests/test_substrate_array_init.cpp`、`cmake/wave2_t929.cmake`（`if(EXISTS)` 自注册，
+  基线路径作参数传入）；`CMakeLists.txt` +1 行 `include`。
+- **无新遗留**。T-929 闭合，同批的 T-928、T-926① 待做。

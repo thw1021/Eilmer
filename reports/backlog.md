@@ -751,7 +751,7 @@
   5. 全树扫描的其余命中都是**有语料钉住的**：`svgpath.cpp:76/:83`（`geom_gpath_svgpath` 注册通过）、
      `usgrid.cpp:304/311/315`（`geom_grid_usgrid` 行 208 钉住类与文本）、
      `sgrid.cpp:165/167` 只是注释。**没有第四处。**
-- [ ] **T-929** substrate 缺陷 **2 条**，都在 `substrate/include/eil/array.hpp`，由 G4 的代理报出
+- [x] **T-929** substrate 缺陷 **2 条**，都在 `substrate/include/eil/array.hpp`，由 G4 的代理报出
   （它按纪律不许改 substrate），两条都有语料行做证据：
   1. **`set_length` 把新增尾部填成 0，D 填 `T.init`**（`array.hpp:162-170` 是
      `new (p_ + i) T()`；D 的 `arr.length = n` 对 `double` 填 **NaN**）。
@@ -776,6 +776,15 @@
      然后删掉两份替身。
   → 与 T-926 第 1 条、T-928 同批做（都要重建 `eil_geom`）；**做完的判定不是"能编过"**，
   而是三配置复跑 + `d_init_doubles`/`d_set_length`/`set_length_d` 三个替身**都从树里消失**。
+  **完成 2026-10-14**（提交 `dde23b3`，详见 [task-log.md](task-log.md#t-929)）。两条都收进
+  substrate，三个替身全部从树里消失（`d_init_doubles`/`d_set_length`/`set_length_d`），
+  51 处调用点直接走 `.set_length`。先量后写：`probes/substrate/probe_array_init.d`（30 行、
+  两跑逐字节相同）实测 `new double[n]` 与 `.length = n` **都**给 `0x7ff8000000000000`(NaN)，
+  struct 数组给逐字段 `T.init`、class 数组给 `null`；`set_length_signed(-1)` 与 `reserve` 失败
+  都抛 `core.exception.OutOfMemoryError "Memory allocation failed" @ rt/lifetime.d(1454)`。
+  usgrid 的 5 条 OOM 语料行此前显示端口的模块位置、现在由 harness 从异常读 `file()/line()`
+  修正为 D 运行时位置。**111/111 三配置全绿**，`substrate_array_init` 逐行复刻 30 行基线 0 差，
+  `check_staleness` 无漂移；判别力已用"把 `grow_init` 退回 `T()` 看两道门禁转红"验证。
 - [ ] **T-930** **substrate 缺口（Wave 3 起就是硬依赖）：Phobos 的 `to!double` 十进制→二进制**不是正确舍入的**。
   由 G6a 的 `sgrid_demo` 产物门禁暴露（`cmake/wave2_grid_g6.cmake` 里那条"10 of 16 rows
   reproduce"的注释），主线程**自己复测确认**：
