@@ -218,3 +218,80 @@ fixture 逐字段一致，或改 fixture 并**重跑 `geom_grid_paver2d`** 证�
 `paver2d_demo`(51) 的 D 基线**已全部抓好在仓库里**（`geom_grid_paver2d_demo.txt` 98 字节、
 `geom_grid_paver_demo.txt` 5,097 字节 + `paved_grid.vtk` 141,490 字节等），
 再加 `gmopatch.d`(171)、`meshpatch.d`(100)。
+
+## 10. G4+G5 工作包（`sgrid.d` 1865 + `usgrid.d` 2524）——必须同人同批做完
+
+### 10.1 为什么不能拆成两个作业
+双向依赖是**实测**的，不是猜的：
+- `usgrid.d:553` `this(const StructuredGrid sg, const string new_label="")` —— usgrid 的构造器
+  要读 sgrid 的真实成员；`:2492` 的 D `unittest` 里还 `new StructuredGrid(my_patch, 11, 21, cf)`。
+- `sgrid.d:1313-1318` `write_to_su2_file` 的**函数体就是纯委托**：
+  `auto usg = new UnstructuredGrid(this); usg.write_to_su2_file(fileName, scale, use_gmsh_order_for_wedges);`
+  ⇒ sgrid 语料里的 `sg.su2.len / sg.su2.scaled.len / sg.su2.3d.len`（各带完整 body，
+  最长一行 1,529 与 1,959 字节的 SU2 文本）**必须等 usgrid 才能复现**。
+- `usgrid.d:26` 选择性 `import geom.grid.paver: PavedGrid, POINT_LIST, FACE_LIST, CELL_LIST`，
+  并在 `:522/:531/:535/:540` 使用——**paver 已落地（G2，1961/1961）**，这三个列表在端口是
+  `src/geom/grid/paver.hpp:195-197` 的 `inline eil::Array<...>`（C++17 inline 变量，
+  跨 TU 唯一实例，对应 D 的模块级可变全局）。**不要**在 usgrid 里再声明一份。
+
+打破循环的写法：两个 `.hpp` 互相**前向声明**，`.cpp` 里再 `#include` 对方
+（sgrid.cpp 需要 `UnstructuredGrid` 的完整类型来 new 它；usgrid.cpp 需要 `StructuredGrid`
+读 `niv/njv/vertices`）。头文件里只出现指针/引用形参。
+
+### 10.2 语料现状（一个已就绪，一个完全没有）
+| | 探针 | 基线 | 状态 |
+|---|---|---|---|
+| G4 sgrid | `probes/geom/grid/probe_sgrid.d`(1,673 行，`ldc2 -O0` 可编可跑) | **2,097 行** | **主线程已重抓并提交**（commit `de88552`：原基线 2,079 少 18 行 `sg.frmt.*`，纯插入、旧行一字未变，D 连跑两次自比相同） |
+| G5 usgrid | **无** | **无** | **第一步必须是写探针 + 抓基线**，不许先写 C++ |
+
+usgrid 探针要覆盖的最小集合（按 §9.3 的密度推）：42 个 assert 的两条形（有/无消息）、
+28 个 throw（8 `new Error` / 19 `GeometryException` / 1 `Exception`，见 §9.3 表）、
+29 个 `to!string`（**是 `%.6g` 语义**，见 wave-02-brief 第 5 节）、19 个 `.dup`
+（D 的类 `dup()` 是深拷贝语义，逐个测它拷了什么）、`:2492` 那个 `unittest` 的全部内容、
+以及 `write_to_su2_file` 的**双向**结果（usgrid 直接写 + 由 sgrid 委托来写，两者应逐字节一致）。
+
+### 10.3 这一包里必须用的既有规则（都已入库，别再发明）
+- **`x ^^ 0.5` → `eil::sqrt(x)`，不是 `eil::pow(x,0.5)`**（T-925，语料 `substrate_pow` 的
+  `half` 组按位型钉住；判别证据是 `-0.0` 的符号）。sgrid/usgrid 里若有 `^^0.5` 站点照此写。
+- **成对的 `cos(x)`+`sin(x)` → `eil::cos`/`eil::sin`**（T-920）。**sgrid 已实测命中**：
+  `sgrid.d:1299` 与 `:1304` 就是 `r*cos(theta…)` 与 `r*sin(theta…)` 同自变量成对
+  （`makeWedgeGrid`），另有 `:1294` 的 `atan2` → **`eil::atan2`**（T-910）。
+- **带符号数组长度 → `eil::Array::set_length_signed(long)`**（T-914，已进 substrate）。
+  sgrid 的用户输入维度直接进 `length =`，`sg.frmt.nivbig err=Memory allocation failed`
+  这一行就是它；**不要再写第六个本地 `set_length_checked`**。
+- **`throw new Error(...)` 的站点不带 `__FILE__/__LINE__`；`GeometryException` 带**
+  （T-922 实测表，规则正文在 `substrate/include/eil/error.hpp` 头上）。
+  这一包里的数量不小：sgrid 29 个裸 Error + 12 个 GeometryException，
+  usgrid 8 个裸 Error + 19 个 GeometryException。**逐站点按 D 的类决定。**
+- **`assert` 用 `eil_assert` / `eil_assert_msg`**（T-918：D 的 `.msg` 分别是
+  `"Assertion failure"` 和**只有消息本身**）。
+- **`to!double` 的错误文本**按 T-913 的 7 条规则（语料 `substrate_conv_failtext` 443 行）；
+  sgrid 的 13 处 `to!double` 全在 gzip 文件解析里，出错分支必须被语料覆盖
+  （`sg.frmt.*` 那 18 行就是干这个的）。
+- **`.gz` 比解压后的 payload**（§2 第 1 条）；`sgrid.d:1623` 的 `pipeShell("gunzip -c …")`
+  走 popen。
+- **常量折叠**（T-909）：sgrid/usgrid 里凡是"字面量算式当常量用"的地方，
+  语料要同时给出折叠值与运行值（本轮已见两次：`sketch.d:128` 折叠≠运行、
+  `paver` 的 `node.tol*` 用折叠值），别假定两者相同。
+
+### 10.4 不许把已经绿的改红
+`geom_grid_paver2d` 现在是 **480/480 行 + 396/396 坐标**，它的测试**手抄**了
+`usgrid.d:112/154/218/40-56` 的类型定义当 fixture（见 `paver2d.hpp` 的 MEASURED DEPENDENCY 段）。
+G5 落地时 `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义**必须与那个 fixture
+逐字段一致；若你不得不改 fixture，**改完必须重跑 `geom_grid_paver2d` 证明仍是 480/480**，
+并在报告里给出这个数。同时把 `paver2d.hpp` 里"G5 未转"的说明段与 `fill_interior` 的模板化
+收敛回 D 的非模板签名——收敛是**机械**的，任何数值变化都是缺陷。
+`geom_grid_paver`（1961/1961）与 `geom_grid_grid`（643/643）、`geom_grid_nanadd`（638/638）
+同样不许变红。
+
+### 10.5 注册与收尾纪律（与 §7 相同，再强调一次）
+- 门禁是全或无：**只有整条语料 0 差异才写 `add_test()`**。
+  `cmake/wave2_grid_g4.cmake` / `wave2_grid_g5.cmake` 已建好并被 `include()`，
+  里面用 `if(EXISTS)` 自注册——**先别放测试文件进去**，或放了就把注册留在 0 差异之后再开。
+  当前基线：**100/100（Release / Debug / slice-check）**，`check_staleness.sh` = `no drift`。
+- 语料/探针**不许为了通过而改**。如果你认为 D 侧某行是参照的 bug，保留原样、写进报告。
+- 做完后跑**三配置**并给数字；`provenance/fidelity.yml` 与 `manifest.yml` 由主线程写，
+  你只需在报告里给出该记的实测数字。
+- **如果时间/轮次不够**：停下来报告"usgrid/sgrid 各自到哪一节、语料第几行、
+  D 值 vs 端口值、已排除的假设"。主线程按 `paver` 的先例接着做——
+  **明确的部分结果 + 诚实的停止点**，比一个假的绿有用得多。
