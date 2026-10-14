@@ -9,6 +9,16 @@
 // Build and capture (the reference does NOT compile with `-i`; see probe_idealgasflow.d):
 //   /home/tang/packages/dlang/bin/ldc2 -w -g -dip1008 -I/home/tang/packages/gdtk/src \
 //     -of=/tmp/probe_tol probes/gasdyn/probe_tol.d && /tmp/probe_tol
+//
+// Build and capture (reproducible; the gdtk tree itself is read-only):
+//   cd /home/tang/packages/Eilmer
+//   export PATH=/home/tang/packages/dlang/bin:$PATH
+//   rm -rf /tmp/gdtk_shadow && cp -a /home/tang/packages/gdtk/src /tmp/gdtk_shadow
+//   grep -rl "@nogc" --include=*.d /tmp/gdtk_shadow | xargs sed -i 's/@nogc//g'
+//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip \
+//     probes/gasdyn/probe_tol.d -of=/tmp/probe_tol -od/tmp/probe_obj_tol
+//   /tmp/probe_tol > baselines/e587b235/probes/gasdyn_tol.txt
+// No -O flag: every baseline in this repository is an ldc2 -O0 capture.
 import std.stdio, std.math;
 
 void main() {

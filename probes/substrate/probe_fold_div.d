@@ -1,6 +1,19 @@
 // probes/substrate/probe_fold_div.d — does ldc2 fold 90.0/25.4 to the same double
 // as a run-time division? Motivated by geom/misc/svg.d:55 `unitToPixels = 90.0/25.4`
 // showing up as a 1-ULP difference in svg document coordinates.
+//
+// Build and capture (reproducible; the gdtk tree itself is read-only):
+//   cd /home/tang/packages/Eilmer
+//   export PATH=/home/tang/packages/dlang/bin:$PATH
+//   rm -rf /tmp/gdtk_shadow && cp -a /home/tang/packages/gdtk/src /tmp/gdtk_shadow
+//   grep -rl "@nogc" --include=*.d /tmp/gdtk_shadow | xargs sed -i 's/@nogc//g'
+//   ldc2 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip \
+//     probes/substrate/probe_fold_div.d -of=/tmp/probe_fd -od/tmp/probe_obj_fd
+//   /tmp/probe_fd > baselines/e587b235/probes/substrate_fold_div.txt
+// No -O flag: every baseline in this repository is an ldc2 -O0 capture.
+// The 5 rows were quoted in comments only until 2026-10-14; they are versioned now so
+// the claim in reports/backlog.md T-909 ("90.0/25.4 folds 1 ULP low, 90.0/2.54 does not")
+// can be re-derived rather than trusted.
 module probe_fold_div;
 
 import std.stdio, std.conv;

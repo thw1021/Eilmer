@@ -7,6 +7,12 @@
 //     -of=/tmp/dscv probes/gasdyn/probe_ds_cv.d \
 //     /home/tang/packages/gdtk/src/gasdyn/idealgasflow.d \
 //     /home/tang/packages/gdtk/src/gasdyn/gasflowexception.d
+//
+// Capture (the build line above, run from the repo root):
+//   /tmp/dscv > baselines/e587b235/probes/gasdyn_ds_cv.txt
+// No -O flag: every baseline in this repository is an ldc2 -O0 capture. The file was
+// missing until 2026-10-14, which is why the ds_Cv chain's 1-ULP finding lived only in
+// prose; both rows are deterministic across runs (verified twice).
 module probe_ds_cv;
 
 import std.stdio, std.math;

@@ -5,6 +5,16 @@
 // needed the way eil::sqrt exists for the NaN sign bit.
 //
 // Build: ldc2 -O0 probes/substrate/probe_phobos_transcendentals.d -of=/tmp/tr_d
+//
+// This is the one-shot survey that decided backlog T-911. It has NO baseline file of its
+// own, deliberately: its findings were promoted into
+// probes/substrate/probe_phobos_bits.d, which is the permanent, row-for-row version
+// (baselines/e587b235/probes/substrate_phobos_bits.txt, 673 rows with IEEE-754 bit
+// patterns, replayed by ctest:substrate_phobos_bits). Re-running this probe is still
+// useful when a new transcendental is suspected -- it prints a per-function
+// same/differ summary rather than a corpus -- but the gated artifact is the _bits one,
+// so do not "fix" the missing baseline by capturing this output into a file nothing
+// reads.
 module probe_phobos_transcendentals;
 
 import std.stdio, std.math;
