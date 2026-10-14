@@ -52,16 +52,21 @@
   slice-check/-flto 四档一致）、`geom_grid_nanadd` **638/638**；
   `geom_grid_paver2d` **480/480 行 + 396/396 坐标**（`fill_interior` 因 G5 未转而做成
   模板，两种容器写法 `Array<shared_ptr<USGFace>>` 与 `Array<USGFace*>` 结果逐行一致）。
-  `paver.d`(1737) **未完成，已归档**：`wip/geom-grid-paver/`（paver.hpp 268、
-  paver.cpp 1720、test 624 行 + 现成的注册片段 `wave2_grid_g2.cmake.register`）。
-  它的回放**只发出了 219/1961 行**、其中 217 行字节相同，停在基线第 219 行
-  `sec3.ipr.emptyrow` 之后——`make.*`（make2DPoint/makeFace/makeCell/findFace）那一节
-  根本没写。**下一件事不是改 paver.cpp，是先确认 219 行之后的每一节有对应生成代码**。
-  wip 里有一条**已测得的 substrate 级发现**，别丢：g++ -O2/-O3 会把同一自变量的
-  `sin`+`cos` 合并成 glibc `sincos()`，与 ldc2 的两次独立 libm 调用差 1 ULP
-  → 已由 **T-920** 收口（规则上移 substrate 成 `eil::sin`/`eil::cos`，带 415 行位型语料）；
-  wip 里的 paver 仍留它自己的 volatile 拷贝写法，恢复 G2 时应改成调用 substrate 那两个
-  **剩余**：`paver.d` 1737（G2）、`sgrid.d` 1865（G4）、`usgrid.d` 2524（G5）、
+  `paver.d`(1737) → **G2 完成 2026-10-14**（见 `task-log.md` 的 T-011 G2 / T-019 节）：
+  从归档状态（当时回放只发出 **219/1961 行**、217 行字节相同，停在基线第 219 行
+  `sec3.ipr.emptyrow`，`make.*` 那节生成代码根本没写）推到
+  **1961 行全发出、1961 行字节相同、0 差异**，Release / Debug / slice-check 三档一致，
+  注册为 `ctest:geom_grid_paver`。补的是**测试侧** 1742 行生成器
+  （`grpMake/grpNode/grpRow/grpSmk/grpSeam2/grpPave` + square/lshape/wedge/circle 四种边界），
+  与主线程归档时的判断一致。
+  **参照系全程未动**：`probes/geom/grid/probe_paver.d` 与 1961 行基线的 sha256 仍是
+  `d96d146f…`（自主线程归档那次提交 `a8027e8` 起未变）⇒ 排除"改基线迁就实现"。
+  实现侧只改两处，各有行号作证：① 删本地 `d_sin/d_cos` volatile 包装、改调
+  `eil::sin`/`eil::cos`（T-920），由 `sec2.lrm*`/`sec2.ulv*`（30 行）与
+  `pave.circle6.*` 在 -O3 下钉住；② `point_dist`(:171)/`norm`(:202) 的外层 `^^0.5`
+  改 `eil::sqrt` ——**这就是 T-925 的来源**，改之前 145–146 行（`sec2.ulv3.0/1`）
+  是全树唯二红行。`wip/` 已清空删除：半成品是在门禁下干净落地的，没有靠降低标准。
+  **剩余**：`sgrid.d` 1865（G4）、`usgrid.d` 2524（G5）、
   四个 demo（`paver2d_demo` 51、`paver_demo` 115、`sgrid_demo` 101、`usgrid_demo` 103；
   前两者的 D 基线**已抓取并验证可复生成**，见 `cmake/wave2_grid_g3.cmake` 的头注释）、
   以及从 T-012 挪来的 `gmopatch.d` 171 + `meshpatch.d` 100。
@@ -114,7 +119,7 @@
   usg `flow 181,024 / grid 145,581` 字节。
   **第二半受阻，不假装完成**："在 C++ 侧可跑"需要候选 `e4shared`，那是 **Wave 5** 的产物；
   Wave 2 无论怎么做都造不出这条证据 → 保持 `[~]`，随 Wave 5 复核
-- [ ] **T-019** `geom/misc/sketch.d`(964) + `sketch_demo.d`(83) — 从 T-013 拆出（原清单误记为已做）。
+- [x] **T-019** `geom/misc/sketch.d`(964) + `sketch_demo.d`(83) — 从 T-013 拆出（原清单误记为已做）。
   **依赖更正（2026-10-14 实测，原条目把它排错了波次）**：本条原写作"依赖 geom.grid，
   故排在 T-012 **与 T-011** 之后"。实测 `grep -cE "sgrid|usgrid|StructuredGrid|
   UnstructuredGrid|geom\.grid" sketch.d` = **0** —— sketch.d 的**函数体完全不碰网格**，
@@ -128,6 +133,16 @@
   写出三个文件产物 `test.svg` 9,739 字节（md5 `510aea9d…`）、
   `test2.svg` 1,955（`60bc566d…`）、`test3.svg` 8,856（`ae87fcbc…`）。
   **D 侧连跑两次自比**：三个文件与 stdout 全部 SAME ⇒ 可当基线（同 T-015 的先自测再入库规矩）。
+  — **完成 2026-10-14**：`sketch.d` → `src/geom/misc/sketch.{hpp,cpp}`（287/1155 行），
+  `sketch_demo.d` → `tests/demo_geom_misc_sketch.cpp`。语料 **682 行、0 差异**
+  （主线程用 `ldc2 -O0` **独立复抓**该探针，与原基线 0 行差异，不是采信代理报数）；
+  251/251 个内嵌数值逐位相同、最坏残差 0 ULP、**无容差带**；`sketch.d` 没有任何 unittest 块，
+  所以另有 13/13 条 smoke 断言。demo 侧 stdout 2 行/62 字节 + 三个 SVG **文件逐字节**
+  （9739/1955/8856，与本条上面记录的 md5 一致）。注册 5 条测试
+  （`geom_misc_sketch` + `demo_equiv_…` + 三条 `demo_artifact_…`）。
+  **成员无缺失的正面对账**：D↔端口名字集合差为空；简报里"28 个方法"是我按正则数的，
+  实测该正则只命中 **27**（漏 `toString`，它以 `override` 开头）——
+  已按实测口径更正：**数是工具给的结论，不是事实**。
   **`rotating_a.d`(49) 与 `drifting_eye.d`(65) 从本条移出** → 新开 **T-921**：
   它们不是"排在后面"的问题，是**本机根本没有 GNU libplot**（`pkg-config --exists plplot` 失败、
   `ldconfig -p | grep -c plplot` = 0），`ldc2 -c` 能过但**链接失败**
@@ -525,6 +540,20 @@
     `-0.0` 那行立刻红（**1 行差异 / 35**）；换回来 **35/35**。
   - **Wave 12 会再撞上**：`shape_sensitivity_core.d:2315-2316`、`ntypes/complex.d:1820`
     （`z^^0.5` 是 csqrt 的写法）。转写这两处时按本条，不要用 `eil::pow`。
+- [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
+  1. **`eil::to_string` 不派发类的 `toString()`**。D 的 `to!string(x)` 对带 `toString()` 的
+     类型会调它，而 `substrate/include/eil/format.hpp:139` 对非算术类型直接 `static_assert`。
+     sketch 的站点只能手写。**这条最要紧**：`gas/`(Wave 3)、`fluidblock`(Wave 4) 与求解器
+     日志（Wave 5）都在大量把对象塞进消息文本，逐点手写会繁殖成几十处。
+  2. **`eil::Slice<T>` 形参无法表达 D 的动态数组默认实参**（D 写
+     `double[] canvas_mm = []` 这类默认值）。sketch 用 3 个委托重载局部绕开了；
+     局部可用 ≠ 通用可用，`geom/` 之外还会有。
+  3. **没有 `readln()`**。sketch 只在**未编译的 `with_libplot` 支**里用到，本波无需求；
+     但要注意它与 T-923 是同一语义问题：D 的 `readln()` 到 EOF **返回空串、不抛异常**，
+     已被 `nm_stmatrix_fails` 语料钉住。将来补 `readln()` 必须照这个实测行为，
+     不要按 C++ `getline` 的失败流状态直觉写。
+  （代理还报了第 4 条"没有 libplot 声明"，那与既有 **T-921** 同源，不另列。）
+  → **Wave 3 之前**定形第 1 条（`gas/` 是第一个大量把对象写进消息的包）
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；

@@ -5,16 +5,12 @@
 // `^^` -> eil::pow rule, the 80-bit `real` sites, the ErrorBase/GeometryException
 // split and the two ldc2 constant-folded value sets.
 //
-// Transcendental routing, measured on this box (ldc2 1.40.0 vs g++ 11 -O0/-O2/-O3):
-//   sin(0.36166097335306102)  ldc2 0.35382824631297966 (0x3fd6a51f3a942d8d)
-//                             glibc sin   "  "...966 (0x3fd6a51f3a942d8d)
-//                             glibc sincos  "  "...971 (0x3fd6a51f3a942d8e)
-// g++ merges `std::sin(x)` and `std::cos(x)` of one argument into a single glibc
-// sincos() call at -O2 and -O3, and that merged call is 1 ULP off. ldc2 lowers
-// Phobos' sin/cos (core.math, llvm.sin.f64/llvm.cos.f64) to the two separate libm
-// calls, so the wrappers below read the argument through a volatile copy: that keeps
-// the pair from merging and reproduces D's bits. `nm` on the merged build shows
-// `U sincos@GLIBC_2.2.5`; with the wrappers it shows only sin/cos.
+// Transcendental routing: paver.d:184 builds a {cos, sin} pair of one argument, and
+// node_gen divides by sin(half/third/quarter of an interior angle). Both go through the
+// substrate's eil::sin / eil::cos (backlog T-920), which keep the pair as two libm
+// calls — g++ fuses a cos(x)+sin(x) pair into glibc sincos(), and that merged call is
+// 1 ULP off glibc's own sin. The rule, the 415-angle corpus and the measurement all
+// live in substrate/include/eil/math.hpp; there is deliberately no second copy here.
 
 #include "geom/grid/paver.hpp"
 
@@ -30,17 +26,8 @@
 
 namespace {
 
-// libm calls, kept separate so g++ cannot fuse a sin/cos pair into sincos().
-inline double d_sin(double x) {
-    volatile double v = x;
-    return std::sin(v);
-}
-inline double d_cos(double x) {
-    volatile double v = x;
-    return std::cos(v);
-}
-
 // D's `abs(double)` from std.math (used by squareness and calc_area) is fabs.
+// Sin and cos are NOT here: they route through the substrate's eil::sin / eil::cos.
 inline double d_abs(double x) { return std::fabs(x); }
 
 } // namespace
@@ -152,8 +139,8 @@ std::string Cell::print() {
 // D:170-177
 std::array<std::array<double, 2>, 2> left_rot_matrix(double theta) {
     std::array<std::array<double, 2>, 2> matrix = {
-        std::array<double, 2>{d_cos(theta), d_sin(theta)},
-        std::array<double, 2>{-d_sin(theta), d_cos(theta)}};
+        std::array<double, 2>{eil::cos(theta), eil::sin(theta)},
+        std::array<double, 2>{-eil::sin(theta), eil::cos(theta)}};
     return matrix;
 }
 
@@ -173,9 +160,15 @@ PointPtr midpoint(PointPtr a, PointPtr b) {
     return std::make_shared<Point>(0, 0.5 * (a->x + b->x), 0.5 * (a->y + b->y));
 }
 
-// D:198-204
+// D:198-204. `d ^^ 2` is eil::pow (it equals d*d here), but the OUTER `^^0.5` is
+// ldc2's sqrt, NOT std::pow: measured over 62 operands (/tmp sweep of D `x ^^ 0.5`
+// against Phobos sqrt and Phobos pow) `^^0.5` and `sqrt` agree on 62/62 while `pow`
+// differs on 4 — x=0x3fefffffffffffff (sqrt 0x3fefffffffffffff, pow 1.0), x=DBL_MAX
+// (1.3407807929942596e+154 vs inf) and x=-0.0 (-0.0 vs +0.0). paver.d has exactly two
+// `^^0.5` sites, both here and in norm below, and the corpus proves the difference:
+// rows sec2.ulv3.0/sec2.ulv3.1 are 1 ULP apart between the two routings.
 double point_dist(PointPtr a, PointPtr b) {
-    return eil::pow(eil::pow(a->x - b->x, 2.0) + eil::pow(a->y - b->y, 2.0), 0.5);
+    return eil::sqrt(eil::pow(a->x - b->x, 2.0) + eil::pow(a->y - b->y, 2.0));
 }
 
 // D:206-214
@@ -203,9 +196,10 @@ int LeftorRight(PointPtr a, PointPtr b, PointPtr X) {
     return ans;
 }
 
-// D:234-240
+// D:234-240. Same routing as point_dist: the inner `^^2` is eil::pow, the outer
+// `^^0.5` is ldc2's sqrt (see the measurement recorded at point_dist above).
 double norm(std::array<double, 2> vector) {
-    return eil::pow(eil::pow(vector[0], 2.0) + eil::pow(vector[1], 2.0), 0.5);
+    return eil::sqrt(eil::pow(vector[0], 2.0) + eil::pow(vector[1], 2.0));
 }
 
 // D:242-247
@@ -743,7 +737,7 @@ void node_gen(eil::Slice<PointPtr> surface, size_t i, eil::Array<PointPtr>& New_
     if (node->node_cat == "row side") {
         // generates 1 new node, makes 1 new cell
         double V_length =
-            0.5 * (norm(node->V_L) + norm(node->V_R) / d_sin(node->interior_angle / 2));
+            0.5 * (norm(node->V_L) + norm(node->V_R) / eil::sin(node->interior_angle / 2));
         std::array<double, 2> node_V = {node->x, node->y};
         std::array<double, 2> unit_V = unit_leftV(node->V_R, node->interior_angle / 2);
         std::array<double, 2> node_pos = {
@@ -784,7 +778,7 @@ void node_gen(eil::Slice<PointPtr> surface, size_t i, eil::Array<PointPtr>& New_
     if (node->node_cat == "row corner") {
         // generates 3 new nodes, creates 2 new cells
         double V_length =
-            0.5 * (norm(node->V_L) + norm(node->V_R) / d_sin(node->interior_angle / 3));
+            0.5 * (norm(node->V_L) + norm(node->V_R) / eil::sin(node->interior_angle / 3));
         std::array<double, 2> node_V = {node->x, node->y};
         std::array<double, 2> unit_V = unit_leftV(node->V_R, 2 * node->interior_angle / 3);
         std::array<double, 2> node_pos = {
@@ -835,7 +829,7 @@ void node_gen(eil::Slice<PointPtr> surface, size_t i, eil::Array<PointPtr>& New_
     if (node->node_cat == "row reversal") {
         // generates 5 new nodes, creates 3 new cells
         double V_length =
-            0.5 * (norm(node->V_L) + norm(node->V_R) / d_sin(node->interior_angle / 4));
+            0.5 * (norm(node->V_L) + norm(node->V_R) / eil::sin(node->interior_angle / 4));
         std::array<double, 2> node_V = {node->x, node->y};
         std::array<double, 2> unit_V = unit_leftV(node->V_R, 3 * node->interior_angle / 4);
         std::array<double, 2> node_pos = {

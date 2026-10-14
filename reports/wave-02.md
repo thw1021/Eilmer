@@ -15,13 +15,14 @@
 | 指标 | 值 |
 |---|---|
 | 已转写 C++ 模块头文件 | **75** 个（`find src -name '*.hpp'`） |
-| C++ 源码行（src + substrate） | **25,893** |
-| 测试/demo 行 | **27,873** |
-| D 对照语料总行数 | **83,840**（`cat baselines/e587b235/probes/*.txt`） |
-| CTest | **93 个测试：Debug 93/93、`-DEIL_SLICE_CHECK=ON` 93/93、Release 93/93、手工 `-flto -O3` 93/93**。（上一版此处记的是"87 个、Release 86/87、故意留红"——红行即 T-919，现已闭合；`geom_grid_grid` **643/643**、`geom_grid_nanadd` **638/638**、`substrate_sin_cos_pair` **415/415** 在四档构建一致） |
+| C++ 源码行（src + substrate） | **29,376** |
+| 测试/demo 行 | **30,337** |
+| D 对照语料总行数 | **84,656**（`cat baselines/e587b235/probes/*.txt`；含本轮新增的
+  sin/cos 415、stmatrix 失败路径 7、throw 身份 15、sketch 682 与四处补档的孤儿测量） |
+| CTest | **100 个测试：Debug 100/100、`-DEIL_SLICE_CHECK=ON` 100/100、Release 100/100**（本轮新增 7 条：`geom_grid_paver` 1、sketch 5、`nm_stmatrix_fails` 1；另有 `-flto -O3` 档单跑 grid/sin_cos 全绿）。（上一版此处记的是"87 个、Release 86/87、故意留红"——红行即 T-919，现已闭合；`geom_grid_grid` **643/643**、`geom_grid_nanadd` **638/638**、`substrate_sin_cos_pair` **415/415** 在四档构建一致） |
 | 溯源 | `provenance/manifest.yml` 每条带 `d_blob`；`tools/check_staleness.sh` → `no drift` |
 | gdtk 树写入 | **0**（探针一律编 `/tmp/gdtk_shadow` 副本） |
-| 不在构建图内的半成品 | `wip/geom-grid-paver/` **2,638 行**（G2 `paver.d`，见 T-011 与本节末） |
+| 不在构建图内的半成品 | **无**（`wip/` 已清空删除：G2 在 1961/1961 的门禁下落地，见 `task-log.md`） |
 
 转写清单（本 Wave）：
 - `geom/elements/`：vector3、properties、projection、nomenclature + geometry_exception
@@ -102,10 +103,21 @@ CoonsPatch 角点检查只报第一个开角；`channelpatch` 零叉乘得 `[pA,
 ## 3. 待完成
 
 **一律见 `reports/backlog.md`（唯一权威清单）**。本 Wave 尚未闭合的 ID：
-T-011（geom/grid：G1 `grid.d` 490 与 G3 `paver2d.d` 52 **已闭合**；
-余 G2 `paver.d` 1737（半成品在 `wip/geom-grid-paver/`，回放只发出 219/1961 行，
-缺的是测试侧 `make.*` 之后的各节）、G4 `sgrid.d` 1865、G5 `usgrid.d` 2524、
-G6 四个 demo + `gmopatch.d` 171 / `meshpatch.d` 100）、
+T-011（geom/grid：G1 `grid.d` 490、G3 `paver2d.d` 52、**G2 `paver.d` 1737** 三条已闭合
+（G2 于本轮从 219/1961 的归档状态推到 **1961/1961、0 差异**，且**探针与基线全程未改**
+`sha256 d96d146f…`）；余 **G4 `sgrid.d` 1865 + G5 `usgrid.d` 2524**——这两条是一个工作包，
+因为 `usgrid.d:553` 的构造入参是 `const StructuredGrid`、而 `sgrid.d:1313-1318` 的
+`write_to_su2_file` 是**纯委托**给 `new UnstructuredGrid(this)`，
+sgrid 语料里的 `sg.su2.*` 行必须等 usgrid 才能复现；usgrid 还需要已落地的 paver
+（选择性 import `PavedGrid, POINT_LIST, FACE_LIST, CELL_LIST`）；
+另余 G6 四个 demo（`sgrid_demo` 101、`usgrid_demo` 103 未抓；
+`paver_demo` 115、`paver2d_demo` 51 的 D 基线已在库中）+ `gmopatch.d` 171 / `meshpatch.d` 100
+（两者都要 `StructuredGrid` 类型，随 sgrid 之后））、
+**T-019 已闭合**（`sketch.d` 964 + `sketch_demo.d` 83：语料 682 行 0 差异、
+251/251 数值逐位、demo stdout 2 行 + 三个 SVG 文件逐字节；主线程独立复抓确认）、
+**T-922/T-923/T-925/T-926 本轮新立**（前两条已部分完成，见 `task-log.md`；
+T-925 更正了本仓库自己"`^^` 一律 `eil::pow`"的错误规则——`x^^0.5` 是 `eil::sqrt`，
+判别证据是 `-0.0` 的符号；T-926 是 sketch 报出的 3 条 substrate 缺口）；
 **T-920 已闭合**（本轮实测新立、本轮内修完：`cos(x)`+`sin(x)` 对被 **两个编译器**都从 -O1
 起融合成一次 glibc `sincos()`，与两次独立 libm 调用差 1 ULP；415 角语料里
 **401 行随参照系自己的 -O 移动**，故契约仍是 ldc2 -O0 的"两次独立调用"。

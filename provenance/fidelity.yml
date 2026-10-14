@@ -399,5 +399,47 @@ src/geom/grid/grid.cpp: {fidelity: adapted-arrays, variants: [], verified_by: [c
 # -inf/+inf overflow row fi.inf.
 # Both D demo captures are reproducible: two runs of each D binary compared with cmp give
 # byte-identical stdout AND byte-identical written .vtk files.
+# paver.d (1737 D lines) -> src/geom/grid/paver.{hpp,cpp}. T-011 stage G2.
+# The corpus is 1961 rows and was captured before this stage began; neither the probe
+# (probes/geom/grid/probe_paver.d) nor the baseline changed during the port
+# (sha256 d96d146f..., unchanged since commit a8027e8), so 1961/1961 is measured against a
+# reference the port could not have influenced. Sections: cls/sec2/sec3 1-219, make 220-250,
+# node 251-422, row 423-544, smk+seam 545-775, seam2 776-846, pave+END 847-1961.
+# Two D behaviours here are the reason two substrate rules exist: :202 and :238 are the
+# tree's only Wave-2 `^^0.5` sites, which produced T-925 (x^^0.5 == eil::sqrt, NOT
+# eil::pow), and the replay's first two red rows were both of them.
+# Deliberately kept as D has it, each row-proven: findFace's missing `break` with the
+# [0,0] reverse_case (rows make.q01nd, make.q56.afterzero); LeftorRight's uninitialised
+# `int ans` reading 0 through a NaN determinant (sec2.lr.nan); midpoint not appending to
+# POINT_LIST (sec2.mid.listlen=0); the size_t underflow text carrying
+# 18446744073709551615 (node.one.throw); cell_type printing `cast(CellType)7`; the
+# unreachable throw at paver.d:1229; and the two dead locals at paver.d:1378/1397/1421
+# (`double move', `size_t cell_index'), kept verbatim because they are the source of two
+# -Wunused-but-set warnings, not a defect. node.tol0/1/2 replay ldc2's FOLDED bit patterns,
+# which are what paver.cpp uses internally (T-909).
+src/geom/grid/paver.hpp: {fidelity: adapted-handles, variants: [], verified_by: [ctest:geom_grid_paver, 1961 of 1961 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK]}
+src/geom/grid/paver.cpp: {fidelity: adapted-handles, variants: [], verified_by: [ctest:geom_grid_paver 0 differ, corpus sha256 unchanged during the port, eil::sqrt for `^^0.5' per T-925 proven by rows 145-146, eil::sin/eil::cos per T-920 proven by sec2.lrm*/sec2.ulv* and pave.circle6.* at -O3]}
+# sketch.d (964 D lines) -> src/geom/misc/sketch.{hpp,cpp}. T-019.
+# No D `unittest` block exists in this module (grep count 0), so the gate is entirely
+# corpus: probe_sketch.d (505 lines) -> 682 rows, independently re-captured from the D
+# source at ldc2 -O0 with a 0-line diff. 251 of 251 embedded numeric quantities
+# bit-identical, no tolerance band anywhere. The demo adds stdout (2 lines, 62 bytes) and
+# three SVG documents compared as byte-for-byte files (9739 / 1955 / 8856 bytes), which is
+# where this module's real contract lives: it is a renderer.
+# sketch.d:128-129 computes cos and sin of one literal argument, which is where T-920
+# (pair fusion into glibc sincos) and T-909 (ldc2's folded constants) meet. Measured:
+# `30.0/180.0*PI' folds to 3fe0c152382d7366 against a runtime 3fe0c152382d7365, and the
+# folded cos/sin pair (3febb67ae8584caa / 3fe0000000000000) is what ldc2's projection
+# matrix actually stores -- so the port writes those bit patterns and no runtime sin/cos
+# pair exists at that site to fuse. 1.0/(2.0*sqrt(2.0)) measured folded == runtime, kept
+# as an expression.
+# 19 `version(with_libplot)' sites in D are kept as 21 #ifdef EIL_WITH_LIBPLOT guards in
+# the port (a version/else needs one on each side) and are NOT compiled: no GNU libplot on
+# this machine, see T-921. sketch.d's unconditional `import ntypes.complex' is unused
+# (`Complex' appears once, on the import line), so this module does not wait for T-904.
+# D's null `string' prints as nothing under %s (measured: s3 default title=[] desc=[]),
+# so std::string needed no nullable wrapper here.
+src/geom/misc/sketch.hpp: {fidelity: adapted-handles, variants: [with_libplot kept uncompiled], verified_by: [ctest:geom_misc_sketch, 682 of 682 probe rows byte-identical, 251 of 251 numerics bit-identical]}
+src/geom/misc/sketch.cpp: {fidelity: adapted-handles, variants: [with_libplot kept uncompiled], verified_by: [ctest:geom_misc_sketch, ctest:demo_equiv_geom_misc_sketch stdout 2 lines, ctest:demo_artifact_geom_misc_sketch_test{,2,3} three SVGs byte-identical, 20 final switches kept default-free, 8 throws split Exception-vs-Error per T-922]}
 src/geom/grid/paver2d.hpp: {fidelity: adapted-templates, verified_by: [ctest:geom_grid_paver2d, 480 of 480 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK, 396 of 396 coordinates byte-identical at %.17g, fixture transcribes usgrid.d:112,154,218 until G5 lands]}
 src/geom/grid/paver2d.cpp: {fidelity: exact, variants: [EIL_COMPLEX_NUMBERS not compiled], verified_by: [ctest:geom_grid_paver2d, nodeTypeName out-of-range fallback measured from ldc2 (cast(NodeType)7), writeln text at D:19 and D:47 byte-identical]}

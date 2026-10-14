@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="425.20" height="425.20"
+     version="1.0">
+<title></title>
+<desc></desc>
+<!-- drawing begins here -->
+<line x1="0.00" y1="425.20" x2="318.90" y2="0.00" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<circle cx="88.58" cy="124.02" r="43.58" style="fill:yellow;fill-opacity:0.5;stroke:black;stroke-width:1.42;stroke-linecap:round;stroke-opacity:0.5" />
+<path d="M 0.00,248.03 L 35.43,212.60 L 70.87,248.03 L 106.30,212.60" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1;stroke-dasharray: 5.67 5.67"/>
+<text x="88.58" y="124.02" transform="rotate(30.00,88.58,124.02)"  style="font-size:10pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >Circle</text>
+<path d="M 318.90 425.20 A 106.30 106.30, 0.00, 0, 0, 212.60 318.90" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1"/>
+<path d="M 106.30 425.20 A 106.30 106.30, 0.00, 0, 1, 212.60 318.90" style="fill:none;stroke:black;stroke-width:2.13;stroke-linecap:round;stroke-opacity:1;stroke-dasharray: 5.67 5.67"/>
+<path d="M 283.46 141.73 C 141.73 141.73 283.46 141.73 141.73 141.73" style="fill:none;stroke:black;stroke-width:2.13;stroke-linecap:round;stroke-opacity:1" />
+<circle cx="248.03" cy="354.33" r="2.83" style="fill:black" />
+<text x="248.03" y="350.08" style="font-size:10pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >a</text>
+<polygon points="212.60,389.76 336.61,389.76 336.61,248.03 212.60,248.03" style="fill:yellow;fill-opacity:0.5;stroke:black;stroke-width:1.42;stroke-linecap:round;stroke-opacity:0.5;stroke-dasharray: 5.67 5.67"/>
+<!-- end of drawing -->
+</svg>

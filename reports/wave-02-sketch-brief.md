@@ -83,8 +83,12 @@ double sin30 = sin(30.0/180.0*PI);
 
 - `struct Extents`（D:41-50）含 `set(double x0,double y0,double x1,double y1)`（:43）。
 - `class Sketch` 跨 **D:57-964**（`964` 是文件末 `} // end class Sketch`），
-  成员函数按 `^\s{4}(void|string|double|int|bool|Extents|Vector3) name(` 数到 **28** 个；
-  自己再逐个数一遍并核对，**一个都不能漏**；漏了就是"功能缺失"，违反需求第 5 条。
+  成员按 `^\s{4}(void|string|double|int|bool|Extents|Vector3) name(` 数到 **27** 个
+  （26 个 `Sketch` 方法 + `Extents::set`）。**这个 27 是作业结束后实测更正的**：
+  原先写的是 28，那是主线程按同一条正则数出来的，而正则**漏掉 `toString`**——
+  它以 `override` 开头。教训：数出来的是工具的结论，不是事实，核对要用名字集合的差集
+  而不是行数。真正要证明的是"一个都不漏"：拿 D 侧成员名集合与端口侧做差集，
+  差集为空才算（漏一个就是需求第 5 条的"功能缺失"）。
 - 默认实参是用户可见接口，逐个照抄：`this(string renderer_name="svg",
   string projection_name="xyortho", ...)`（:99）、`start(string file_name="sketch.svg")`（:253）、
   `setDashArray(double dashLength=2.0, double gapLength=2.0)`（:361）、

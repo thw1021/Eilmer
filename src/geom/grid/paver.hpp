@@ -62,15 +62,18 @@
 //         "ldc2 constant folding is not correctly rounded" case of backlog T-909,
 //         which that entry measured as zero exposure for Wave 2 — paver.d is a
 //         non-zero exposure, so the report says so.
-//   * g++ merges a `sin(x)` and a `cos(x)` of the same argument into one glibc
-//     `sincos()` call, and glibc's sincos is 1 ULP off glibc's own sin
-//     (sin(0.36166097335306102): ldc2 and libm `sin` both give 0x3fd6a51f3a942d8d,
-//     `sincos` gives 0x3fd6a51f3a942d8e). ldc2 lowers Phobos' sin/cos to the separate
-//     libm calls, so paver.cpp routes both through volatile-isolated wrappers;
-//     measured at -O0/-O2/-O3 in paver.cpp's header comment.
+//   * paver.d:184 evaluates a cos/sin pair of one argument, so both go through the
+//     substrate's eil::sin / eil::cos (backlog T-920, guarded by
+//     ctest:substrate_sin_cos_pair). g++ fuses a `cos(x)`+`sin(x)` pair into one glibc
+//     `sincos()` call and that merged call is 1 ULP off glibc's own `sin`; ldc2 lowers
+//     Phobos' sin/cos to the two separate libm calls. The rule lives in
+//     substrate/include/eil/math.hpp and is NOT re-derived here.
 //   * D's `a ^^ b` is std.math.pow: every `^^` site here (point_dist, norm, squareness,
 //     assign_node_properties' cosine rule, biggest_cell, the constructor's avr_area)
-//     is eil::pow, never an expanded product.
+//     is eil::pow, never an expanded product. The two `^^0.5` sites are the exception
+//     and use eil::sqrt: ldc2 lowers `x ^^ 0.5` to a hardware sqrt, and over 62
+//     measured operands sqrt agrees with D on 62/62 while std::pow(x,0.5) differs on
+//     4 (x=nextafter(1,0), x=DBL_MAX, x=-0.0). Corpus rows sec2.ulv3.0/1 pin it.
 //   * Phobos constants are 80-bit `real`, so `2*PI - angle`, `node.interior_angle < PI`,
 //     `theta < PI/2` and `SQRT2*V_length` are computed and COMPARED in extended
 //     precision and only narrowed on store; the port keeps eil::real (long double) at

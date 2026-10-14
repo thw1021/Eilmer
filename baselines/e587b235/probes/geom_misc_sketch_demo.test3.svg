@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="425.20" height="425.20"
+     version="1.0">
+<title></title>
+<desc></desc>
+<!-- drawing begins here -->
+<line x1="304.66" y1="159.45" x2="120.54" y2="265.75" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<path d="M 28.48,106.30 L 28.61,100.81 L 28.99,95.48 L 29.62,90.32 L 30.49,85.36 L 31.62,80.60 L 32.99,76.05 L 34.60,71.74 L 36.44,67.66 L 38.52,63.83 L 40.82,60.27 L 43.33,56.98 L 46.06,53.97 L 49.00,51.25 L 52.13,48.82 L 55.45,46.70 L 58.94,44.89 L 62.61,43.39 L 66.43,42.21 L 70.40,41.35 L 74.51,40.82 L 78.75,40.61 L 83.10,40.72 L 87.55,41.16 L 92.09,41.93 L 96.71,43.02 L 101.40,44.42 L 106.14,46.14 L 110.92,48.18 L 115.72,50.51 L 120.54,53.15" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1"/>
+<g opacity="1" >
+<line x1="323.07" y1="276.38" x2="102.13" y2="148.82" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="323.07" y1="276.38" x2="323.07" y2="279.57" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="286.24" y1="255.12" x2="286.24" y2="258.31" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="249.42" y1="233.86" x2="249.42" y2="237.05" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="212.60" x2="212.60" y2="215.79" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="175.78" y1="191.34" x2="175.78" y2="194.53" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="138.95" y1="170.08" x2="138.95" y2="173.27" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="102.13" y1="148.82" x2="102.13" y2="152.01" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+</g>
+<text x="323.07" y="289.13" transform="rotate(30.00,323.07,289.13)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-1.2</text>
+<text x="286.24" y="267.87" transform="rotate(30.00,286.24,267.87)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.8</text>
+<text x="249.42" y="246.61" transform="rotate(30.00,249.42,246.61)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.4</text>
+<text x="212.60" y="225.35" transform="rotate(30.00,212.60,225.35)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.0</text>
+<text x="175.78" y="204.09" transform="rotate(30.00,175.78,204.09)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.4</text>
+<text x="138.95" y="182.83" transform="rotate(30.00,138.95,182.83)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.8</text>
+<text x="102.13" y="161.57" transform="rotate(30.00,102.13,161.57)"  style="font-size:8pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >1.2</text>
+<text x="120.54" y="148.82" style="font-size:10pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >x</text>
+<g opacity="1" >
+<line x1="212.60" y1="340.16" x2="212.60" y2="85.04" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="340.16" x2="215.36" y2="341.75" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="297.64" x2="215.36" y2="299.23" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="255.12" x2="215.36" y2="256.71" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="212.60" x2="215.36" y2="214.19" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="170.08" x2="215.36" y2="171.67" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="127.56" x2="215.36" y2="129.15" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="85.04" x2="215.36" y2="86.63" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+</g>
+<text x="231.01" y="350.79" transform="rotate(30.00,231.01,350.79)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-1.2</text>
+<text x="231.01" y="308.27" transform="rotate(30.00,231.01,308.27)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.8</text>
+<text x="231.01" y="265.75" transform="rotate(30.00,231.01,265.75)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.4</text>
+<text x="231.01" y="223.23" transform="rotate(30.00,231.01,223.23)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.0</text>
+<text x="231.01" y="180.71" transform="rotate(30.00,231.01,180.71)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.4</text>
+<text x="231.01" y="138.19" transform="rotate(30.00,231.01,138.19)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.8</text>
+<text x="231.01" y="95.67" transform="rotate(30.00,231.01,95.67)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >1.2</text>
+<text x="203.39" y="100.98" style="font-size:10pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >y</text>
+<g opacity="1" >
+<line x1="102.13" y1="276.38" x2="323.07" y2="148.82" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="102.13" y1="276.38" x2="104.89" y2="277.97" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="138.95" y1="255.12" x2="141.71" y2="256.71" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="175.78" y1="233.86" x2="178.54" y2="235.45" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="212.60" y1="212.60" x2="215.36" y2="214.19" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="249.42" y1="191.34" x2="252.18" y2="192.93" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="286.24" y1="170.08" x2="289.01" y2="171.67" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+<line x1="323.07" y1="148.82" x2="325.83" y2="150.41" style="fill:none;stroke:black;stroke-width:0.71;stroke-linecap:round;stroke-opacity:1" />
+</g>
+<text x="116.86" y="284.88" transform="rotate(-30.00,116.86,284.88)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-1.2</text>
+<text x="153.68" y="263.62" transform="rotate(-30.00,153.68,263.62)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.8</text>
+<text x="190.50" y="242.36" transform="rotate(-30.00,190.50,242.36)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >-0.4</text>
+<text x="227.33" y="221.10" transform="rotate(-30.00,227.33,221.10)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.0</text>
+<text x="264.15" y="199.84" transform="rotate(-30.00,264.15,199.84)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.4</text>
+<text x="300.97" y="178.58" transform="rotate(-30.00,300.97,178.58)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >0.8</text>
+<text x="337.80" y="157.32" transform="rotate(-30.00,337.80,157.32)"  style="font-size:8pt;text-anchor:end;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >1.2</text>
+<text x="304.66" y="148.82" style="font-size:10pt;text-anchor:middle;fill:black;stroke:none;font-weight:normal;font-family:sanserif" >z</text>
+<!-- end of drawing -->
+</svg>

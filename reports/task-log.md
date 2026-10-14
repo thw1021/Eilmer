@@ -593,3 +593,64 @@
   `g++ -O3 -ffp-contract=off -std=c++17 -I substrate/include` 编译
   任一含 `std::cos(x)`+`std::sin(x)` 同自变量的 TU，`nm -u` 看是否有 `U sincos`；
   以及 `/tmp/probe_scp -O0 vs -O3` 语料 diff（401 行移动）。
+
+## T-011 段 G2（`paver.d`）/ T-019（`sketch.d`）— 被打断的作业怎么收尾，以及收尾时捞出的两条规则  (2026-10-14)
+
+- **范围**：G2 = `geom/grid/paver.d`(1737) 从 `wip/` 半成品推到全绿；
+  T-019 = `geom/misc/sketch.d`(964) + `sketch_demo.d`(83) 从零到全绿。
+  两者各由一个子代理承担，主线程负责**独立复跑**、把结论入 `fidelity.yml`、
+  并把它们途中撞出的规则缺口钉成 T-920/T-922/T-925/T-926。
+- **G2 的实际缺口与简报预判一致**：`wip/` 里的 `paver.cpp`（1720 行）算术基本是对的，
+  缺的是**测试侧的语料生成代码**——交给它时实测只发出 219/1961 行。
+  补了 1742 行生成器（`grpMake/grpNode/grpRow/grpSmk/grpSeam2/grpPave` + 四种边界形状
+  square/lshape/wedge/circle）后：
+  **1961 行全发出、1961 行字节相同、0 差异**，Release / Debug / slice-check 三档一致。
+  **参照系没被碰过**：`probes/geom/grid/probe_paver.d` 与 1961 行基线的 sha256 仍是
+  `d96d146f…`（自主线程那次提交 `a8027e8` 起未变）——这条很重要，
+  它排除了"改基线去迁就实现"这一类失败。
+  实现侧只改了两处，每处都有行号作证：
+  1. 删掉本地 `d_sin/d_cos` volatile 包装，改调 substrate 的 `eil::sin`/`eil::cos`
+     （T-920）。被 `sec2.lrm*`/`sec2.ulv*`（30 行）与 `pave.circle6.*` 在 -O3 下钉住。
+  2. `point_dist`(:171) 与 `norm`(:202) 的外层 `^^0.5` 改 `eil::sqrt`，内层 `^^2` 仍 `eil::pow`
+     ——**这就是 T-925 的来源**，那两行（145–146 `sec2.ulv3.0/1`）曾是全树唯二红行。
+- **保留而未"修正"的 D 行为**（都带行号）：`findFace` 缺 `break` 与 `[0,0]` 的
+  `reverse_case`（`make.q01nd`、`make.q56.afterzero`）；`LeftorRight` 未初始化
+  `int ans` 在 NaN 行列式下取 0（`sec2.lr.nan`）；`midpoint` 不往 POINT_LIST 追加
+  （`sec2.mid.listlen=0`）；`store_node_cat` 的黏性；`cell_type` 打印 `cast(CellType)7`；
+  `node.one.throw` 里 size_t 下溢文本带着 `18446744073709551615`；
+  `paver.d:1378/1397/1421` 两个死变量 `double move`/`size_t cell_index` 原样留着
+  （它们正是两条 `-Wunused-but-set` 警告的来源，留着比删掉更符合"无行为改动"）；
+  `node.tol0/1/2` 回放的是 ldc2 **折叠后**的位型（T-909）。
+- **T-019 的规模与门禁**：`sketch.hpp` 287 / `sketch.cpp` 1155 行；
+  探针 `probes/geom/misc/probe_sketch.d` 505 行 → 语料 **682 行**。
+  主线程**独立复抓**：`ldc2 -O0` 重跑该探针，682 行与原基线 **0 行差异**（不是采信代理报数）。
+  demo 侧 stdout **恰好 2 行 / 62 字节**，三个 SVG 以**文件逐字节**比对
+  （9,739 / 1,955 / 8,856 字节，与主线程先前实测的 md5 一致）。
+  注册 5 条测试：`geom_misc_sketch`、`demo_equiv_geom_misc_sketch`、
+  `demo_artifact_geom_misc_sketch_test{,2,3}`。
+  `sketch.d` **没有任何 unittest 块**（grep 计数 0），所以门禁全靠语料 +
+  13/13 条 smoke 断言；251/251 个内嵌数值逐位相同，**最坏残差 0（0 ULP）、没有容差带**。
+- **成员数目的核对**（需求第 5 条"无缺失"的正面证据）：代理按主线程简报里"28 个"的说法
+  复查，实测该正则命中 **27** 个——26 个 `Sketch` 方法 + `Extents::set` 1 个；
+  漏掉的是 `toString`，因为它以 `override` 开头而不匹配正则。
+  D↔端口的**名字集合差为空**（只有 `this`→构造函数、`~this`→析构）。
+  ⇒ 简报里那个"28"是我按正则数的，**数是工具给的结论、不是事实**；已在简报中改为实测口径。
+- **T-920 与 T-909 在同一处相撞**（简报 §2 当初就是要代理别猜、去量）：
+  `sketch.d:128-129` 的 `cos/sin(30.0/180.0*PI)`，实测折叠
+  `3fe0c152382d7366` vs 运行期 `3fe0c152382d7365`（1 ULP），
+  而 ldc2 真正写进投影矩阵的是**折叠**那对（`3febb67ae8584caa` / `3fe0000000000000`）
+  ⇒ 端口照抄折叠位型，且该站点没有运行期 sin/cos 对可融合。
+  `1.0/(2.0*sqrt(2.0))` 实测折叠==运行期，保留算式。
+  另记一笔：D 的 `real.max` 放进 `double[]` 会**溢出成 +inf**，
+  端口操作数表初版写 `DBL_MAX` 因此差一行（T-925 的语料里撞到）。
+- **代理报出、由主线程登记的 substrate 缺口**（它们被明令禁止自己改 substrate）：
+  `to!string(结构体)` 无 `toString()` 派发（`format.hpp:139` 是 static_assert）、
+  `eil::Slice<T>` 形参无法表达 D 的动态数组默认实参、无 `readln()`、无 libplot 声明
+  → 归 **T-926**；libplot 那条与既有 **T-921** 同源。
+  代理还报"本文件两处 `Error` 与 `univariatefunctions.cpp:223-230,274` 的写法冲突"——
+  该冲突在本次作业里**已被 T-922 的扫描消掉**（那 11 处裸 `new Error` 不再带 `__FILE__`）。
+- **主线程复核汇总**（不采信自报）：三配置全树 **100/100**
+  （Release / Debug / `-DEIL_SLICE_CHECK=ON`；本轮从 93 起新增 7 条：
+  paver 1、sketch 5、nm_stmatrix_fails 1）；`check_staleness.sh` → `no drift`；
+  `provenance/fidelity.yml` 补 `paver.{hpp,cpp}`、`sketch.{hpp,cpp}` 四条记录后重跑
+  `gen_manifest.py`。`wip/` 目录已空并删除——半成品在门禁下干净落地，没有靠降低标准。

@@ -126,7 +126,7 @@ files:
   d: src/geom/gpath/arc.d
   d_blob: 624e744488664e18de8750c833d22c3daa60a337
   d_lines: 210
-  cpp_lines: 188
+  cpp_lines: 187
   fidelity: exact
   variants: []
   verified_by: []
@@ -142,7 +142,7 @@ files:
   d: src/geom/gpath/bezier.d
   d_blob: 8182a8d1856eaa5bac5b2f5739beb40e645fdf7c
   d_lines: 206
-  cpp_lines: 131
+  cpp_lines: 129
   fidelity: exact
   variants: []
   verified_by: []
@@ -270,7 +270,7 @@ files:
   d: src/geom/gpath/polynomial.d
   d_blob: 1e70d2ea317d4530e4f5679d04e29963f80c84ce
   d_lines: 124
-  cpp_lines: 123
+  cpp_lines: 121
   fidelity: exact
   variants: []
   verified_by: []
@@ -346,6 +346,22 @@ files:
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_grid, 643 of 643 probe rows byte-identical in Debug Release and slice-check, 17 abstract members driven through a base handle]
+- cpp: src/geom/grid/paver.cpp
+  d: src/geom/grid/paver.d
+  d_blob: 35f8624a383058116398d2960caa13024daff46b
+  d_lines: 1737
+  cpp_lines: 1714
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_grid_paver 0 differ, corpus sha256 unchanged during the port, eil::sqrt for `^^0.5' per T-925 proven by rows 145-146, eil::sin/eil::cos per T-920 proven by sec2.lrm*/sec2.ulv* and pave.circle6.* at -O3]
+- cpp: src/geom/grid/paver.hpp
+  d: src/geom/grid/paver.d
+  d_blob: 35f8624a383058116398d2960caa13024daff46b
+  d_lines: 1737
+  cpp_lines: 271
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_grid_paver, 1961 of 1961 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK]
 - cpp: src/geom/grid/paver2d.cpp
   d: src/geom/grid/paver2d.d
   d_blob: 17d53a36f562eecafd90f01bb9b2642be0a6ad4d
@@ -382,7 +398,7 @@ files:
   d: src/geom/misc/nurbs_utils.d
   d_blob: aa6160de704e963f415d2ac37441439666f5f773
   d_lines: 172
-  cpp_lines: 148
+  cpp_lines: 147
   fidelity: exact
   variants: []
   verified_by: []
@@ -394,6 +410,22 @@ files:
   fidelity: exact
   variants: []
   verified_by: []
+- cpp: src/geom/misc/sketch.cpp
+  d: src/geom/misc/sketch.d
+  d_blob: a093e46b9f1d561935197f7cd47068785a742e17
+  d_lines: 964
+  cpp_lines: 1155
+  fidelity: adapted-handles
+  variants: [with_libplot kept uncompiled]
+  verified_by: [ctest:geom_misc_sketch, ctest:demo_equiv_geom_misc_sketch stdout 2 lines, ctest:demo_artifact_geom_misc_sketch_test{, 2, 3} three SVGs byte-identical, 20 final switches kept default-free, 8 throws split Exception-vs-Error per T-922]
+- cpp: src/geom/misc/sketch.hpp
+  d: src/geom/misc/sketch.d
+  d_blob: a093e46b9f1d561935197f7cd47068785a742e17
+  d_lines: 964
+  cpp_lines: 287
+  fidelity: adapted-handles
+  variants: [with_libplot kept uncompiled]
+  verified_by: [ctest:geom_misc_sketch, 682 of 682 probe rows byte-identical, 251 of 251 numerics bit-identical]
 - cpp: src/geom/misc/svg.cpp
   d: src/geom/misc/svg.d
   d_blob: c57326fbd521c28832113515d8ca84d2b36cb24e
@@ -414,7 +446,7 @@ files:
   d: src/geom/misc/univariatefunctions.d
   d_blob: 97d8aa16fbcf15888038a10839dad705645022bc
   d_lines: 833
-  cpp_lines: 691
+  cpp_lines: 681
   fidelity: exact
   variants: []
   verified_by: []
@@ -446,7 +478,7 @@ files:
   d: src/geom/surface/bezierpatch.d
   d_blob: f2f7fd296dd5a92a89f1df79daf5edcd5983db20
   d_lines: 127
-  cpp_lines: 143
+  cpp_lines: 126
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_bezierpatch, throw type object.Error from geom/gpath/bezier.d:19, 22 at D:61, 74, RangeError at D:32, 85, Error "Memory allocation failed" at D:30, ErrnoException text at D:87]
@@ -454,7 +486,7 @@ files:
   d: src/geom/surface/bezierpatch.d
   d_blob: f2f7fd296dd5a92a89f1df79daf5edcd5983db20
   d_lines: 127
-  cpp_lines: 90
+  cpp_lines: 91
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_bezierpatch, 310 of 310 probe rows byte-identical, 2 of 2 D unittest assertions]
@@ -494,7 +526,7 @@ files:
   d: src/geom/surface/controlpointpatch.d
   d_blob: 2620338f1dd69bc6ad3f6dbedefeb024f706f4fb
   d_lines: 340
-  cpp_lines: 305
+  cpp_lines: 292
   fidelity: exact
   variants: []
   verified_by: []
@@ -798,7 +830,7 @@ files:
   d: src/nm/bbla.d
   d_blob: 39501edc2d4d501ce7408503ace383e73ab8be5c
   d_lines: 1108
-  cpp_lines: 1235
+  cpp_lines: 1233
   fidelity: adapted-handles
   variants: [complex_numbers]
   verified_by: [ctest:nm_bbla, 467 quantities bit-identical vs D]
@@ -1054,7 +1086,7 @@ files:
   d: src/nm/smla.d
   d_blob: 581e4644270b42dc56fdaa219febd2c4b417d867
   d_lines: 1505
-  cpp_lines: 1342
+  cpp_lines: 1349
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:nm_smla, gmres/ilu paths bit-identical]
@@ -1097,15 +1129,15 @@ files:
   cpp_lines: 44
   fidelity: adapted-handles
   variants: []
-  verified_by: [ctest:nm_stmatrix]
+  verified_by: [ctest:nm_stmatrix, ctest:nm_stmatrix_fails]
 - cpp: src/nm/stmatrix.hpp
   d: src/nm/stmatrix.d
   d_blob: d70036d2cc6bfe0a38cc9e8e8f56540b92196ca4
   d_lines: 68
-  cpp_lines: 127
+  cpp_lines: 148
   fidelity: adapted-handles
   variants: []
-  verified_by: [ctest:nm_stmatrix]
+  verified_by: [ctest:nm_stmatrix, ctest:nm_stmatrix_fails 7 of 7 failure-path messages byte-identical]
 - cpp: src/util/lua.cpp
   d: src/util/lua.d
   d_blob: b259013da21a9e64c2f7f8a14f7de61946258517
