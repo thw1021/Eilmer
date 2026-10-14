@@ -664,6 +664,25 @@
      不要按 C++ `getline` 的失败流状态直觉写。
   （代理还报了第 4 条"没有 libplot 声明"，那与既有 **T-921** 同源，不另列。）
   → **Wave 3 之前**定形第 1 条（`gas/` 是第一个大量把对象写进消息的包）
+- [ ] **T-928** substrate 缺口：**没有 `std.conv.ConvOverflowException`，整数扫描也没有范围检查**。
+  由 G5 的代理按纪律报出（它不许改 substrate），T-927 的实测表已把规则钉死。现状是**两份互不相同的
+  本地替身**，都在 `src/`：
+  1. `src/geom/grid/usgrid.hpp:96` 定义了真正的 `ConvOverflowException`（派生自
+     `eil::ConversionException`），配 `usgrid.cpp:300` 的 `d_to_int`——**逐位累积时立刻查界**，
+     超界报 `"Overflow in integral conversion"`。这条是被语料钉住的：
+     `geom_grid_usgrid.txt` 行 208（`new USGFace("9999999999999999999 1")`）报的就是这个类，
+     且**必须在 `vtx_id_list.length = …` 分配之前**报（否则变成 OutOfMemoryError，行 207）。
+  2. `src/util/lua_service.hpp:166` 的 `to_int_from_double` 没有那个类，直接 `ExceptionBase`，
+     消息也不同：`"Conversion positive overflow"` / `"Conversion negative overflow"` /
+     `"Input was NaN"`。
+  **关键：两者消息不同不是不一致，而是两条不同的 D 路径**——①是 **string→整数**，②是
+  **数值→整数**（T-927 两份探针分别量到 `…type ulong` 与 `Overflow in integral conversion`）。
+  所以实现时必须**按来源分派**，不许合并成一个通用 overflow 文本；把 ①的范围检查塞进
+  `parse_int_strict`（`substrate/include/eil/conv.hpp:266`）即可，随后删掉 `d_to_int` 与
+  `usgrid.hpp` 的本地类。②那三行文本**保持现状**，只在 substrate 有了类之后把
+  `ExceptionBase` 换成 `ConvOverflowException`（**消息一字不改**）。
+  → **实现窗口**：改 substrate 会重建 `eil_geom`，与在飞的 grid agent 撞，故与 T-926 第 1 条
+  一起在无编译冲突的窗口做；做完必须三配置复跑并给数字（当前 100/100）。
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
