@@ -15,16 +15,23 @@
 //
 // Sections covered by this file, in corpus order (grid brief section 10.5: the gate is
 // all-or-nothing, so the add_test() line is written only when the WHOLE corpus replays at
-// 0 differ; the row ranges below are what has been reached so far):
-//   us.name.*   rows 1-77     USGCell_type tables (usgrid.d:40-110, :278-280)
-//   us.tag.*    rows 78-89    makeFaceTag (D:112)
-//   us.orient.* rows 90-147   sameOrientation (D:134)
-//   us.tstr.*   rows 148-~    the 29 to!string spellings
-//   us.face.*                 USGFace (D:154)
-//   us.cell.*                 USGCell (D:218)
-//   us.bfs.*                  BoundaryFaceSet (D:328)
-//   us.ctor.*                 the blank grid (D:434)
-//   us.str.*                  toString (D:875)
+// 0 differ — which it now does (1393/1393). Groups for rows 1-1252 are documented in the
+// per-function notes below; the tail of the corpus is:
+//   us.imp.*    rows 1253-1267 the import constructor (D:830-846)
+//   us.idx.*    rows 1268-1280, us.conn.* 1281-1282 (D:988-1015, :1028-1037, :1045)
+//   us.sort.*   rows 1283-1284, us.bnd.* 1285-1297, us.blc.* 1298-1300
+//   us.vaf.*    rows 1301-1307, us.split.* 1308-1315, us.link.* 1316
+//   us.join.*   rows 1317-1325, us.stats.* 1326-1337
+//   us.vtxb.*   rows 1338-1339, us.bin.* 1340-1342, us.edge.* 1343-1347
+//   us.unit.*   rows 1348-1360 usgrid.d's own unittest (D:2484-2524)
+//   us.gap.*    rows 1361-1393 the sites nothing else reached
+//
+// MEASURED, and enforced by the rows above: the eight `in` contracts that usgrid.d puts on
+// overrides of grid.d's abstract methods (opIndex D:859-863/:870, get_vtx_id_list_for_cell
+// D:1013-1015/:1031) DO NOT RUN in D, so us.idx.vtx.bad*, us.idx.op.j/k are no-throw rows
+// and the out-of-range calls report the ArrayIndexError raised in the BODY (usgrid.d:872,
+// :1034) rather than an AssertError at the contract line. Those asserts must not be
+// ported as eil_assert. See probe_usgrid.d's MEASURED FINDINGS block, item 1.
 //
 // THROW-IDENTITY ROWS. The probe renders a caught Throwable as
 //   tag|dline=N|class=C|msg=[M]|msgunprint=U|file=[F]|line=L|toString1=[T]|toString1unprint=V
@@ -274,6 +281,12 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         // the port's eil::gzip::ZlibException (src/extern/gzip/gzip.hpp:83) carries the
         // same getmsg() text, and the raise site is Phobos' own (corpus row 863).
         return {"std.zlib.ZlibException", e.msg(), ZLIB_PATH, 98};
+    } catch (const eil::geom::StdioException& e) {
+        // D's buffered File.readln() raises std.stdio.StdioException(strerror(errno)) when
+        // the READ fails, which is not end of file (T-923: EOF returns "" and does not
+        // throw). Corpus row 1267 is the only such site: the directory used as an SU2 file.
+        // std/stdio.d:5171 is Phobos' own raise site, recorded from the corpus.
+        return {"std.stdio.StdioException", e.msg(), STDIO_PATH, 5171};
     } catch (const eil::ExceptionBase& e) {
         // D's std.stdio.File(name, mode) failure is a std.exception.ErrnoException raised
         // at std/stdio.d:624 (corpus rows 864, 1053, 1215, 1241, ...). The port's gzip and
@@ -2680,6 +2693,607 @@ void grp_foam() {
 
 } // namespace
 
+// ------------------------------------------------------------------
+// us.imp.* — the import constructor (usgrid.d:830-846)
+// (probe_usgrid.d:2380-2403; corpus rows 1253-1267)
+// The switch at D:835-842 dispatches on the format name; "vtkxml" and the default arm
+// raise bare Errors (T-922: no site), and the four readers each open the file with their
+// own mode, which is what the missing-file rows spell out. read_from_su2_file prints
+// "Importing: <name> " (D:1390) BEFORE it opens, so row 1257 begins on that fragment.
+// ------------------------------------------------------------------
+void grp_imp() {
+    const std::string good = TD + "/quad_rd.su2";
+    twd("us.imp.vtkxml", 840, USG_PATH, [good]() {
+        UnstructuredGrid q(good, "vtkxml", true);
+    });
+    twd("us.imp.unknown", 841, USG_PATH, [good]() { UnstructuredGrid q(good, "AVS", true); });
+    twd("us.imp.empty-fmt", 841, USG_PATH, [good]() { UnstructuredGrid q(good, "", true); });
+    twd("us.imp.case", 841, USG_PATH,
+        [good]() { UnstructuredGrid q(good, "SU2TEXT", true); });
+    twd("us.imp.missing-su2", 838, USG_PATH,
+        []() { UnstructuredGrid q(TD + "/absent.su2", "su2text", true); });
+    twd("us.imp.missing-gz", 836, USG_PATH,
+        []() { UnstructuredGrid q(TD + "/absent.gz", "gziptext", true); });
+    twd("us.imp.missing-raw", 837, USG_PATH,
+        []() { UnstructuredGrid q(TD + "/absent.bin", "rawbinary", true); });
+    twd("us.imp.missing-vtk", 839, USG_PATH,
+        []() { UnstructuredGrid q(TD + "/absent.vtk", "vtktext", true); });
+    // new_label wins over the label read from the file (D:843). With no label given the
+    // grid keeps the empty one the constructor passed to super.
+    twd("us.imp-label-kept", 843, USG_PATH, [&good]() {
+        UnstructuredGrid g(good, "su2text", true);
+        emit(eil::format("us.imp label kept fromfile=[%s]", g.label));
+    });
+    twd("us.imp-label-given", 843, USG_PATH, [&good]() {
+        UnstructuredGrid g(good, "su2text", true, 1.0, false, "override");
+        emit(eil::format("us.imp label given=[%s] niv=%d njv=%d nkv=%d", g.label, g.niv, g.njv,
+                         g.nkv));
+    });
+    // The data directory itself as the file name: the open succeeds and the first readln
+    // fails, which is D's StdioException rather than a conversion error (row 1267).
+    twd("us.imp-directory", 838, USG_PATH,
+        []() { UnstructuredGrid q(TD, "su2text", true); });
+}
+
+// ------------------------------------------------------------------
+// us.idx.* / us.conn.* — the abstract-table indices (D:988-1015, :1028-1037, :857-873)
+// and get_connected_cell_ids_for_cell (D:1045)
+// (probe_usgrid.d:2419-2479; corpus rows 1268-1282)
+// The eight `in` contracts on overrides of grid.d's abstract methods do NOT run in D
+// (probe MEASURED FINDINGS 1), so us.idx.vtx.bad* and us.idx.op.j/k are no-throw rows and
+// the out-of-range calls report the ArrayIndexError raised in the BODY (usgrid.d:872,
+// :1034), not an AssertError at the contract line.
+// ------------------------------------------------------------------
+
+// probe_usgrid.d:2417-2426 manGrid — faces of the given vertex counts, one boundary set
+// holding every face with outsign +1, vertices populated so get_boundary_grid reaches its
+// face-count asserts (D:1074-1075 copies nvertices before the switch).
+std::shared_ptr<UnstructuredGrid> man_grid(int dims, const std::vector<int>& vtx_per_face,
+                                           const std::string& label = "man") {
+    auto g = std::make_shared<UnstructuredGrid>(dims, label);
+    size_t idx = 0;
+    for (int nv : vtx_per_face) {
+        std::vector<size_t> idl;
+        for (int kk = 0; kk < nv; ++kk) idl.push_back(idx++);
+        eil::Array<size_t> a = ids(idl);
+        g->faces.append(std::make_shared<USGFace>(a.all()));
+    }
+    g->nfaces = g->faces.length();
+    g->nvertices = idx;
+    g->niv = idx;
+    g->njv = 1;
+    g->nkv = 1;
+    for (size_t kk = 0; kk < idx; ++kk) {
+        g->vertices.append(Vector3(static_cast<double>(kk), static_cast<double>(kk), 0.0));
+    }
+    eil::Array<size_t> fids;
+    eil::Array<int> os;
+    for (size_t i = 0; i < g->faces.length(); ++i) {
+        fids.append(i);
+        os.append(1);
+    }
+    g->boundaries.append(std::make_shared<BoundaryFaceSet>("b", fids.all(), os.all()));
+    g->nboundaries = 1;
+    return g;
+}
+
+// probe_usgrid.d:2429-2444 triGrid — one triangle cell, wired by hand.
+std::shared_ptr<UnstructuredGrid> tri_grid(const std::string& label = "tri") {
+    auto g = std::make_shared<UnstructuredGrid>(2, label);
+    g->vertices = eil::Array<Vector3>{Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(0.5, 1.0)};
+    g->nvertices = 3;
+    const size_t fl[3][2] = {{0, 1}, {1, 2}, {2, 0}};
+    for (size_t i = 0; i < 3; ++i) {
+        eil::Array<size_t> a = ids({fl[i][0], fl[i][1]});
+        g->set_face_index(eil::geom::makeFaceTag(a.all()), g->faces.length());
+        g->faces.append(std::make_shared<USGFace>(a.all()));
+    }
+    g->nfaces = 3;
+    eil::Array<size_t> cv = ids({0, 1, 2}), cf = ids({0, 1, 2});
+    eil::Array<int> co = {1, 1, 1};
+    g->cells.append(
+        std::make_shared<USGCell>(USGCell_type::triangle, 0, cv.all(), cf.all(), co.all()));
+    g->ncells = 1;
+    g->nboundaries = 0;
+    g->niv = 3;
+    g->njv = 1;
+    g->nkv = 1;
+    g->link_faces_back_to_cells();
+    return g;
+}
+
+// probe_usgrid.d:2446 usg3d.
+std::shared_ptr<UnstructuredGrid> usg3d(const std::string& label = "u3d") {
+    return std::make_shared<UnstructuredGrid>(*vol_grid3d(label));
+}
+
+void grp_idx() {
+    auto g = tri_grid();
+    emit(eil::format("us.idx.nvfc=%d vtk=%d ctype=%d", g->number_of_vertices_for_cell(0),
+                     g->vtk_element_type_for_cell(0), g->get_cell_type(0)));
+    twd("us.idx.nvfc.oob", 996, USG_PATH, [g]() { g->number_of_vertices_for_cell(99); });
+    twd("us.idx.gettype.oob", 1008, USG_PATH, [g]() { g->get_cell_type(99); });
+    emit(eil::format("us.idx.vtxlist=[%s]", g->get_vtx_id_list_for_cell(size_t(0))));
+    twd("us.idx.vtx.badi", 1013, USG_PATH, [g]() { g->get_vtx_id_list_for_cell(0, 1); });
+    twd("us.idx.vtx.badj", 1014, USG_PATH, [g]() { g->get_vtx_id_list_for_cell(0, 1, 0); });
+    twd("us.idx.vtx.badk", 1015, USG_PATH, [g]() { g->get_vtx_id_list_for_cell(0, 0, 1); });
+    twd("us.idx.vtx.oob", 1031, USG_PATH, 1034,
+        [g]() { g->get_vtx_id_list_for_cell(size_t(99)); });
+    std::array<size_t, 8> cp = prefilled8();
+    size_t nvtx = 0;
+    g->copy_vtx_id_list_for_cell(cp, nvtx, 0);
+    eil::Array<size_t> cpv;
+    for (size_t k = 0; k < 8; ++k) cpv.append(cp[k]);
+    emit(eil::format("us.idx.copy nvtx=%d copy=%s", nvtx, cpv));
+    emit(eil::format("us.idx.op0 %s", (*g->opIndex(size_t(0))).toString()));
+    twd("us.idx.op.i", 870, USG_PATH, 872,
+        [g]() { volatile Vector3* v = g->opIndex(size_t(99)); (void)v; });
+    twd("us.idx.op.j", 861, USG_PATH, 865, [g]() { volatile Vector3* v = g->opIndex(0, 1); (void)v; });
+    twd("us.idx.op.k", 862, USG_PATH, 865,
+        [g]() { volatile Vector3* v = g->opIndex(0, 0, 1); (void)v; });
+}
+
+void grp_conn() {
+    // D:1045 returns connectedCells.keys.dup, whose order is D's associative-array bucket
+    // order. The corpus rows 1281-1282 are the pairs for the first and last cell of a
+    // paved-from-StructuredGrid 2D lattice.
+    auto g = std::make_shared<UnstructuredGrid>(*surf_grid2d("conn"));
+    emit(eil::format("us.conn.cell0=%s", g->get_connected_cell_ids_for_cell(0)));
+    emit(eil::format("us.conn.cellast=%s", g->get_connected_cell_ids_for_cell(g->ncells - 1)));
+}
+
+// ------------------------------------------------------------------
+// us.sort.* — sort_faces_in_boundary_order (D:888) on a real grid (rows 1283-1284)
+// ------------------------------------------------------------------
+void grp_sort() {
+    auto g = std::make_shared<UnstructuredGrid>(*surf_grid2d("sortg"));
+    g->sort_faces_in_boundary_order();
+    std::string ob;
+    for (size_t i = 0; i < g->faces.length(); ++i) {
+        ob += g->faces[i]->is_on_boundary ? "B" : "I";
+    }
+    emit(eil::format("us.sort nfaces=%d ninterior=%d pattern=%s", g->faces.length(),
+                     g->ninteriorfaces, ob));
+    // D:914 reads faces[faceid] for each boundary entry; a dangling id throws there.
+    auto h = man_grid(2, {2, 2});
+    h->boundaries[0]->face_id_list[0] = 99;
+    twd("us.sort.dangling", 914, USG_PATH, [h]() { h->sort_faces_in_boundary_order(); });
+}
+
+// ------------------------------------------------------------------
+// us.bnd.* — get_boundary_grid (D:1057) (rows 1285-1297)
+// ------------------------------------------------------------------
+void grp_bnd() {
+    twd("us.bnd.2d2line", 1057, USG_PATH, []() {
+        auto bg = std::dynamic_pointer_cast<UnstructuredGrid>(
+            man_grid(2, {2})->get_boundary_grid(0));
+        emit(eil::format("us.bnd.2d2line dims=%d nc=%d type=%s", bg->dimensions,
+                         bg->cells.length(), cell_type_text(bg->cells[0]->cell_type)));
+    });
+    twd("us.bnd.3d2quad", 1057, USG_PATH, []() {
+        auto bg = std::dynamic_pointer_cast<UnstructuredGrid>(
+            man_grid(3, {4})->get_boundary_grid(0));
+        emit(eil::format("us.bnd.3d2quad dims=%d nc=%d type=%s", bg->dimensions,
+                         bg->cells.length(), cell_type_text(bg->cells[0]->cell_type)));
+    });
+    twd("us.bnd.3d2tri", 1057, USG_PATH, []() {
+        auto bg = std::dynamic_pointer_cast<UnstructuredGrid>(
+            man_grid(3, {3})->get_boundary_grid(0));
+        emit(eil::format("us.bnd.3d2tri type=%s", cell_type_text(bg->cells[0]->cell_type)));
+    });
+    twd("us.bnd.d2face3", 1086, USG_PATH,
+        []() { man_grid(2, {3})->get_boundary_grid(0); });
+    twd("us.bnd.d2face4", 1090, USG_PATH,
+        []() { man_grid(2, {4})->get_boundary_grid(0); });
+    twd("us.bnd.d3face2", 1082, USG_PATH,
+        []() { man_grid(3, {2})->get_boundary_grid(0); });
+    twd("us.bnd.d3face5", 1094, USG_PATH,
+        []() { man_grid(3, {5})->get_boundary_grid(0); });
+    twd("us.bnd.dims1", 1067, USG_PATH, []() { man_grid(1, {2})->get_boundary_grid(0); });
+    twd("us.bnd.dims0", 1067, USG_PATH, []() { man_grid(0, {2})->get_boundary_grid(0); });
+    twd("us.bnd.idx-oob", 1069, USG_PATH, []() {
+        std::make_shared<UnstructuredGrid>(*surf_grid2d("boob"))->get_boundary_grid(99);
+    });
+}
+
+// ------------------------------------------------------------------
+// us.blc.* — get_list_of_boundary_cells (D:1106), the plain Exception at D:1126
+// (rows 1298-1300)
+// ------------------------------------------------------------------
+void grp_blc() {
+    // A boundary face with outsign +1 but no left_cell: insideCell is null (D:1126).
+    twd("us.blc.nullcell", 1126, USG_PATH,
+        []() { man_grid(2, {2})->get_list_of_boundary_cells(0); });
+    twd("us.blc.ok", 1106, USG_PATH, []() {
+        auto g = std::make_shared<UnstructuredGrid>(*surf_grid2d("blcg"));
+        emit(eil::format("us.blc.ok nbnd=%d bnd0=%s", g->nboundaries,
+                         g->get_list_of_boundary_cells(0)));
+    });
+}
+
+// ------------------------------------------------------------------
+// us.vaf.* — vectorAreaOfFacet (D:1133) / vectorAreaOfCell (D:1167) (rows 1301-1307)
+// ------------------------------------------------------------------
+void grp_vaf() {
+    auto g = std::make_shared<UnstructuredGrid>(*surf_grid2d("vafg"));
+    eil::Array<size_t> v2 = ids({0, 1});
+    eil::Array<size_t> v3 = ids({0, 1, 2});
+    eil::Array<size_t> v4 = ids({0, 1, 2, 3});
+    eil::Array<size_t> v5 = ids({0, 1, 2, 3, 4});
+    emit(eil::format("us.vaf.f2=[%s]", g->vectorAreaOfFacet(v2.all()).toString()));
+    emit(eil::format("us.vaf.f3=[%s]", g->vectorAreaOfFacet(v3.all()).toString()));
+    emit(eil::format("us.vaf.f4=[%s]", g->vectorAreaOfFacet(v4.all()).toString()));
+    emit(eil::format("us.vaf.f5=[%s]", g->vectorAreaOfFacet(v5.all()).toString()));
+    eil::Array<size_t> vempty;
+    eil::Array<size_t> v1 = ids({0});
+    twd("us.vaf.empty", 1136, USG_PATH, [g, vempty]() { g->vectorAreaOfFacet(vempty.all()); });
+    twd("us.vaf.one", 1136, USG_PATH, [g, v1]() { g->vectorAreaOfFacet(v1.all()); });
+    emit(eil::format("us.vaf.cell0=[%s]", g->vectorAreaOfCell(*g->cells[0]).toString()));
+}
+
+// ------------------------------------------------------------------
+// us.split.* — splitTriangleCell (D:1179) (rows 1308-1312)
+// ------------------------------------------------------------------
+void grp_split() {
+    twd("us.split.ok", 1179, USG_PATH, []() {
+        auto g = tri_grid("sp");
+        g->splitTriangleCell(0);
+        emit(eil::format("us.split.ok nv=%d nf=%d nc=%d", g->nvertices, g->faces.length(),
+                         g->cells.length()));
+        for (size_t i = 0; i < g->cells.length(); ++i) {
+            emit(eil::format("us.split.ok cell[%d] %s", i, g->cells[i]->toIOString()));
+        }
+    });
+    twd("us.split.not2d", 1185, USG_PATH,
+        []() { usg3d("sp3")->splitTriangleCell(0); });
+    twd("us.split.notri", 1190, USG_PATH, []() {
+        std::make_shared<UnstructuredGrid>(*surf_grid2d("spq"))->splitTriangleCell(0);
+    });
+    twd("us.split.oobid", 1181, USG_PATH, []() { tri_grid()->splitTriangleCell(99); });
+}
+
+// ------------------------------------------------------------------
+// us.link.* — link_faces_back_to_cells (D:1258), assert at D:1263 (row 1316)
+// ------------------------------------------------------------------
+void grp_link() {
+    auto g = std::make_shared<UnstructuredGrid>(2, "lnk");
+    eil::Array<size_t> f0 = ids({0, 1});
+    g->faces.append(std::make_shared<USGFace>(f0.all()));
+    eil::Array<size_t> cv = ids({0, 1}), cf = ids({0});
+    eil::Array<int> co = {1, -1}; // one face, two outsigns: the D:1263 mismatch
+    g->cells.append(
+        std::make_shared<USGCell>(USGCell_type::line, 0, cv.all(), cf.all(), co.all()));
+    twd("us.link.mismatch", 1263, USG_PATH, [g]() { g->link_faces_back_to_cells(); });
+}
+
+// ------------------------------------------------------------------
+// us.join.* — joinGrid (D:2164): the six count asserts and the outsign throw (D:2342)
+// (probe_usgrid.d:2577-2613; corpus rows 1317-1325)
+// ------------------------------------------------------------------
+void grp_join() {
+    twd("us.join.m_nvtx", 2174, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        m->nvertices = 12345;
+        m->joinGrid(std::make_shared<UnstructuredGrid>(*surf_grid2d("jo")));
+    });
+    twd("us.join.o_nvtx", 2175, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        auto o = std::make_shared<UnstructuredGrid>(*surf_grid2d("jo"));
+        o->nvertices = 54321;
+        m->joinGrid(o);
+    });
+    twd("us.join.m_nface", 2176, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        m->nfaces = 999;
+        m->joinGrid(std::make_shared<UnstructuredGrid>(*surf_grid2d("jo")));
+    });
+    twd("us.join.o_nface", 2177, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        auto o = std::make_shared<UnstructuredGrid>(*surf_grid2d("jo"));
+        o->nfaces = 888;
+        m->joinGrid(o);
+    });
+    twd("us.join.m_ncell", 2178, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        m->ncells = 77;
+        m->joinGrid(std::make_shared<UnstructuredGrid>(*surf_grid2d("jo")));
+    });
+    twd("us.join.o_ncell", 2179, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        auto o = std::make_shared<UnstructuredGrid>(*surf_grid2d("jo"));
+        o->ncells = 66;
+        m->joinGrid(o);
+    });
+    // The genuine same-object join short-circuits at D:2172, so the asserts are not read.
+    twd("us.join.self", 2172, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        emit(eil::format("us.join.self same=%s", m->joinGrid(m) == m ? "true" : "false"));
+    });
+    twd("us.join.badoutsign", 2342, USG_PATH, []() {
+        auto m = std::make_shared<UnstructuredGrid>(*surf_grid2d("jm"));
+        auto o = std::make_shared<UnstructuredGrid>(*surf_grid2d("jo"));
+        o->cells[0]->outsign_list[0] = 5;
+        m->joinGrid(o);
+    });
+}
+
+// ------------------------------------------------------------------
+// us.stats.* — writeStats (D:2416), whose writeln lines are the contract
+// (probe_usgrid.d:2615-2628; corpus rows 1326-1337)
+// ------------------------------------------------------------------
+void grp_stats() {
+    tri_grid("stat_ok")->writeStats();
+    // An open cell: two of the three edges wired, both outsign +1, so the vector-area sum
+    // is non-zero and D prints the per-cell row.
+    auto g = std::make_shared<UnstructuredGrid>(2, "open");
+    g->vertices = eil::Array<Vector3>{Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(0.0, 1.0)};
+    g->nvertices = 3;
+    eil::Array<size_t> a01 = ids({0, 1}), a12 = ids({1, 2});
+    g->faces.append(std::make_shared<USGFace>(a01.all()));
+    g->faces.append(std::make_shared<USGFace>(a12.all()));
+    g->nfaces = 2;
+    g->niv = 3;
+    g->njv = 1;
+    g->nkv = 1;
+    eil::Array<size_t> cv = ids({0, 1, 2}), cf = ids({0, 1});
+    eil::Array<int> co = {1, 1};
+    g->cells.append(
+        std::make_shared<USGCell>(USGCell_type::triangle, 0, cv.all(), cf.all(), co.all()));
+    g->ncells = 1;
+    g->nboundaries = 0;
+    g->writeStats();
+}
+
+// ------------------------------------------------------------------
+// us.vtxb.* — getVertexIdsOnBoundaries (D:2450) (rows 1338-1339)
+// ------------------------------------------------------------------
+void grp_vtxb() {
+    emit(eil::format("us.vtxb.2d=%s",
+                     std::make_shared<UnstructuredGrid>(*surf_grid2d("vtxb"))
+                         ->getVertexIdsOnBoundaries()));
+    emit(eil::format("us.vtxb.3d=%s", usg3d("vtxb3")->getVertexIdsOnBoundaries()));
+}
+
+// ------------------------------------------------------------------
+// us.bin.* — the inherited bin sort and enclosure search (grid.d:277, :320) (rows
+// 1340-1342)
+// ------------------------------------------------------------------
+void grp_bin() {
+    twd("us.bin.nbin0", 284, GRID_PATH, []() { usg3d("bin0")->sort_cells_into_bins(0, 5); });
+    twd("us.bin.sort", 277, GRID_PATH, []() {
+        auto g = usg3d("bin3");
+        g->sort_cells_into_bins(3, 3, 2);
+        Vector3 p = g->cell_barycentre(0);
+        size_t indx = 0;
+        bool found = false;
+        g->find_enclosing_cell(p, indx, found);
+        emit(eil::format("us.bin.sort nbx=%d nby=%d nbz=%d found=%s indx=%d", g->nbx, g->nby,
+                         g->nbz, found ? "true" : "false", indx));
+    });
+}
+
+// ------------------------------------------------------------------
+// us.edge.* — the D:881 size_t underflow and the out-of-enum cell type (rows 1343-1347)
+// (probe_usgrid.d:2663-2676)
+// ------------------------------------------------------------------
+void grp_edge() {
+    // toString (D:875-886) indexes faces[$-1]; with vertices present and faces empty, $-1
+    // underflows. D evaluates the two subscripts of the format call left to right, so the
+    // reported index is the vertices one first and then the underflowed faces one
+    // (T-927's evaluation-order note; sgrid.cpp toString hit the same).
+    auto g = std::make_shared<UnstructuredGrid>(2, "underflow");
+    g->vertices = eil::Array<Vector3>{Vector3(0.0, 0.0)};
+    g->nvertices = 1;
+    twd("us.edge.faces_underflow", 881, USG_PATH,
+        [g]() { emit(eil::format("us.edge.under=[%s]", g->toString())); });
+    auto g2 = std::make_shared<UnstructuredGrid>(*surf_grid2d("eoob"));
+    twd("us.edge.cell_oob", 1031, USG_PATH, 1034,
+        [g2]() { g2->get_vtx_id_list_for_cell(size_t(99999)); });
+    eil::Array<size_t> cv = ids({0, 1}), cf = ids({2});
+    eil::Array<int> co = {1};
+    auto c = std::make_shared<USGCell>(static_cast<USGCell_type>(99), 1, cv.all(), cf.all(),
+                                       co.all());
+    twd("us.edge.oobtype.io", 304, USG_PATH,
+        [c]() { emit(eil::format("us.edge.oobtype.io=[%s]", c->toIOString())); });
+    emit(eil::format("us.edge.oobtype.tostring=[%s]", cell_type_text(static_cast<USGCell_type>(99))));
+    emit(eil::format("us.edge.oobtype.cellrepr=[%s]", c->toString()));
+}
+
+// ------------------------------------------------------------------
+// us.unit.* — usgrid.d's own unittest (D:2484-2524) replayed row by row
+// (probe_usgrid.d:2677-2718; corpus rows 1348-1359)
+// ------------------------------------------------------------------
+void grp_unit() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    auto my_patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf = {std::make_shared<LinearFunction>(), std::make_shared<LinearFunction>(),
+                   std::make_shared<LinearFunction>(), std::make_shared<LinearFunction>()};
+    auto my_grid = std::make_shared<StructuredGrid>(*my_patch, 11, 21, cf);
+    my_grid->set_tag(Face::north, "my-special-boundary");
+    const std::string repr = my_grid->toString();
+    emit(eil::format("us.unit.writeln my_grid=%s", repr));
+    emit(eil::format("us.unit.a1.canFind=%s",
+                     repr.find("my-special-boundary") != std::string::npos ? "true" : "false"));
+    emit(eil::format("us.unit.a2.approx=%s",
+                     approxEqualVectors(*my_grid->opIndex(5, 5), Vector3(0.5, 0.35)) ? "true"
+                                                                                     : "false"));
+    emit(eil::format("us.unit.writeln grid point 5 5 at x=%s y=%s", my_grid->opIndex(5, 5)->x,
+                     my_grid->opIndex(5, 5)->y));
+
+    auto usg = std::make_shared<UnstructuredGrid>(*my_grid);
+    const std::string usg_repr = usg->toString();
+    emit(eil::format("us.unit.writeln usg=%s", usg_repr));
+    emit(eil::format("us.unit.a3.canFind=%s",
+                     usg_repr.find("my-special-boundary") != std::string::npos ? "true"
+                                                                               : "false"));
+    usg->sort_cells_into_bins(10, 10);
+    const Vector3 my_point(0.55, 0.325);
+    size_t cell_indx = 0;
+    bool found = false;
+    usg->find_enclosing_cell(my_point, cell_indx, found);
+    emit(eil::format("us.unit.writeln Search for cell enclosing my_point= %s",
+                     my_point.toString()));
+    if (found) {
+        emit(eil::format("us.unit.writeln     cell found, index= %d", cell_indx));
+        emit(eil::format("us.unit.writeln     cell barycentre= %s",
+                         usg->cell_barycentre(cell_indx).toString()));
+    } else {
+        emit("us.unit.writeln     cell not found");
+    }
+    emit(eil::format("us.unit.a4.found=%s", found == true ? "true" : "false"));
+    emit(eil::format("us.unit.a5.cell_indx=%d", cell_indx));
+    emit(eil::format("us.unit.a6.approx=%s",
+                     approxEqualVectors(usg->cell_barycentre(cell_indx), Vector3(0.55, 0.325))
+                         ? "true"
+                         : "false"));
+    // probe_usgrid.d:2719 — this row closes the unittest section and precedes us.gap.*,
+    // so it is emitted at the end of this group rather than in grp_gap.
+    emit("us.end.ok");
+}
+
+// ------------------------------------------------------------------
+// us.gap.* — the sites nothing else reached (probe_usgrid.d:2721-2955; rows 1361-1393)
+// ------------------------------------------------------------------
+void grp_gap() {
+    // --- D:1690 "invalid cell type in 3D": a quad (VTK 9) inside a 3D mesh routes
+    // through hex_cell_properties (grid.d:155) and reaches the 3D face switch.
+    const std::string q3 = TD + "/quad_in3d.su2";
+    mkr(q3, su2_join({
+        "NDIME= 3", "", "NELEM= 1",
+        "9 0 1 2 3 0",
+        "", "NPOIN= 4",
+        "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "1.0 1.0 0.0 2", "0.0 1.0 0.0 3",
+        "", "NMARK= 1",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "9 0 1 2 3", ""}));
+    twd("us.gap.1690 quad in 3d", 1690, USG_PATH,
+        [&q3]() { UnstructuredGrid q(q3, "su2text", true); });
+    // --- D:1656 is unreachable: the 2D orientation loop rejects the type at D:1544.
+    const std::string l2 = TD + "/line_in2d.su2";
+    mkr(l2, su2_join({
+        "NDIME= 2", "", "NELEM= 1",
+        "3 0 1 0",
+        "", "NPOIN= 2", "0.0 0.0 0", "1.0 0.0 1",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""}));
+    twd("us.gap.1656 line in 2d", 1656, USG_PATH, 1544,
+        [&l2]() { UnstructuredGrid q(l2, "su2text", true); });
+    // --- D:1611 "invalid number of corners on face": unreachable, the corner lists are
+    // literals of 2, 3 or 4. The pyramid read shows which ones are used.
+    twd("us.gap.1611 pyramid ok", 1611, USG_PATH, []() {
+        const std::string pyr = TD + "/pyr.su2";
+        mkr(pyr, su2_pyramid());
+        UnstructuredGrid g(pyr, "su2text", true);
+        eil::Array<size_t> lens;
+        for (size_t i = 0; i < g.faces.length(); ++i) lens.append(g.faces[i]->vtx_id_list.length());
+        emit(eil::format("us.gap.1611 faces=%s", lens));
+    });
+    // --- D:543 "paver generated a non-quad cell": unreachable, both degenerate
+    // boundaries end in paver.d's own AssertError / Error instead.
+    twd("us.gap.543 triangle boundary", 543, PAVER_PATH, 576, []() {
+        eil::Array<Vector3> bd = {Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(0.5, 0.5)};
+        eil::Array<BoundaryFaceSetPtr> none;
+        UnstructuredGrid g(bd, none, "tri3");
+        eil::Array<std::string> t;
+        for (size_t i = 0; i < g.cells.length(); ++i) t.append(cell_type_text(g.cells[i]->cell_type));
+        emit(eil::format("us.gap.543 types=%s", t));
+    });
+    twd("us.gap.543 five points", 543, PAVER_PATH, 576, []() {
+        eil::Array<Vector3> bd = {Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(1.0, 1.0),
+                                  Vector3(0.5, 1.5), Vector3(0.0, 1.0)};
+        eil::Array<BoundaryFaceSetPtr> none;
+        UnstructuredGrid g(bd, none, "penta5");
+        eil::Array<std::string> t;
+        for (size_t i = 0; i < g.cells.length(); ++i) t.append(cell_type_text(g.cells[i]->cell_type));
+        emit(eil::format("us.gap.543 types=%s", t));
+    });
+    // --- D:963 is unreachable: D:921's ninteriorfaces underflow indexes faces first.
+    twd("us.gap.963 double listed", 963, USG_PATH, 933, []() {
+        auto g = hand_quad2d("gap963");
+        g->boundaries[1]->face_id_list.append(0);
+        g->boundaries[1]->outsign_list.append(1);
+        g->sort_faces_in_boundary_order();
+    });
+    // --- D:2001 / D:2008: the openFoam outsign-consistency asserts. Emptying the
+    // boundary sets makes sort_faces_in_boundary_order itself throw (D:961), which is what
+    // the "flipped" row witnesses: the whole sequence is inside the one delegate at
+    // probe_usgrid.d:2786-2791, so the sort call must not be hoisted out of the twd.
+    {
+        const std::string quad_rd = TD + "/quad_rd.su2";
+        twd("us.gap.2001 or 2008 flipped", 2008, USG_PATH, 961, [&quad_rd]() {
+            auto g = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+            g->boundaries.set_length(0);
+            g->nboundaries = 0;
+            g->sort_faces_in_boundary_order();
+            g->write_openFoam_polyMesh(TD + "/gap2001");
+        });
+    }
+    const std::string quad_rd = TD + "/quad_rd.su2";
+    auto gsign = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+    gsign->cells[0]->outsign_list[0] = -gsign->cells[0]->outsign_list[0];
+    twd("us.gap.2008 outward", 2008, USG_PATH,
+        [gsign]() { gsign->write_openFoam_polyMesh(TD + "/gap2008"); });
+    auto gsign2 = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+    for (size_t i = 0; i < gsign2->faces.length(); ++i) {
+        USGFace& f = *gsign2->faces[i];
+        if (f.left_cell != nullptr && f.right_cell == nullptr) {
+            for (size_t j = 0; j < f.left_cell->face_id_list.length(); ++j) {
+                if (f.left_cell->face_id_list[j] == i) f.left_cell->outsign_list[j] = -1;
+            }
+            break;
+        }
+    }
+    twd("us.gap.2001 inward", 2001, USG_PATH, 2008,
+        [gsign2]() { gsign2->write_openFoam_polyMesh(TD + "/gap2001"); });
+    // --- D:2334 is unreachable while its sibling D:2338 fires.
+    const std::string leftf = TD + "/quad_left.su2";
+    const std::string rightf = TD + "/quad_right.su2";
+    mkr(leftf, su2_left_block());
+    mkr(rightf, su2_right_block());
+    {
+        auto gj1 = std::make_shared<UnstructuredGrid>(leftf, "su2text", true);
+        auto gj2 = std::make_shared<UnstructuredGrid>(rightf, "su2text", true);
+        gj2->cells[0]->outsign_list[1] = -gj2->cells[0]->outsign_list[1];
+        twd("us.gap.2334 left clash", 2334, USG_PATH, [gj1, gj2]() { gj1->joinGrid(gj2); });
+    }
+    {
+        auto gj3 = std::make_shared<UnstructuredGrid>(leftf, "su2text", true);
+        auto gj4 = std::make_shared<UnstructuredGrid>(rightf, "su2text", true);
+        gj4->cells[0]->outsign_list[0] = -gj4->cells[0]->outsign_list[0];
+        twd("us.gap.2338 right clash", 2338, USG_PATH, [gj3, gj4]() { gj3->joinGrid(gj4); });
+    }
+    // --- D:821/822/823 are unreachable: grid.d:71 single_index's in-contract fires first,
+    // and it is not an abstract override, so the counts stay self-consistent.
+    twd("us.gap.821 wrong niv", 821, USG_PATH, []() {
+        auto sg = surf_grid2d("gap821");
+        emit(eil::format("us.gap.821 src niv=%d njv=%d vlen=%d", sg->niv, sg->njv,
+                         sg->vertices.length()));
+        sg->niv = 4;
+        UnstructuredGrid q(*sg, "gap821u");
+        emit(eil::format("us.gap.821 built nv=%d vlen=%d nf=%d flen=%d", q.nvertices,
+                         q.vertices.length(), q.nfaces, q.faces.length()));
+    });
+    twd("us.gap.822 wrong njv", 822, USG_PATH, []() {
+        auto sg = surf_grid2d("gap822");
+        sg->njv = 3;
+        UnstructuredGrid q(*sg, "gap822u");
+        emit(eil::format("us.gap.822 built nf=%d flen=%d nc=%d clen=%d", q.nfaces,
+                         q.faces.length(), q.ncells, q.cells.length()));
+    });
+    // --- the .dup of a returned vertex id list (D:1018, :1034) is a real copy.
+    auto gd = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+    eil::Array<size_t> v1 = gd->get_vtx_id_list_for_cell(size_t(0));
+    eil::Array<size_t> v2 = gd->get_vtx_id_list_for_cell(0, 0, 0);
+    v1[0] = 9999;
+    v2[1] = 8888;
+    emit(eil::format("us.gap.dup v1=%s v2=%s cell=%s", v1, v2, gd->cells[0]->vtx_id_list));
+    std::array<size_t, 8> tail = prefilled8();
+    size_t nvt = 3;
+    gd->copy_vtx_id_list_for_cell(tail, nvt, 0);
+    eil::Array<size_t> tailv;
+    for (size_t k = 0; k < 8; ++k) tailv.append(tail[k]);
+    emit(eil::format("us.gap.copy nvtx=%d tail=%s", nvt, tailv));
+    emit(eil::format("us.gap.ijk j=1 k=7 gives=%s", gd->get_vtx_id_list_for_cell(1, 1, 7)));
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::fprintf(stderr, "usage: %s <baseline.txt>\n", argv[0]);
@@ -2715,6 +3329,22 @@ int main(int argc, char** argv) {
     grp_vtk();
     grp_stl();
     grp_foam();
+    grp_imp();
+    grp_idx();
+    grp_conn();
+    grp_sort();
+    grp_bnd();
+    grp_blc();
+    grp_vaf();
+    grp_split();
+    grp_link();
+    grp_join();
+    grp_stats();
+    grp_vtxb();
+    grp_bin();
+    grp_edge();
+    grp_unit();
+    grp_gap();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);

@@ -120,16 +120,25 @@ struct DFileGuard {
 
 // D's f.readln(): the line without its terminator; null at EOF, which D's callers
 // immediately .strip().split() — an empty token list.
+// A FAILED READ is not EOF: D's buffered std.stdio.File raises StdioException(strerror
+// (errno)) out of readln, witnessed by corpus row 1267 (us.imp-directory, reading the
+// directory /tmp/probe_usg_dir as an SU2 file — glibc's fopen succeeds on a directory and
+// the first read fails with EISDIR). A true end of file still returns the empty line and
+// does not throw (T-923), which is what the eof rows in us.gz.*/us.raw.*/us.su2rd.* depend
+// on, so the two cases are told apart by the stream error indicator, not by EOF.
 std::string d_readln(std::FILE* f, bool& at_eof) {
     std::string out;
+    errno = 0;
     int c = std::fgetc(f);
     if (c == EOF) {
+        if (ferror(f)) throw eil::geom::StdioException(std::strerror(errno));
         at_eof = true;
         return out;
     }
     while (c != EOF && c != '\n') {
         out += static_cast<char>(c);
         c = std::fgetc(f);
+        if (c == EOF && ferror(f)) throw eil::geom::StdioException(std::strerror(errno));
     }
     if (!out.empty() && out.back() == '\r') out.pop_back();
     at_eof = (c == EOF);
