@@ -14,11 +14,11 @@
 
 | 指标 | 值 |
 |---|---|
-| 已转写 C++ 模块头文件 | **68** 个（`find src -name '*.hpp'`） |
-| C++ 源码行（src + substrate） | **22,356** |
+| 已转写 C++ 模块头文件 | **74** 个（`find src -name '*.hpp'`） |
+| C++ 源码行（src + substrate） | **25,213** |
 | 测试/demo 行 | **22,077** |
-| D 对照语料总行数 | **62,423**（`cat baselines/e587b235/probes/*.txt`） |
-| CTest | **77 个测试，Release 77/77、Debug 76/76、`-DEIL_SLICE_CHECK=ON` 76/76** |
+| D 对照语料总行数 | **78,136**（`cat baselines/e587b235/probes/*.txt`） |
+| CTest | **87 个测试：Debug 87/87、`-DEIL_SLICE_CHECK=ON` 87/87、Release 86/87**（唯一红行是 `geom_grid_grid` 行 178 的 Release-only NaN 符号位，已立案 T-919 且**故意不销**） |
 | 溯源 | `provenance/manifest.yml` 每条带 `d_blob`；`tools/check_staleness.sh` → `no drift` |
 | gdtk 树写入 | **0**（探针一律编 `/tmp/gdtk_shadow` 副本） |
 
