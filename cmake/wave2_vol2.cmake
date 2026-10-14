@@ -24,3 +24,18 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_volume_sweptsurfacevolume.
                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_volume_sweptsurfacevolume.txt)
 endif()
 
+# --- geom/volume/wedgevolume.d (T-012) --------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/geom/volume/wedgevolume.cpp)
+  target_sources(eil_geom PRIVATE src/geom/volume/wedgevolume.cpp)
+endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_volume_wedgevolume.cpp)
+  add_executable(test_geom_volume_wedgevolume
+                 tests/test_geom_volume_wedgevolume.cpp)
+  target_link_libraries(test_geom_volume_wedgevolume
+                        PRIVATE eil_geom eil_nm eil_substrate)
+  add_test(NAME geom_volume_wedgevolume
+           COMMAND test_geom_volume_wedgevolume
+                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_volume_wedgevolume.txt)
+endif()
+
