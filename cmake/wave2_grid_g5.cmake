@@ -32,11 +32,10 @@ endif()
 #
 # Gate for the corpus replay (put in place when the row count reaches 0 differ):
 #
-# if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_usgrid.cpp)
-#   add_executable(test_geom_grid_usgrid tests/test_geom_grid_usgrid.cpp)
-#   target_link_libraries(test_geom_grid_usgrid PRIVATE eil_geom eil_nm eil_substrate)
-#   # The corpus path is argv[1] (wave-01 lesson 3).
-#   add_test(NAME geom_grid_usgrid
-#            COMMAND test_geom_grid_usgrid
-#                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_usgrid.txt)
-# endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_usgrid.cpp)
+  add_executable(test_geom_grid_usgrid tests/test_geom_grid_usgrid.cpp)
+  target_link_libraries(test_geom_grid_usgrid PRIVATE eil_geom eil_nm eil_substrate)
+  # add_test(NAME geom_grid_usgrid
+  #          COMMAND test_geom_grid_usgrid
+  #                  ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/geom_grid_usgrid.txt)
+endif()

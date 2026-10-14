@@ -87,6 +87,18 @@ namespace geom {
 // forward-declares UnstructuredGrid the same way.
 class StructuredGrid;
 
+// std.conv.ConvOverflowException — the overflow child of std.conv.ConvException
+// (substrate/include/eil/error.hpp:142 declares only the parent, and eil/conv.hpp:244-259
+// has no range check, so `to!int` of an out-of-range string currently cannot be reproduced
+// from substrate; SUBSTRATE GAP, reported to the main thread for a T-9xx entry).
+// Declared here because this stage may not modify substrate/**. The only corpus row that
+// reaches it is us.face.str.bigcount (row 208); d_to_int() in usgrid.cpp raises it.
+class ConvOverflowException : public eil::ConversionException {
+  public:
+    explicit ConvOverflowException(const std::string& message)
+        : eil::ConversionException(message) {}
+};
+
 // ---- usgrid.d:40-60: the cell-type tag tables ----
 // D:40-53 `enum USGCell_type`. `: int` is D's default enum base and the house
 // spelling; the declaration in src/geom/grid/paver2d.hpp:114 must keep matching.
@@ -116,6 +128,44 @@ USGCell_type cell_type_from_name(const std::string& name); // D:94
 // us.name.tenum[-1], us.name.tenum[2147483647]). The port renders that text here
 // rather than in substrate (no substrate edit is allowed from a stage).
 USGCell_type to_usg_cell_type(int v);
+
+// ---- D's associative-array ITERATION ORDER, reproduced (port-local) ----
+// Two corpus rows print the raw key order of an associative array —
+// us.dup.faceidx.aaord (row 327) and us.sg2d.fidx.aaord — and D:1054
+// (`connectedCells.keys.dup`) returns an array whose order is that same artefact
+// (corpus rows us.conn.cell0 = [0, 4, 1], us.conn.cellast = [7, 10, 11], which are NOT
+// sorted). substrate's eil::AA is a std::map (substrate/include/eil/aa.hpp:20-22 records
+// why: druntime randomises its hash seed per process), so the order has to be recomputed
+// here. Measured against this very ldc2 1.40.0 / druntime (core/internal/newaa.d:69-77
+// `mix`, :100-102 and :122-130 `findSlotInsert`, core/internal/hash.d:720-770 murmur32),
+// and validated on 12 key sets (7 integral, 2 string, 1 eight-element with a 1e12 key, 1
+// uint, 1 string-six) whose printed orders all match the model below:
+//   hash  : the key itself for integral keys (measured hashOf(10) == 10);
+//           std.digest murmurHash3-32 of the bytes, seed 0, for string keys
+//           (measured hashOf("0-1") == 0x8700d778);
+//   mix   : MurmurHash2's finaliser on 64 bits — h ^= h>>13; h *= 0x5bd1e995; h ^= h>>15;
+//   table : 8 buckets, x4 while (n*5 > dim*4)  (GROW_FAC/GROW_NUM/GROW_DEN);
+//   slot  : open addressing, i = (hash + 1 + 2 + ... + j) & (dim-1)  (quadratic probing);
+//   order : ascending bucket index, skipping empty slots.
+size_t d_aa_hash(size_t key);                       // identity, measured
+size_t d_aa_hash(const std::string& key);           // murmur32, seed 0
+size_t d_aa_mix(size_t h);                          // MurmurHash2 finaliser
+size_t d_aa_bucket_count(size_t n);                 // 8, x4 while n*5 > dim*4
+template <typename K> eil::Array<K> d_aa_key_order(const eil::Array<K>& insertion_order) {
+    const size_t dim = d_aa_bucket_count(insertion_order.length());
+    eil::Array<long> slot_key(dim);                    // key index per bucket, -1 = empty
+    for (size_t i = 0; i < dim; ++i) slot_key[i] = -1;
+    for (size_t k = 0; k < insertion_order.length(); ++k) {
+        size_t i = d_aa_mix(d_aa_hash(insertion_order[k])) & (dim - 1);
+        for (size_t j = 1; slot_key[i] >= 0; ++j) i = (i + j) & (dim - 1);
+        slot_key[i] = static_cast<long>(k);
+    }
+    eil::Array<K> out;
+    for (size_t i = 0; i < dim; ++i) {
+        if (slot_key[i] >= 0) out.append(insertion_order[static_cast<size_t>(slot_key[i])]);
+    }
+    return out;
+}
 
 // ---- usgrid.d:112-152: the two free helpers ----
 // D:112 `string makeFaceTag(const size_t[] vtx_id_list)`. Signature kept exactly as
@@ -208,6 +258,15 @@ class UnstructuredGrid : public Grid {
     size_t nfaces = 0, nboundaries = 0, ninteriorfaces = 0; // D:426
     eil::Array<USGFacePtr> faces;                            // D:427
     eil::AA<std::string, size_t> faceIndices;                // D:430 size_t[string]
+    // Port-local, no D counterpart: the order in which keys were FIRST inserted into
+    // faceIndices, because that is what fixes D's AA bucket layout (d_aa_key_order above;
+    // corpus rows us.dup.faceidx.aaord and us.sg2d.fidx.aaord, which a std::map cannot
+    // answer). Every insert site in usgrid.cpp goes through set_face_index(); the single
+    // path this file cannot hook is paver2d::fill_interior (stage G3's header takes
+    // eil::AA<std::string, size_t>& by reference), reconciled at its call site (D:502).
+    eil::Array<std::string> faceIndices_insertion;
+    void set_face_index(const std::string& tag, size_t idx); // D: `faceIndices[tag] = idx`
+    eil::Array<std::string> d_face_indices_raw_key_order() const;
     eil::Array<USGCellPtr> cells;                            // D:431
     eil::Array<std::shared_ptr<BoundaryFaceSet>> boundaries; // D:432
 

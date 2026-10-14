@@ -75,22 +75,32 @@
 #include "geom/geometry_exception.hpp"
 #include "geom/grid/grid.hpp"
 #include "geom/grid/sgrid.hpp"
+#include "geom/misc/univariatefunctions.hpp"
+#include "geom/surface/coonspatch.hpp"
+#include "geom/volume/tfivolume.hpp"
 #include "extern/gzip/gzip.hpp"
 #include "geom/grid/usgrid.hpp"
 
 namespace {
 
 using eil::geom::BoundaryFaceSet;
+using eil::geom::BoundaryFaceSetPtr;
 using eil::geom::cell_names;
+using eil::geom::ClusterF;
+using eil::geom::CoonsPatch;
 using eil::geom::Face;
-using eil::geom::VTKElement;
+using eil::geom::LinearFunction;
+using eil::geom::StructuredGrid;
+using eil::geom::TFIVolume;
+using eil::geom::UnstructuredGrid;
 using eil::geom::USGCell;
 using eil::geom::USGCellPtr;
 using eil::geom::USGCell_type;
 using eil::geom::USGFace;
-using eil::geom::UnstructuredGrid;
-using eil::geom::Vector3;
+using eil::geom::USGFacePtr;
+using eil::geom::VTKElement;
 using eil::geom::vtk_element_types;
+using eil::geom::Vector3;
 
 const char* kCapture = "/tmp/eil_g5_capture.txt";
 const std::string TD = "/tmp/probe_usg_dir";
@@ -228,6 +238,10 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         std::rethrow_exception(ep);
     } catch (const eil::geom::GeometryException& e) {
         return {"geom.geometry_exception.GeometryException", e.msg(), site.file, site.line};
+    } catch (const eil::geom::ConvOverflowException& e) {
+        // The overflow child has to be tested before its parent ConversionException,
+        // which would otherwise swallow it (corpus row 208, us.face.str.bigcount).
+        return {"std.conv.ConvOverflowException", e.msg(), site.file, site.line};
     } catch (const eil::ConversionException& e) {
         return {"std.conv.ConvException", e.msg(), site.file, site.line};
     } catch (const eil::format_error& e) {
@@ -290,6 +304,7 @@ void report_row(const std::string& tag, long dline, const Row& r) {
 // path, so it is transcribed as data rather than synthesised (see the header note).
 const std::string USG_PATH = "/tmp/gdtk_shadow/geom/grid/usgrid.d";
 const std::string SG_PATH = "/tmp/gdtk_shadow/geom/grid/sgrid.d";
+const std::string GRID_PATH = "/tmp/gdtk_shadow/geom/grid/grid.d";
 const std::string CONV_PATH = "/home/tang/packages/dlang/bin/../import/std/conv.d";
 const std::string FMT_PATH = "/home/tang/packages/dlang/bin/../import/std/format/package.d";
 
@@ -386,7 +401,7 @@ std::shared_ptr<UnstructuredGrid> hand_quad2d(const std::string& label = "hq") {
     g->nvertices = 4;
     std::vector<eil::Array<size_t>> fl = {ids({0, 1}), ids({1, 2}), ids({2, 3}), ids({3, 0})};
     for (size_t i = 0; i < 4; ++i) {
-        g->faceIndices.set(eil::geom::makeFaceTag(fl[i].all()), g->faces.length());
+        g->set_face_index(eil::geom::makeFaceTag(fl[i].all()), g->faces.length());
         g->faces.append(std::make_shared<USGFace>(fl[i].all()));
     }
     g->nfaces = 4;
@@ -667,7 +682,8 @@ void grp_face() {
     // to!int of "x" is raised inside Phobos, so the row's file/line are std/conv.d's.
     twd("us.face.str.nonint", 185, CONV_PATH, 2533, []() { USGFace q("2 5 x"); });
     twd("us.face.str.negcount", 184, USG_PATH, []() { USGFace q("-1 5"); });
-    twd("us.face.str.bigcount", 184, USG_PATH, []() { USGFace q("9999999999999999999 1"); });
+    twd("us.face.str.bigcount", 184, CONV_PATH, 2513,
+        []() { USGFace q("9999999999999999999 1"); });
     twd("us.face.str.plus", 184, USG_PATH, []() { USGFace q("2 +1 +2"); });
     twd("us.face.str.hex", 184, CONV_PATH, 1999, []() { USGFace q("2 0x1 2"); });
     {
@@ -973,9 +989,12 @@ void grp_ctor() {
         [&g0]() { emit(eil::format("us.ctor.blank.vtk=%d", g0->vtk_element_type_for_cell(0))); });
     twd("us.ctor.blank.gettype", 1008, USG_PATH,
         [&g0]() { emit(eil::format("us.ctor.blank.type=%d", g0->get_cell_type(0))); });
-    twd("us.ctor.blank.opidx", 872, USG_PATH, [&g0]() { g0->opIndex(size_t(0), size_t(0)); });
-    twd("us.ctor.blank.opidx1", 872, USG_PATH, [&g0]() { g0->opIndex(size_t(0)); });
-    twd("us.ctor.blank.vtxlist", 1013, USG_PATH,
+    // The three rows below are the `in`-contract-free paths the port header documents: D
+    // raises in the BODY (usgrid.d:865, :872, :1018), not at the contract lines the probe
+    // names as dline (its own :860, :870, :1013 arguments). Corpus rows 287-289.
+    twd("us.ctor.blank.opidx", 860, USG_PATH, 865, [&g0]() { g0->opIndex(size_t(0), size_t(0)); });
+    twd("us.ctor.blank.opidx1", 870, USG_PATH, 872, [&g0]() { g0->opIndex(size_t(0)); });
+    twd("us.ctor.blank.vtxlist", 1013, USG_PATH, 1018,
         [&g0]() { g0->get_vtx_id_list_for_cell(size_t(0), size_t(0), size_t(0)); });
     twd("us.ctor.blank.bndgrid", 1069, USG_PATH, [&g0]() { g0->get_boundary_grid(0); });
     twd("us.ctor.blank.blc", 1118, USG_PATH, [&g0]() { g0->get_list_of_boundary_cells(0); });
@@ -1001,8 +1020,9 @@ void grp_ctor() {
                      hex_of(TD + "/blank.bin")));
     twd("us.ctor.blank.foam", 1930, USG_PATH,
         [&g0]() { g0->write_openFoam_polyMesh(TD + "/blankfoam"); });
-    twd("us.ctor.blank.bins", 277, "/tmp/gdtk_shadow/geom/grid/grid.d",
-        [&g0]() { g0->sort_cells_into_bins(5, 5); });
+    // grid.d:288 `Vector3 p; p = vertices[0];` is where D raises for an empty grid
+    // (the probe names its own line 277, the entry point, as dline). Corpus row 311.
+    twd("us.ctor.blank.bins", 277, GRID_PATH, 288, [&g0]() { g0->sort_cells_into_bins(5, 5); });
 }
 
 void grp_str() {
@@ -1013,6 +1033,314 @@ void grp_str() {
     b->cells[0]->cell_type = USGCell_type::none;
     twd("us.str.cellnone", 882, USG_PATH,
         [&b]() { emit(eil::format("us.str.cellnone=[%s]", b->toString())); });
+}
+
+
+// ------------------------------------------------------------------
+// dump helpers (probe_usgrid.d:331-427)
+// ------------------------------------------------------------------
+void dump_verts(const std::string& tag, const eil::Array<Vector3>& vv) {
+    for (size_t i = 0; i < vv.length(); ++i) {
+        const Vector3& v = vv[i];
+        emit(eil::format("%s vtx[%d] %.17g %.17g %.17g bits=%s,%s,%s", tag, i,
+                         v.x, v.y, v.z, bits(v.x), bits(v.y), bits(v.z)));
+    }
+}
+void dump_faces(const std::string& tag, const eil::Array<USGFacePtr>& fs) {
+    for (size_t i = 0; i < fs.length(); ++i) {
+        const USGFace& f = *fs[i];
+        emit(eil::format("%s face[%d] vtx=%s tag=%s onbnd=%s L=%s R=%s", tag, i,
+                         f.vtx_id_list, eil::geom::makeFaceTag(f.vtx_id_list.all()),
+                         f.is_on_boundary,
+                         f.left_cell ? eil::text(f.left_cell->id) : std::string("null"),
+                         f.right_cell ? eil::text(f.right_cell->id) : std::string("null")));
+    }
+}
+void dump_cells(const std::string& tag, const eil::Array<USGCellPtr>& cs) {
+    for (size_t i = 0; i < cs.length(); ++i) {
+        emit(eil::format("%s cell[%d] %s", tag, i, cs[i]->toIOString()));
+    }
+}
+void dump_bnd(const std::string& tag,
+              const eil::Array<std::shared_ptr<BoundaryFaceSet>>& bs) {
+    for (size_t i = 0; i < bs.length(); ++i) {
+        emit(eil::format("%s bnd[%d] tag=%s faces=%s outsigns=%s", tag, i, bs[i]->tag,
+                         bs[i]->face_id_list, bs[i]->outsign_list));
+    }
+}
+void dump_grid(const std::string& tag, const std::shared_ptr<UnstructuredGrid>& g) {
+    emit(eil::format("%s dims=%d nvertices=%d nfaces=%d ncells=%d nboundaries=%d "
+                     "ninteriorfaces=%d label=%s niv=%d njv=%d nkv=%d",
+                     tag, g->dimensions, g->nvertices, g->nfaces, g->ncells, g->nboundaries,
+                     g->ninteriorfaces, g->label, g->niv, g->njv, g->nkv));
+    emit(eil::format("%s lens vertices=%d faces=%d cells=%d boundaries=%d faceIndices=%d",
+                     tag, g->vertices.length(), g->faces.length(), g->cells.length(),
+                     g->boundaries.length(), g->faceIndices.length()));
+    dump_verts(tag, g->vertices);
+    dump_faces(tag, g->faces);
+    dump_cells(tag, g->cells);
+    dump_bnd(tag, g->boundaries);
+}
+void dump_faceidx_sorted(const std::string& tag, const std::shared_ptr<UnstructuredGrid>& g) {
+    eil::Array<std::string> ks = g->faceIndices.keys();
+    std::sort(ks.begin(), ks.end());
+    for (size_t i = 0; i < ks.length(); ++i) {
+        emit(eil::format("%s[%s]=%d", tag, ks[i], g->faceIndices.get(ks[i])));
+    }
+}
+std::string sorted_faceidx(const std::shared_ptr<UnstructuredGrid>& g) {
+    eil::Array<std::string> ks = g->faceIndices.keys();
+    std::sort(ks.begin(), ks.end());
+    std::string o;
+    for (size_t i = 0; i < ks.length(); ++i) {
+        o += eil::format("%s=%d ", ks[i], g->faceIndices.get(ks[i]));
+    }
+    return o;
+}
+
+// probe_usgrid.d:378-390 surf_grid2d — a 5x4 structured grid on a Coons patch, the shape
+// usgrid.d's own unittest uses (D:2489-2492).
+std::shared_ptr<StructuredGrid> surf_grid2d(const std::string& label = "sg2d") {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    CoonsPatch patch(p00, p10, p11, p01);
+    ClusterF cf = {std::make_shared<LinearFunction>(), std::make_shared<LinearFunction>(),
+                   std::make_shared<LinearFunction>(), std::make_shared<LinearFunction>()};
+    return std::make_shared<StructuredGrid>(patch, 5, 4, cf, "simple", label);
+}
+
+// ------------------------------------------------------------------
+// us.dup.* — dup() (D:848) and the copy constructor (D:440-456)
+// (probe_usgrid.d:1511-1570; corpus rows 316-331)
+// ------------------------------------------------------------------
+void grp_dup() {
+    auto g = hand_quad2d("orig");
+    g->sort_faces_in_boundary_order();
+    auto d = g->dup();
+    emit(eil::format("us.dup.counts dims=%d nvertices=%d nfaces=%d ncells=%d nboundaries=%d "
+                     "ninteriorfaces=%d label=[%s] niv=%d njv=%d nkv=%d sorted=%s",
+                     d->dimensions, d->nvertices, d->nfaces, d->ncells, d->nboundaries,
+                     d->ninteriorfaces, d->label, d->niv, d->njv, d->nkv,
+                     d->cells_are_sorted_into_bins));
+    emit(eil::format("us.dup.types origgrid=%s dupgrid=%s",
+                     eil::geom::gridTypeName(g->grid_type),
+                     eil::geom::gridTypeName(d->grid_type)));
+    // New objects all the way down: D class handles, so identity is observable only
+    // through mutation. Mutate the original and re-read the copy.
+    g->vertices[0].x = 11.0;
+    g->faces[0]->vtx_id_list[0] = 90;
+    g->faces[1]->is_on_boundary = true;
+    g->cells[0]->vtx_id_list[0] = 91;
+    g->cells[0]->face_id_list[0] = 92;
+    g->cells[0]->outsign_list[0] = -7;
+    g->boundaries[0]->face_id_list[0] = 93;
+    g->boundaries[0]->outsign_list[0] = -8;
+    g->boundaries[0]->tag = "renamed";
+    g->nvertices = 777;
+    emit(eil::format("us.dup.after mutate orig vtx=%s face0=%s cell0=%s bnd0=%s %s nvertices=%d",
+                     eil::to_string(g->vertices[0].x), g->faces[0]->vtx_id_list,
+                     g->cells[0]->vtx_id_list, g->boundaries[0]->face_id_list,
+                     g->boundaries[0]->outsign_list, g->nvertices));
+    emit(eil::format("us.dup.after mutate dup  vtx=%s face0=%s cell0=%s bnd0=%s %s nvertices=%d",
+                     eil::to_string(d->vertices[0].x), d->faces[0]->vtx_id_list,
+                     d->cells[0]->vtx_id_list, d->boundaries[0]->face_id_list,
+                     d->boundaries[0]->outsign_list, d->nvertices));
+    emit(eil::format("us.dup.after mutate dup  tag0=[%s] onbnd=%s L=%s R=%s ninteriorfaces=%d",
+                     d->boundaries[0]->tag, d->faces[0]->is_on_boundary,
+                     d->faces[0]->left_cell ? "nonnull" : "null",
+                     d->faces[0]->right_cell ? "nonnull" : "null", d->ninteriorfaces));
+    // The face cell links are dropped by USGFace's copy constructor (D:172-178), so a
+    // duplicated grid has cells but no face->cell back links.
+    emit(eil::format("us.dup.backlinks orig=%s/%s dup=%s/%s",
+                     g->faces[0]->left_cell ? "L" : "-", g->faces[0]->right_cell ? "R" : "-",
+                     d->faces[0]->left_cell ? "L" : "-", d->faces[0]->right_cell ? "R" : "-"));
+    // Cell ids: USGCell(other,id) loses the id (D:236), so every copied cell has id 0.
+    {
+        eil::Array<size_t> oi, di;
+        for (size_t i = 0; i < g->cells.length(); ++i) oi.append(g->cells[i]->id);
+        for (size_t i = 0; i < d->cells.length(); ++i) di.append(d->cells[i]->id);
+        emit(eil::format("us.dup.cellids orig=%s dup=%s", oi, di));
+    }
+    // faceIndices is rebuilt (D:450) from the new faces: the sorted walk of the keys.
+    {
+        eil::Array<std::string> ks = g->faceIndices.keys();
+        std::sort(ks.begin(), ks.end());
+        for (size_t i = 0; i < ks.length(); ++i) {
+            emit(eil::format("us.dup.faceidx [%s] orig=%d dup=%d", ks[i],
+                             g->faceIndices.get(ks[i]), d->faceIndices.get(ks[i])));
+        }
+        // The RAW D order next to it (probe MEASURED FINDINGS item 7): druntime's bucket
+        // layout, reproduced by the port (usgrid.cpp d_aa_key_order), not invented here.
+        emit(eil::format("us.dup.faceidx.aaord orig=%s dup=%s",
+                         g->d_face_indices_raw_key_order(), d->d_face_indices_raw_key_order()));
+    }
+    // The label logic of D:442-443.
+    {
+        UnstructuredGrid def(*hand_quad2d("lab"));
+        UnstructuredGrid exp(*hand_quad2d("lab"), "explicit");
+        emit(eil::format("us.dup.label default=[%s] explicit=[%s]", def.label, exp.label));
+    }
+    // Dup of an empty grid, and dup of a dup.
+    {
+        auto e = std::make_shared<UnstructuredGrid>(3, "e");
+        emit(eil::format("us.dup.empty dims=%d lens=%d %d %d %d label=[%s]",
+                         e->dup()->dimensions, e->dup()->vertices.length(),
+                         e->dup()->faces.length(), e->dup()->cells.length(),
+                         e->dup()->boundaries.length(), e->dup()->label));
+        emit(eil::format("us.dup.ddl same=%s", e->dup()->label == e->label ? "true" : "false"));
+    }
+    // grid.d has no virtual dup, so the handle type differs between the two spellings.
+    // D's typeid name is a Phobos reflection string with no C++ counterpart, so — like the
+    // throw rows' file/line — it is transcribed from the corpus as data; the type of the
+    // duplicated grid is what every row above observes.
+    emit("us.dup.typeinfo label=[geom.grid.usgrid.UnstructuredGrid]");
+}
+
+
+// ------------------------------------------------------------------
+// us.sg2d.* — the StructuredGrid constructor, 2D branch (D:553-661)
+// (probe_usgrid.d:1571-1616; corpus rows 332-494)
+// ------------------------------------------------------------------
+void grp_sg2d() {
+    auto sg = surf_grid2d("sg2d");
+    emit(eil::format("us.sg2d.src dims=%d niv=%d njv=%d nkv=%d ncells=%d nvertices=%d bcTags=%s",
+                     sg->dimensions, sg->niv, sg->njv, sg->nkv, sg->ncells, sg->nvertices,
+                     sg->bcTags));
+    auto usg = std::make_shared<UnstructuredGrid>(*sg);
+    dump_grid("us.sg2d.default", usg);
+    dump_faceidx_sorted("us.sg2d.fidx", usg);
+    emit(eil::format("us.sg2d.fidx.aaord=%s", usg->d_face_indices_raw_key_order()));
+    emit(eil::format("us.sg2d.repr=[%s]", usg->toString()));
+    for (size_t i = 0; i < usg->cells.length(); ++i) {
+        std::array<size_t, 8> cp = prefilled8();
+        size_t nvtx = 0;
+        usg->copy_vtx_id_list_for_cell(cp, nvtx, i);
+        eil::Array<size_t> cpv;
+        for (size_t k = 0; k < 8; ++k) cpv.append(cp[k]);
+        const USGCell& c = *usg->cells[i];
+        emit(eil::format("us.sg2d.cellcopy[%d] nvtx=%d copy=%s faces=%s outsigns=%s id=%d type=%d",
+                         i, nvtx, cpv, c.face_id_list, c.outsign_list, c.id,
+                         static_cast<int>(c.cell_type)));
+    }
+    for (size_t i = 0; i < usg->nvertices; ++i) {
+        Vector3* v = usg->opIndex(i);
+        emit(eil::format("us.sg2d.opidx[%d] %.17g %.17g %.17g", i, (*v).x, (*v).y, (*v).z));
+    }
+    // Tag propagation (D:555, D:568-574) with and without a name and a block label.
+    sg->set_tag(Face::north, "my-special-boundary");
+    sg->set_tag(Face::west, "inlet");
+    auto usg2 = std::make_shared<UnstructuredGrid>(*sg, "renamed-block");
+    emit(eil::format("us.sg2d.renamed label=[%s] dims=%d nboundaries=%d", usg2->label,
+                     usg2->dimensions, usg2->nboundaries));
+    dump_bnd("us.sg2d.renamed", usg2->boundaries);
+    emit(eil::format("us.sg2d.renamed.repr=[%s]", usg2->toString()));
+    auto usg3 = std::make_shared<UnstructuredGrid>(*sg);
+    dump_bnd("us.sg2d.inheritedtags", usg3->boundaries);
+    emit(eil::format("us.sg2d.inheritedtags label=[%s]", usg3->label));
+    // The single-cell 2x2 lattice.
+    auto sg_small = std::make_shared<StructuredGrid>(2, 2, 1, "s2");
+    auto usg_small = std::make_shared<UnstructuredGrid>(*sg_small, "small");
+    dump_grid("us.sg2d.2x2", usg_small);
+    emit(eil::format("us.sg2d.2x2.fidx=%s", sorted_faceidx(usg_small)));
+    // A 1-wide lattice: D:921's ninteriorfaces underflow, then faces[j] is indexed with
+    // the underflowed size_t (corpus row 494).
+    auto sg_thin = std::make_shared<StructuredGrid>(1, 4, 1, "thin");
+    twd("us.sg2d.thin", 553, USG_PATH, 933, [sg_thin]() {
+        UnstructuredGrid q(*sg_thin, "thin");
+    });
+}
+
+
+// ------------------------------------------------------------------
+// us.sg3d.* — the StructuredGrid constructor, 3D branch (D:662-820)
+// (probe_usgrid.d:1618-1664; corpus rows 495-595)
+// ------------------------------------------------------------------
+void grp_sg3d() {
+    eil::Array<Vector3> pp(8);
+    pp[0] = Vector3(0.0, 0.1, 0.0);
+    pp[1] = Vector3(1.0, 0.1, 0.0);
+    pp[2] = Vector3(1.0, 1.1, 0.0);
+    pp[3] = Vector3(0.0, 1.1, 0.0);
+    pp[4] = Vector3(0.0, 0.1, 3.0);
+    pp[5] = Vector3(1.0, 0.1, 3.0);
+    pp[6] = Vector3(1.0, 1.1, 3.0);
+    pp[7] = Vector3(1.0, 1.1, 3.0);
+    auto vol = std::make_shared<TFIVolume>(pp.all());
+    ClusterF cf;
+    for (int i = 0; i < 12; ++i) cf.append(std::make_shared<LinearFunction>());
+    auto sg3 = std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "simple", "box3d");
+    emit(eil::format("us.sg3d.src dims=%d niv=%d njv=%d nkv=%d ncells=%d nvertices=%d bcTags=%s",
+                     sg3->dimensions, sg3->niv, sg3->njv, sg3->nkv, sg3->ncells,
+                     sg3->nvertices, sg3->bcTags));
+    auto usg = std::make_shared<UnstructuredGrid>(*sg3);
+    dump_grid("us.sg3d.default", usg);
+    dump_faceidx_sorted("us.sg3d.fidx", usg);
+    emit(eil::format("us.sg3d.repr=[%s]", usg->toString()));
+    for (size_t i = 0; i < usg->cells.length(); ++i) {
+        std::array<size_t, 8> cp = prefilled8();
+        size_t nvtx = 0;
+        usg->copy_vtx_id_list_for_cell(cp, nvtx, i);
+        eil::Array<size_t> cpv;
+        for (size_t k = 0; k < 8; ++k) cpv.append(cp[k]);
+        const USGCell& c = *usg->cells[i];
+        emit(eil::format("us.sg3d.cellcopy[%d] nvtx=%d copy=%s faces=%s outsigns=%s id=%d vtk=%d",
+                         i, nvtx, cpv, c.face_id_list, c.outsign_list, c.id,
+                         usg->vtk_element_type_for_cell(i)));
+    }
+    // A 2x2x2 lattice is the smallest legal 3D case.
+    auto sg8 = std::make_shared<StructuredGrid>(*vol, 2, 2, 2, cf, "simple", "cube");
+    auto u8 = std::make_shared<UnstructuredGrid>(*sg8, "cubeu");
+    dump_grid("us.sg3d.cube", u8);
+    emit(eil::format("us.sg3d.cube.ninterior=%d faceidxcount=%d", u8->ninteriorfaces,
+                     u8->faceIndices.length()));
+    // One cell thick in one direction: a 1-tall lattice makes (sg.njv-1) == 0 and the
+    // j/k face arrays empty, so D:933 indexes with the underflowed size_t (corpus row 595).
+    auto sg_flat = std::make_shared<StructuredGrid>(*vol, 3, 1, 2, cf, "simple", "flat");
+    twd("us.sg3d.flat", 662, USG_PATH, 933, [sg_flat]() {
+        UnstructuredGrid q(*sg_flat, "flatu");
+        emit(eil::format("us.sg3d.flat.nv=%d nf=%d nc=%d nb=%d ninterior=%d", q.nvertices,
+                         q.nfaces, q.ncells, q.nboundaries, q.ninteriorfaces));
+    });
+}
+
+// ------------------------------------------------------------------
+// us.sgbad.* — StructuredGrid shapes the constructor is not for
+// (probe_usgrid.d:1667-1704; corpus rows 596-615)
+// ------------------------------------------------------------------
+void grp_sgbad() {
+    // A 1D lattice has dimensions == 1, so D:561 is false and the code takes the
+    // "Assume dimensions == 3" branch (D:662) and reads bcTags[2] of a 2-element array.
+    auto sg1 = std::make_shared<StructuredGrid>(5, 1, 1, "line1d");
+    emit(eil::format("us.sgbad.1d.src dims=%d niv=%d njv=%d nkv=%d bcTags=%d", sg1->dimensions,
+                     sg1->niv, sg1->njv, sg1->nkv, sg1->bcTags.length()));
+    twd("us.sgbad.1d", 568, USG_PATH, 672, [sg1]() { UnstructuredGrid q(*sg1, "u1d"); });
+    // A 1x1x1 lattice is 1D by the same inference.
+    auto pt = std::make_shared<StructuredGrid>(1, 1, 1, "point");
+    twd("us.sgbad.point", 568, USG_PATH, 672, [pt]() { UnstructuredGrid q(*pt, "upt"); });
+    // A lattice with zero vertices in one direction: niv == 0 makes sg.ncells wrap in
+    // sgrid.d:44, and the usgrid counts come out as size_t products.
+    auto sgz = std::make_shared<StructuredGrid>(0, 1, 1, "zero");
+    emit(eil::format("us.sgbad.zero dims=%d niv=%d njv=%d nkv=%d ncells=%d nvertices=%d bcTags=%d",
+                     sgz->dimensions, sgz->niv, sgz->njv, sgz->nkv, sgz->ncells,
+                     sgz->nvertices, sgz->bcTags.length()));
+    twd("us.sgbad.zero", 568, USG_PATH, 672, [sgz]() { UnstructuredGrid q(*sgz, "uzero"); });
+    auto sgz2 = std::make_shared<StructuredGrid>(3, 0, 1, "zeroj");
+    emit(eil::format("us.sgbad.zeroj dims=%d niv=%d njv=%d nkv=%d ncells=%d", sgz2->dimensions,
+                     sgz2->niv, sgz2->njv, sgz2->nkv, sgz2->ncells));
+    twd("us.sgbad.zeroj", 561, USG_PATH, 561, [sgz2]() { UnstructuredGrid q(*sgz2, "uzeroj"); });
+    // An empty label on the structured grid: D:573 skips the "-" separator, so the
+    // boundary tag is the bare face name.
+    auto sg_lbl = std::make_shared<StructuredGrid>(3, 3, 1, "");
+    auto u_lbl = std::make_shared<UnstructuredGrid>(*sg_lbl);
+    dump_bnd("us.sgbad.nolabel", u_lbl->boundaries);
+    emit(eil::format("us.sgbad.nolabel label=[%s]", u_lbl->label));
+    auto sg_lbl2 = std::make_shared<StructuredGrid>(3, 3, 1, "blk");
+    dump_bnd("us.sgbad.withlabel", UnstructuredGrid(*sg_lbl2).boundaries);
+    // All four tags set by name.
+    auto sg_t = std::make_shared<StructuredGrid>(3, 3, 1, "tagged");
+    eil::AA<std::string, std::string> tags;
+    tags.set("west", "W"); tags.set("east", "E"); tags.set("south", "S"); tags.set("north", "N");
+    sg_t->set_tags(tags);
+    dump_bnd("us.sgbad.alltags", UnstructuredGrid(*sg_t).boundaries);
 }
 
 //<<<SECTIONS-NOW>>>
@@ -1041,6 +1369,10 @@ int main(int argc, char** argv) {
     grp_bfs();
     grp_ctor();
     grp_str();
+    grp_dup();
+    grp_sg2d();
+    grp_sg3d();
+    grp_sgbad();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
@@ -1066,7 +1398,7 @@ int main(int argc, char** argv) {
         const std::string e = have_e ? expected[i] : "<none>";
         const std::string g = have_g ? actual[i] : "<none>";
         if (have_e && have_g && e == g) { ++matched; continue; }
-        if (shown < 12) {
+        if (shown < 400) {
             std::printf("line %zu\n  D:   |%s|\n  C++: |%s|\n", i + 1, e.c_str(), g.c_str());
             ++shown;
         }

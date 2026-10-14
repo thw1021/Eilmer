@@ -261,8 +261,60 @@ std::string fmt_read_rest(FormattedInput& in) {
     return out;
 }
 
+// D's `to!int(string)` (usgrid.d:184, :185, :256-:268, :353-:360, :1407, :1425, :1721) is
+// Phobos' strict [+-]?digits scan with a RANGE CHECK: as soon as the accumulated value has
+// left the int range it raises std.conv.ConvOverflowException "Overflow in integral
+// conversion" (corpus row 208: `new USGFace("9999999999999999999 1")` reports that class,
+// not the OutOfMemoryError a negative length would give — row 207 — because the conversion
+// is checked BEFORE `vtx_id_list.length = ...` can allocate).
+// eil::to_int (substrate/include/eil/conv.hpp:259) is `static_cast<int>(to_long(s))` with
+// no range check at all, so an overflowing count silently becomes a negative number and
+// the port reached the wrong failure path. SUBSTRATE GAP (reported to the main thread):
+// substrate has neither the check nor the ConvOverflowException child of
+// ConversionException, and this stage may not modify it, so both live here —
+// ConvOverflowException in src/geom/grid/usgrid.hpp, this scanner next to the other
+// port-local std.conv/std.format shims. The grammar failure texts stay substrate's
+// (eil::detail::unexpected_end / unexpected_char_at), so the non-numeric rows
+// (us.face.str.nonint, us.face.str.hex, us.cell.str.badint) are unaffected.
+// D's `arr.length = n` when n is larger than the allocator can satisfy raises
+// core.exception.OutOfMemoryError "Memory allocation failed" with the runtime's OWN
+// location (.file == "rt/lifetime.d", .line == 1454 — see substrate T-914 and
+// probes/substrate/probe_throw_identity.d). substrate's Array reports its own wording
+// ("Array allocation failed", array.hpp:287) from its own site, and this stage may not
+// modify substrate, so the port funnels every `arr.length = ...` here and re-raises with
+// D's message. Corpus row: us.sgbad.zeroj (a 3x0x1 lattice gives
+// nfaces = 3*(0-1) = a size_t wrap, which D cannot allocate).
+template <typename T> void set_length_d(eil::Array<T>& a, size_t n) {
+    try {
+        a.set_length(n);
+    } catch (const eil::OutOfMemoryError&) {
+        throw eil::ErrorBase("Memory allocation failed");
+    }
+}
+
+int d_to_int(const std::string& s) {    const size_t n = s.size();
+    size_t i = 0;
+    bool neg = false;
+    if (i < n && (s[i] == '+' || s[i] == '-')) { neg = (s[i] == '-'); ++i; }
+    if (i >= n) eil::detail::conv_fail(eil::detail::unexpected_end("int"));
+    const long long limit_pos = 2147483647LL;   // INT_MAX
+    const long long limit_neg = 2147483648LL;   // |INT_MIN|
+    long long acc = 0;
+    for (; i < n; ++i) {
+        const unsigned char c = static_cast<unsigned char>(s[i]);
+        if (!std::isdigit(c)) {
+            eil::detail::conv_fail(eil::detail::unexpected_char_at(s, i, "int"));
+        }
+        acc = acc * 10 + static_cast<long long>(c - '0');
+        if (neg ? (acc > limit_neg) : (acc > limit_pos)) {
+            throw ConvOverflowException("Overflow in integral conversion");
+        }
+    }
+    return static_cast<int>(neg ? -acc : acc);
+}
+
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
-template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = eil::to_int(fmt_read_token(in)); }
+template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = d_to_int(fmt_read_token(in)); }
 template <> void fmt_into<long>(FormattedInput& in, long* dst) { *dst = eil::to_long(fmt_read_token(in)); }
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
     *dst = static_cast<size_t>(eil::to_long(fmt_read_token(in)));
@@ -314,6 +366,59 @@ std::string cell_type_text(USGCell_type ct) {
 }
 
 } // namespace
+
+// ---- D's associative-array iteration order (declarations in usgrid.hpp) ----
+// Measured against ldc2 1.40.0's own druntime, not guessed: 12 key sets printed by a
+// scratch probe (integral, uint, string, 8-element with a 1e12 key) all reproduce.
+size_t d_aa_hash(size_t key) { return key; }                      // hashOf(size_t) == key
+
+// hashOf(string) is std.digest murmurHash3-32 over the bytes with seed 0
+// (core/internal/hash.d:720-770, chosen for a 1-byte-aligned element type by
+// bytesHashAlignedBy at :670-672). Measured: hashOf("0-1") == 0x8700d778.
+size_t d_aa_hash(const std::string& key) {
+    uint32_t h1 = 0;
+    const size_t n = key.size();
+    const size_t nblocks = n / 4;
+    const uint32_t c1 = 0xcc9e2d51u, c2 = 0x1b873593u, c3 = 0xe6546b64u;
+    auto rd4 = [&](size_t at) {
+        return static_cast<uint32_t>(static_cast<unsigned char>(key[at]))
+             | static_cast<uint32_t>(static_cast<unsigned char>(key[at + 1])) << 8
+             | static_cast<uint32_t>(static_cast<unsigned char>(key[at + 2])) << 16
+             | static_cast<uint32_t>(static_cast<unsigned char>(key[at + 3])) << 24;
+    };
+    for (size_t b = 0; b < nblocks; ++b) {
+        uint32_t k1 = rd4(b * 4);
+        k1 *= c1; k1 = (k1 << 15) | (k1 >> 17); k1 *= c2;
+        h1 ^= k1; h1 = (h1 << 13) | (h1 >> 19); h1 = h1 * 5 + c3;
+    }
+    uint32_t k1 = 0;
+    const size_t tail = nblocks * 4;
+    const size_t rem = n & 3;
+    if (rem == 3) k1 ^= static_cast<unsigned char>(key[tail + 2]) << 16;
+    if (rem >= 2) k1 ^= static_cast<unsigned char>(key[tail + 1]) << 8;
+    if (rem >= 1) {
+        k1 ^= static_cast<unsigned char>(key[tail]);
+        k1 *= c1; k1 = (k1 << 15) | (k1 >> 17); k1 *= c2; h1 ^= k1;
+    }
+    h1 ^= static_cast<uint32_t>(n);
+    h1 = (h1 ^ (h1 >> 16)) * 0x85ebca6bu;
+    h1 = (h1 ^ (h1 >> 13)) * 0xc2b2ae35u;
+    h1 ^= h1 >> 16;
+    return static_cast<size_t>(h1);
+}
+
+size_t d_aa_mix(size_t h) {                        // newaa.d:69-77
+    h ^= h >> 13;
+    h *= 0x5bd1e995ULL;
+    h ^= h >> 15;
+    return h;
+}
+
+size_t d_aa_bucket_count(size_t n) {               // newaa.d:100-102
+    size_t dim = 8;
+    while (n * 5 > dim * 4) dim *= 4;
+    return dim;
+}
 
 // ---- usgrid.d:40-110: the tag tables and the three translation functions ----
 USGCell_type convert_cell_type(int vtk_element_type) { // D:62
@@ -443,9 +548,9 @@ USGFace::USGFace(const std::string& str) {
     // D:183-185. tokens is D's string[], so an over-long index is ArrayIndexError;
     // eil::Array reproduces it. The length comes from the FILE as a signed int (T-914).
     eil::Array<std::string> tokens = split_ws(d_strip(str));
-    vtx_id_list.set_length_signed(eil::to_int(tokens[0]));
+    vtx_id_list.set_length_signed(d_to_int(tokens[0]));
     for (size_t i = 0; i < vtx_id_list.length(); ++i) {
-        vtx_id_list[i] = static_cast<size_t>(eil::to_long(tokens[i + 1]));
+        vtx_id_list[i] = static_cast<size_t>(d_to_int(tokens[i + 1]));  // D:185 to!int
     }
 }
 
@@ -511,19 +616,19 @@ USGCell::USGCell(const std::string& str, size_t id) {
     }
     std::string junk = tokens[itok++]; // "vtx"
     (void)junk;
-    vtx_id_list.set_length_signed(eil::to_int(tokens[itok++]));
+    vtx_id_list.set_length_signed(d_to_int(tokens[itok++]));
     for (size_t i = 0; i < vtx_id_list.length(); ++i) {
-        vtx_id_list[i] = static_cast<size_t>(eil::to_long(tokens[itok++]));
+        vtx_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:258 to!int
     }
     junk = tokens[itok++]; // "faces"
-    face_id_list.set_length_signed(eil::to_int(tokens[itok++]));
+    face_id_list.set_length_signed(d_to_int(tokens[itok++]));
     for (size_t i = 0; i < face_id_list.length(); ++i) {
-        face_id_list[i] = static_cast<size_t>(eil::to_long(tokens[itok++]));
+        face_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:263, :355 to!int
     }
     junk = tokens[itok++]; // "outsigns"
-    outsign_list.set_length_signed(eil::to_int(tokens[itok++]));
+    outsign_list.set_length_signed(d_to_int(tokens[itok++]));
     for (size_t i = 0; i < outsign_list.length(); ++i) {
-        outsign_list[i] = eil::to_int(tokens[itok++]);
+        outsign_list[i] = d_to_int(tokens[itok++]);
     }
 }
 
@@ -624,7 +729,7 @@ UnstructuredGrid::UnstructuredGrid(const UnstructuredGrid& other, const std::str
     }
     for (size_t i = 0; i < other.faces.length(); ++i) {
         const USGFace& f = *other.faces[i];
-        faceIndices.set(makeFaceTag(f.vtx_id_list.all()), faces.length()); // D:450
+        set_face_index(makeFaceTag(f.vtx_id_list.all()), faces.length()); // D:450
         faces.append(std::make_shared<USGFace>(f));                        // D:451
     }
     for (size_t id = 0; id < other.cells.length(); ++id) {
@@ -666,7 +771,7 @@ UnstructuredGrid::UnstructuredGrid(const eil::Array<eil::Array<Vector3>>& bPoint
             // Also, build a face object on the boundary.
             eil::Array<size_t> vtx_id_list = {vertices.length() - 2, vertices.length() - 1};
             std::string faceTag = makeFaceTag(vtx_id_list.all());
-            faceIndices.set(faceTag, faces.length()); // before new face (D:485)
+            set_face_index(faceTag, faces.length()); // before new face (D:485)
             faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
             face_id_list.append(faces.length() - 1);
             outsign_list.append(1); // always out for a counter-clockwise vertex order
@@ -688,6 +793,14 @@ UnstructuredGrid::UnstructuredGrid(const eil::Array<eil::Array<Vector3>>& bPoint
     // At this point, we should have a closed region defined by its bounding polygon.
     // Need to fill in interior points, faces and cells.
     eil::geom::fill_interior(vertices, faces, faceIndices, cells, bndry_vtx_ids); // D:502
+    // fill_interior (src/geom/grid/paver2d.hpp:178-182, stage G3's file) inserts into
+    // faceIndices itself and cannot be routed through set_face_index, so the key log is
+    // reconciled here in the order that function performs its inserts.
+    for (size_t k = 0; k < bndry_vtx_ids.length(); ++k) {
+        eil::Array<size_t> two = {bndry_vtx_ids[k], vertices.length() - 1};
+        const std::string tag = makeFaceTag(two.all());
+        if (!faceIndices.contains(tag)) faceIndices_insertion.append(tag);
+    }
     niv = vertices.length(); njv = 1; nkv = 1;                                    // D:506
     nvertices = vertices.length();
     nfaces = faces.length();
@@ -719,12 +832,21 @@ std::string UnstructuredGrid::toString() const {
     std::string repr = "UnstructuredGrid(";
     repr += eil::format("dimensions=%d, nvertices=%d, nfaces=%d, ncells=%d", dimensions,
                         nvertices, nfaces, ncells);
-    repr += eil::format(", vertices=[%s ... %s]", vertices[0].toString(),
-                        vertices[vertices.length() - 1].toString());
-    repr += eil::format(", faces=[%s ... %s]", faces[0]->toString(),
-                        faces[faces.length() - 1]->toString());
-    repr += eil::format(", cells=[%s ... %s]", cells[0]->toString(),
-                        cells[cells.length() - 1]->toString());
+    // D's order of evaluation is part of the observable behaviour here: on an EMPTY grid
+    // D reads vertices[0] first and reports `index [0] is out of bounds for array of
+    // length 0` (corpus rows 267-282, us.ctor.d{1,2,3,0,-1,7}.tostring, raised at
+    // usgrid.d:880). C++ leaves argument order unspecified and g++ evaluates right to
+    // left, which reads vertices[length-1] first and reports the underflowed
+    // 18446744073709551615 instead. Same for faces (D:881) and cells (D:882).
+    const std::string v_first = vertices[0].toString();
+    const std::string v_last = vertices[vertices.length() - 1].toString();
+    repr += eil::format(", vertices=[%s ... %s]", v_first, v_last);
+    const std::string f_first = faces[0]->toString();
+    const std::string f_last = faces[faces.length() - 1]->toString();
+    repr += eil::format(", faces=[%s ... %s]", f_first, f_last);
+    const std::string c_first = cells[0]->toString();
+    const std::string c_last = cells[cells.length() - 1]->toString();
+    repr += eil::format(", cells=[%s ... %s]", c_first, c_last);
     std::string b = "[";
     for (size_t i = 0; i < boundaries.length(); ++i) {
         if (i > 0) b += ", ";
@@ -770,8 +892,8 @@ void UnstructuredGrid::sort_faces_in_boundary_order() {
         // 1.) the faceIndices map from vertex ids to face ids (D:941-944)
         std::string ifaceTag = makeFaceTag(faces[i]->vtx_id_list.all());
         std::string jfaceTag = makeFaceTag(faces[j]->vtx_id_list.all());
-        faceIndices.set(ifaceTag, j);
-        faceIndices.set(jfaceTag, i);
+        set_face_index(ifaceTag, j);
+        set_face_index(jfaceTag, i);
 
         // 2.) the cells' face_id_list entries; D:949's countUntil can come back -1,
         // which is the 18446744073709551615 index the corpus records at us.gap.963.
@@ -841,17 +963,44 @@ void UnstructuredGrid::copy_vtx_id_list_for_cell(std::array<size_t, 8>& vtx_list
     for (size_t i = 0; i < nvtx; ++i) vtx_list_copy[i] = cells[indx]->vtx_id_list[i];
 }
 
+// D's `faceIndices[tag] = idx`, with the first-appearance order of the keys logged so that
+// the bucket order D's AA produces stays reproducible (see usgrid.hpp's d_aa_key_order).
+// Re-assigning an existing key changes its value but not its slot, exactly as D does.
+void UnstructuredGrid::set_face_index(const std::string& tag, size_t idx) {
+    if (!faceIndices.contains(tag)) faceIndices_insertion.append(tag);
+    faceIndices.set(tag, idx);
+}
+
+// The raw key order D's `foreach (k; faceIndices.byKey)` walks (corpus rows
+// us.dup.faceidx.aaord, us.sg2d.fidx.aaord).
+eil::Array<std::string> UnstructuredGrid::d_face_indices_raw_key_order() const {
+    return d_aa_key_order(faceIndices_insertion);
+}
+
 // D:1045-1055. `connectedCells.keys.dup` is the one place where D's associative-array
-// bucket order reaches an observable value (probe MEASURED FINDINGS item 7); eil::AA is
-// a std::map, so the port returns the sorted key order.
+// bucket order reaches an observable value: corpus row us.conn.cell0 is [0, 4, 1] and
+// us.conn.cellast is [7, 10, 11], neither of which is the sorted order a std::map gives.
+// The port therefore lays the keys out in druntime's table (d_aa_key_order, validated
+// against this ldc2 1.40.0's druntime on 12 key sets) rather than returning
+// connectedCells.keys(), and logs first-appearance order because re-setting an existing
+// key leaves its slot where it was.
 eil::Array<size_t> UnstructuredGrid::get_connected_cell_ids_for_cell(size_t i) {
     eil::AA<size_t, bool> connectedCells;
+    eil::Array<size_t> inserted;                  // keys in first-appearance order
     for (size_t k = 0; k < cells[i]->face_id_list.length(); ++k) {
         const size_t iFace = cells[i]->face_id_list[k];
-        if (faces[iFace]->left_cell)  connectedCells.set(faces[iFace]->left_cell->id, true);
-        if (faces[iFace]->right_cell) connectedCells.set(faces[iFace]->right_cell->id, true);
+        if (faces[iFace]->left_cell) {
+            const size_t id = faces[iFace]->left_cell->id;
+            if (!connectedCells.contains(id)) inserted.append(id);
+            connectedCells.set(id, true);
+        }
+        if (faces[iFace]->right_cell) {
+            const size_t id = faces[iFace]->right_cell->id;
+            if (!connectedCells.contains(id)) inserted.append(id);
+            connectedCells.set(id, true);
+        }
     }
-    return connectedCells.keys().dup();
+    return d_aa_key_order(inserted);              // D:1054 `.keys.dup`
 }
 
 // D:1057-1104. Returns the grid for one boundary of this grid.
@@ -866,7 +1015,7 @@ std::shared_ptr<Grid> UnstructuredGrid::get_boundary_grid(size_t boundary_indx) 
     auto new_grid = std::make_shared<UnstructuredGrid>(new_dimensions, bfs->tag);
     // A full copy of the original grid's vertices, so no renumbering is needed.
     new_grid->nvertices = nvertices;                     // D:1073
-    new_grid->vertices.set_length(nvertices);            // D:1074
+    set_length_d(new_grid->vertices, nvertices);            // D:1074
     for (size_t i = 0; i < nvertices; ++i) new_grid->vertices[i].set(vertices[i]);
     for (size_t kf = 0; kf < bfs->face_id_list.length(); ++kf) {
         const size_t fid = bfs->face_id_list[kf];
@@ -1000,17 +1149,17 @@ void UnstructuredGrid::splitTriangleCell(size_t id) {
     eil::Array<size_t> f0 = {vtxList[0], ctrId};
     faces.append(std::make_shared<USGFace>(f0.all()));
     const size_t if0_id = faces.length() - 1;
-    faceIndices.set(makeFaceTag(f0.all()), if0_id);
+    set_face_index(makeFaceTag(f0.all()), if0_id);
 
     eil::Array<size_t> f1 = {vtxList[1], ctrId};
     faces.append(std::make_shared<USGFace>(f1.all()));
     const size_t if1_id = faces.length() - 1;
-    faceIndices.set(makeFaceTag(f1.all()), if1_id);
+    set_face_index(makeFaceTag(f1.all()), if1_id);
 
     eil::Array<size_t> f2 = {vtxList[2], ctrId};
     faces.append(std::make_shared<USGFace>(f2.all()));
     const size_t if2_id = faces.length() - 1;
-    faceIndices.set(makeFaceTag(f2.all()), if2_id);
+    set_face_index(makeFaceTag(f2.all()), if2_id);
 
     nfaces = faces.length();
     // D:1221-1224: the present cell becomes sub-triangle 0.
@@ -1080,14 +1229,14 @@ BoundaryFaceSet::BoundaryFaceSet(const std::string& str) {
         this->tag = tokens[itok++];
         std::string junk = tokens[itok++]; // "faces"
         (void)junk;
-        face_id_list.set_length_signed(eil::to_int(tokens[itok++]));
+        face_id_list.set_length_signed(d_to_int(tokens[itok++]));
         for (size_t i = 0; i < face_id_list.length(); ++i) {
-            face_id_list[i] = static_cast<size_t>(eil::to_long(tokens[itok++]));
+            face_id_list[i] = static_cast<size_t>(d_to_int(tokens[itok++]));  // D:355 to!int
         }
         junk = tokens[itok++]; // "outsigns"
-        outsign_list.set_length_signed(eil::to_int(tokens[itok++]));
+        outsign_list.set_length_signed(d_to_int(tokens[itok++]));
         for (size_t i = 0; i < outsign_list.length(); ++i) {
-            outsign_list[i] = eil::to_int(tokens[itok++]);
+            outsign_list[i] = d_to_int(tokens[itok++]);
         }
         eil_assert_msg(face_id_list.length() == outsign_list.length(),
                        "Mismatch in numbers of faces and outsigns");
@@ -1132,8 +1281,11 @@ std::string BoundaryFaceSet::toString() const {
     // us.bfs.tagonly.tostring: D gives index [0] on a list of length 0).
     const size_t f_first = face_id_list[0];
     const size_t f_last = face_id_list[face_id_list.length() - 1];
-    const size_t o_first = outsign_list[0];
-    const size_t o_last = outsign_list[outsign_list.length() - 1];
+    // D:332 declares outsign_list as `int[]` (a face normal points out for +1 and in for
+    // -1) and D:394 prints it with %d, so a -1 prints as "-1". Reading it into a size_t
+    // here rendered -1 as 18446744073709551615 (corpus rows 312-314).
+    const int o_first = outsign_list[0];
+    const int o_last = outsign_list[outsign_list.length() - 1];
     repr += eil::format(", face_id_list=[%d ... %d]", f_first, f_last);
     repr += eil::format(", outsign_list=[%d ... %d]", o_first, o_last);
     repr += ")";
@@ -1202,7 +1354,7 @@ UnstructuredGrid::UnstructuredGrid(const eil::Array<Vector3>& boundary,
     }
     for (size_t i = 0; i < FACE_LIST.length(); ++i) { // D:535-539
         eil::Array<size_t> vtx_id_list = {FACE_LIST[i]->point_IDs[0], FACE_LIST[i]->point_IDs[1]};
-        faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+        set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
         faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
     }
     for (size_t id = 0; id < CELL_LIST.length(); ++id) { // D:540-548
@@ -1228,10 +1380,10 @@ UnstructuredGrid::UnstructuredGrid(const eil::Array<Vector3>& boundary,
 UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& new_label)
     : Grid(Grid_t::unstructured_grid, sg.dimensions, block_label_for(sg.label, new_label)) {
     const std::string my_block_label = label; // D:555 (the same expression super() used)
-    vertices.set_length(0);                   // D:557-560
-    faces.set_length(0);
-    cells.set_length(0);
-    boundaries.set_length(0);
+    set_length_d(vertices, 0);                   // D:557-560
+    set_length_d(faces, 0);
+    set_length_d(cells, 0);
+    set_length_d(boundaries, 0);
     if (dimensions == 2) {
         nvertices = sg.niv * sg.njv;                                          // D:562
         nfaces = (sg.niv) * (sg.njv - 1) + (sg.niv - 1) * (sg.njv);            // D:563
@@ -1248,8 +1400,8 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             boundaries.append(std::make_shared<BoundaryFaceSet>(boundary_tag));
         }
         eil::Array<eil::Array<size_t>> vtx_id;                                 // D:579-583
-        vtx_id.set_length(sg.niv);
-        for (size_t i = 0; i < sg.niv; ++i) vtx_id[i].set_length(sg.njv);
+        set_length_d(vtx_id, sg.niv);
+        for (size_t i = 0; i < sg.niv; ++i) set_length_d(vtx_id[i], sg.njv);
         for (size_t j = 0; j < sg.njv; ++j) {                                 // D:585-590
             for (size_t i = 0; i < sg.niv; ++i) {
                 vertices.append(Vector3(sg.vertices[sg.single_index(i, j)]));
@@ -1257,12 +1409,12 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             }
         }
         eil::Array<eil::Array<size_t>> iface_id;                               // D:594-598
-        iface_id.set_length(sg.niv);
-        for (size_t i = 0; i < sg.niv; ++i) iface_id[i].set_length(sg.njv - 1);
+        set_length_d(iface_id, sg.niv);
+        for (size_t i = 0; i < sg.niv; ++i) set_length_d(iface_id[i], sg.njv - 1);
         for (size_t j = 0; j < sg.njv - 1; ++j) {                              // D:599-614
             for (size_t i = 0; i < sg.niv; ++i) {
                 eil::Array<size_t> vtx_id_list = {vtx_id[i][j], vtx_id[i][j + 1]};
-                faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+                set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
                 faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
                 iface_id[i][j] = faces.length() - 1;
                 if (i == 0) {
@@ -1276,12 +1428,12 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             }
         }
         eil::Array<eil::Array<size_t>> jface_id;                               // D:616-620
-        jface_id.set_length(sg.niv - 1);
-        for (size_t i = 0; i < sg.niv - 1; ++i) jface_id[i].set_length(sg.njv);
+        set_length_d(jface_id, sg.niv - 1);
+        for (size_t i = 0; i < sg.niv - 1; ++i) set_length_d(jface_id[i], sg.njv);
         for (size_t j = 0; j < sg.njv; ++j) {                                  // D:621-636
             for (size_t i = 0; i < sg.niv - 1; ++i) {
                 eil::Array<size_t> vtx_id_list = {vtx_id[i + 1][j], vtx_id[i][j]};
-                faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+                set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
                 faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
                 jface_id[i][j] = faces.length() - 1;
                 if (j == 0) {
@@ -1332,10 +1484,10 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             boundaries.append(std::make_shared<BoundaryFaceSet>(boundary_tag));
         }
         eil::Array<eil::Array<eil::Array<size_t>>> vtx_id;                       // D:683-690
-        vtx_id.set_length(sg.niv);
+        set_length_d(vtx_id, sg.niv);
         for (size_t i = 0; i < sg.niv; ++i) {
-            vtx_id[i].set_length(sg.njv);
-            for (size_t j = 0; j < sg.njv; ++j) vtx_id[i][j].set_length(sg.nkv);
+            set_length_d(vtx_id[i], sg.njv);
+            for (size_t j = 0; j < sg.njv; ++j) set_length_d(vtx_id[i][j], sg.nkv);
         }
         for (size_t k = 0; k < sg.nkv; ++k) {                                    // D:692-698
             for (size_t j = 0; j < sg.njv; ++j) {
@@ -1346,17 +1498,17 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             }
         }
         eil::Array<eil::Array<eil::Array<size_t>>> iface_id;                     // D:704-711
-        iface_id.set_length(sg.niv);
+        set_length_d(iface_id, sg.niv);
         for (size_t i = 0; i < sg.niv; ++i) {
-            iface_id[i].set_length(sg.njv - 1);
-            for (size_t j = 0; j < sg.njv - 1; ++j) iface_id[i][j].set_length(sg.nkv - 1);
+            set_length_d(iface_id[i], sg.njv - 1);
+            for (size_t j = 0; j < sg.njv - 1; ++j) set_length_d(iface_id[i][j], sg.nkv - 1);
         }
         for (size_t k = 0; k < sg.nkv - 1; ++k) {                                // D:712-730
             for (size_t j = 0; j < sg.njv - 1; ++j) {
                 for (size_t i = 0; i < sg.niv; ++i) {
                     eil::Array<size_t> vtx_id_list = {vtx_id[i][j][k], vtx_id[i][j + 1][k],
                                                       vtx_id[i][j + 1][k + 1], vtx_id[i][j][k + 1]};
-                    faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+                    set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
                     faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
                     iface_id[i][j][k] = faces.length() - 1;
                     if (i == 0) {
@@ -1371,17 +1523,17 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             }
         }
         eil::Array<eil::Array<eil::Array<size_t>>> jface_id;                     // D:732-739
-        jface_id.set_length(sg.niv - 1);
+        set_length_d(jface_id, sg.niv - 1);
         for (size_t i = 0; i < sg.niv - 1; ++i) {
-            jface_id[i].set_length(sg.njv);
-            for (size_t j = 0; j < sg.njv; ++j) jface_id[i][j].set_length(sg.nkv - 1);
+            set_length_d(jface_id[i], sg.njv);
+            for (size_t j = 0; j < sg.njv; ++j) set_length_d(jface_id[i][j], sg.nkv - 1);
         }
         for (size_t k = 0; k < sg.nkv - 1; ++k) {                                // D:740-758
             for (size_t j = 0; j < sg.njv; ++j) {
                 for (size_t i = 0; i < sg.niv - 1; ++i) {
                     eil::Array<size_t> vtx_id_list = {vtx_id[i + 1][j][k], vtx_id[i][j][k],
                                                       vtx_id[i][j][k + 1], vtx_id[i + 1][j][k + 1]};
-                    faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+                    set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
                     faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
                     jface_id[i][j][k] = faces.length() - 1;
                     if (j == 0) {
@@ -1396,17 +1548,17 @@ UnstructuredGrid::UnstructuredGrid(const StructuredGrid& sg, const std::string& 
             }
         }
         eil::Array<eil::Array<eil::Array<size_t>>> kface_id;                     // D:760-767
-        kface_id.set_length(sg.niv - 1);
+        set_length_d(kface_id, sg.niv - 1);
         for (size_t i = 0; i < sg.niv - 1; ++i) {
-            kface_id[i].set_length(sg.njv - 1);
-            for (size_t j = 0; j < sg.njv - 1; ++j) kface_id[i][j].set_length(sg.nkv);
+            set_length_d(kface_id[i], sg.njv - 1);
+            for (size_t j = 0; j < sg.njv - 1; ++j) set_length_d(kface_id[i][j], sg.nkv);
         }
         for (size_t k = 0; k < sg.nkv; ++k) {                                    // D:768-786
             for (size_t j = 0; j < sg.njv - 1; ++j) {
                 for (size_t i = 0; i < sg.niv - 1; ++i) {
                     eil::Array<size_t> vtx_id_list = {vtx_id[i][j][k], vtx_id[i + 1][j][k],
                                                       vtx_id[i + 1][j + 1][k], vtx_id[i][j + 1][k]};
-                    faceIndices.set(makeFaceTag(vtx_id_list.all()), faces.length());
+                    set_face_index(makeFaceTag(vtx_id_list.all()), faces.length());
                     faces.append(std::make_shared<USGFace>(vtx_id_list.all()));
                     kface_id[i][j][k] = faces.length() - 1;
                     if (k == 0) {
@@ -1542,7 +1694,7 @@ void UnstructuredGrid::read_from_gzip_file(const std::string& fileName, double s
     line = next_line();
     d_formatted_read(line, "vertices: %d", &nvertices);    // D:1295
     double x = 0.0, y = 0.0, z = 0.0;
-    vertices.set_length(0);                                // D:1297
+    set_length_d(vertices, 0);                                // D:1297
     for (size_t i = 0; i < nvertices; ++i) {
         line = next_line();
         d_formatted_read(line, " %g %g %g", &x, &y, &z); // D:1301 (the line starts with ws)
@@ -1550,23 +1702,23 @@ void UnstructuredGrid::read_from_gzip_file(const std::string& fileName, double s
     }
     line = next_line();
     d_formatted_read(line, "faces: %d", &nfaces);   // D:1305
-    faces.set_length(0);                            // D:1306
+    set_length_d(faces, 0);                            // D:1306
     for (size_t i = 0; i < nfaces; ++i) {
         line = next_line();
         std::shared_ptr<USGFace> myFace = std::make_shared<USGFace>(line); // D:1309
-        faceIndices.set(makeFaceTag(myFace->vtx_id_list.all()), faces.length());
+        set_face_index(makeFaceTag(myFace->vtx_id_list.all()), faces.length());
         faces.append(myFace);
     }
     line = next_line();
     d_formatted_read(line, "cells: %d", &ncells); // D:1314
-    cells.set_length(0);
+    set_length_d(cells, 0);
     for (size_t i = 0; i < ncells; ++i) {
         line = next_line();
         cells.append(std::make_shared<USGCell>(line, i)); // D:1318
     }
     line = next_line();
     d_formatted_read(line, "boundaries: %d", &nboundaries); // D:1321
-    boundaries.set_length(0);
+    set_length_d(boundaries, 0);
     for (size_t i = 0; i < nboundaries; ++i) {
         line = next_line();
         boundaries.append(std::make_shared<BoundaryFaceSet>(line)); // D:1325
@@ -1603,20 +1755,20 @@ void UnstructuredGrid::read_from_raw_binary_file(const std::string& fileName, do
     ncells = static_cast<size_t>(buf5[3]);
     nboundaries = static_cast<size_t>(buf5[4]);
     double xyz[3] = {0.0, 0.0, 0.0};
-    vertices.set_length(0);                           // D:1360
+    set_length_d(vertices, 0);                           // D:1360
     for (size_t i = 0; i < nvertices; ++i) {
         d_raw_read(raw, xyz, 3 * 8);
         vertices.append(Vector3(scale * xyz[0], scale * xyz[1], scale * xyz[2]));
     }
-    faces.set_length(0);
+    set_length_d(faces, 0);
     for (size_t i = 0; i < nfaces; ++i) {
         std::shared_ptr<USGFace> myFace = std::make_shared<USGFace>(raw); // D:1367
-        faceIndices.set(makeFaceTag(myFace->vtx_id_list.all()), faces.length());
+        set_face_index(makeFaceTag(myFace->vtx_id_list.all()), faces.length());
         faces.append(myFace);
     }
-    cells.set_length(0);
+    set_length_d(cells, 0);
     for (size_t i = 0; i < ncells; ++i) cells.append(std::make_shared<USGCell>(raw, i));
-    boundaries.set_length(0);
+    set_length_d(boundaries, 0);
     for (size_t i = 0; i < nboundaries; ++i)
         boundaries.append(std::make_shared<BoundaryFaceSet>(raw));
     link_faces_back_to_cells();
@@ -1646,15 +1798,15 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         return ""; // D:1405 didn't find the target
     };
 
-    dimensions = eil::to_int(getHeaderContent("NDIME")); // D:1407
+    dimensions = d_to_int(getHeaderContent("NDIME")); // D:1407
     f.do_rewind();                                       // D:1411
     ncells = static_cast<size_t>(eil::to_long(getHeaderContent("NELEM"))); // D:1412
-    cells.set_length(ncells);                            // D:1413
+    set_length_d(cells, ncells);                            // D:1413
     for (size_t i = 0; i < ncells; ++i) {
         if ((i % 100000) == 0) { d_stdout_write("."); d_stdout_flush(); } // D:1417
         const std::string lineContent = d_strip(f.readln());
         eil::Array<std::string> tokens = split_ws(lineContent);
-        const int vtk_element_type = eil::to_int(tokens[0]);       // D:1425
+        const int vtk_element_type = d_to_int(tokens[0]);       // D:1425
         size_t indx = i;                                           // D:1426
         const int nv_expected = n_vertices_for_vtk_element(vtk_element_type);
         eil::Array<size_t> vtx_id_list;
@@ -1702,7 +1854,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
 
     f.do_rewind();                                                  // D:1477
     nvertices = static_cast<size_t>(eil::to_long(getHeaderContent("NPOIN"))); // D:1478
-    vertices.set_length(nvertices);                                 // D:1479
+    set_length_d(vertices, nvertices);                                 // D:1479
     for (size_t i = 0; i < nvertices; ++i) {
         if ((i % 100000) == 0) { d_stdout_write("."); d_stdout_flush(); }
         eil::Array<std::string> tokens = split_ws(d_strip(f.readln()));
@@ -1784,7 +1936,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         } else {
             face_indx = faces.length();
             faces.append(std::make_shared<USGFace>(my_vtx_id_list.all())); // D:1568
-            faceIndices.set(faceTag, face_indx);
+            set_face_index(faceTag, face_indx);
         }
         cell->face_id_list.append(face_indx);         // D:1571
         // Pointers to all vertices on the face (D:1578-1581).
@@ -1923,7 +2075,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         const size_t nelem = static_cast<size_t>(eil::to_long(getHeaderContent("MARKER_ELEMS")));
         for (size_t j = 0; j < nelem; ++j) {
             eil::Array<std::string> tokens = split_ws(d_strip(f.readln()));
-            const int vtk_type = eil::to_int(tokens[0]); // D:1721 (read, not used further)
+            const int vtk_type = d_to_int(tokens[0]); // D:1721 (read, not used further)
             (void)vtk_type;
             eil::Array<size_t> my_vtx_id_list;
             for (size_t k = 1; k < tokens.length(); ++k) {
@@ -2198,7 +2350,7 @@ void UnstructuredGrid::write_openFoam_polyMesh(const std::string& topLevelDir) {
 
     // D:1991-2030: work through the cells and decide the vertex order of each face.
     eil::Array<bool> reverse_vtx_order_for_face;
-    reverse_vtx_order_for_face.set_length(faces.length()); // D:1992 (value-init false)
+    set_length_d(reverse_vtx_order_for_face, faces.length()); // D:1992 (value-init false)
     eil::Array<bool> face_already_checked;
     for (size_t fid = 0; fid < faces.length(); ++fid) face_already_checked.append(false);
     for (size_t i = 0; i < cells.length(); ++i) {
@@ -2406,7 +2558,7 @@ std::shared_ptr<UnstructuredGrid> UnstructuredGrid::joinGrid(
     eil::Array<size_t> new_vtx_ids;
     if (!checkBoundariesOnly) {
         // D:2183-2205 the exhaustive pairwise search.
-        new_vtx_ids.set_length(other->vertices.length());
+        set_length_d(new_vtx_ids, other->vertices.length());
         for (size_t i = 0; i < other->vertices.length(); ++i) {
             const Vector3& vtx = other->vertices[i];
             bool found = false;
@@ -2429,13 +2581,13 @@ std::shared_ptr<UnstructuredGrid> UnstructuredGrid::joinGrid(
         eil::Array<size_t> vtx_ids_boundary = getVertexIdsOnBoundaries();
         eil::Array<size_t> vtx_ids_other_boundary = other->getVertexIdsOnBoundaries();
         eil::Array<bool> other_vtx_is_on_boundary;
-        other_vtx_is_on_boundary.set_length(other->vertices.length());
+        set_length_d(other_vtx_is_on_boundary, other->vertices.length());
         for (size_t q = 0; q < vtx_ids_other_boundary.length(); ++q)
             other_vtx_is_on_boundary[vtx_ids_other_boundary[q]] = true;
 
         const size_t nvtxs = vtx_ids_boundary.length();
         eil::Array<Node> nodes;                              // D:2220-2226
-        nodes.set_length(nvtxs);
+        set_length_d(nodes, nvtxs);
         for (size_t i = 0; i < nvtxs; ++i) {
             const size_t id = vtx_ids_boundary[i];
             // D:2223 `Node node = {[x, y, z]};` — the array literal initialises the
@@ -2447,7 +2599,7 @@ std::shared_ptr<UnstructuredGrid> UnstructuredGrid::joinGrid(
         }
         Node* root = makeTree<0>(nodes.all());               // D:2227
 
-        new_vtx_ids.set_length(other->vertices.length());
+        set_length_d(new_vtx_ids, other->vertices.length());
         for (size_t qi = 0; qi < vtx_ids_other_boundary.length(); ++qi) {
             const size_t i = vtx_ids_other_boundary[qi];
             bool found = false;
@@ -2483,11 +2635,11 @@ std::shared_ptr<UnstructuredGrid> UnstructuredGrid::joinGrid(
     // D:2274-2277: make sure every master face is in the dictionary.
     for (size_t i = 0; i < faces.length(); ++i) {
         std::string faceTag = makeFaceTag(faces[i]->vtx_id_list.all());
-        if (!faceIndices.contains(faceTag)) faceIndices.set(faceTag, i);
+        if (!faceIndices.contains(faceTag)) set_face_index(faceTag, i);
     }
 
-    eil::Array<size_t> new_face_ids; new_face_ids.set_length(other->faces.length()); // D:2283
-    eil::Array<bool> flip_new_face; flip_new_face.set_length(other->faces.length()); // D:2284
+    eil::Array<size_t> new_face_ids; set_length_d(new_face_ids, other->faces.length()); // D:2283
+    eil::Array<bool> flip_new_face; set_length_d(flip_new_face, other->faces.length()); // D:2284
     for (size_t i = 0; i < other->faces.length(); ++i) {
         const USGFace& fo = *other->faces[i];
         eil::Array<size_t> new_vtx_id_list;
@@ -2498,7 +2650,7 @@ std::shared_ptr<UnstructuredGrid> UnstructuredGrid::joinGrid(
         if (!faceIndices.contains(faceTag)) {                       // D:2289
             faces.append(std::make_shared<USGFace>(new_vtx_id_list.all()));
             const size_t j = faces.length() - 1;
-            faceIndices.set(faceTag, j);
+            set_face_index(faceTag, j);
             new_face_ids[i] = j;
             flip_new_face[i] = false;
         } else {
@@ -2664,7 +2816,7 @@ eil::Array<size_t> UnstructuredGrid::getVertexIdsOnBoundaries() const {
         }
     }
     eil::Array<size_t> vtx_ids_boundary;
-    vtx_ids_boundary.set_length(n_boundary_vtxs);                      // D:2464
+    set_length_d(vtx_ids_boundary, n_boundary_vtxs);                      // D:2464
     size_t j = 0;
     for (size_t bi = 0; bi < boundaries.length(); ++bi) {
         const BoundaryFaceSet& b = *boundaries[bi];
