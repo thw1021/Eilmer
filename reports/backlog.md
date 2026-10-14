@@ -712,7 +712,7 @@
      不要按 C++ `getline` 的失败流状态直觉写。
   （代理还报了第 4 条"没有 libplot 声明"，那与既有 **T-921** 同源，不另列。）
   → **Wave 3 之前**定形第 1 条（`gas/` 是第一个大量把对象写进消息的包）
-- [ ] **T-928** substrate 缺口：**没有 `std.conv.ConvOverflowException`，整数扫描也没有范围检查**。
+- [x] **T-928** substrate 缺口：**没有 `std.conv.ConvOverflowException`，整数扫描也没有范围检查**。
   由 G5 的代理按纪律报出（它不许改 substrate），T-927 的实测表已把规则钉死。现状是**两份互不相同的
   本地替身**，都在 `src/`：
   1. `src/geom/grid/usgrid.hpp:96` 定义了真正的 `ConvOverflowException`（派生自
@@ -751,6 +751,26 @@
   5. 全树扫描的其余命中都是**有语料钉住的**：`svgpath.cpp:76/:83`（`geom_gpath_svgpath` 注册通过）、
      `usgrid.cpp:304/311/315`（`geom_grid_usgrid` 行 208 钉住类与文本）、
      `sgrid.cpp:165/167` 只是注释。**没有第四处。**
+  **完成 2026-10-15**（提交 `fef8d4c`，详见 [task-log.md](task-log.md#t-928)）。
+  `ConvOverflowException` 进 substrate（`error.hpp`，`ConversionException` 的子类），
+  `parse_int_strict` 改成**按目标类型**的模板、逐位查界、用 `make_unsigned_t<T>` 累积
+  （于是 `ulong` 自己的最大值 `18446744073709551615` 能转、不再溢出有符号累加器），
+  有符号两端不对称（`int` 收 `2147483647`/`-2147483648`、拒 `2147483648`/`-2147483649`）。
+  **三个 string→int 扫描器收敛成一个**：`usgrid.hpp` 的本地类 + `usgrid.cpp` 的 `d_to_int`
+  删除（17 处改走 `eil::to_int`），`time_utils.cpp` 的第三个扫描器 `to_int_d` 也删除。
+  两条 D 路径**按来源保持分立**：string→int 报 `"Overflow in integral conversion"`；
+  数值→int 保留它自己的三条文本（`"Conversion positive/negative overflow"`、`"Input was NaN"`），
+  所以 `lua_service` 的 `to_int_from_double/long` 与 `meshpatch` 的 `d_to_int(double)`
+  **只换类、消息一字不改**。④的断言已加粗：`test_util_time_utils` 的 `expect_throw`
+  现在断言 **D 类名**（`object.Error`/`std.conv.ConvException`/`std.conv.ConvOverflowException`），
+  `meshpatch` harness 改为**先于父类**捕获 `ConvOverflowException` 而非按消息反推。
+  新门禁 `substrate_conv_int_typename` 回放 T-927 语料（**67 行核对、29 行窄类型跳过并点名、0 差**）——
+  此前**无门禁**正是范围检查缺失能长存的原因。**112/112 三配置全绿**，探针重跑逐字节相同，
+  `check_staleness` 无漂移；判别力已用"关掉范围检查看 5 条 overflow 行 + 2 条 time_utils 行转红
+  （`2147483648` 回绕成 `-2147483648`）"验证。**遗留**：`substrate_format_int_target.txt`
+  （`formattedRead "%d"` 那条路，含 `FormatException`/hex 特有形状）仍**未接门禁**——
+  它属 T-011 G4 的格式读取器、不是本条的 string→int；本轮改动使该路的 overflow 也走
+  `eil::to_int` 因而**更贴参照**，但专门的回放留待格式读取器那条线。
 - [x] **T-929** substrate 缺陷 **2 条**，都在 `substrate/include/eil/array.hpp`，由 G4 的代理报出
   （它按纪律不许改 substrate），两条都有语料行做证据：
   1. **`set_length` 把新增尾部填成 0，D 填 `T.init`**（`array.hpp:162-170` 是

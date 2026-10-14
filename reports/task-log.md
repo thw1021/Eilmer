@@ -952,3 +952,68 @@
   `tests/test_substrate_array_init.cpp`、`cmake/wave2_t929.cmake`（`if(EXISTS)` 自注册，
   基线路径作参数传入）；`CMakeLists.txt` +1 行 `include`。
 - **无新遗留**。T-929 闭合，同批的 T-928、T-926① 待做。
+
+## T-928 — substrate 补上 `ConvOverflowException` 与整数范围检查，三个手写扫描器收敛成一个  (2026-10-15)
+<a id="t-928"></a>
+
+- **提交** `fef8d4c`，14 个文件 +389/-194。三配置全绿：default **112/112**、`Release` **112/112**、
+  `Release+EIL_SLICE_CHECK` **112/112**（比 T-929 的 111 多 1，即新门禁 `substrate_conv_int_typename`）。
+  `check_staleness.sh` → "no drift"；改动文件构建 `error:`/`warning:` 计数 **0**
+  （顺手修掉 T-929 遗留的一处 `size_t→long` narrowing 警告，`test_geom_grid_usgrid.cpp:283`）。
+- **先量后写的证据早就在盘上**（T-927 抓的），本轮是"接线 + 实现"：
+  `baselines/e587b235/probes/substrate_conv_int_typename.txt` 逐行给出每个整型目标的
+  类名/文本/值。关键实测行：`int.max|2147483647|no-throw`、`int.max+1|2147483648|
+  ConvOverflowException|Overflow in integral conversion`、`int.min|-2147483648|no-throw`、
+  `int.min-1|-2147483649|overflow`、`ulong.max|18446744073709551615|no-throw`、
+  `ulong.max+1|overflow`、`size_t.huge|99999999999999999999999999|overflow`、
+  `uint.max+1|4294967296|overflow`。**重跑探针 `probe_conv_int_typename.d`（ldc2 -O0）
+  输出与已提交语料逐字节相同**（`diff` 空）——这条 probe 只 import std.conv、不依赖 gdtk，可独立复现。
+- **substrate 改动**（`substrate/include/eil/`，仅主线程改）：
+  1. `error.hpp` 新增 `ConvOverflowException : public ConversionException`
+     （= `std.conv.ConvOverflowException`，是 `ConvException` 的**子类**，所以 D 的
+     `catch (ConvException)` 也收它）。注释写清两条路径的不同文本，禁止合并。
+  2. `conv.hpp` 的 `parse_int_strict` 从 `inline long long(…)` 改成
+     `template <typename T> T(…)`：逐位累积时用 `acc > (limit - d)/10` 判界
+     （不溢出累加器本身），越界即抛 `ConvOverflowException("Overflow in integral conversion")`；
+     `limit` 正端取 `T::max`、负端取 `T::max + 1`（二补码 `|T::min|`）；累积类型是
+     `make_unsigned_t<T>`，于是 `ulong` 的最大值 `18446744073709551615`（放不进有符号 `long long`）
+     也能正确转换而不是 UB。`to_int`/`to_long`/`to_size_t`/`to<T>` 四个封装随之改为传目标类型。
+- **三个 string→int 扫描器收敛成一个**（backlog 写死的判定：替身从树里消失）：
+  - `usgrid.hpp` 的本地 `ConvOverflowException` **删除**；`usgrid.cpp` 的 `d_to_int` **删除**，
+    **17 处**调用点改走 `eil::to_int`（含 `fmt_into` 的 `%d`、`USGFace`/`USGCell` 的 token 解析、
+    SU2 头 `NDIME`/element type）。合并前**先核对**：usgrid 语料里所有 int 转换失败行的
+    冒犯字符都是纯 ASCII（`'f' 'o' 't' 'x' 'z'`，`msgunprint=0`），所以 substrate 的
+    `unexpected_char`（原样）与旧 `d_to_int` 的 `unexpected_char_at`（转义）逐字符相同，
+    非数值行 `us.face.str.nonint/hex`、`us.cell.str.badint`、`us.bfs.str.badint` 不受影响；
+    overflow 行 208 `us.face.str.bigcount` 仍报 `ConvOverflowException`（改由 substrate 抛）。
+  - `time_utils.cpp` 的**第三个**扫描器 `to_int_d` **删除**（含其 `ExceptionBase` 文本与
+    `acc > 1e18` 的粗略溢出启发式），4 处调用改走 `eil::to_int`；`<cctype>`/`<climits>`
+    随之变为未用、一并移除，改 include `eil/conv.hpp`。
+- **两条 D 路径按来源分立**（backlog 明令不许合并）：数值→int 保留自己的三条文本，
+  **只换类、消息一字不改**：
+  - `lua_service.hpp` 的 `to_int_from_double`：`"Input was NaN"` → `ConversionException`（父类），
+    `"Conversion positive/negative overflow"` → `ConvOverflowException`；`to_int_from_long`
+    同路径同样处理（数值→整型是同一 Phobos 路由，无 NaN 分支）。
+  - `meshpatch.cpp` 的 `d_to_int(double)`：两条 overflow 由 `ConversionException` 换成
+    `ConvOverflowException`（NaN 保持父类）。这条**有语料钉住**：
+    `geom_surface_meshpatch.txt` 行 195-200（`mp.oc.r.nan`=ConvException、
+    `mp.oc.r.pinf/ninf/big`=ConvOverflowException）。
+- **④门禁盲区已堵**（backlog 要求"顺手加粗断言"）：
+  - `test_util_time_utils.cpp` 的 `expect_throw` 此前只 `catch(ErrorBase)/catch(ExceptionBase)`
+    比 `.msg`、类名从不进断言（`ConversionException` 派生自 `ExceptionBase`，抛哪个都进同一支）。
+    改为 `catch(ThrowableBase)` + `dynamic_cast` 映射到 D 类名并**逐字比对**：
+    `object.Error`（字段数错）/`std.conv.ConvException`（语法）/`std.conv.ConvOverflowException`（越界）。
+    新增两行越界用例（`2147483648`、`-2147483649`）分别点名 overflow 类。
+  - `test_geom_surface_meshpatch.cpp` 的 harness 改为**先于父类**捕获 `ConvOverflowException`，
+    不再"按消息文本反推类"——于是门禁真的在验端口抛的类，而非把错类藏进消息匹配里。
+- **新门禁 `substrate_conv_int_typename`**（`cmake/wave2_t928.cmake` 自注册）：回放 T-927 语料，
+  **67 行核对、29 行窄类型（short/byte/ubyte，substrate 无对应目标）跳过并在输出里点名、0 差**。
+  判别力验证：临时把范围检查改成 `if(false)`，`int.max+1`/`int.min-1`/`uint.max+1`/`ulong.max+1`/
+  `size_t.huge` **5 行转红**，`time_utils` 的 `2147483648`/`-2147483649` **2 行转红**
+  （实测回绕：`2147483648 → -2147483648`、`-2147483649 → 2147483647`），随后改回、复绿。
+- **遗留（写进 backlog）**：`substrate_format_int_target.txt`（`formattedRead "%d"` 路径，含
+  `std.format.FormatException`、hex 读作 0 等 std.format 特有形状）仍**未接专门门禁**——
+  它属 T-011 G4 的格式读取器线。本轮 `parse_int_strict` 加范围检查后，该路的 overflow
+  （`int.overflow|99999999999999999999`）也经 `eil::to_int` 而**更贴参照**，但完整回放留待格式线。
+  `substrate_to_int_from_double.txt` 同样未单独接线，但其行为已由 `geom_surface_meshpatch`
+  语料（同一数值→int 路由）覆盖并绿。
