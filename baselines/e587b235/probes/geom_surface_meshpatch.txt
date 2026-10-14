@@ -1,0 +1,303 @@
+mp.src|dfile=geom/surface/meshpatch.d|dlines=100|sha256=e8418bd6df549a844f9d0a7a8fb69d795211efc74fb76454816acde91b23e906|probe=probes/geom/surface/probe_meshpatch.d|cc=ldc2 1.40.0 -O0 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip
+mp.v str=MeshPatch()
+mp.v classname=MeshPatch
+mp.v niv=4 njv=3 mesh.length=4 rowlen=3,3,3,3
+mp.v mesh[0][0] x=0 y=0 z=0
+mp.v mesh[0][1] x=1 y=10 z=0.5
+mp.v mesh[0][2] x=2 y=20 z=1
+mp.v mesh[1][0] x=10 y=100 z=1
+mp.v mesh[1][1] x=11 y=110 z=1.5
+mp.v mesh[1][2] x=12 y=120 z=2
+mp.v mesh[2][0] x=20 y=200 z=2
+mp.v mesh[2][1] x=21 y=210 z=2.5
+mp.v mesh[2][2] x=22 y=220 z=3
+mp.v mesh[3][0] x=30 y=300 z=3
+mp.v mesh[3][1] x=31 y=310 z=3.5
+mp.v mesh[3][2] x=32 y=320 z=4
+mp.v p00 x=0 y=0 z=0
+mp.v p10 x=30 y=300 z=3
+mp.v p11 x=32 y=320 z=4
+mp.v p01 x=2 y=20 z=1
+mp.v opCall r=0 s=0 x=0 y=0 z=0
+mp.v opCall r=0 s=0.25 x=0.5 y=5 z=0.25
+mp.v opCall r=0 s=0.5 x=1 y=10 z=0.5
+mp.v opCall r=0 s=0.75 x=1.5 y=15 z=0.75
+mp.v opCall r=0 s=1 x=2 y=20 z=1
+mp.v opCall r=0.20000000000000001 s=0 x=6.0000000000000009 y=60.000000000000007 z=0.60000000000000009
+mp.v opCall r=0.20000000000000001 s=0.25 x=6.5000000000000009 y=65 z=0.85000000000000009
+mp.v opCall r=0.20000000000000001 s=0.5 x=7.0000000000000018 y=70.000000000000014 z=1.1000000000000001
+mp.v opCall r=0.20000000000000001 s=0.75 x=7.5000000000000009 y=75.000000000000014 z=1.3500000000000001
+mp.v opCall r=0.20000000000000001 s=1 x=8 y=80.000000000000014 z=1.6000000000000001
+mp.v opCall r=0.5 s=0 x=15 y=150 z=1.5
+mp.v opCall r=0.5 s=0.25 x=15.5 y=155 z=1.75
+mp.v opCall r=0.5 s=0.5 x=16 y=160 z=2
+mp.v opCall r=0.5 s=0.75 x=16.5 y=165 z=2.25
+mp.v opCall r=0.5 s=1 x=17 y=170 z=2.5
+mp.v opCall r=0.75 s=0 x=22.5 y=225 z=2.25
+mp.v opCall r=0.75 s=0.25 x=23 y=230 z=2.5
+mp.v opCall r=0.75 s=0.5 x=23.5 y=235 z=2.75
+mp.v opCall r=0.75 s=0.75 x=24 y=240 z=3
+mp.v opCall r=0.75 s=1 x=24.5 y=245 z=3.25
+mp.v opCall r=1 s=0 x=30.000000000000004 y=300 z=3.0000000000000004
+mp.v opCall r=1 s=0.25 x=30.5 y=305 z=3.2500000000000004
+mp.v opCall r=1 s=0.5 x=31.000000000000004 y=310 z=3.5000000000000004
+mp.v opCall r=1 s=0.75 x=31.5 y=315 z=3.75
+mp.v opCall r=1 s=1 x=32 y=320 z=4
+mp.v.clamp r=-0.5 s=0.5 x=-14 y=-140 z=-1
+mp.v.clamp r=-0.001 s=0.5 x=0.96999999999999986 y=9.6999999999999993 z=0.49699999999999994
+mp.v.clamp r=0 s=0.5 x=1 y=10 z=0.5
+mp.v.clamp r=0.33333333333333331 s=0.5 x=11 y=110 z=1.5
+mp.v.clamp r=0.33333333333333326 s=0.5 x=10.999999999999998 y=109.99999999999997 z=1.4999999999999996
+mp.v.clamp r=0.33333333333333337 s=0.5 x=11.000000000000002 y=110 z=1.5
+mp.v.clamp r=0.5 s=0.5 x=16 y=160 z=2
+mp.v.clamp r=0.66666666666666663 s=0.5 x=21 y=210 z=2.5
+mp.v.clamp r=0.66666666666666652 s=0.5 x=20.999999999999996 y=209.99999999999997 z=2.4999999999999996
+mp.v.clamp r=0.66666666666666674 s=0.5 x=21.000000000000004 y=210.00000000000006 z=2.5000000000000004
+mp.v.clamp r=0.99999999999999989 s=0.5 x=30.999999999999996 y=310 z=3.4999999999999996
+mp.v.clamp r=1 s=0.5 x=31.000000000000004 y=310 z=3.5000000000000004
+mp.v.clamp r=1.5 s=0.5 x=46 y=460 z=5.0000000000000009
+mp.v.clamp r=0.5 s=-0.5 x=14.000000000000002 y=140.00000000000003 z=1.0000000000000002
+mp.v.clamp r=0.5 s=-0.001 x=14.998000000000001 y=149.97999999999999 z=1.4990000000000001
+mp.v.clamp r=0.5 s=0 x=15 y=150 z=1.5
+mp.v.clamp r=0.5 s=0.33333333333333331 x=15.666666666666668 y=156.66666666666669 z=1.8333333333333335
+mp.v.clamp r=0.5 s=0.33333333333333326 x=15.666666666666668 y=156.66666666666669 z=1.8333333333333333
+mp.v.clamp r=0.5 s=0.33333333333333337 x=15.666666666666666 y=156.66666666666669 z=1.8333333333333335
+mp.v.clamp r=0.5 s=0.5 x=16 y=160 z=2
+mp.v.clamp r=0.5 s=0.66666666666666663 x=16.333333333333336 y=163.33333333333334 z=2.166666666666667
+mp.v.clamp r=0.5 s=0.66666666666666652 x=16.333333333333336 y=163.33333333333334 z=2.1666666666666665
+mp.v.clamp r=0.5 s=0.66666666666666674 x=16.333333333333336 y=163.33333333333334 z=2.166666666666667
+mp.v.clamp r=0.5 s=0.99999999999999989 x=17 y=170 z=2.5
+mp.v.clamp r=0.5 s=1 x=17 y=170 z=2.5
+mp.v.clamp r=0.5 s=1.5 x=18 y=180 z=3.0000000000000004
+mp.v area nr=10 ns=10 x=240.00000000000011 y=-24 z=4.0056846728475648e-13
+mp.v area nr=3 ns=7 x=240 y=-24 z=-4.2632564145606011e-14
+mp.grid str=MeshPatch()
+mp.grid classname=MeshPatch
+mp.grid niv=5 njv=4 mesh.length=5 rowlen=4,4,4,4,4
+mp.grid mesh[0][0] x=0 y=0.10000000000000001 z=3
+mp.grid mesh[0][1] x=0 y=0.43333333333333335 z=3
+mp.grid mesh[0][2] x=0 y=0.76666666666666672 z=3
+mp.grid mesh[0][3] x=0 y=1.1000000000000001 z=3
+mp.grid mesh[1][0] x=0.25 y=0.10000000000000001 z=3
+mp.grid mesh[1][1] x=0.25 y=0.43333333333333335 z=3
+mp.grid mesh[1][2] x=0.25 y=0.76666666666666672 z=3
+mp.grid mesh[1][3] x=0.25 y=1.1000000000000001 z=3
+mp.grid mesh[2][0] x=0.5 y=0.10000000000000001 z=3
+mp.grid mesh[2][1] x=0.5 y=0.43333333333333335 z=3
+mp.grid mesh[2][2] x=0.5 y=0.76666666666666672 z=3
+mp.grid mesh[2][3] x=0.5 y=1.1000000000000001 z=3
+mp.grid mesh[3][0] x=0.75 y=0.10000000000000001 z=3
+mp.grid mesh[3][1] x=0.75 y=0.43333333333333335 z=3
+mp.grid mesh[3][2] x=0.75 y=0.76666666666666672 z=3
+mp.grid mesh[3][3] x=0.75 y=1.1000000000000001 z=3
+mp.grid mesh[4][0] x=1 y=0.10000000000000001 z=3
+mp.grid mesh[4][1] x=1 y=0.43333333333333335 z=3
+mp.grid mesh[4][2] x=1 y=0.76666666666666672 z=3
+mp.grid mesh[4][3] x=1 y=1.1000000000000001 z=3
+mp.grid p00 x=0 y=0.10000000000000001 z=3
+mp.grid p10 x=1 y=0.10000000000000001 z=3
+mp.grid p11 x=1 y=1.1000000000000001 z=3
+mp.grid p01 x=0 y=1.1000000000000001 z=3
+mp.grid opCall r=0 s=0 x=0 y=0.10000000000000001 z=3
+mp.grid opCall r=0 s=0.25 x=0 y=0.35000000000000003 z=3
+mp.grid opCall r=0 s=0.5 x=0 y=0.60000000000000009 z=3
+mp.grid opCall r=0 s=0.75 x=0 y=0.85000000000000009 z=3
+mp.grid opCall r=0 s=1 x=0 y=1.1000000000000001 z=3
+mp.grid opCall r=0.20000000000000001 s=0 x=0.20000000000000001 y=0.10000000000000001 z=3
+mp.grid opCall r=0.20000000000000001 s=0.25 x=0.20000000000000001 y=0.35000000000000009 z=3
+mp.grid opCall r=0.20000000000000001 s=0.5 x=0.20000000000000001 y=0.60000000000000009 z=3
+mp.grid opCall r=0.20000000000000001 s=0.75 x=0.20000000000000001 y=0.85000000000000009 z=3
+mp.grid opCall r=0.20000000000000001 s=1 x=0.20000000000000001 y=1.1000000000000001 z=3
+mp.grid opCall r=0.5 s=0 x=0.5 y=0.10000000000000001 z=3
+mp.grid opCall r=0.5 s=0.25 x=0.5 y=0.35000000000000003 z=3
+mp.grid opCall r=0.5 s=0.5 x=0.5 y=0.60000000000000009 z=3
+mp.grid opCall r=0.5 s=0.75 x=0.5 y=0.85000000000000009 z=3
+mp.grid opCall r=0.5 s=1 x=0.5 y=1.1000000000000001 z=3
+mp.grid opCall r=0.75 s=0 x=0.75 y=0.10000000000000001 z=3
+mp.grid opCall r=0.75 s=0.25 x=0.75 y=0.35000000000000003 z=3
+mp.grid opCall r=0.75 s=0.5 x=0.75 y=0.60000000000000009 z=3
+mp.grid opCall r=0.75 s=0.75 x=0.75 y=0.85000000000000009 z=3
+mp.grid opCall r=0.75 s=1 x=0.75 y=1.1000000000000001 z=3
+mp.grid opCall r=1 s=0 x=1 y=0.10000000000000001 z=3
+mp.grid opCall r=1 s=0.25 x=1 y=0.35000000000000003 z=3
+mp.grid opCall r=1 s=0.5 x=1 y=0.60000000000000009 z=3
+mp.grid opCall r=1 s=0.75 x=1 y=0.85000000000000009 z=3
+mp.grid opCall r=1 s=1 x=1 y=1.1000000000000001 z=3
+mp.grid area nr=10 ns=10 x=-2.4651903288156619e-32 y=-1.7763568394002503e-16 z=1.0000000000000007
+mp.grid.nkv2|class=object.Error|msg=[MeshPatch expected a grid with nkv == 1]|file=[]|line=0
+mp.slab.nkv2|class=object.Error|msg=[MeshPatch expected a grid with nkv == 1]|file=[]|line=0
+mp.blank str=MeshPatch()
+mp.blank classname=MeshPatch
+mp.blank niv=3 njv=2 mesh.length=3 rowlen=2,2,2
+mp.blank mesh[0][0] x=nan y=nan z=nan
+mp.blank mesh[0][1] x=nan y=nan z=nan
+mp.blank mesh[1][0] x=nan y=nan z=nan
+mp.blank mesh[1][1] x=nan y=nan z=nan
+mp.blank mesh[2][0] x=nan y=nan z=nan
+mp.blank mesh[2][1] x=nan y=nan z=nan
+mp.blank p00 x=nan y=nan z=nan
+mp.blank p10 x=nan y=nan z=nan
+mp.blank p11 x=nan y=nan z=nan
+mp.blank p01 x=nan y=nan z=nan
+mp.blank opCall r=0.5 s=0.5 x=nan y=nan z=nan
+mp.grid1d str=MeshPatch()
+mp.grid1d classname=MeshPatch
+mp.grid1d niv=5 njv=1 mesh.length=5 rowlen=1,1,1,1,1
+mp.grid1d mesh[0][0] x=0 y=0 z=0
+mp.grid1d mesh[1][0] x=0.5 y=0 z=0
+mp.grid1d mesh[2][0] x=1 y=0 z=0
+mp.grid1d mesh[3][0] x=1.5 y=0 z=0
+mp.grid1d mesh[4][0] x=2 y=0 z=0
+mp.grid1d p00 x=0 y=0 z=0
+mp.grid1d p10 x=2 y=0 z=0
+mp.grid1d p11 x=2 y=0 z=0
+mp.grid1d p01 x=0 y=0 z=0
+mp.grid1d.opcall|class=core.exception.ArrayIndexError|msg=[index [1] is out of bounds for array of length 1]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=88
+mp.niv1 str=MeshPatch()
+mp.niv1 classname=MeshPatch
+mp.niv1 niv=1 njv=4 mesh.length=1 rowlen=4
+mp.niv1 mesh[0][0] x=-nan y=-nan z=-nan
+mp.niv1 mesh[0][1] x=-nan y=-nan z=-nan
+mp.niv1 mesh[0][2] x=-nan y=-nan z=-nan
+mp.niv1 mesh[0][3] x=-nan y=-nan z=-nan
+mp.niv1 p00 x=-nan y=-nan z=-nan
+mp.niv1 p10 x=-nan y=-nan z=-nan
+mp.niv1 p11 x=-nan y=-nan z=-nan
+mp.niv1 p01 x=-nan y=-nan z=-nan
+mp.niv1.opcall|class=core.exception.ArrayIndexError|msg=[index [1] is out of bounds for array of length 1]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=89
+mp.1x1 str=MeshPatch()
+mp.1x1 classname=MeshPatch
+mp.1x1 niv=1 njv=1 mesh.length=1 rowlen=1
+mp.1x1 mesh[0][0] x=nan y=nan z=nan
+mp.1x1 p00 x=nan y=nan z=nan
+mp.1x1 p10 x=nan y=nan z=nan
+mp.1x1 p11 x=nan y=nan z=nan
+mp.1x1 p01 x=nan y=nan z=nan
+mp.1x1.opcall|class=core.exception.ArrayIndexError|msg=[index [1] is out of bounds for array of length 1]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=88
+mp.grid.niv0|class=core.exception.ArrayIndexError|msg=[index [0] is out of bounds for array of length 0]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=35
+mp.grid.njv0|class=core.exception.ArrayIndexError|msg=[index [0] is out of bounds for array of length 0]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=35
+mp.v.empty|class=core.exception.ArrayIndexError|msg=[index [0] is out of bounds for array of length 0]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=44
+mp.v.emptyinner|class=core.exception.ArrayIndexError|msg=[index [0] is out of bounds for array of length 0]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=49
+mp.v.raggedshort|class=core.exception.ArrayIndexError|msg=[index [2] is out of bounds for array of length 2]|file=[/tmp/gdtk_shadow/geom/surface/meshpatch.d]|line=47
+mp.v.raggedlong str=MeshPatch()
+mp.v.raggedlong classname=MeshPatch
+mp.v.raggedlong niv=2 njv=3 mesh.length=2 rowlen=3,3
+mp.v.raggedlong mesh[0][0] x=0 y=0 z=0
+mp.v.raggedlong mesh[0][1] x=1 y=10 z=0.5
+mp.v.raggedlong mesh[0][2] x=2 y=20 z=1
+mp.v.raggedlong mesh[1][0] x=10 y=100 z=1
+mp.v.raggedlong mesh[1][1] x=11 y=110 z=1.5
+mp.v.raggedlong mesh[1][2] x=12 y=120 z=2
+mp.v.raggedlong p00 x=0 y=0 z=0
+mp.v.raggedlong p10 x=10 y=100 z=1
+mp.v.raggedlong p11 x=12 y=120 z=2
+mp.v.raggedlong p01 x=2 y=20 z=1
+mp.oc.r.nan|class=std.conv.ConvException|msg=[Input was NaN]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1548
+mp.oc.s.nan|class=std.conv.ConvException|msg=[Input was NaN]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1548
+mp.oc.r.pinf|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1573
+mp.oc.r.ninf|class=std.conv.ConvOverflowException|msg=[Conversion negative overflow]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1567
+mp.oc.r.big|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1573
+mp.oc.s.big|class=std.conv.ConvOverflowException|msg=[Conversion negative overflow]|file=[/home/tang/packages/dlang/bin/../import/std/conv.d]|line=1567
+mp.oor r=-1 s=0.5 x=-29 y=-290 z=-2.5
+mp.oor r=0.5 s=-1 x=13.000000000000004 y=130.00000000000006 z=0.50000000000000044
+mp.oor r=-0.25 s=0.5 x=-6.5 y=-65 z=-0.25
+mp.oor r=0.5 s=-0.25 x=14.5 y=145 z=1.2500000000000004
+mp.oor r=1.25 s=0.5 x=38.5 y=385.00000000000006 z=4.25
+mp.oor r=0.5 s=1.25 x=17.5 y=175.00000000000003 z=2.7500000000000004
+mp.oor r=2 s=0.5 x=61.000000000000007 y=610 z=6.5000000000000018
+mp.oor r=0.5 s=2 x=19 y=190.00000000000003 z=3.5000000000000009
+mp.copy str=MeshPatch()
+mp.copy classname=MeshPatch
+mp.copy niv=4 njv=3 mesh.length=4 rowlen=3,3,3,3
+mp.copy mesh[0][0] x=0 y=0 z=0
+mp.copy mesh[0][1] x=1 y=10 z=0.5
+mp.copy mesh[0][2] x=2 y=20 z=1
+mp.copy mesh[1][0] x=10 y=100 z=1
+mp.copy mesh[1][1] x=11 y=110 z=1.5
+mp.copy mesh[1][2] x=12 y=120 z=2
+mp.copy mesh[2][0] x=20 y=200 z=2
+mp.copy mesh[2][1] x=21 y=210 z=2.5
+mp.copy mesh[2][2] x=22 y=220 z=3
+mp.copy mesh[3][0] x=30 y=300 z=3
+mp.copy mesh[3][1] x=31 y=310 z=3.5
+mp.copy mesh[3][2] x=32 y=320 z=4
+mp.copy p00 x=0 y=0 z=0
+mp.copy p10 x=30 y=300 z=3
+mp.copy p11 x=32 y=320 z=4
+mp.copy p01 x=2 y=20 z=1
+mp.copy opCall r=0 s=0 x=0 y=0 z=0
+mp.copy opCall r=0 s=0.25 x=0.5 y=5 z=0.25
+mp.copy opCall r=0 s=0.5 x=1 y=10 z=0.5
+mp.copy opCall r=0 s=0.75 x=1.5 y=15 z=0.75
+mp.copy opCall r=0 s=1 x=2 y=20 z=1
+mp.copy opCall r=0.20000000000000001 s=0 x=6.0000000000000009 y=60.000000000000007 z=0.60000000000000009
+mp.copy opCall r=0.20000000000000001 s=0.25 x=6.5000000000000009 y=65 z=0.85000000000000009
+mp.copy opCall r=0.20000000000000001 s=0.5 x=7.0000000000000018 y=70.000000000000014 z=1.1000000000000001
+mp.copy opCall r=0.20000000000000001 s=0.75 x=7.5000000000000009 y=75.000000000000014 z=1.3500000000000001
+mp.copy opCall r=0.20000000000000001 s=1 x=8 y=80.000000000000014 z=1.6000000000000001
+mp.copy opCall r=0.5 s=0 x=15 y=150 z=1.5
+mp.copy opCall r=0.5 s=0.25 x=15.5 y=155 z=1.75
+mp.copy opCall r=0.5 s=0.5 x=16 y=160 z=2
+mp.copy opCall r=0.5 s=0.75 x=16.5 y=165 z=2.25
+mp.copy opCall r=0.5 s=1 x=17 y=170 z=2.5
+mp.copy opCall r=0.75 s=0 x=22.5 y=225 z=2.25
+mp.copy opCall r=0.75 s=0.25 x=23 y=230 z=2.5
+mp.copy opCall r=0.75 s=0.5 x=23.5 y=235 z=2.75
+mp.copy opCall r=0.75 s=0.75 x=24 y=240 z=3
+mp.copy opCall r=0.75 s=1 x=24.5 y=245 z=3.25
+mp.copy opCall r=1 s=0 x=30.000000000000004 y=300 z=3.0000000000000004
+mp.copy opCall r=1 s=0.25 x=30.5 y=305 z=3.2500000000000004
+mp.copy opCall r=1 s=0.5 x=31.000000000000004 y=310 z=3.5000000000000004
+mp.copy opCall r=1 s=0.75 x=31.5 y=315 z=3.75
+mp.copy opCall r=1 s=1 x=32 y=320 z=4
+mp.dup str=MeshPatch()
+mp.dup classname=MeshPatch
+mp.dup niv=4 njv=3 mesh.length=4 rowlen=3,3,3,3
+mp.dup mesh[0][0] x=0 y=0 z=0
+mp.dup mesh[0][1] x=1 y=10 z=0.5
+mp.dup mesh[0][2] x=2 y=20 z=1
+mp.dup mesh[1][0] x=10 y=100 z=1
+mp.dup mesh[1][1] x=11 y=110 z=1.5
+mp.dup mesh[1][2] x=12 y=120 z=2
+mp.dup mesh[2][0] x=20 y=200 z=2
+mp.dup mesh[2][1] x=21 y=210 z=2.5
+mp.dup mesh[2][2] x=22 y=220 z=3
+mp.dup mesh[3][0] x=30 y=300 z=3
+mp.dup mesh[3][1] x=31 y=310 z=3.5
+mp.dup mesh[3][2] x=32 y=320 z=4
+mp.dup p00 x=0 y=0 z=0
+mp.dup p10 x=30 y=300 z=3
+mp.dup p11 x=32 y=320 z=4
+mp.dup p01 x=2 y=20 z=1
+mp.dup opCall r=0 s=0 x=0 y=0 z=0
+mp.dup opCall r=0 s=0.25 x=0.5 y=5 z=0.25
+mp.dup opCall r=0 s=0.5 x=1 y=10 z=0.5
+mp.dup opCall r=0 s=0.75 x=1.5 y=15 z=0.75
+mp.dup opCall r=0 s=1 x=2 y=20 z=1
+mp.dup opCall r=0.20000000000000001 s=0 x=6.0000000000000009 y=60.000000000000007 z=0.60000000000000009
+mp.dup opCall r=0.20000000000000001 s=0.25 x=6.5000000000000009 y=65 z=0.85000000000000009
+mp.dup opCall r=0.20000000000000001 s=0.5 x=7.0000000000000018 y=70.000000000000014 z=1.1000000000000001
+mp.dup opCall r=0.20000000000000001 s=0.75 x=7.5000000000000009 y=75.000000000000014 z=1.3500000000000001
+mp.dup opCall r=0.20000000000000001 s=1 x=8 y=80.000000000000014 z=1.6000000000000001
+mp.dup opCall r=0.5 s=0 x=15 y=150 z=1.5
+mp.dup opCall r=0.5 s=0.25 x=15.5 y=155 z=1.75
+mp.dup opCall r=0.5 s=0.5 x=16 y=160 z=2
+mp.dup opCall r=0.5 s=0.75 x=16.5 y=165 z=2.25
+mp.dup opCall r=0.5 s=1 x=17 y=170 z=2.5
+mp.dup opCall r=0.75 s=0 x=22.5 y=225 z=2.25
+mp.dup opCall r=0.75 s=0.25 x=23 y=230 z=2.5
+mp.dup opCall r=0.75 s=0.5 x=23.5 y=235 z=2.75
+mp.dup opCall r=0.75 s=0.75 x=24 y=240 z=3
+mp.dup opCall r=0.75 s=1 x=24.5 y=245 z=3.25
+mp.dup opCall r=1 s=0 x=30.000000000000004 y=300 z=3.0000000000000004
+mp.dup opCall r=1 s=0.25 x=30.5 y=305 z=3.2500000000000004
+mp.dup opCall r=1 s=0.5 x=31.000000000000004 y=310 z=3.5000000000000004
+mp.dup opCall r=1 s=0.75 x=31.5 y=315 z=3.75
+mp.dup opCall r=1 s=1 x=32 y=320 z=4
+mp.dup area nr=10 ns=10 x=240.00000000000011 y=-24 z=4.0056846728475648e-13
+mp.indep mutated=mesh[1][2],p11
+mp.indep copy mesh[1][2] x=12 y=120 z=2
+mp.indep copy p11 x=32 y=320 z=4
+mp.indep dup mesh[1][2] x=12 y=120 z=2
+mp.indep dup p11 x=32 y=320 z=4
+mp.indep orig aftermut r=0.38333333333333336 s=0.71666666666666667 x=11.828333333333335 y=88.448333333333352 z=4.4450000000000003
