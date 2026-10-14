@@ -256,6 +256,21 @@
   因为 `two_temperature_nitrogen.d` 会走到。已开 **T-916** 钉住它。
   普查本身作为常驻测试留在树里：它**不要求差异为零**（差异是它测的东西），
   只在两侧不再描述同一批行时失败。
+- [ ] **T-919** `geom_grid_grid` 行 178 `cbc.nan2d x=`：**仅 Release 红**，
+  D `-nan` / 端口 `nan`，且 Debug 与 `-DEIL_SLICE_CHECK=ON` 两侧一致为 `-nan`。
+  643 行里唯一一条，量级是 y/z 完全相同、只有 x 的 NaN 符号位不同。
+  **已排除的假设（不要再走一遍）**：grid 代理怀疑 `vector3.cpp:99-102` 的
+  `x += other.x; y += other.y` 被 GCC 打成 `addpd` 因而取错 lane 的 NaN payload。
+  实测 `objdump -d CMakeFiles/eil_geom.dir/src/geom/elements/vector3.cpp.o | grep -c addpd`
+  = **0**；给该文件加 `-fno-tree-slp-vectorize` 后 Release **仍然 642/643**（该行不变），
+  所以这个 flag 不是解，已回滚不留痕。**注意** `-fno-slp-vectorize` 在 g++ 里根本不存在
+  （wave-01 教训 2 的再现，先 `g++ -O3 -fno-tree-slp-vectorize -c` 验过才用）。
+  下一步该做的：在 `-O0` 与 `-O2` 下分别打印 `cell_barycentre` 的
+  `cbc.set` 之后、每次 `add`、`scale(1.0/nvtx)` 之前的 x 位型，
+  指认符号位是在哪一步翻的；怀疑方向是 `scale` 里 `x *= factor` 与
+  `1.0/nvtx`（`nvtx==0` 时是 `inf`，`0*inf` 在两处求值顺序不同）。
+  **这条测试保持红色不销**：它是唯一一条已知未解释的门禁差异，
+  放宽比较或改基线都不允许 → **Wave 2 内解决**
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
