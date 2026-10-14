@@ -1,0 +1,18 @@
+Begin demonstration of the ParametricSurface elements.
+CoonsPatch demo
+my_patch= CoonsPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)))
+my_patch(0.1, 0.1)= Vector3(0.1, 0.2, 3)
+AOPatch demo
+my_AOpatch= AOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.4, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.4, 3), p1=Vector3(1, 1.1, 3)), nx=10, ny=10)
+my_AOpatch(0.1, 0.1)= Vector3(0.0892476, 0.215529, 3)
+SubRangedSurface demo
+srp= SubRangedSurface(underlying_surface=AOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.4, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.4, 3), p1=Vector3(1, 1.1, 3)), nx=10, ny=10), r0=0, r1=0.5, s0=0, s1=0.5)
+srp(0.2,0.2)= Vector3(0.0892476, 0.215529, 3)
+ChannelPatch demo
+chanp= ChannelPatch(cSouth=Line(p0=Vector3(0, 0, 0), p1=Vector3(1, 0, 0)), cNorth=Line(p0=Vector3(0, 0.25, 0), p1=Vector3(1, 1, 0)), ruled=false, pure2D=false)
+chanp(0.5,0.5)= Vector3(0.546875, 0.328125, 0)
+SweptPathPatch demo
+spp= SweptPathPatch(cA=Line(p0=Vector3(0, 0, 0), p1=Vector3(0, 1, 0)), cB=Line(p0=Vector3(1, 0.25, 0), p1=Vector3(2, 0.25, 0)))
+spp(0.5,0.5)= Vector3(1.5, 0.75, 0)
+Generating VTK-XML of AOPatch.
+Done surface_demo.
