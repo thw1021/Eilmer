@@ -393,7 +393,7 @@ template <typename T> class Matrix {
     Matrix sliceDup(size_t row0, size_t row1, size_t col0, size_t col1) const {
         if (!((row0 < row1) && (row1 <= this->_nrows) &&
               (col0 < col1) && (col1 <= this->_ncols))) {
-            throw eil::ErrorBase("invalid subrange", __FILE__, __LINE__);
+            throw eil::ErrorBase("invalid subrange");
         }
         Matrix sub_matrix = new_matrix<T>(row1-row0, col1-col0);
         for (size_t row = row0; row < row1; ++row) {
@@ -408,7 +408,7 @@ template <typename T> class Matrix {
     void sliceAssign(T c, size_t row0, size_t row1, size_t col0, size_t col1) const {
         if (!((row0 < row1) && (row1 <= this->_nrows) &&
               (col0 < col1) && (col1 <= this->_ncols))) {
-            throw eil::ErrorBase("invalid subrange", __FILE__, __LINE__);
+            throw eil::ErrorBase("invalid subrange");
         }
         for (size_t row = row0; row < row1; ++row) {
             for (size_t col = col0; col < col1; ++col) {
@@ -668,8 +668,7 @@ Matrix<T> hstack(eil::Slice<Matrix<T>> matrixList) {
         if (nrows != mat.nrows()) consistent = false;
     }
     if (!consistent) {
-        throw eil::ErrorBase("Matrices need to have the same number of rows",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Matrices need to have the same number of rows");
     }
     Matrix<T> result = new_matrix<T>(nrows, ncols);
     size_t colStart = 0;
@@ -704,8 +703,7 @@ Matrix<T> vstack(eil::Slice<Matrix<T>> matrixList) {
         if (ncols != mat.ncols()) consistent = false;
     }
     if (!consistent) {
-        throw eil::ErrorBase("Matrices need to have the same number of columns",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Matrices need to have the same number of columns");
     }
     Matrix<T> result = new_matrix<T>(nrows, ncols);
     size_t rowStart = 0;

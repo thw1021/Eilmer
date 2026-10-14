@@ -229,7 +229,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "control points in each direction.\n";
         errMsg += eil::format("Supplied number of control points in direction u: %s\n", nPu);
         errMsg += eil::format("Supplied number of control points in direction v: %s", nPv);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:99
+        throw eil::ErrorBase(eil::text(errMsg)); // D:99
     }
 
     // Test that p is valid (D:102-110). int/int comparison, so a negative degree passes.
@@ -239,7 +239,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "compatible with given number of control points.\n";
         errMsg += eil::format("Supplied degree in u direction: %s\n", p_);
         errMsg += eil::format("Maximum allowed degree in u direction: %s", Pw_.length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:109
+        throw eil::ErrorBase(eil::text(errMsg)); // D:109
     }
 
     // Test that q is valid (D:112-120).
@@ -249,7 +249,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "compatible with given number of control points.\n";
         errMsg += eil::format("Supplied degree in v direction: %s\n", q_);
         errMsg += eil::format("Maximum allowed degree in v direction: %s", Pw_[0].length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:119
+        throw eil::ErrorBase(eil::text(errMsg)); // D:119
     }
 
     // Test that r is valid (D:122-130).
@@ -259,7 +259,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "compatible with given number of control points.\n";
         errMsg += eil::format("Supplied degree in w direction: %s\n", r_);
         errMsg += eil::format("Maximum allowed degree in w direction: %s", Pw_[0][0].length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:129
+        throw eil::ErrorBase(eil::text(errMsg)); // D:129
     }
 
     // Test U knot vector is valid (D:132-140). Signed here...
@@ -269,7 +269,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "with given number control points and volume degree.\n";
         errMsg += eil::format("Supplied number of knots in direction u: %s\n", U_.length());
         errMsg += eil::format("Required number of knots in direction u: %s", m_a + p_ + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:139
+        throw eil::ErrorBase(eil::text(errMsg)); // D:139
     }
 
     // Test V knot vector is valid (D:142-150). ...and size_t here (D:144), because D
@@ -280,7 +280,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "with given number control points and volume degree.\n";
         errMsg += eil::format("Supplied number of knots in direction v: %s\n", V_.length());
         errMsg += eil::format("Required number of knots in direction v: %s", m_b + q_ + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:149
+        throw eil::ErrorBase(eil::text(errMsg)); // D:149
     }
 
     // Test W knot vector is valid (D:152-160). size_t as at D:154.
@@ -290,7 +290,7 @@ void NURBSVolume::initialise(const PwArray& Pw_, eil::Slice<double> U_, int p_,
         errMsg += "with given number control points and volume degree.\n";
         errMsg += eil::format("Supplied number of knots in direction w: %s\n", W_.length());
         errMsg += eil::format("Required number of knots in direction w: %s", m_c + r_ + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:159
+        throw eil::ErrorBase(eil::text(errMsg)); // D:159
     }
 
     // Everything passed: take ownership of the inputs (D:162-177). The six

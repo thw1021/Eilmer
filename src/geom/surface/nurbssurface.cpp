@@ -57,7 +57,7 @@ NURBSSurface::NURBSSurface(const Pw2& Pw, eil::Slice<double> U, int p, eil::Slic
                               Pw.length());
         errMsg += eil::format("Supplied number of control points in direction v: %s",
                               Pw[0].length());
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:28
+        throw eil::ErrorBase(eil::text(errMsg)); // D:28
     }
     // D:30-36. Test that p is valid. D compares int against size_t, so -1 wraps.
     if (static_cast<size_t>(p) > Pw.length() - 1) {
@@ -66,7 +66,7 @@ NURBSSurface::NURBSSurface(const Pw2& Pw, eil::Slice<double> U, int p, eil::Slic
             "given number of control points.\n";
         errMsg += eil::format("Supplied degree in u direction: %s\n", p);
         errMsg += eil::format("Maximum allowed degree in u direction: %s", Pw.length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:35
+        throw eil::ErrorBase(eil::text(errMsg)); // D:35
     }
     // D:37-43. Test that q is valid. D's message says "direction u" twice here (D:40-41);
     // kept verbatim, because the corpus compares the text.
@@ -76,7 +76,7 @@ NURBSSurface::NURBSSurface(const Pw2& Pw, eil::Slice<double> U, int p, eil::Slic
             "given number of control points.\n";
         errMsg += eil::format("Supplied degree in u direction: %s\n", q);
         errMsg += eil::format("Maximum allowed degree in u direction: %s", Pw[0].length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:42
+        throw eil::ErrorBase(eil::text(errMsg)); // D:42
     }
     // D:44-51. Test U knot vector is valid.
     this->m_a = eil::to<int>(Pw.length() - 1); // D:45 to!int(Pw.length-1)
@@ -86,7 +86,7 @@ NURBSSurface::NURBSSurface(const Pw2& Pw, eil::Slice<double> U, int p, eil::Slic
             "points and surface degree.\n";
         errMsg += eil::format("Supplied number of knots in direction u: %s\n", U.length());
         errMsg += eil::format("Required number of knots in direction u: %s", m_a + p + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:50
+        throw eil::ErrorBase(eil::text(errMsg)); // D:50
     }
     // D:52-59. Test V knot vector is valid. Again D's first line says "direction u"
     // (D:55) while the two detail lines say v; both kept as written.
@@ -97,7 +97,7 @@ NURBSSurface::NURBSSurface(const Pw2& Pw, eil::Slice<double> U, int p, eil::Slic
             "points and surface degree.\n";
         errMsg += eil::format("Supplied number of knots in direction v: %s\n", V.length());
         errMsg += eil::format("Required number of knots in direction v: %s", m_b + q + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:58
+        throw eil::ErrorBase(eil::text(errMsg)); // D:58
     }
 
     this->mPw = Pw.dup();      // D:61

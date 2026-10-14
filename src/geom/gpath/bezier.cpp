@@ -16,11 +16,10 @@ namespace geom {
 // D:19-29
 Bezier::Bezier(const eil::Array<Vector3>& B0) {
     if (B0.length() == 0) {
-        throw eil::ErrorBase("Bezier() No control points present.", __FILE__, __LINE__);
+        throw eil::ErrorBase("Bezier() No control points present.");
     }
     if (B0.length() == 1) {
-        throw eil::ErrorBase("Bezier() Only one control point, not enough for a curve.",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Bezier() Only one control point, not enough for a curve.");
     }
     B = B0.dup();
     set_deriv_control_points();
@@ -96,8 +95,7 @@ void Bezier::set_deriv_control_points() {
     size_t n = B.length() - 1;
     if (n == 0) {
         // shouldn't reach here due to check in constructor
-        throw eil::ErrorBase("Bezier() Curve is a point, derivative not defined",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Bezier() Curve is a point, derivative not defined");
     }
     C.set_length(n);
     for (size_t i = 0; i < n; ++i) { // D: foreach (i; 0 .. n)

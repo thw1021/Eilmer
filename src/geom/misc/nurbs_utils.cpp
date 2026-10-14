@@ -124,8 +124,7 @@ eil::Array<double> autoKnotVector(int N, int p) {
     if ((p > a) || (p < 1)) {
         // D:103 `throw new Error(...)` — an Error, not an Exception.
         throw eil::ErrorBase(
-            "Number of control points is not compatible with degree (1<=p<=N+1).", __FILE__,
-            __LINE__);
+            "Number of control points is not compatible with degree (1<=p<=N+1).");
     }
     int q = a + p + 1;
     eil::Array<double> U;

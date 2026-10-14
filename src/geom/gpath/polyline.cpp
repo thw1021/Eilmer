@@ -28,7 +28,7 @@ namespace geom {
 // D:32-50. Construct from the Path segments.
 Polyline::Polyline(const PathList& segs, bool isClosed, double tolerance) {
     if (segs.length() == 0) {
-        throw eil::ErrorBase("Polyline() No segments present.", __FILE__, __LINE__);
+        throw eil::ErrorBase("Polyline() No segments present.");
     }
     for (size_t i = 0; i < segs.length(); ++i) { // D: foreach (myseg; segments)
         segments.append(segs[i]->dup());

@@ -56,7 +56,7 @@ NURBS::NURBS(eil::Slice<std::array<double, 4>> Pw, eil::Slice<double> U, int p) 
             "NURBS() Degree of NURBS path is not compatible with given number of control points.\n";
         errMsg += eil::format("Supplied path degree: %s\n", p);
         errMsg += eil::format("Maximum allowed path degree: %s", Pw.length() - 1);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:33
+        throw eil::ErrorBase(eil::text(errMsg)); // D:33
     }
     // Test knot vector is valid
     this->m_a = eil::to<int>(Pw.length() - 1); // D:36 to!int(Pw.length-1)
@@ -66,7 +66,7 @@ NURBS::NURBS(eil::Slice<std::array<double, 4>> Pw, eil::Slice<double> U, int p) 
             "NURBS() Knot vector is not compatible with given number control points and curve degree.\n";
         errMsg += eil::format("Supplied number of knots: %s\n", U.length());
         errMsg += eil::format("Required number of knots: %s", m_a + p + 2);
-        throw eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__); // D:41
+        throw eil::ErrorBase(eil::text(errMsg)); // D:41
     }
 
     this->mPw = eil::Array<std::array<double, 4>>(Pw); // D:44 Pw.dup

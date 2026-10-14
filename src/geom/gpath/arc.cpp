@@ -92,8 +92,7 @@ void Arc::evaluate_position_and_length(double t, Vector3& loc, number& L) const 
     if (eil::geom::abs(n) > 0.0) {
         n.normalize();
     } else {
-        throw eil::ErrorBase("Arc.evaluate(): cannot find plane of three points.",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Arc.evaluate(): cannot find plane of three points.");
     }
     // Third (orthogonal) vector is in the original plane.
     tangent2 = cross(n, tangent1);

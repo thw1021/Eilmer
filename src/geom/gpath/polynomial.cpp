@@ -18,11 +18,10 @@ namespace geom {
 // D:23-33
 Polynomial::Polynomial(const eil::Array<Vector3>& P0) {
     if (P0.length() == 0) {
-        throw eil::ErrorBase("Polynomial() No control points present.", __FILE__, __LINE__);
+        throw eil::ErrorBase("Polynomial() No control points present.");
     } // end if
     if (P0.length() == 1) {
-        throw eil::ErrorBase("Polynomial() Only one control point, not enough for a curve.",
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Polynomial() Only one control point, not enough for a curve.");
     } // end if
     P = P0.dup();
     evaluate_coefficients();
@@ -31,7 +30,7 @@ Polynomial::Polynomial(const eil::Array<Vector3>& P0) {
 // D:34-43
 Polynomial::Polynomial(const eil::Array<number>& C0, number x0, number x1) {
     if (C0.length() == 0) {
-        throw eil::ErrorBase("Polynomial() No coefficients provided.", __FILE__, __LINE__);
+        throw eil::ErrorBase("Polynomial() No coefficients provided.");
     } // end if
     C = C0.dup();
     P.set_length(2);
@@ -42,14 +41,13 @@ Polynomial::Polynomial(const eil::Array<number>& C0, number x0, number x1) {
 // D:44-56
 Polynomial::Polynomial(const eil::Array<Vector3>& P0, const eil::Array<number>& C0) {
     if (C0.length() == 0) {
-        throw eil::ErrorBase("Polynomial() No coefficients provided.", __FILE__, __LINE__);
+        throw eil::ErrorBase("Polynomial() No coefficients provided.");
     } // end if
     C = C0.dup();
     for (size_t ip = 0; ip < P0.length(); ++ip) { // D: foreach (point; P)
         const Vector3& point = P0[ip];
         if (point.y != evaluate_polynomial(point.x).y) {
-            throw eil::ErrorBase("Polynomial() points and coefficients do not match.",
-                                 __FILE__, __LINE__);
+            throw eil::ErrorBase("Polynomial() points and coefficients do not match.");
         } // end if
     } // end foreach
     P = P0.dup();

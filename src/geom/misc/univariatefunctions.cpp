@@ -220,15 +220,12 @@ GeometricFunction::GeometricFunction(double a, double r, int N, bool reverse) {
     this->N = N;
     this->reverse = reverse;
     if (a <= 0.0)
-        throw eil::ErrorBase("Problematic parameters in GeometricFunction a= " + eil::to_string(a),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Problematic parameters in GeometricFunction a= " + eil::to_string(a));
     if (r <= 1.0)
-        throw eil::ErrorBase("Problematic parameters in GeometricFunction r= " + eil::to_string(r),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Problematic parameters in GeometricFunction r= " + eil::to_string(r));
     double ns = solve_for_nswitch(a, r, N); // the local ns shadows the member, as in D:201
     if ((ns < 1.0) || (ns > N))
-        throw eil::ErrorBase("Problematic parameters in GeometricFunction ns= " + eil::to_string(ns),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Problematic parameters in GeometricFunction ns= " + eil::to_string(ns));
     this->ts = ns / (N - 1);
     this->ns = ns;
 }
@@ -271,7 +268,7 @@ double GeometricFunction::lambertW(double z, double wguess, double tol) {
         // Not in D: the trip count, so the probe can compare convergence behaviour.
         lambertW_iterations = n + 1;
         if (n >= 99)
-            throw eil::ErrorBase("lambertW function eval timed out", __FILE__, __LINE__);
+            throw eil::ErrorBase("lambertW function eval timed out");
         expw = std::exp(w);
         zt = w * expw;
         if (std::fabs(zt - z) < tol) break;
@@ -305,12 +302,10 @@ GaussianFunction::GaussianFunction(double m, double s, double ratio) {
     this->s = s;
     this->ratio = ratio;
     if ((m < 0.0) || (m > 1.0))
-        throw eil::ErrorBase("Problematic parameters in GaussianFunction m= " + eil::to_string(m),
-                             __FILE__, __LINE__);
+        throw eil::ErrorBase("Problematic parameters in GaussianFunction m= " + eil::to_string(m));
     if ((ratio <= 0.0) || (ratio > 1.0))
         throw eil::ErrorBase("Problematic parameters in GaussianFunction ratio= " +
-                                 eil::to_string(ratio),
-                             __FILE__, __LINE__);
+                                 eil::to_string(ratio));
     // See derivation 20/12/11 (NNG)
 
     // Iterate to ensure cluster center is at m.
@@ -379,26 +374,21 @@ GaussGeomHybridFunction::GaussGeomHybridFunction(double A, double R, int N, doub
     this->reverse = reverse;
     if (A <= 0.0)
         throw eil::ErrorBase("Problematic parameters in GaussGeomHybridFunction A= " +
-                                 eil::to_string(A),
-                             __FILE__, __LINE__);
+                                 eil::to_string(A));
     if (R <= 1.0)
         throw eil::ErrorBase("Problematic parameters in GaussGeomHybridFunction R= " +
-                                 eil::to_string(R),
-                             __FILE__, __LINE__);
+                                 eil::to_string(R));
     if ((m <= 0.0) || (m >= 1.0))
         throw eil::ErrorBase("Problematic parameters in GaussGeomHybridFunction m= " +
-                                 eil::to_string(m),
-                             __FILE__, __LINE__);
+                                 eil::to_string(m));
     if ((ratio <= 0.0) || (ratio >= 1.0))
         throw eil::ErrorBase("Problematic parameters in GaussGeomHybridFunction ratio= " +
-                                 eil::to_string(ratio),
-                             __FILE__, __LINE__);
+                                 eil::to_string(ratio));
 
     double xs = solve_for_xswitch(); // local xs shadows the member, as in D:401
     if ((xs < 0.0) || (xs > 1.0))
         throw eil::ErrorBase("Problematic parameters in GaussGeomHybridFunction xs= " +
-                                 eil::to_string(xs),
-                             __FILE__, __LINE__);
+                                 eil::to_string(xs));
     this->xs = xs;
 
     this->a = dGeometricdx(xs) / dGaussiandx(1.0, xs);

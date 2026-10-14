@@ -185,6 +185,21 @@
   **6 个** `notfound`、**1 个** `unclear` —— 这 42 个**必须逐点读 D 侧**再决定，
   不能猜。**总数更正**：本轮首次报的 83 是**修 smla 之前**的数（smla.hpp:127 那条
   已随 T-923 改掉），现在的实际数是 **82**。
+  **进度更新（同日，本波内已完成 40/82）**：上面那 40 个"消息字面量能对上 D 侧
+  `new Error(`"的站点**已改完**——做法是**纯文本删除** `,\s*__FILE__\s*,\s*__LINE__`
+  （先按行号定位 `ErrorBase(` 再在其后 300 字符内找这一段），
+  **不动行结构**。核对方式三条，都过：
+  ① 全局计数 `ErrorBase(` 带 `__FILE__` 的站点 **82 → 42**，正好 −40；
+  ② 同一次统计里 `ExceptionBase(` 带 `__FILE__` 的 **15 → 15 未动**
+  （这些是 D 侧确实记录抛出点的，动了就是新缺陷）；
+  ③ `git diff` 逐文件看只有该删除项、没有多余 `}`，再编 Release/Debug/slice-check
+  三配置 **100/100**、`check_staleness.sh` `no drift`。
+  涉及 10 个文件：`geom/gpath/{arc,bezier,nurbs,polyline,polynomial}.cpp`、
+  `geom/misc/{nurbs_utils,univariatefunctions}.cpp`、`geom/surface/nurbssurface.cpp`、
+  `geom/volume/nurbsvolume.cpp`、`nm/bbla.hpp`。
+  **剩下的 42 个**才是难的部分：35 个消息是变量拼出来的且站点没有 `// D:NN` 引用、
+  6 个文本在 D 树里找不到对应、1 个不明确——**必须逐点读 D 侧那条 throw 的类**再决定，
+  不能批量处理。**Wave 3 之前做完**（判据同上：D 的类决定，不是端口的方便）。
   **踩过的坑（下一位别再踩）**：本轮试过用脚本一次性删实参，**两次都把多行调用改坏了**——
   第一次把 `throw ...("...",\n  __FILE__, __LINE__);` 的后半行吃掉、留下**多余的 `}`**
   （`bbla.hpp` 的 hstack/vstack 直接编不过），第二次正则漏了行尾 `;` 又产生 `))`。
@@ -200,7 +215,7 @@
   `msg` + "有没有 file/line" 布尔值钉住，否则下次还会漂；
   ⑤顺带修 `smla.hpp:127` 的消息文本 `"range is empty"` → `"r is an empty range"`，
   并给它加一条覆盖语料行（今天没有行覆盖它，这就是它没红的原因）。
-  → **Wave 3 之前做完**（Wave 3 的 `gas/` 是 `Exception` 与 `Error` 混用最密的包）
+  → 已做 40 个，余 42 个待逐点核 → **Wave 3 之前做完**（Wave 3 的 `gas/` 是 `Exception` 与 `Error` 混用最密的包）
 - [ ] **T-921** `geom/misc/libplot.d`(428) + `rotating_a.d`(49) + `drifting_eye.d`(65)：
   **外部库缺失**，非转写难度问题（判据见 T-019 本条内的实测）。装好 libplplot 之后再做，
   或按 `with_libplot` 变体推到 Wave 12（与 T-904 `complex_numbers` 同批）。
