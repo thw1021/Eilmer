@@ -821,4 +821,42 @@
   `twd`（`|dline=|class=|msg=|file=|line=|toString1=|`）。两个 corpus 的格式不同，
   照抄另一个 harness 的格式会全线红——G4 的代理自己是按语料读的，没有猜。
 
+## T-011 段 G4 与 G5 闭合 — 两条语料 0 差异、门禁 102 个、五个"只有畸形输入才暴露"的缺陷  (2026-10-14)
+
+- **两轮并行，一次环境纠正**。第一轮 G5 在主树、G4 用工具级 worktree；
+  `isolation: worktree` 挂的是**会话主目录**（只读的 gdtk），里面没有 C++，
+  G4 的代理自己建了 `/home/tang/packages/Eilmer-wt-g4` 才跑通。
+  第二轮我把这条**写进简报当第一步指令**（"自己 `git worktree add` 一个 Eilmer 的树"），
+  于是 G5 尾巴在主树、G4 的 831 行以后在 `Eilmer-wt-g4b`，**两边同时推进互不干扰**；
+  我自己评审代理的 `git diff` 后再 merge（G4 分支只碰 2 个文件，
+  `baselines|probes|substrate|reports|provenance` 的 diff 计数为 **0** 才允许合）。
+- **最终数字（我在代理没用过的构建目录里复跑，且注册之后重新构建再跑一遍）**：
+  `geom_grid_usgrid` **1393 发出 / 1393 逐字节相同 / 0 差异**，
+  `geom_grid_sgrid` **2097 发出 / 2097 逐字节相同 / 0 差异**，
+  default / Release / Release+`EIL_SLICE_CHECK` 三档各 **102/102**。
+  `check_staleness.sh` = `no drift`；`provenance/fidelity.yml` 补了 sgrid/usgrid 四条，
+  `manifest.yml` 重新生成（此前**缺**这四个文件——门禁注册了而出处没记，本身就是一个洞）。
+- **五个真端口缺陷，全部由"畸形输入"那类行暴露，空白网格/正常文件的行一直是绿的**：
+  ①`read_from_vtk_text_file` 为 D:1791 一行 `readln` 读了两行 ⇒ `"ASCII"` 扫描晚一行（1199/1201/1203）；
+  ②`d_readln` 把**读失败**当 EOF ⇒ D 抛 `StdioException(strerror(errno))`，
+  只有真 EOF 才返回空串不抛（1267；先核 glibc：对目录 `fopen(...,"r")` **成功**，
+  第一次 `fgetc` 才 `EISDIR`，所以要按**流错误指示位**分岔，而不是按 `EOF` 分岔）；
+  ③`sgrid` 两处 `f(a[0], …, a[n-1])` 形状：**D 实参从左到右、gcc 从右到左**，
+  空格点上端口报 `index [18446744073709551615]` 而 D 报 `index [0]`（58 与 1031 两次）；
+  ④`measure_of_badness` 的 D:1336 else 步长写成 `j-1`（应 `i-1`），`j==0` 回绕并提前
+  触发 D:1337（703）——**D:1337 自己那个 `b` 不是 `c` 的笔误照抄**，因为语料在数它；
+  ⑤`formattedRead` 在输入耗尽时**不做任何转换**（不赋值、不抛；1104/1106），
+  `File.rawRead` **短读不抛**且 D 局部数组起点是 `.init`（1167：端口因此拿垃圾
+  `label_length` 去申请 1.9e19 个元素，而 D 只是 `done`）。
+  ③的推广值得单独记：**这是全树性的转写规则**，凡 D 把多个有副作用/可抛的下标写进同一次
+  调用参数表，端口都必须手工定序（已进 memory 与简报）。
+- **注册纪律走完了**：两个 `add_test` 都是在"整条语料 0 差异"之后才打开的，
+  且打开后**重新构建三配置再各跑一次**才写进 `fidelity.yml`；
+  简报里"注册后必须先证明它会红"这条本轮没重做（新门禁的红色判据来自更早的
+  `nm_stmatrix_fails` 演练与 G2 的先例），留给 T-016 收尾时统一核。
+- **T-929 又长了一条**：代理在 sgrid 里发现的 `d_init_doubles`（复刻 D 探针**输入数组**的
+  `.init` 填充，不是凑输出）与 `d_set_length`（很大的正数长度）两份替身仍然存在；
+  闭合标准写成了"**三个替身从树里消失** + 全量复跑"，
+  并明说届时可能有原本假绿的语料转红——**那才是真的**。
+
 

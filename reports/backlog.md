@@ -125,6 +125,31 @@
   **不能进 T-012**：前者 `import geom.grid.sgrid` 且在 :87 `new StructuredGrid(...)`，
   后者 :23 的构造入参就是 `ref StructuredGrid grid`。两者改挂 **T-011**，随 sgrid 一起做完
   （否则在 Wave 2 里必须凭空造一个 StructuredGrid 桩，那就是改行为，同 T-018 的理由）
+  **G4 与 G5 均已闭合（2026-10-14，两条门禁都已注册）**：
+  - `geom_grid_usgrid`：语料 **1393 行全发出、1393 行逐字节相同、0 差异**；
+  - `geom_grid_sgrid`：语料 **2097 行全发出、2097 行逐字节相同、0 差异**；
+  - **三配置实测**：default / `Release` / `Release+EIL_SLICE_CHECK` 各 **102/102**
+    （注册后重新构建再跑，不是注册前的旧测试清单）。两个数字都是主线程**在代理没用过的
+    构建目录里自己复跑**得到的。
+  - 这一段里被语料逼出来的**真端口缺陷共 5 个**，都不是数值：
+    ①`usgrid.cpp` `read_from_vtk_text_file` 为 D:1791 的**一行** `readln` 读了两行（行 1199/1201/1203）；
+    ②`usgrid.cpp` `d_readln` 把**读失败**当 EOF——D 的缓冲 File 在 read 失败时抛
+    `StdioException(strerror(errno))`，只有真 EOF 才返回空串且不抛（行 1267；glibc 对目录
+    `fopen` 会成功、第一次 `fgetc` 才 `EISDIR`）；
+    ③`sgrid.cpp` `toString()`(行 58) 与 `read_from_text_file`(行 1031)：**D 的函数实参从左到右求值，
+    gcc 从右到左**，空格点上报了第二个下标的回绕索引；
+    ④`sgrid.cpp` `measure_of_badness` 把 D:1336 的 else 步长写成 `j-1`（应是 `i-1`），
+    `j==0` 时回绕并提前触发 D:1337（行 703）；
+    ⑤`sgrid.cpp` 的 `formattedRead`/`rawRead`：**输入耗尽时 std.format 不做任何转换**（既不赋值也不抛，
+    行 1104/1106），`File.rawRead` **短读不抛**且 D 的局部数组起点是 `.init`（行 1167）。
+    ③④⑤ 都是**"空白网格/正常文件的行全绿，只有畸形输入才暴露"**那一类，
+    与 T-923"没语料的路径能藏住编造文本"同源。
+  - 顺带闭合 **T-927**（`to!size_t` 报 `ulong`、无符号不吃符号；`formattedRead` 同规则）与
+    **T-929/T-926/T-928 的实测部分**（三条 substrate 缺口的证据都落了盘，实现仍待做）。
+  **T-011 剩余（G6）**：四个 demo `paver2d_demo`(51) `paver_demo`(115) `sgrid_demo`(101)
+  `usgrid_demo`(103) 的**基线都已抓**，剩 C++ demo 程序与门禁；
+  以及 `surface/gmopatch.d`(171) + `surface/meshpatch.d`(100) —— 这两个的**探针与语料还没抓**，
+  是 G6 里唯一"参照侧未就绪"的部分。demo 的**工作目录是契约**（相对路径，见上面"新发现"）。
 - [x] **T-012** `geom/surface/` + `geom/volume/`（`beziertrianglepatch.d` 723、`nurbsvolume.d` 544 等）
   — 曲面/体单元，`grid_motion` 与 `sketch` 依赖。依赖 T-010
   **完成 2026-10-14**：`tfivolume.d` 最后落地（`geom_volume_tfivolume`

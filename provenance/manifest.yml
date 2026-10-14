@@ -378,6 +378,38 @@ files:
   fidelity: adapted-templates
   variants: []
   verified_by: [ctest:geom_grid_paver2d, 480 of 480 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK, 396 of 396 coordinates byte-identical at %.17g, fixture transcribes usgrid.d:112, 154, 218 until G5 lands]
+- cpp: src/geom/grid/sgrid.cpp
+  d: src/geom/grid/sgrid.d
+  d_blob: 244274d61654a18d1f6c5c0776b8657af84ec873
+  d_lines: 1865
+  cpp_lines: 1944
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_grid_sgrid, 2097 of 2097 rows byte-identical in default Release and slice-check, row 58 + row 1031 prove D's left-to-right argument evaluation vs gcc's right-to-left (hand-sequenced), row 703 = measure_of_badness else-step must step i-1 not j-1 per D:1336 with D:1337's own b-not-c slip kept verbatim, rows 1104/1106 = formattedRead at exhausted input neither assigns nor raises, row 1167 = rawRead does not raise on a short read and D locals start at .init, sg.frmt.* target type names per T-927 (size_t reads report ulong), d_init_doubles/d_set_length are the documented T-929 stand-ins]
+- cpp: src/geom/grid/sgrid.hpp
+  d: src/geom/grid/sgrid.d
+  d_blob: 244274d61654a18d1f6c5c0776b8657af84ec873
+  d_lines: 1865
+  cpp_lines: 213
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_grid_sgrid, 2097 of 2097 probe rows byte-identical in default Release and slice-check]
+- cpp: src/geom/grid/usgrid.cpp
+  d: src/geom/grid/usgrid.d
+  d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
+  d_lines: 2524
+  cpp_lines: 2894
+  fidelity: adapted-arrays
+  variants: []
+  verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 rows byte-identical in default Release and slice-check, rows 1170-1172 = to!size_t failure text names ulong and takes no sign (T-927), rows 1199/1201/1203 = read_from_vtk_text_file consumed two readln for D's one, row 1267 = a failed read raises std.stdio.StdioException while EOF returns empty and does not throw (port-local StdioException shim pending substrate), row 208 = ConvOverflowException before the allocation (port-local), T-929 positive-length translator set_length_d]
+- cpp: src/geom/grid/usgrid.hpp
+  d: src/geom/grid/usgrid.d
+  d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
+  d_lines: 2524
+  cpp_lines: 366
+  fidelity: adapted-handles
+  variants: []
+  verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 probe rows byte-identical in default Release and slice-check]
 - cpp: src/geom/misc/kdtree.cpp
   d: src/geom/misc/kdtree.d
   d_blob: 5d98440f1bde04722810c4fa3002d8209c25472a

@@ -298,6 +298,16 @@ G5 落地时 `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义*
 
 ## 11. G4/G5 分段进度表（2026-10-14 主线程实测，按语料行号）
 
+> **状态更新（同日，本轮最后）**：§11.1 与 §11.2 的全部行段**已闭合**——
+> `geom_grid_usgrid` **1393/1393 逐字节相同、0 差异**，`geom_grid_sgrid`
+> **2097/2097、0 差异**，两条门禁**都已注册**，default/Release/slice-check 三档各
+> **102/102**。下表保留，是给 G6 与后续波次的行号地图，不再是待办清单。
+> 本轮由语料逼出的 5 个真端口缺陷（两行 readln、读失败当 EOF、D 与 gcc 的实参求值顺序、
+> `measure_of_badness` 的 else 步长、`formattedRead`/`rawRead` 的"耗尽即不转换/短读不抛"）
+> 记在 `task-log.md` 与 `backlog.md` 的 T-011 进度块。
+> **T-011 只剩 G6**：四个 demo（基线已抓，缺 C++ demo 与门禁）+
+> `surface/gmopatch.d`(171)/`surface/meshpatch.d`(100)（**探针与语料都还没抓**）。
+
 **G5 现状**：`tests/test_geom_grid_usgrid.cpp` 已能发出语料 **1–1252 行，1252/1252 逐字节相同**
 （`/tmp/w2_g5r/test_geom_grid_usgrid <corpus>`，摘要行
 `probe replay 1393 D lines, 1252 C++ lines, 141 differ; 1252 of 1393 rows byte-identical`）。
