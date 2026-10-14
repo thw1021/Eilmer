@@ -150,8 +150,33 @@ int main(int argc, char** argv) {
     eil::geom::write_volume_as_vtk_xml(*vol, tmp1, 1, 1, 1);
     emit("pvl.vtk.one.body=" + one_line(tmp1));
 
+    // The mid-write failure row. D's File flushes in its destructor, so a throw inside
+    // the writer's loop still leaves the bytes already written (323 here). A raw FILE*
+    // closed only on the normal path leaves 0, which is a different file on disk; the
+    // File_guard in parametricvolume.cpp is what this row gates.
+    const std::string tmp2 = "/tmp/probe_pvl_bad.vtk";
+    class BadVolume : public ParametricVolume {
+      public:
+        Vector3 operator()(double r, double s, double t) const override {
+            if (r == 0.5 && s == 0.0 && t == 0.0)
+                throw eil::ExceptionBase("boom", __FILE__, __LINE__);
+            return Vector3(r, s, t);
+        }
+        std::shared_ptr<ParametricVolume> dup() const override {
+            return std::make_shared<BadVolume>();
+        }
+        std::string toString() const override { return "BadVolume"; }
+    } bad;
+    try {
+        eil::geom::write_volume_as_vtk_xml(bad, tmp2, 3, 3, 3);
+        emit("pvl.vtk.throw.noThrow=1");
+    } catch (const eil::ExceptionBase&) {
+        emit("pvl.vtk.throw bytes=" + std::to_string(file_len(tmp2)));
+    }
+
     std::remove(tmp.c_str());
     std::remove(tmp1.c_str());
+    std::remove(tmp2.c_str());
 
     std::ifstream in(argv[1]);
     if (!in) {

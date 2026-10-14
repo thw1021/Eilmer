@@ -232,13 +232,23 @@ void write_volume_as_vtk_xml(const ParametricVolume& vol, const std::string& fil
     double dr = 1.0 / (nrPts - 1);
     double ds = 1.0 / (nsPts - 1);
     double dt = 1.0 / (ntPts - 1);
-    std::FILE* f = std::fopen(fileName.c_str(), "w");
-    if (f == nullptr) {
+    // D's std.stdio.File closes (and so flushes) in its destructor, which runs even
+    // when the body below throws. A raw FILE* here would leak the handle and, worse,
+    // leave a 0-byte file where D leaves the bytes written up to the throw (measured:
+    // 247 bytes after a mid-write failure, group 7 of
+    // probes/geom/volume/probe_nurbsvolume.d). The guard restores the destructor scope.
+    std::FILE* raw = std::fopen(fileName.c_str(), "w");
+    if (raw == nullptr) {
         // Same measured Phobos File-open failure text as parametricsurface.cpp.
         std::string msg = "Cannot open file `" + fileName + "' in mode `w' (" +
                           std::strerror(errno) + ")";
         throw eil::ExceptionBase(msg, __FILE__, __LINE__);
     }
+    struct File_guard {
+        std::FILE* h;
+        ~File_guard() { if (h) std::fclose(h); }
+    } guard{raw};
+    std::FILE* f = guard.h;
     auto w = [&f](const std::string& s) { std::fwrite(s.data(), 1, s.size(), f); };
     auto wl = [&w](const char* s) { w(s); w("\n"); };
 
@@ -273,8 +283,7 @@ void write_volume_as_vtk_xml(const ParametricVolume& vol, const std::string& fil
     wl("      </Points>");
     wl("    </Piece>");
     wl("  </StructuredGrid>");
-    wl("</VTKFile>");
-    std::fclose(f);
+    wl("</VTKFile>");   // guard closes and flushes, as D's File destructor does
 }
 
 } // namespace geom

@@ -1,0 +1,21 @@
+4.184/1.0e-2                                   folded=418.39999999999998/407a266666666666 runtime=418.40000000000003/407a266666666667 equal=false ulpDiff=-1
+8.31451/0.0159994                              folded=519.67636286360744/40803d6930eedb62 runtime=519.67636286360744/40803d6930eedb62 equal=true ulpDiff=0
+1.0e5/(208.0*300.0)                            folded=1.6025641025641026/3ff9a41a41a41a42 runtime=1.6025641025641026/3ff9a41a41a41a42 equal=true ulpDiff=0
+5.0/3.0*208.0*300.0                            folded=104000/40f9640000000000 runtime=104000/40f9640000000000 equal=true ulpDiff=0
+0.45 - 2.54*0.5                                folded=-0.81999999999999995/bfea3d70a3d70a3d runtime=-0.82000000000000006/bfea3d70a3d70a3e equal=false ulpDiff=-1
+0.5*28.0134e-3                                 folded=0.0140067/3f8caf8b7366292a runtime=0.0140067/3f8caf8b7366292a equal=true ulpDiff=0
+5.0/2.0                                        folded=2.5/4004000000000000 runtime=2.5/4004000000000000 equal=true ulpDiff=0
+3.0/2.0                                        folded=1.5/3ff8000000000000 runtime=1.5/3ff8000000000000 equal=true ulpDiff=0
+9.0/2.0                                        folded=4.5/4012000000000000 runtime=4.5/4012000000000000 equal=true ulpDiff=0
+7.0/2.0                                        folded=3.5/400c000000000000 runtime=3.5/400c000000000000 equal=true ulpDiff=0
+1.0/3.0                                        folded=0.33333333333333331/3fd5555555555555 runtime=0.33333333333333331/3fd5555555555555 equal=true ulpDiff=0
+2.0/3.0                                        folded=0.66666666666666663/3fe5555555555555 runtime=0.66666666666666663/3fe5555555555555 equal=true ulpDiff=0
+1.0/2.0                                        folded=0.5/3fe0000000000000 runtime=0.5/3fe0000000000000 equal=true ulpDiff=0
+pow(2.0*3.14159265, 1.5)                       folded=15.74960991872759/402f7fccdf0b626a runtime=15.74960991872759/402f7fccdf0b626a equal=true ulpDiff=0
+90.0/25.4 (svg.d:55, known bad)                folded=3.5433070866141732/400c58b162c58b16 runtime=3.5433070866141736/400c58b162c58b17 equal=false ulpDiff=-1
+1.0/0.01         folded=4059000000000000 runtime=4059000000000000 equal=true
+1.0/0.001        folded=408f400000000000 runtime=408f400000000000 equal=true
+1.0/1e-05        folded=40f869ffffffffff runtime=40f869ffffffffff equal=true
+1.0/1e-09        folded=41cdcd64ffffffff runtime=41cdcd64ffffffff equal=true
+1.0/1000         folded=3f50624dd2f1a9fc runtime=3f50624dd2f1a9fc equal=true
+1.0/100000       folded=3ee4f8b588e368f1 runtime=3ee4f8b588e368f1 equal=true

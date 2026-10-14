@@ -147,6 +147,34 @@ void main()
     writeVolumeAsVtkXml(vol, tmp1, 1, 1, 1);
     writefln("pvl.vtk.one.body=%s", join(split((cast(string) read(tmp1)), "\n"), "<newline>"));
 
+    // The mid-write failure path. D's std.stdio.File closes -- and so flushes -- in
+    // its destructor, which runs even when the body of writeVolumeAsVtkXml throws, so
+    // the file on disk keeps the bytes written before the throw. A port holding a raw
+    // FILE* and calling fclose only on the normal path leaves 0 bytes here, which is a
+    // different artefact on disk, not just a leaked handle. This row measures how many
+    // bytes D really leaves, so the RAII guard in parametricvolume.cpp is gated rather
+    // than asserted.
+    string tmp2 = "/tmp/probe_pvl_bad.vtk";
+    auto bad = new BadVolume();
+    try {
+        writeVolumeAsVtkXml(bad, tmp2, 3, 3, 3);
+        writefln("pvl.vtk.throw.noThrow=1");
+    } catch (Exception e) {
+        writefln("pvl.vtk.throw bytes=%d", (cast(string) read(tmp2)).length);
+    }
+
     remove(tmp);
     remove(tmp1);
+    remove(tmp2);
+}
+
+// A volume that throws partway through the writer's loop, at the point where the
+// header lines have already been written.
+class BadVolume : ParametricVolume {
+    override Vector3 opCall(double r, double s, double t) const {
+        if (r == 0.5 && s == 0.0 && t == 0.0) throw new Exception("boom");
+        return Vector3(r, s, t);
+    }
+    override ParametricVolume dup() const { return new BadVolume(); }
+    override string toString() const { return "BadVolume"; }
 }

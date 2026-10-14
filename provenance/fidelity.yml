@@ -197,3 +197,58 @@ src/geom/surface/cubepatch.cpp: {fidelity: exact, variants: [], verified_by: [ct
 # Gate = 724-row ldc2 corpus, replayed byte for byte.
 src/geom/surface/sweptpathpatch.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_surface_sweptpathpatch, 724 of 724 probe rows byte-identical]}
 src/geom/surface/sweptpathpatch.cpp: {fidelity: adapted-handles, variants: [], verified_by: [ctest:geom_surface_sweptpathpatch, throw type object.Error raised by geom/gpath boundaries, never by this module]}
+#
+# nurbsvolume.d (544 lines): trivariate NURBS volume, Piegl & Tiller A4.4 (D:432-468) on
+# top of the shared nurbs_utils kernels (findSpan/basisFuns/NURBSWorkspace/duplicatePw/
+# autoKnotVector) rather than a second copy, as gpath/nurbs.d and surface/nurbssurface.d do
+# for the curve and surface cases.
+# Ten module-STATIC scratch buffers (D:421-430) are one set per process and every
+# constructor re-sizes them to its own degrees, so the port keeps them static and keeps the
+# cross-instance interference instead of tidying it: a degree-1 volume's constructor makes
+# a degree-3 volume raise "index [2] is out of bounds for array of length 2" (from
+# nurbs_utils.d:63), and a degree-0 volume then breaks both degree-2 volumes with
+# "index [1] is out of bounds for array of length 1" — a volume untouched since it was built
+# can still be broken by someone else's constructor. Measured in both construction orders
+# (rows nv.ord.* of the 3524-row corpus). The three NURBSWorkspaces are held as
+# std::unique_ptr and reassigned by both constructors (nurbs.cpp:38 precedent), since
+# NURBSWorkspace has only an explicit NURBSWorkspace(int p) constructor.
+# The seven guards are NOT one comparison: D:104/:114/:124 (degree) and D:134 (nU vs
+# m_a+p+2) are int/int signed, while D:144/:154 compare a size_t length against the int sum
+# converted to size_t. Consequence measured: p=-1, q=-1 and r=-1 each BUILD (rows
+# nv.neg.p/q/r) and then fail inside findSpan at U[n+1] with "index [4] is out of bounds
+# for array of length 4" (p=-1 on a 4-point net), while p=-5 is rejected by the U guard
+# printing "Required number of knots in direction u: 0" (row nv.neg.p5). D:91-93 also read
+# Pw[0][0].length before guard 1 runs, so an empty middle direction is a RangeError, not
+# the "at least two control points" Error (row nv.g0.emptyv). All eight throws are
+# `new Error` -> eil::ErrorBase (D:99,109,119,129,139,149,159,221); only findSpan's
+# out-of-range parameter is an Exception.
+# readFromFile/writeToFile/readFromCntrlNetFile/writeAsVtkXml/writeCntrlNetAsVtkXml are the
+# file surface. D's two open failures are reproduced as text on ExceptionBase, because the
+# substrate has no std.stdio File equivalent (finding): File(name,"r") ->
+# "Cannot open file `NAME' in mode `r' (No such file or directory)" (std.exception.
+# ErrnoException, row nv.missing.r) and readText -> "NAME: No such file or directory"
+# (std.file.FileException, row nv.missing.net); the replay maps them back by message prefix.
+# The control-net inputs are written by the probe/test generator and their bytes are dumped
+# as rows before either reader runs, so a reader row can only match if both sides parsed
+# the same file; the two format strings are the same token stream read two different ways
+# (rows nv.net.sgrid vs nv.net.plot3d). The writeToFile -> readFromFile round trip was
+# measured to be bit-identical for this net (nv.uneq str == nv.rf str), so no tolerance was
+# introduced anywhere.
+# OUT-OF-SCOPE FINDING (not fixed, base file): with the static buffers poisoned, the first
+# opCall inside write_volume_as_vtk_xml throws after its five header lines; D's File
+# destructor flushes them during unwinding so the file read back is 247 bytes of header and
+# no points, while src/geom/volume/parametricvolume.cpp:235/277 keeps a raw FILE* with
+# fclose only on the normal path and leaves 0 bytes. Measured pair: D 247 vs C++ 0. The
+# probe therefore runs writeAsVtkXml on a handle re-built through dup(), which is the
+# normal path (1247 bytes, byte-identical both sides).
+# No classString(): grep -c classString over nurbsvolume.d is 0 and
+# geom/volume/parametricvolume.d declares no such virtual (unlike geom/gpath/path.d:30).
+# No degree-raise or knot-insert path exists in this module (grep -i 'elevat|insertKnot|
+# knotInsert' is empty), so the corpus has no rows for one. No `^^` and no atan/atan2 site
+# (grep 'atan\|\^\^' over the module is empty), so the eil::pow / eil::atan2 rules are not
+# exercised here.
+# Gate = the module's single D unittest assertion (D:542, inside the version
+# (complex_numbers) else-branch so it runs) plus the 3524-row ldc2 corpus replayed byte for
+# byte: 3524 of 3524 rows, 0 differ, in Release, Debug and -DEIL_SLICE_CHECK=ON.
+src/geom/volume/nurbsvolume.hpp: {fidelity: adapted-handles, verified_by: [ctest:geom_volume_nurbsvolume, 3524 of 3524 probe rows byte-identical, 1 of 1 D unittest assertions]}
+src/geom/volume/nurbsvolume.cpp: {fidelity: exact, variants: [EIL_COMPLEX_NUMBERS not compiled], verified_by: [ctest:geom_volume_nurbsvolume, throw type object.Error at D:99,109,119,129,139,149,159,221 + core.exception.ArrayIndexError via the shared statics]}

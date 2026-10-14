@@ -49,8 +49,13 @@ void write_surface_as_vtk_xml(const ParametricSurface& surf, const std::string& 
                               int nrPts, int nsPts) {
     double dr = 1.0 / (nrPts - 1);
     double ds = 1.0 / (nsPts - 1);
-    std::FILE* f = std::fopen(fileName.c_str(), "w");
-    if (f == nullptr) {
+    // D's std.stdio.File closes (and so flushes) in its destructor, which runs even
+    // when the body below throws. A raw FILE* here would leak the handle and, worse,
+    // leave a 0-byte file where D leaves the bytes written up to the throw (measured:
+    // 247 bytes after a mid-write failure, group 7 of
+    // probes/geom/volume/probe_nurbsvolume.d). The guard restores the destructor scope.
+    std::FILE* raw = std::fopen(fileName.c_str(), "w");
+    if (raw == nullptr) {
         // Measured Phobos text of `File(name, "w")` on an unusable path, as reproduced
         // for SVGContext (src/geom/misc/svg.cpp:139-147); std.exception.ErrnoException
         // has no substrate equivalent yet, so the class is ExceptionBase.
@@ -58,6 +63,11 @@ void write_surface_as_vtk_xml(const ParametricSurface& surf, const std::string& 
                           std::strerror(errno) + ")";
         throw eil::ExceptionBase(msg, __FILE__, __LINE__);
     }
+    struct File_guard {
+        std::FILE* h;
+        ~File_guard() { if (h) std::fclose(h); }
+    } guard{raw};
+    std::FILE* f = guard.h;
     auto w = [&f](const std::string& s) { std::fwrite(s.data(), 1, s.size(), f); };
     // D's File.writeln(s) and File.writefln(fmt, args) are format-then-newline;
     // substrate has no writefln-to-stream, so eil::format + "\n" is the same bytes.
@@ -85,8 +95,7 @@ void write_surface_as_vtk_xml(const ParametricSurface& surf, const std::string& 
     wl("      </Points>");
     wl("    </Piece>");
     wl("  </StructuredGrid>");
-    wl("</VTKFile>");
-    std::fclose(f);
+    wl("</VTKFile>");   // guard closes and flushes, as D's File destructor does
 }
 
 } // namespace geom
