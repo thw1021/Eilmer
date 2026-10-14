@@ -636,11 +636,25 @@
     读取、`fluidblock` 头、Lua 配置里的整数强转）。规则：**看 D 源码写的目标类型名，
     不看端口辅助函数的名字**。
 - [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
-- [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
   1. **`eil::to_string` 不派发类的 `toString()`**。D 的 `to!string(x)` 对带 `toString()` 的
      类型会调它，而 `substrate/include/eil/format.hpp:139` 对非算术类型直接 `static_assert`。
      sketch 的站点只能手写。**这条最要紧**：`gas/`(Wave 3)、`fluidblock`(Wave 4) 与求解器
      日志（Wave 5）都在大量把对象塞进消息文本，逐点手写会繁殖成几十处。
+     **规则已实测**（`probes/substrate/probe_tostring_dispatch.d` →
+     `substrate_tostring_dispatch.txt`，**25 行、重跑 0 差异、行内无地址**）：
+     带 `toString()` 的 struct **和** class 都用它（`Both` 那种"无参 + 带 fmt"双重载里
+     **无参那个赢**）；**没有** `toString()` 时两者不同——struct 走字段dump
+     `NoToString(1, 2.5)`，class 走**全限定类型名** `probe_tostring_dispatch.Bare`
+     （**不是**字段 dump、**也不是**指针地址，所以这行可复现）；`null` 类引用 → `null`；
+     enum → 成员名；数组 → `[e1, e2]` 且**元素照常派发**；AA → `[["a":1]]`；
+     只有 `toString(string fmt, Args...)` 而没有无参版的 struct **不**被 `to!string` 使用
+     （实测落回字段 dump）；`format("%d", obj)` 对带 `toString()` 的类型直接
+     `FormatException "Expected '%s' format specifier for type 'Simple'"`。
+     **待实现**（实现要重建 `eil_geom`，与在飞的 agent 撞，故先落证据）：
+     substrate 用 ADL/`decltype` 探测 `t.toString()`，命中就调用；
+     字段 dump 与"类名 dump"C++ 无反射，**只能逐类手写 `toString()`**——
+     所以这条的实现价值在"让调用点写 `eil::to_string(x)` 就能派发"，
+     而不是自动 dump。已手写 `toString()` 的端口类（`USGCell`、`Vector3` 等）正好可直接受益。
   2. **`eil::Slice<T>` 形参无法表达 D 的动态数组默认实参**（D 写
      `double[] canvas_mm = []` 这类默认值）。sketch 用 3 个委托重载局部绕开了；
      局部可用 ≠ 通用可用，`geom/` 之外还会有。
