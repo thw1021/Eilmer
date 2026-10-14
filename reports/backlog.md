@@ -684,7 +684,7 @@
     读取、`fluidblock` 头、Lua 配置里的整数强转）。规则：**看 D 源码写的目标类型名，
     不看端口辅助函数的名字**。
 - [ ] **T-926** substrate 缺口 **3 条**（T-019 的 sketch 作业报出；按纪律它不许改 substrate）：
-  1. **`eil::to_string` 不派发类的 `toString()`**。D 的 `to!string(x)` 对带 `toString()` 的
+  1. **✅ 已完成 2026-10-15**（见下方"完成"段）。**`eil::to_string` 不派发类的 `toString()`**。D 的 `to!string(x)` 对带 `toString()` 的
      类型会调它，而 `substrate/include/eil/format.hpp:139` 对非算术类型直接 `static_assert`。
      sketch 的站点只能手写。**这条最要紧**：`gas/`(Wave 3)、`fluidblock`(Wave 4) 与求解器
      日志（Wave 5）都在大量把对象塞进消息文本，逐点手写会繁殖成几十处。
@@ -703,6 +703,16 @@
      字段 dump 与"类名 dump"C++ 无反射，**只能逐类手写 `toString()`**——
      所以这条的实现价值在"让调用点写 `eil::to_string(x)` 就能派发"，
      而不是自动 dump。已手写 `toString()` 的端口类（`USGCell`、`Vector3` 等）正好可直接受益。
+     **完成**（提交 `7a964f0`，详见 [task-log.md](task-log.md#t-926-1)）：`format.hpp` 新增
+     `has_noarg_to_string`（void_t 探测**零参** `toString()`，与既有 range trait 同法），`to_string`
+     在非算术分支的 `static_assert` **之前**加一条：命中就 `return v.toString()`。实测的四条规则都钉进
+     门禁 `substrate_tostring_dispatch`（回放 T-019 的 25 行语料，**12 行逐字节核对、13 行需反射的跳过并点名、0 差**）：
+     struct **和** class 的无参 `toString()` 都派发；**无参优先于** `(fmt, Args…)`（`struct.both`→"plain"）；
+     只有 fmt 版的 struct **不**派发（用编译期 `static_assert(!has_noarg_to_string<FormatToString>)` 锁死）；
+     容器仍走 `[a, b]` dump 并**逐元素派发**（`to_string(Simple[])`→"[Simple(1), Simple(2)]"）、`"%s"` 同文本。
+     trait 已随 `to_string` 一起 `using` 重导出到 `eil::`。**113/113 三配置全绿**，探针重跑逐字节相同，
+     `check_staleness` 无漂移。第 2 条（`Slice` 动态数组默认实参）与第 3 条（`readln`，与 T-923 同一
+     EOF-返空语义）**未做**，留 Wave 3 前定形第 2 条、Wave 4/5 补第 3 条。
   2. **`eil::Slice<T>` 形参无法表达 D 的动态数组默认实参**（D 写
      `double[] canvas_mm = []` 这类默认值）。sketch 用 3 个委托重载局部绕开了；
      局部可用 ≠ 通用可用，`geom/` 之外还会有。

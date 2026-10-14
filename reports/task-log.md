@@ -1017,3 +1017,45 @@
   （`int.overflow|99999999999999999999`）也经 `eil::to_int` 而**更贴参照**，但完整回放留待格式线。
   `substrate_to_int_from_double.txt` 同样未单独接线，但其行为已由 `geom_surface_meshpatch`
   语料（同一数值→int 路由）覆盖并绿。
+
+## T-926 第 1 条 — `eil::to_string` 派发类型的无参 `toString()`（把"每处手写"收成一个调用点）  (2026-10-15)
+<a id="t-926-1"></a>
+
+- **提交** `7a964f0`，4 个文件 +200（纯新增为主：`format.hpp` 加探测与分支，新门禁 + 新 cmake）。
+  三配置全绿：default **113/113**、`Release` **113/113**、`Release+EIL_SLICE_CHECK` **113/113**
+  （比 T-928 的 112 多 1，即 `substrate_tostring_dispatch`）。`check_staleness.sh` → "no drift"；
+  改动文件构建 `error:`/`warning:` 计数 **0**。
+- **先量后写的证据早就在盘上**（T-019 的 sketch 作业抓的）：
+  `probes/substrate/probe_tostring_dispatch.d` → `substrate_tostring_dispatch.txt` **25 行**。
+  **重跑探针（ldc2 -O0，只依赖 Phobos）输出与已提交语料逐字节相同**（`diff` 空）。
+- **substrate 改动**（`substrate/include/eil/format.hpp`，仅主线程改）：
+  1. 新增 `has_noarg_to_string<T>`——用 `std::void_t<decltype(declval<const T&>().toString())>`
+     探测**零个实参**的 `const toString()`，与文件里既有的 `has_length`/`has_indexing`/`has_size`
+     同一 SFINAE 手法。它只匹配无参重载：一个同时有 `toString()` 和 `toString(fmt, Args…)` 的类型
+     → 探测为真；**只有 fmt 版**的类型 → 探测为假（`toString()` 编不过）。
+  2. `to_string` 在最后一个 `else static_assert` **之前**插入分派分支：命中 `has_noarg_to_string`
+     就 `return v.toString()`。位置放在 bool/浮点/整型/string-like/range-like 之后——因为本树里
+     没有任何"既是容器又带 toString"的类型（唯一的 `toString` 成员是 `ThrowableBase`，非 range-like），
+     故顺序与全部 25 行实测一致；容器分支的逐元素 `to_string(v[i])` 递归会自然走到这条分支，于是
+     `Simple[]` 打印成 `[Simple(1), Simple(2)]`（元素照常派发），`"%s"`（内部调 to_string）同文本。
+  3. trait 随 `to_string` 一起 `using detail::td::has_noarg_to_string;` 重导出到 `eil::`，
+     端口与测试可直接引用。
+- **为什么这条最要紧**（backlog 原话）：`gas/`(Wave 3)、`fluidblock`(Wave 4)、求解器日志(Wave 5)
+  都在把对象塞进消息文本，逐点手写会繁殖成几十处；而 D 那边只是 `to!string(x)` / `"%s"`。
+  现在端口里**已有手写 `toString()` 的类**（`Vector3`、`USGCell`、每个 geom patch、
+  `nm` 的 `Bbla`/`Smla`/`Schedule`…）可直接被 `eil::to_string(x)` 派发，调用点不必再各自手抄。
+- **门禁 `substrate_tostring_dispatch`**（`cmake/wave2_t926.cmake` 自注册）：回放 T-019 的 25 行语料，
+  **12 行逐字节核对、13 行需反射的跳过并点名、0 差**。核对的 12 行覆盖了实现的全部规则
+  （struct/class 无参派发、无参胜过 fmt、容器逐元素派发、`"%s"`）；跳过的 13 行正是
+  **C++ 无反射复现不了**的那批：无 toString 的 struct 字段 dump、class 全限定类型名、
+  enum 成员名、AA、`null` 类引用、以及 `format("%d", obj)` 那句含类型名 `'Simple'` 的 FormatException。
+  **判别力**（编译期即成立）：若去掉分派分支，`to_string(Simple{7})` 直接 `static_assert` 编不过；
+  测试里 `static_assert(!has_noarg_to_string<FormatToString>::value)` 反向锁死"fmt-only 不派发"、
+  `static_assert(has_noarg_to_string<Simple>::value)` 锁死"无参可派发"。
+- **T-926 其余两条（本波不做）**：第 2 条 `Slice<T>` 无法表达 D 的动态数组默认实参
+  （`double[] canvas_mm = []`）——sketch 用 3 个委托重载局部绕过，留 Wave 3 前定形；
+  第 3 条 没有 `readln()`——只在未编译的 `with_libplot` 支里用到，且与 T-923 同一
+  "EOF 返空串、不抛"语义（已被 `nm_stmatrix_fails` 钉住），Wave 4/5 补时必须照该实测、
+  不得按 C++ `getline` 的失败流状态直觉写。
+- **遗留（写进 backlog）**：无新增。`substrate_tostring_dispatch.txt` 的 13 条反射行永久不可门禁化
+  （无反射），已在跳过清单里点名，若将来端口给某类补了 `toString()` 使某行转为可核对，跳过数会减。
