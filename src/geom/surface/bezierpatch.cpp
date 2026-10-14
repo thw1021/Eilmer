@@ -17,34 +17,17 @@
 
 namespace eil {
 namespace geom {
-namespace {
+// D's signed `arr.length = L` now goes through eil::Array::set_length_signed
+// (substrate/include/eil/array.hpp), which is the one copy of that rule: it raises
+// "Memory allocation failed" for a negative length the way the D runtime does, and
+// accepts 0. Five per-file overloads used to live here (backlog T-914).
 
-// D's `arr.length = L` with a signed L. Measured against ldc2 1.40 (row bzp.nm2.ctor of
-// baselines/e587b235/probes/geom_surface_bezierpatch.txt): a negative length raises an
-// Error whose message is exactly "Memory allocation failed", while 0 is accepted
-// (bzp.nm1.ctor threw=none). eil::Array::set_length takes size_t, so the wrap has to be
-// caught before the conversion or the port would try to allocate 2^64 elements instead
-// of failing the way D does.
-void set_length_checked(eil::Array<eil::Array<Vector3>>& a, long len) {
-    if (len < 0) throw eil::ErrorBase("Memory allocation failed", __FILE__, __LINE__);
-    a.set_length(static_cast<size_t>(len));
-}
-void set_length_checked(eil::Array<std::shared_ptr<Bezier>>& a, long len) {
-    if (len < 0) throw eil::ErrorBase("Memory allocation failed", __FILE__, __LINE__);
-    a.set_length(static_cast<size_t>(len));
-}
-void set_length_checked(eil::Array<Vector3>& a, long len) {
-    if (len < 0) throw eil::ErrorBase("Memory allocation failed", __FILE__, __LINE__);
-    a.set_length(static_cast<size_t>(len));
-}
-
-} // namespace
 
 // D:26-35
 BezierPatch::BezierPatch(const eil::Array<eil::Array<Vector3>>& _Q, int _n, int _m) {
     n = _n;
     m = _m;
-    set_length_checked(Q, static_cast<long>(_n) + 1); // D:30
+    Q.set_length_signed(static_cast<long>(_n) + 1); // D:30
     for (size_t i = 0; i < Q.length(); ++i) {         // D:31 foreach (i; 0 .. Q.length)
         Q[i] = _Q[i].dup();                           // D:32
     }
@@ -56,7 +39,7 @@ BezierPatch::BezierPatch(const eil::Array<eil::Array<Vector3>>& _Q, int _n, int 
 BezierPatch::BezierPatch(const BezierPatch& other) {
     n = other.n;
     m = other.n; // D:40 -- deliberately not other.m
-    set_length_checked(Q, static_cast<long>(other.Q.length()));
+    Q.set_length_signed(static_cast<long>(other.Q.length()));
     for (size_t i = 0; i < Q.length(); ++i) { // D:42 foreach (i; 0 .. Q.length)
         Q[i] = other.Q[i].dup();
     }
@@ -71,7 +54,7 @@ std::shared_ptr<ParametricSurface> BezierPatch::dup() const {
 // D:53-63
 Vector3 BezierPatch::operator()(double r, double s) const {
     eil::Array<Vector3> B;
-    set_length_checked(B, static_cast<long>(n) + 1); // D:56 B.length = n + 1
+    B.set_length_signed(static_cast<long>(n) + 1); // D:56 B.length = n + 1
     for (int i = 0; i < n + 1; ++i) {                // D:57 foreach (i; 0 .. n + 1)
         auto p = (*_b1s[static_cast<size_t>(i)])(s);
         B[static_cast<size_t>(i)].set(p);
@@ -89,7 +72,7 @@ std::string BezierPatch::classString() const { return "BezierPatch"; }
 
 // D:70-76
 void BezierPatch::initialiseWorkingSpace() {
-    set_length_checked(_b1s, static_cast<long>(n) + 1); // D:72
+    _b1s.set_length_signed(static_cast<long>(n) + 1); // D:72
     for (int i = 0; i < n + 1; ++i) {                   // D:73 foreach (i; 0 .. n + 1)
         _b1s[static_cast<size_t>(i)] = std::make_shared<Bezier>(Q[static_cast<size_t>(i)]);
     }

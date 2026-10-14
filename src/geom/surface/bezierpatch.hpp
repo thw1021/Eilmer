@@ -23,8 +23,9 @@
 //   * D:30 `Q.length = _n + 1;` assigns a SIGNED length. Measured: for _n = -2 D
 //     raises `Error` with message "Memory allocation failed" (row bzp.nm2.ctor),
 //     while _n = -1 yields a zero-length Q and constructs fine (row bzp.nm1.ctor).
-//     A size_t conversion would silently wrap instead, so the sign test is explicit
-//     (d_set_length_checked, defined in bezierpatch.cpp).
+//     A size_t conversion would silently wrap instead, so the sign test is explicit --
+//     in eil::Array::set_length_signed (substrate/include/eil/array.hpp), not in a
+//     per-file helper (this file used to carry three overloads of one rule: backlog T-914).
 //   * D:37-46 the copy constructor assigns `m = other.n;`, NOT other.m. That is a
 //     real difference in behaviour, measured, and deliberately preserved: for the
 //     n=3/m=4 net of the D unittest the copy reports m=3 while dup() reports m=4

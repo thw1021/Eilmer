@@ -169,6 +169,30 @@ template <typename T> class Array {
         n_ = m;
     }
 
+    // D's `arr.length = L` where L is SIGNED (an int, or an expression that can go
+    // negative). Call this rather than set_length, because the conversion is not neutral:
+    // static_cast<size_t>(-1) is 2^64-1, so the port would try to allocate that many
+    // elements where D fails first.
+    //
+    // What D actually does, measured rather than inferred: `neg.length = -1` raises
+    //   class core.exception.OutOfMemoryError, .msg == "Memory allocation failed",
+    //   .file == "rt/lifetime.d", .line == 1454
+    // (probes/substrate/probe_throw_identity.d row gen.negative_length). Two consequences
+    // for this signature: the message is the runtime's own and must be reproduced byte for
+    // byte, and the location is inside the D runtime rather than the caller, so no
+    // file/line is attached here -- attaching this translation unit's location would print
+    // a site the reference never prints (backlog T-922). A length of 0 is legal and must
+    // not raise (measured: row bzp.nm1.ctor threw=none).
+    //
+    // Reachable in practice, not theoretical: geom/surface/bezierpatch.d,
+    // geom/surface/controlpointpatch.d and geom/grid/sgrid.d each pass a signed dimension
+    // straight through from user input, and corpus rows bzp.nm2.ctor, cpp.gneg, cpp.gnegj
+    // and sg.frmt.nivbig all carry this exact text.
+    void set_length_signed(long m) {
+        if (m < 0) throw ErrorBase("Memory allocation failed");
+        set_length(static_cast<size_t>(m));
+    }
+
     T& operator[](size_t i) {
         if (i >= n_) throw RangeError(i, n_);
         return p_[i];

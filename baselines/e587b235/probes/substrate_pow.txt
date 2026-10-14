@@ -19,6 +19,15 @@ misc 1e+154 pow0=1 powNeg2=9.9999999999999991e-309 powHalf=1
 misc 1e-08 pow0=1 powNeg2=10000000000000000 powHalf=1
 misc -3.7000000000000002 pow0=1 powNeg2=0.073046018991964931 powHalf=1
 misc 0.5 pow0=1 powNeg2=4 powHalf=1
+half 8000000000000000 op=8000000000000000 sqrt=8000000000000000 pow=0000000000000000 opIsSqrt=true opIsPow=false
+half 0000000000000000 op=0000000000000000 sqrt=0000000000000000 pow=0000000000000000 opIsSqrt=true opIsPow=true
+half 4000000000000000 op=3ff6a09e667f3bcd sqrt=3ff6a09e667f3bcd pow=3ff6a09e667f3bcd opIsSqrt=true opIsPow=true
+half 3fd5555555555555 op=3fe279a74590331c sqrt=3fe279a74590331c pow=3fe279a74590331c opIsSqrt=true opIsPow=true
+half 7e37e43c8800759c op=5f138d352e5096af sqrt=5f138d352e5096af pow=5f138d352e5096af opIsSqrt=true opIsPow=true
+half 01a56e1fc2f8f359 op=20ca2fe76a3f9475 sqrt=20ca2fe76a3f9475 pow=20ca2fe76a3f9475 opIsSqrt=true opIsPow=true
+half 7ff0000000000000 op=7ff0000000000000 sqrt=7ff0000000000000 pow=7ff0000000000000 opIsSqrt=true opIsPow=true
+half bff0000000000000 op=7ff8000000000000 sqrt=7ff8000000000000 pow=7ff8000000000000 opIsSqrt=true opIsPow=true
+half c004000000000000 op=7ff8000000000000 sqrt=7ff8000000000000 pow=7ff8000000000000 opIsSqrt=true opIsPow=true
 frac 181.019 181.019
 intbase 8 8
 nan_domain nan nan nan nan

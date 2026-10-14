@@ -18,22 +18,9 @@
 
 namespace eil {
 namespace geom {
-namespace {
+// D's signed `arr.length = L` goes through eil::Array::set_length_signed now
+// (substrate/include/eil/array.hpp) rather than a second local copy of the rule.
 
-// D's `arr.length = L` with a signed L. Measured (rows cpp.gneg, cpp.gnegj): a negative
-// length raises an Error whose message is exactly "Memory allocation failed" before any
-// allocation happens, as in bezierpatch.cpp:23-38. eil::Array::set_length takes size_t, so
-// the wrap has to be caught on the way in.
-void set_length_checked(eil::Array<eil::Array<Vector3>>& a, long len) {
-    if (len < 0) throw eil::ErrorBase("Memory allocation failed", __FILE__, __LINE__);
-    a.set_length(static_cast<size_t>(len));
-}
-void set_length_checked(eil::Array<Vector3>& a, long len) {
-    if (len < 0) throw eil::ErrorBase("Memory allocation failed", __FILE__, __LINE__);
-    a.set_length(static_cast<size_t>(len));
-}
-
-} // namespace
 
 // D:41-53.
 ControlPointPatch::ControlPointPatch(const PathPtr& south, const PathPtr& north,
@@ -64,8 +51,8 @@ ControlPointPatch::ControlPointPatch(const PathPtr& south, const PathPtr& north,
                                      int ncpj, const std::string& guidePatch) {
     // Let's construct, then alter
     eil::Array<eil::Array<Vector3>> C;
-    set_length_checked(C, ncpi); // D:60 C.length = ncpi
-    for (size_t i = 0; i < C.length(); ++i) set_length_checked(C[i], ncpj); // D:61
+    C.set_length_signed(ncpi); // D:60 C.length = ncpi
+    for (size_t i = 0; i < C.length(); ++i) C[i].set_length_signed(ncpj); // D:61
 
     init_from_grid(south, north, west, east, C); // D:63 this(south, north, west, east, C)
 

@@ -352,6 +352,15 @@ inline bool isInfinite(number x) { return std::isinf(x); }
 // write eil::pow(x, 3) rather than expanding the product. std::pow reproduced
 // every measured D row bit-for-bit, including the integer-exponent overload
 // (pow(x,2) == pow(x,2.0)), so the widening here is only about spelling.
+//
+// ONE EXCEPTION, and it is not about pow: exponent 0.5. D's `x ^^ 0.5` is sqrt(x),
+// not pow(x, 0.5) -- measured over 765 non-negative operands, `x^^0.5` matches sqrt(x)
+// on all 765 bit patterns while pow(x,0.5) differs on one of them, x = -0.0, where
+// sqrt preserves the sign of zero and pow returns +0.0 (backlog T-925; the rows are in
+// the substrate_pow corpus, and mapping `^^0.5' onto this function turns exactly that row
+// red). A signed zero is not cosmetic: it decides the sign of every later division by it.
+// So transcribe `(...)^^0.5' as eil::sqrt(...), and leave this function for the other
+// exponents. geom/grid/paver.cpp:171 and :202 are the sites this came from.
 inline number pow(number x, number y) {
     return domain_nan2(x, y, std::pow(x, y), quiet_nan_positive());
 }

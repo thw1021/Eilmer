@@ -43,9 +43,9 @@
 //     samples everything at (1.0, 1.0).
 //   * D:60-61 `C.length = ncpi; foreach (ref CC; C) CC.length = ncpj;` — a negative length
 //     raises D's "Memory allocation failed" Error before any allocation, exactly as in
-//     bezierpatch.d (rows bzp.nm2.ctor there). eil::Array::set_length takes size_t, so the
-//     wrap is caught on the way in (set_length_checked below); rows cpp.gneg / cpp.gnegj
-//     measure that it is the OUTER allocation that fails first.
+//     bezierpatch.d (rows bzp.nm2.ctor there). That rule is now in one place,
+//     eil::Array::set_length_signed (substrate/include/eil/array.hpp); rows cpp.gneg /
+//     cpp.gnegj measure that it is the OUTER allocation that fails first.
 //   * D:181-194 nCtrlPts/getCtrlPt/setCtrlPt are NOT const in D (no const qualifier) and
 //     carry no bounds test: getCtrlPt(0,-1) indexes with the int converted to size_t, so
 //     D reports index [18446744073709551615], which is what eil::Array::operator[] gives

@@ -152,7 +152,7 @@
   | `assert(c, m)` | `core.exception.AssertError` | 调用点；`.msg` **只有 m** | ✅ T-918 已定形 |
   | 数组越界 `a[9]` | `core.exception.ArrayIndexError` | 调用点 | ✅ |
   | `final switch` 值越界 | `core.exception.SwitchError` | 调用点 | ✅（`grid.cpp:76` 注释里已自证） |
-  | `arr.length = -1` | **`core.exception.OutOfMemoryError`** | **`rt/lifetime.d` / 1454** | ❌ 端口在 `bezierpatch.cpp:29,33,37`、`controlpointpatch.cpp:28,32` 传自己文件的 `__FILE__/__LINE__`——类名与位置都不是 D 的（这条与 **T-914** 是同一段代码的另一半） |
+  | `arr.length = -1` | **`core.exception.OutOfMemoryError`** | **`rt/lifetime.d` / 1454** | ~~端口在 `bezierpatch.cpp:29,33,37`、`controlpointpatch.cpp:28,32` 传自己文件的 `__FILE__/__LINE__`~~ **已修**：规则收进 `eil::Array::set_length_signed`（只带消息），5 个本地重载删除 → 见 T-914 |
   | Phobos 内部 assert（`maxElement` 空区间、`sort` 的分区守卫） | `core.exception.AssertError` | **Phobos 源文件与行号**（`.../std/algorithm/searching.d` 1338、`sorting.d` 2195/2201） | ❌ 端口传自己文件的 `__FILE__/__LINE__`；且 `src/nm/smla.hpp:127` 的**消息文本本身也是编的**：端口写 `"range is empty"`，D 实际是 `"r is an empty range"`（searching.d:1338 原文）——与 T-918 同一类缺陷，因为**没有任何语料行覆盖它**所以一直没红 |
   | `to!double` 失败 | `std.conv.ConvException` | `.../std/conv.d` 3349（库文件，不是调用点） | 语料只比 `.msg` ✅ 文本已由 T-913 逐字钉住 |
   | `new ErrnoException(m, e)` | `std.exception.ErrnoException` | `""` / `0`（默认实参是 `null`/`0`，与 Exception 不同） | 需按站点核 |
@@ -367,12 +367,25 @@
   修法：Phobos arc-tangent 上移 substrate 成 `eil::atan/atan2`，三个站点全改；
   **`modifiedpath` 84 条容差带 → 0，10794/10794 量逐位相同**，三配置 58/58。
   顺带修门禁自身的 `snprintf` 少参 bug（曾打印 `D 9.8e+252` 这样的栈垃圾）。
-- [ ] **T-914** substrate 缺口：`eil::Array::set_length(size_t)` 表达不了 D 的
+- [x] **T-914** substrate 缺口：`eil::Array::set_length(size_t)` 表达不了 D 的
   **有符号** `arr.length = L`。D 里 `L<0` 抛 `Error "Memory allocation failed"`；
   C++ 侧若先转 `size_t` 就会变成试图分配 2^64 个元素。本波代理在
   `src/geom/surface/bezierpatch.cpp:26-39` 用本地 `set_length_checked` 三个重载绕开，
-  同一需求在 volume/grid 还会再出现 → 应在 `substrate/include/eil/array.hpp` 定形
-  （加 `set_length_signed(long)`），然后删掉本地绕行 → **Wave 3**
+  同一需求在 volume/grid 还会再出现 → 应在 `substrate/include/eil/array.hpp` 定形。
+  — **完成 2026-10-14**：`eil::Array::set_length_signed(long)` 已入 substrate，
+  **5 个本地重载全部删除**（bezierpatch.cpp 三个 + controlpointpatch.cpp 两个），
+  两个头注释里指向已消失的本地 helper 的说法也改了（注释指向不存在的符号，比没注释更坏）。
+  语义按**实测**而不是按名字定：`neg.length = -1` 在 D 里是
+  `core.exception.OutOfMemoryError`、`.msg == "Memory allocation failed"`、
+  `.file == "rt/lifetime.d"`、`.line == 1454`
+  （`probes/substrate/probe_throw_identity.d` 行 `gen.negative_length`）⇒ substrate 版
+  **只带消息、不带 `__FILE__/__LINE__`**（T-922 的一条：D 的位置在运行时内部，
+  端口填自己文件的位置就是凭空造站点）；`L == 0` 合法、**不抛**
+  （语料行 `bzp.nm1.ctor threw=none`）。可达性有语料撑着：`bzp.nm2.ctor`、`cpp.gneg`、
+  `cpp.gnegj`、`sg.frmt.nivbig` 四条都是这段文本。
+  改后两模块门禁仍 Passed（`geom_surface_bezierpatch`、`geom_surface_controlpointpatch`）。
+  **分发约定**：G4/G5（sgrid/usgrid）里把用户输入直接当数组长度的地方，转写时直接调
+  `set_length_signed`，**不要再建第六个本地副本**
 - [ ] **T-915** D 侧真实崩溃，端口不加防护：`sweptpathpatch.d` 的
   `new SweptPathPatch(null, cB)` 实测 **SIGSEGV、exit 139、无可捕获对象**
   （`probes/geom/surface/probe_sweptpathpatch.d` 组 H，语料里没有该行）。
@@ -481,6 +494,37 @@
   **同类面仍需后续 Wave 复查**：其他"成对且可融合"的 libm 调用——本项目里目前只找到
   sin/cos 这一对（`exp`/`expm1`、`log`/`log10` 之类 glibc 没有融合形态），
   Wave 4 的 `fluxcalc` 类若出现 `sqrt`+`rsqrt` 或成对三角调用需照此法复查
+- [x] **T-925** **更正本仓库自己的一条转写规则**：`x ^^ 0.5` 是 `eil::sqrt(x)`，
+  **不是** `eil::pow(x, 0.5)`。`reports/wave-02-brief.md` 第 151 行原来写的是
+  "`a ^^ b` **一律**写成 `eil::pow(a, b)`"——那句是错的，而错误来自一个合理的观察
+  （`^^2`/`^^3` 确实等于 `pow`）被当成全称。**完成 2026-10-14**：
+  - 实测范围 **765 个非负操作数**（`i/7` 400 个、`i*0.001` 200 个、`1/i` 100 个、
+    `i*1e-8` 60 个，再加 `0/±0/1/2/1/3/1e±300/real.max`）：
+    `x^^0.5` 与 `sqrt(x)` **765/765 位型相同**；`pow(x,0.5)` 与 `x^^0.5`
+    **只在 1 个操作数上不同 —— `x = -0.0`**：
+    `(-0.0)^^0.5 = 8000000000000000`（`sqrt(-0.0)` 同值，**保留零的符号**），
+    `pow(-0.0,0.5) = 0000000000000000`（丢掉符号）。
+  - 域错误侧也一致：`(-1)^^0.5 = (-2.5)^^0.5 = (-1e-300)^^0.5 = 7ff8000000000000`
+    （**正 NaN**，与 `eil::sqrt`/`eil::pow` 的 T-917 规范化相同）；
+    但 `pow(-real.max, 0.5)` 在 D 里给 `7ff0…`（**无穷**而非 NaN），
+    所以"两者随便选一个"在负数域上也不成立。
+  - 变量指数同样走 sqrt：`double e=0.5; x^^e` 与 `sqrt(x)` 与 `pow(x,e)` 三者位型相同
+    （`x=2` → `3ff6a09e667f3bcd`）⇒ 规则看**指数的值**不看它是不是字面量。
+  - **发现路径**：`geom_grid_paver` 1961 行里唯二红行 145–146（`sec2.ulv3.0/1`，
+    D `-0.50000000000000033/3ffeb67ae8584caa` vs 端口 `…022/…ca9`），
+    端口当时在 `point_dist`/`norm`（`paver.cpp:171/:202`）写 `eil::pow(…, 0.5)`。
+    D 侧 `^^0.5` 在 Wave 2 只有这两处（`paver.d:202`、`:238`）。
+  - **入库**：规则写进 `substrate/include/eil/math.hpp` 的 `eil::pow` 注释头上
+    （离最容易用错的地方最近），`reports/wave-02-brief.md` 那条已更正；
+    语料扩到 **35 行**（新增 9 行 `half` 组，**按位型而不是按 `==` 比较**——
+    第一版用 `==` 时 `-0.0` 行报 `opIsPow=true`、NaN 行报 `opIsSqrt=false`，
+    两个都是假信号，因为 `==` 看不见零的符号、也永远看不见 NaN 的相同）。
+    顺带记一笔：D 的 `real.max` 放进 `double[]` 会**溢出成 +inf**
+    （`7ff0000000000000`），端口表里当初写 `DBL_MAX` 就差一行。
+  - **判别力实测**：把 `op=` 从 `eil::sqrt` 换回 `eil::pow(x,0.5)` →
+    `-0.0` 那行立刻红（**1 行差异 / 35**）；换回来 **35/35**。
+  - **Wave 12 会再撞上**：`shape_sensitivity_core.d:2315-2316`、`ntypes/complex.d:1820`
+    （`z^^0.5` 是 csqrt 的写法）。转写这两处时按本条，不要用 `eil::pow`。
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
