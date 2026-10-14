@@ -120,11 +120,18 @@ void insertInPlace(eil::Array<U>& arr, size_t at, const U& value) {
     arr[at] = value;
 }
 
-// Stands for std.algorithm.searching.maxElement (smla.d:212 `ja.maxElement`),
-// which raises a range error on an empty range.
+// Stands for std.algorithm.searching.maxElement (smla.d:212 `ja.maxElement`).
+// Its contract assert is `assert(!r.empty, "r is an empty range")` at
+// std/algorithm/searching.d:1338, which reaches the caller as
+// core.exception.AssertError (an Error, so ErrorBase is the right port class) with
+// exactly that .msg. Measured in baselines/e587b235/probes/substrate_throw_identity.txt
+// row phobos.maxElement_empty. Two things the earlier version of this line got wrong:
+// the text was "range is empty", which D never prints, and it attached this file's
+// __FILE__/__LINE__ -- D's .file here is searching.d inside the standard library, not
+// the caller. Backlog T-922 covers the rest of that sweep.
 template <typename U>
 U maxElement(const eil::Array<U>& r) {
-    if (r.length() == 0) throw eil::ErrorBase("range is empty", __FILE__, __LINE__);
+    if (r.length() == 0) throw eil::ErrorBase("r is an empty range");
     U m = r[0];
     for (size_t i = 1; i < r.length(); ++i) if (r[i] > m) m = r[i];
     return m;

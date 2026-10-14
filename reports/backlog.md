@@ -135,6 +135,53 @@
   且两者**都没有 `void main`** ⇒ 参照侧连二进制都产不出来，Wave 2 抓不到任何基线。
   `sketch.d` 自己的 libplot 支在 `version(with_libplot)` 内（:33-34、:62、:152、:178、:261），
   按既有约定原样保留不编译
+- [ ] **T-922** **端口系统性缺陷：D 的裸 `new Error(msg)` 不带抛出点，端口却给它编了一个。**
+  本轮为核 sketch 简报里的 throw 分类而实测出来的（`probes/substrate/probe_throw_identity.d`
+  → `baselines/e587b235/probes/substrate_throw_identity.txt`，**15 行，重跑 0 差异、
+  行内无地址**）。D 侧的真实规则（每行都是 ldc2 1.40.0 运行期打印的
+  `classinfo.name / .msg / .file / .line / toString()` 首行）：
+
+  | D 写法 | 运行期类名 | `.file` / `.line` | 端口现在怎么做 |
+  |---|---|---|---|
+  | `throw new Exception(m)` | `object.Exception` | **调用点**（且是**编译时传进来的相对路径**原文） | 传 `__FILE__/__LINE__` ✅ 对 |
+  | `throw new Error(m)` | `object.Error` | **`""` / `0`** | 传 `__FILE__/__LINE__` ❌ **编出来的** |
+  | `throw new Throwable(m)` | `object.Throwable` | `""` / `0` | — |
+  | `enforce(c, new Error(m))` | `object.Error` | `""` / `0` | ❌（`bbla.d:341` 就是这种写法） |
+  | `new GeometryException(m)` | `geom.geometry_exception.GeometryException` | 调用点（`geometry_exception.d:11` 的 `file=__FILE__, line=__LINE__` 默认实参） | ✅ 对 |
+  | `assert(c)` | `core.exception.AssertError` | 调用点；`.msg=="Assertion failure"` | ✅ T-918 已定形 |
+  | `assert(c, m)` | `core.exception.AssertError` | 调用点；`.msg` **只有 m** | ✅ T-918 已定形 |
+  | 数组越界 `a[9]` | `core.exception.ArrayIndexError` | 调用点 | ✅ |
+  | `final switch` 值越界 | `core.exception.SwitchError` | 调用点 | ✅（`grid.cpp:76` 注释里已自证） |
+  | `arr.length = -1` | **`core.exception.OutOfMemoryError`** | **`rt/lifetime.d` / 1454** | ❌ 端口在 `bezierpatch.cpp:29,33,37`、`controlpointpatch.cpp:28,32` 传自己文件的 `__FILE__/__LINE__`——类名与位置都不是 D 的（这条与 **T-914** 是同一段代码的另一半） |
+  | Phobos 内部 assert（`maxElement` 空区间、`sort` 的分区守卫） | `core.exception.AssertError` | **Phobos 源文件与行号**（`.../std/algorithm/searching.d` 1338、`sorting.d` 2195/2201） | ❌ 端口传自己文件的 `__FILE__/__LINE__`；且 `src/nm/smla.hpp:127` 的**消息文本本身也是编的**：端口写 `"range is empty"`，D 实际是 `"r is an empty range"`（searching.d:1338 原文）——与 T-918 同一类缺陷，因为**没有任何语料行覆盖它**所以一直没红 |
+  | `to!double` 失败 | `std.conv.ConvException` | `.../std/conv.d` 3349（库文件，不是调用点） | 语料只比 `.msg` ✅ 文本已由 T-913 逐字钉住 |
+  | `new ErrnoException(m, e)` | `std.exception.ErrnoException` | `""` / `0`（默认实参是 `null`/`0`，与 Exception 不同） | 需按站点核 |
+
+  **爆炸半径（本轮实测清点）**：端口里 `ErrorBase(...)` 带 `__FILE__` 的站点共 **83 个**
+  （注意：按行 grep 只能数到 43 个，因为调用跨行；多行感知统计才是 83）。
+  其中**按消息文本能直接对上 D 侧 `new Error(`** 的有 **39 个**
+  （`aopatch.cpp` ×4、`coonspatch.cpp` ×4、`polynomial.cpp` ×5、`arc.cpp` ×3、`bezier.cpp` ×3、
+  `polyline.cpp`、`beziertrianglepatch.cpp:199`、`nomenclature.cpp:30`、
+  `univariatefunctions.cpp` ×11、`nurbs_utils.cpp:126`、`bbla.hpp` ×5 等），
+  另有 **32 个**用变量消息（形如 `eil::ErrorBase(eil::text(errMsg), __FILE__, __LINE__)  // D:28`），
+  其 `// D:NN` 引用指向的行已抽查为裸 `throw new Error(text(errMsg))`
+  （`nurbssurface.cpp` ×5 已核实）。剩下 12 个需逐点读。
+  **为什么现在没红**：语料比对的是 `.msg`，全树只有
+  `tests/test_geom_elements_projection.cpp` 一处比 `.file()`，而它比的是
+  `GeometryException`（确实带调用点）⇒ 缺陷**完全潜伏**。
+  **为什么必须修**：需求第 4 条要求日志输出逐字节一致，而 `toString()` 的第一行是
+  `类名@文件(行号): 消息`；Wave 4/5 的求解器日志一接上就会把这 83 处全部暴露，
+  那时改就是"改行为"了。趁现在只有端口侧、无历史日志可比，一次性扫掉。
+  **修法（机械，但有前置）**：①`ThrowableBase` 的默认已是 `file=""`/`line=0`，
+  所以修复=删掉那两处实参，不动消息文本；②按上表逐站点决定"删/留"，**每个站点的判据是它
+  D 侧那一条 throw 的类**，不是端口的方便；③Phobos/rt 内部 assert 那两类**不能**填端口的
+  `__FILE__`，也不能硬写 `rt/lifetime.d(1454)`（那是 ldc2 版本相关的源码路径）——
+  正确做法是 `.file` 留空 + 头注释写实测值，并把该行的可观测部分交给 `.msg`；
+  ④扫完补一个**端口侧回放测试**（本条的前半）把 15 行 D 语料的
+  `msg` + "有没有 file/line" 布尔值钉住，否则下次还会漂；
+  ⑤顺带修 `smla.hpp:127` 的消息文本 `"range is empty"` → `"r is an empty range"`，
+  并给它加一条覆盖语料行（今天没有行覆盖它，这就是它没红的原因）。
+  → **Wave 3 之前做完**（Wave 3 的 `gas/` 是 `Exception` 与 `Error` 混用最密的包）
 - [ ] **T-921** `geom/misc/libplot.d`(428) + `rotating_a.d`(49) + `drifting_eye.d`(65)：
   **外部库缺失**，非转写难度问题（判据见 T-019 本条内的实测）。装好 libplplot 之后再做，
   或按 `with_libplot` 变体推到 Wave 12（与 T-904 `complex_numbers` 同批）。
