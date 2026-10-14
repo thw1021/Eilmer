@@ -22,8 +22,49 @@
 
 namespace eil {
 
-// Common root: D's Throwable carries .msg/.file/.line for *both* branches, so
-// ported code that prints e.msg works for Exceptions and Errors alike.
+// Common root for both D branches.
+//
+// Which branch carries a throw site is NOT uniform, and the answer decides how a port
+// call site must be written. Measured at run time under ldc2 1.40.0 -- class name, .file,
+// .line and the first line of toString() -- in probes/substrate/probe_throw_identity.d
+// against baselines/e587b235/probes/substrate_throw_identity.txt (15 rows, regenerates to
+// a 0-line diff):
+//
+//   new Exception(m)        object.Exception                file == the caller's source
+//                                                        path AS PASSED TO THE COMPILER,
+//                                                        line == the call line
+//   new Error(m)            object.Error                    file == "", line == 0
+//   new Throwable(m)        object.Throwable                file == "", line == 0
+//   enforce(c, new Error(m))object.Error                    file == "", line == 0
+//   new GeometryException(m)geom.geometry_exception...     caller's file/line, because
+//                                                        geometry_exception.d:11 declares
+//                                                        `file=__FILE__, line=__LINE__`
+//   assert(c) / assert(c,m) core.exception.AssertError      caller's file/line; .msg is
+//                                                        "Assertion failure" or m alone
+//                                                        (T-918)
+//   a[9] out of bounds      core.exception.ArrayIndexError  caller's file/line
+//   final switch, no match  core.exception.SwitchError      the switch's file/line
+//   arr.length = -1         core.exception.OutOfMemoryError rt/lifetime.d : 1454 -- NOT
+//                                                        the caller, and not a file the
+//                                                        port has
+//   to!double(bad)          std.conv.ConvException          std/conv.d : 3349
+//   maxElement of empty     core.exception.AssertError      std/algorithm/searching.d : 1338
+//   new ErrnoException(m,e) std.exception.ErrnoException    file == "", line == 0
+//                                                        (its defaults are null/0)
+//
+// The rule for a port call site therefore comes from D's class, not from the port's
+// convenience: an Exception-family throw keeps __FILE__/__LINE__, a bare Error-family
+// throw must be constructed with the message ONLY. Writing __FILE__ on a bare Error is
+// inventing a location the reference never prints, and it is invisible to the gates
+// because they compare .msg -- which is why backlog T-922 had to sweep 83 existing sites.
+// Anything raised from inside Phobos or the runtime (the last four rows above) reports a
+// library file/line the port has no equivalent of: leave it empty rather than
+// substituting this translation unit's location.
+//
+// toString() is only approximated here. D's first line is
+// "<fully.qualified.ClassName>@<file>(<line>): <msg>", and it then appends
+// "\n----------------\n" plus a backtrace whose frame addresses change every run
+// (measured). The class-name prefix and the backtrace are backlog T-903.
 class ThrowableBase : public std::runtime_error {
   public:
     explicit ThrowableBase(const std::string& msg, const char* file = "", size_t line = 0)
@@ -31,7 +72,8 @@ class ThrowableBase : public std::runtime_error {
     std::string msg() const { return std::string(what()); }
     const char* file() const { return file_.c_str(); }
     size_t line() const { return line_; }
-    // D's Throwable.toString() is "file(line): message"; some call sites print it.
+    // The portable part of D's toString(): its first line, minus the class name. See the
+    // block comment above and backlog T-903.
     std::string toString() const {
         if (file_.empty()) return msg();
         return file_ + "(" + std::to_string(line_) + "): " + msg();

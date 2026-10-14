@@ -172,6 +172,25 @@
   **为什么必须修**：需求第 4 条要求日志输出逐字节一致，而 `toString()` 的第一行是
   `类名@文件(行号): 消息`；Wave 4/5 的求解器日志一接上就会把这 83 处全部暴露，
   那时改就是"改行为"了。趁现在只有端口侧、无历史日志可比，一次性扫掉。
+  **已入库的部分**：`substrate/include/eil/math.hpp` 之外的
+  `substrate/include/eil/error.hpp` 里把上面那张表**原样写成注释**（含"toString() 的
+  类名前缀与回溯不可移植 → T-903"、"Phobos/rt 内部 raise 的位置不是调用点"两条），
+  所以以后新转写站点有本地依据，不必再去别处找规则。
+  **按文件清点好的待扫站点**（分类判据：消息字面量能在 D 树里对上 `new Error(`，
+  或站点尾注释 `// D:NN` 指向的那行是 `new Error(`）——共 **40 个**，全是删两个实参：
+  `geom/gpath/{arc:1, bezier:3, nurbs:2, polyline:1, polynomial:5}`、
+  `geom/misc/{nurbs_utils:1, univariatefunctions:11}`、`geom/surface/nurbssurface:5`、
+  `geom/volume/nurbsvolume:7`、`nm/bbla.hpp:4`。
+  另有 **35 个**分类器返回 `None`（消息是变量拼接、且站点无 `// D:NN` 引用）、
+  **6 个** `notfound`、**1 个** `unclear` —— 这 42 个**必须逐点读 D 侧**再决定，
+  不能猜。**总数更正**：本轮首次报的 83 是**修 smla 之前**的数（smla.hpp:127 那条
+  已随 T-923 改掉），现在的实际数是 **82**。
+  **踩过的坑（下一位别再踩）**：本轮试过用脚本一次性删实参，**两次都把多行调用改坏了**——
+  第一次把 `throw ...("...",\n  __FILE__, __LINE__);` 的后半行吃掉、留下**多余的 `}`**
+  （`bbla.hpp` 的 hstack/vstack 直接编不过），第二次正则漏了行尾 `;` 又产生 `))`。
+  两次都靠 `cmake --build` 才抓到，已 `git checkout -- src` 全部回退，
+  **没有**把坏改动留在树里。结论：这一类"看起来机械"的全树改写**必须逐点改并用编译验证**，
+  或者用能正确配对括号的解析（本仓库里 `eil::text(` 之类嵌套调用不少）。
   **修法（机械，但有前置）**：①`ThrowableBase` 的默认已是 `file=""`/`line=0`，
   所以修复=删掉那两处实参，不动消息文本；②按上表逐站点决定"删/留"，**每个站点的判据是它
   D 侧那一条 throw 的类**，不是端口的方便；③Phobos/rt 内部 assert 那两类**不能**填端口的
