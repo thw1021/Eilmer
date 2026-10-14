@@ -91,7 +91,7 @@
 // (substrate/include/eil/array.hpp:162-170) while D's `arr.length = n` fills it with the
 // element type's .init, which for double is NaN. probe_sgrid.d:712-713 and :1666-1667
 // rely on that — corpus rows 757-760 (`sg.rgrid.identity.s row[*] 0 nan nan 1`) are the
-// NaN slots. d_init_doubles() reproduces D's fill for the harness's own arrays.
+// NaN slots. eil::Array<double>() reproduces D's fill for the harness's own arrays.
 //
 // ROW TEXT IS PRODUCED BY THE SAME HELPER LOGIC AS THE REFERENCE, not by an equivalent
 // of our own. probe_sgrid.d's failure-capture helper is tryit() / tryit_cut()
@@ -864,21 +864,17 @@ void grp_surf() {
 // sgrid.d:104-113, :648-688, :1472-1522)
 // ------------------------------------------------------------------
 // D's `arr.length = n` extends with the element type's .init, and double.init is NaN.
-// eil::Array::set_length value-initialises instead (substrate/include/eil/array.hpp:162-170),
-// so the probe's half-filled 16-slot arrays are built through this helper to keep D's
-// untouched slots observable — corpus rows 757-760 (`sg.rgrid.identity.s row[*] 0 nan nan 1`)
-// are exactly those slots.
-eil::Array<double> d_init_doubles(size_t n) {
-    eil::Array<double> a;
-    a.set_length(n);
-    for (size_t i = 0; i < n; ++i) a[i] = eil::d_init<double>();
-    return a;
-}
+// eil::Array::set_length now reproduces that fill (substrate/include/eil/array.hpp,
+// detail::grow_init -> eil::d_init), so the harness builds its half-filled 16-slot arrays
+// through the production constructor `eil::Array<double>(n)` directly -- the d_init_doubles
+// workaround is gone (backlog T-929). Corpus rows 757-760
+// (`sg.rgrid.identity.s row[*] 0 nan nan 1`) are exactly those never-written NaN slots, and
+// they now come from the same code path the solver uses, not from a test-only helper.
 
 // probe_sgrid.d:1664-1673.
 void rs_grids_to_list_from_data(const std::string& tag, eil::geom::RSGrid& rg,
                                 eil::geom::RSGrid& sgr) {
-    eil::Array<double> id = d_init_doubles(16);
+    eil::Array<double> id = eil::Array<double>(16);
     id[2] = 0.0; id[3] = 0.0; id[5] = 0.0; id[7] = 1.0;
     id[8] = 0.0; id[9] = 0.0; id[11] = 0.0; id[13] = 1.0;
     eil::geom::list_to_rs_grids(id, rg, sgr);
@@ -902,7 +898,7 @@ void grp_rgrid() {
     auto g0 = std::make_shared<StructuredGrid>(*patch, 5, 4, cf, rg, sgr, "rgid");
     dump_grid("sg.rgrid.ident", g0);
     // A non-trivial redistribution: the 16 free values of D:1479-1494.
-    eil::Array<double> data = d_init_doubles(16);
+    eil::Array<double> data = eil::Array<double>(16);
     for (size_t i = 0; i < 16; ++i) data[i] = 0.05 * static_cast<double>(i);
     eil::geom::list_to_rs_grids(data, rg, sgr);
     dump_g2d("sg.rgrid.r", rg);
@@ -910,7 +906,7 @@ void grp_rgrid() {
     auto g1 = std::make_shared<StructuredGrid>(*patch, 5, 4, cf, rg, sgr, "rg");
     dump_grid("sg.rgrid.grid", g1);
     emit(eil::format("sg.rgrid.bad=%.17g", g1->measure_of_badness()));
-    eil::Array<double> back = d_init_doubles(16);
+    eil::Array<double> back = eil::Array<double>(16);
     eil::geom::rs_grids_to_list(rg, sgr, back);
     dump_doubles("sg.rgrid.roundtrip", back);
 }
@@ -1094,22 +1090,22 @@ void grp_bad() {
 // sg.rs.* — the two list/grid mappers (probe_sgrid.d:1181-1194, sgrid.d:1472-1522)
 // ------------------------------------------------------------------
 void grp_rs() {
-    eil::Array<double> data = d_init_doubles(16);
+    eil::Array<double> data = eil::Array<double>(16);
     for (size_t i = 0; i < 16; ++i) data[i] = 0.01 * static_cast<double>(i) + 0.02;
     eil::geom::RSGrid rg{}, sgr{};
     eil::geom::list_to_rs_grids(data, rg, sgr);
     dump_g2d("sg.rs.r", rg);
     dump_g2d("sg.rs.s", sgr);
-    eil::Array<double> back = d_init_doubles(16);
+    eil::Array<double> back = eil::Array<double>(16);
     eil::geom::rs_grids_to_list(rg, sgr, back);
     dump_doubles("sg.rs.roundtrip", back);
     // The assert on a short array (D:1478, :1504).
     tryit("sg.rs.short.list", [&rg, &sgr]() {
-        eil::Array<double> d = d_init_doubles(15);
+        eil::Array<double> d = eil::Array<double>(15);
         eil::geom::rs_grids_to_list(rg, sgr, d);
     });
     tryit("sg.rs.short.get", [&rg, &sgr]() {
-        eil::Array<double> d = d_init_doubles(0);
+        eil::Array<double> d = eil::Array<double>(0);
         eil::geom::list_to_rs_grids(d, rg, sgr);
     });
 }
@@ -1131,7 +1127,7 @@ void grp_determ() {
     eil::geom::RSGrid rg{}, sgr{};
     // Start from the identity redistribution (D:1407 reads these values). D's `id[] = 0.0`
     // writes every slot, so there is no .init tail to reproduce here.
-    eil::Array<double> id = d_init_doubles(16);
+    eil::Array<double> id = eil::Array<double>(16);
     for (size_t i = 0; i < 16; ++i) id[i] = 0.0;
     id[2] = 0.0; id[7] = 1.0; id[13] = 1.0;
     eil::geom::list_to_rs_grids(id, rg, sgr);

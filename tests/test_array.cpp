@@ -1,11 +1,12 @@
 // tests/test_array.cpp — D array/slice semantics the port depends on.
 //
 // These are the behaviours a translator has to be able to trust: `arr[a..b]` is
-// a view (writes show through), `.length = m` value-initializes the tail and
-// keeps pointer identity when capacity allows, `~=` may relocate, and a view
-// taken before a relocation must fail loudly under -DEIL_SLICE_CHECK rather
-// than read freed storage.
+// a view (writes show through), `.length = m` initializes the grown tail to T.init
+// (a quiet NaN for `double`, measured in probe_array_init.d -- NOT zero) and keeps
+// pointer identity when capacity allows, `~=` may relocate, and a view taken before
+// a relocation must fail loudly under -DEIL_SLICE_CHECK rather than read freed storage.
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -27,15 +28,17 @@ void check(bool ok, const char* what) {
 } // namespace
 
 int main() {
-    // new T[n] is zero-filled GC memory in D.
+    // new T[n] fills each slot with T.init in D, which for double is a quiet NaN
+    // (probe_array_init.d rows new_double[*]: bits 7ff8000000000000), not zero.
     eil::Array<double> a(4);
     check(a.length() == 4, "length after Array(n)");
-    check(a[0] == 0.0 && a[3] == 0.0, "Array(n) value-initializes");
+    check(std::isnan(a[0]) && std::isnan(a[3]), "Array(n) fills double.init (NaN)");
 
-    // .length = m keeps elements and zero-fills the tail.
+    // .length = m keeps existing elements and T.init-fills (NaN) the grown tail.
     a[0] = 1.5;
     a.set_length(6);
-    check(a.length() == 6 && a[0] == 1.5 && a[5] == 0.0, "set_length grows in place");
+    check(a.length() == 6 && a[0] == 1.5 && std::isnan(a[5]),
+          "set_length grows in place, NaN-fills the tail");
 
     // Slicing is a view: writing through it changes the owner.
     eil::Slice<double> v = a.slice(1, 4);

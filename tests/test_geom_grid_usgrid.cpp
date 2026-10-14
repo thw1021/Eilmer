@@ -275,7 +275,12 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
     } catch (const eil::RangeViolation& e) {
         return {"core.exception.RangeError", e.msg(), site.file, site.line};
     } catch (const eil::OutOfMemoryError& e) {
-        return {"core.exception.OutOfMemoryError", e.msg(), site.file, site.line};
+        // `arr.length = n` that the allocator refuses is D's runtime OOM, and substrate now
+        // attaches D's OWN location to it (core.exception.OutOfMemoryError, "Memory allocation
+        // failed", rt/lifetime.d:1454 -- backlog T-929, measured in probe_throw_identity.d row
+        // gen.negative_length). So the exception carries the site to report; the passed-in
+        // module site is NOT substituted here the way it is for a throw the port raises itself.
+        return {"core.exception.OutOfMemoryError", e.msg(), e.file(), e.line()};
     } catch (const eil::gzip::ZlibException& e) {
         // std.zlib.ZlibException is a Phobos Exception subclass raised inside std/zlib.d;
         // the port's eil::gzip::ZlibException (src/extern/gzip/gzip.hpp:83) carries the
@@ -299,14 +304,9 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         // so the recorded D site is used, as in the other rows.
         return {"object.Exception", e.msg(), site.file, site.line};
     } catch (const eil::ErrorBase& e) {
-        // eil::Array::set_length_signed raises D's OutOfMemoryError text from inside the
-        // container (substrate/include/eil/array.hpp:181-193 records the measurement:
-        // class core.exception.OutOfMemoryError, msg "Memory allocation failed", file
-        // "rt/lifetime.d", line 1454). The port cannot name that file, so the recorded
-        // location is used, as for the other Phobos-side raises.
-        if (e.msg() == "Memory allocation failed") {
-            return {"core.exception.OutOfMemoryError", e.msg(), "rt/lifetime.d", 1454};
-        }
+        // OutOfMemoryError is caught above and now carries D's own rt/lifetime.d:1454 site
+        // (backlog T-929), so this branch sees only a bare D Error or an AssertError. A bare
+        // `new Error(m)` records no throw site (T-922): empty file, line 0.
         if (e.line() == 0 && std::strlen(e.file()) == 0) {
             return {"object.Error", e.msg(), "", 0}; // a bare D Error (T-922)
         }

@@ -31,16 +31,45 @@
 #include <cstdint>
 #include <cstring>
 #include <initializer_list>
+#include <limits>
 #include <new>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
 #include "eil/error.hpp"
+#include "eil/number.hpp"
 
 namespace eil {
 
 template <typename T> class Array;
+
+namespace detail {
+
+// What D's `arr.length = n` (and `new T[n]`) fills a freshly-allocated slot with: T.init.
+// Measured, not inferred (probes/substrate/probe_array_init.d ->
+// baselines/e587b235/probes/substrate_array_init.txt, 30 rows, two runs identical):
+//   new double[4]      -> all 0x7ff8000000000000 (quiet NaN), NOT zero
+//   double[].length=4  -> all NaN; growing [1.5] to 4 keeps 1.5 and NaN-fills the tail;
+//                         shrink-then-regrow re-initializes the returned slots to NaN
+//   new int[3] / bool  -> 0 / false (== T())
+//   struct{double v;}  -> v is NaN, i is 0 (S.init propagates field by field)
+//   new C[2] (class)   -> both null (== T() for a smart pointer)
+// So the ONLY type whose T.init differs from C++ value-init T() is floating point: D gives
+// NaN, T() gives +0.0. Arithmetic types route through eil::d_init (number.hpp); everything
+// else default-constructs, which already matches D for the ported structs (their members
+// carry `= eil::d_init<number>()`) and for class handles (null).
+template <typename T>
+inline typename std::enable_if<std::is_arithmetic<T>::value, T>::type grow_init() {
+    return d_init<T>();
+}
+template <typename T>
+inline typename std::enable_if<!std::is_arithmetic<T>::value, T>::type grow_init() {
+    return T();
+}
+
+} // namespace detail
 
 template <typename T> class Slice {
   public:
@@ -116,7 +145,9 @@ template <typename T> class Array {
   public:
     Array() = default;
 
-    // D's `new T[n]` hands back zeroed GC memory, so this value-initializes.
+    // D's `new T[n]` initializes each element to T.init -- which for `double` is a quiet
+    // NaN, NOT zero (measured: probe_array_init.d rows new_double[*]). set_length does the
+    // fill, so this constructor inherits that behaviour.
     explicit Array(size_t n) { set_length(n); }
     Array(size_t n, const T& fill_value) {
         reserve(n);
@@ -156,16 +187,28 @@ template <typename T> class Array {
     bool empty() const { return n_ == 0; }
     size_t capacity() const { return cap_; }
 
-    // D's `arr.length = m`: keeps elements, value-initializes grown tail, and
-    // preserves pointer identity when capacity allows (626 @nogc sites in the
-    // solver cache `.ptr` across such calls).
+    // D's `arr.length = m`: keeps elements, initializes the grown tail to T.init (NaN for
+    // double -- see detail::grow_init), and preserves pointer identity when capacity allows
+    // (626 @nogc sites in the solver cache `.ptr` across such calls).
     void set_length(size_t m) {
         if (m <= n_) {
             n_ = m;
             return;
         }
-        reserve(m);
-        for (size_t i = n_; i < m; ++i) new (p_ + i) T();
+        try {
+            reserve(m);
+        } catch (const OutOfMemoryError&) {
+            // A length the allocator cannot satisfy is D's runtime OOM, not this
+            // container's wording: core.exception.OutOfMemoryError "Memory allocation
+            // failed" at rt/lifetime.d(1454) (probe_throw_identity.d row
+            // gen.negative_length; the huge-positive case is the same path -- corpus rows
+            // sg.frmt.nivbig `vertices.length = 199999999999998` and us.sgbad.zeroj). The
+            // file/line is the D runtime's own, a fixed constant, never this TU's location
+            // (backlog T-922). This is what let sgrid.cpp's d_set_length and usgrid.cpp's
+            // set_length_d wrappers be deleted (backlog T-929).
+            throw OutOfMemoryError("Memory allocation failed", "rt/lifetime.d", 1454);
+        }
+        for (size_t i = n_; i < m; ++i) new (p_ + i) T(detail::grow_init<T>());
         n_ = m;
     }
 
@@ -177,19 +220,20 @@ template <typename T> class Array {
     // What D actually does, measured rather than inferred: `neg.length = -1` raises
     //   class core.exception.OutOfMemoryError, .msg == "Memory allocation failed",
     //   .file == "rt/lifetime.d", .line == 1454
-    // (probes/substrate/probe_throw_identity.d row gen.negative_length). Two consequences
-    // for this signature: the message is the runtime's own and must be reproduced byte for
-    // byte, and the location is inside the D runtime rather than the caller, so no
-    // file/line is attached here -- attaching this translation unit's location would print
-    // a site the reference never prints (backlog T-922). A length of 0 is legal and must
-    // not raise (measured: row bzp.nm1.ctor threw=none).
+    // (probes/substrate/probe_throw_identity.d row gen.negative_length). The message is the
+    // runtime's own and is reproduced byte for byte. The location is the D runtime's, not the
+    // caller's: rt/lifetime.d(1454) is a fixed constant of the reference, so it is attached
+    // verbatim -- what T-922 forbids is substituting *this translation unit's* location for a
+    // runtime-internal throw, which is a different thing. A length of 0 is legal and must not
+    // raise (measured: row bzp.nm1.ctor threw=none). A huge POSITIVE length takes the same
+    // OutOfMemoryError path through set_length's allocator refusal (corpus sg.frmt.nivbig).
     //
     // Reachable in practice, not theoretical: geom/surface/bezierpatch.d,
     // geom/surface/controlpointpatch.d and geom/grid/sgrid.d each pass a signed dimension
     // straight through from user input, and corpus rows bzp.nm2.ctor, cpp.gneg, cpp.gnegj
     // and sg.frmt.nivbig all carry this exact text.
     void set_length_signed(long m) {
-        if (m < 0) throw ErrorBase("Memory allocation failed");
+        if (m < 0) throw OutOfMemoryError("Memory allocation failed", "rt/lifetime.d", 1454);
         set_length(static_cast<size_t>(m));
     }
 

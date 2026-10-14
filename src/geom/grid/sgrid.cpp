@@ -248,21 +248,12 @@ std::string fmt_read_float(FormattedInput& in, bool& got) {
     return tok;
 }
 
-// D's `arr.length = n` for these two readers: rt/lifetime reports
-// core.exception.OutOfMemoryError with the text "Memory allocation failed" when the
-// allocation is refused (measured at corpus row sg.frmt.nivbig, which is
-// `vertices.length = 199999999999998`). eil::Array refuses with its own text, so the
-// refusal is translated here and nothing else about the call changes. Registering this
-// as a substrate gap would remove the wrapper; a stage may not edit substrate/** (grid
-// brief section 6), so it lives beside the sites that need it.
-template <typename T>
-void d_set_length(eil::Array<T>& a, size_t n) {
-    try {
-        a.set_length(n);
-    } catch (const eil::OutOfMemoryError&) {
-        throw eil::ErrorBase("Memory allocation failed");
-    }
-}
+// D's `arr.length = n` for these two readers is now handled inside substrate: when the
+// allocator refuses the length, eil::Array::set_length re-raises D's own
+// core.exception.OutOfMemoryError "Memory allocation failed" at rt/lifetime.d(1454)
+// (measured at corpus row sg.frmt.nivbig, `vertices.length = 199999999999998`). The
+// port-local d_set_length wrapper that used to translate the wording is therefore gone
+// (backlog T-929); every call site below is a plain `.set_length(...)`.
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
 template <> void fmt_into<int>(FormattedInput& in, int* dst) {
     bool got = false;
@@ -777,7 +768,7 @@ eil::Array<size_t> StructuredGrid::get_list_of_boundary_cells(size_t boundary_in
             throw eil::ErrorBase("No appropriate switch clause found", __FILE__, __LINE__);
         }
     }
-    d_set_length(cellList, new_nic * new_njc * new_nkc); // D:526
+    cellList.set_length(new_nic * new_njc * new_nkc); // D:526
     // D:527's nested function closes over niv and njv -> a capturing lambda.
     auto single_cell_index = [this](size_t i, size_t j, size_t k) {
         return i + (niv - 1) * (j + (njv - 1) * k);
@@ -1044,8 +1035,8 @@ void StructuredGrid::read_from_text_file(const std::string& fileName, bool vtkHe
         ncells = (niv - 1) * (njv - 1) * (nkv - 1);
     }
     nvertices = niv * njv * nkv;                         // D:829-831
-    d_set_length(vertices, nvertices);                   // D:830
-    d_set_length(vtx_id, nvertices);                     // D:831
+    vertices.set_length(nvertices);                   // D:830
+    vtx_id.set_length(nvertices);                     // D:831
     size_t ivtx = 0;
     for (size_t k = 0; k < nkv; ++k) {
         for (size_t j = 0; j < njv; ++j) {
@@ -1111,8 +1102,8 @@ void StructuredGrid::read_from_gzip_file(const std::string& fileName, double sca
         ncells = (niv - 1) * (njv - 1) * (nkv - 1);
     }
     nvertices = niv * njv * nkv;                           // D:885-887
-    d_set_length(vertices, nvertices);                     // D:886
-    d_set_length(vtx_id, nvertices);                       // D:887
+    vertices.set_length(nvertices);                     // D:886
+    vtx_id.set_length(nvertices);                       // D:887
     size_t ivtx = 0;
     double x = 0.0, y = 0.0, z = 0.0;
     for (size_t k = 0; k < nkv; ++k) {
@@ -1133,7 +1124,7 @@ void StructuredGrid::read_from_gzip_file(const std::string& fileName, double sca
         line = next_line();                                // D:909
         size_t ntags = 0;
         d_formatted_read(line, "ntags: %d", &ntags);       // D:910
-        d_set_length(bcTags, ntags);                       // D:911
+        bcTags.set_length(ntags);                       // D:911
         for (size_t i = 0; i < ntags; ++i) {
             line = next_line();                            // D:913
             // D:914 builds the read format with format("tag[%d]: %%s", i).
@@ -1188,8 +1179,8 @@ void StructuredGrid::read_from_raw_binary_file(const std::string& fileName, doub
         ncells = (niv - 1) * (njv - 1) * (nkv - 1);
     }
     nvertices = niv * njv * nkv;                               // D:957-959
-    d_set_length(vertices, nvertices);                         // D:958
-    d_set_length(vtx_id, nvertices);                           // D:959
+    vertices.set_length(nvertices);                         // D:958
+    vtx_id.set_length(nvertices);                           // D:959
     size_t ivtx = 0;
     // D's `double[3] xyz;` is xyz.init, i.e. three NaNs; a short rawRead leaves them there.
     double xyz[3] = {eil::d_init<double>(), eil::d_init<double>(), eil::d_init<double>()};
@@ -1405,8 +1396,8 @@ void StructuredGrid::joinGrid(const std::shared_ptr<StructuredGrid>& gridToJoin,
     default: EIL_THROW_GEOM("invalid number of dimensions");
     }
     nvertices = niv * njv * nkv;                           // D:1217-1219
-    d_set_length(vertices, nvertices);
-    d_set_length(vtx_id, nvertices);
+    vertices.set_length(nvertices);
+    vtx_id.set_length(nvertices);
     auto oldSingleIndex = [orig_niv](size_t i, size_t j) { return i + orig_niv * j; }; // D:1221
     if (east) {                                            // D:1225-1238
         for (size_t j = njv - 1; j > 0; --j) {
