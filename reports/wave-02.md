@@ -86,7 +86,8 @@
 
 全部登记在 `provenance/fidelity.yml` 并在对应 task-log 小节解释。本 Wave 新增的类别：
 `adapted-handles`（D 类引用→`shared_ptr`，含 `dup()` 返回基类句柄）、
-`adapted-arrays`（`T[]`→`Array`/`Slice`；有符号 `arr.length = L` 本地绕行，见 T-914）、
+`adapted-arrays`（`T[]`→`Array`/`Slice`；有符号 `arr.length = L` 走 substrate 的
+  `eil::Array::set_length_signed`，T-914 已定形，先前散在两个 surface 模块里的 5 个本地副本已删）、
 `deferred`（`getJSONVector3` 依赖 `std.json` → T-902）。
 
 保留而未"修正"的 D 怪癖（每条带 file:line）：`vector3.d:137-143` 参数遮蔽成员导致
@@ -115,9 +116,18 @@ sgrid 语料里的 `sg.su2.*` 行必须等 usgrid 才能复现；usgrid 还需�
 （两者都要 `StructuredGrid` 类型，随 sgrid 之后））、
 **T-019 已闭合**（`sketch.d` 964 + `sketch_demo.d` 83：语料 682 行 0 差异、
 251/251 数值逐位、demo stdout 2 行 + 三个 SVG 文件逐字节；主线程独立复抓确认）、
-**T-922/T-923/T-925/T-926 本轮新立**（前两条已部分完成，见 `task-log.md`；
-T-925 更正了本仓库自己"`^^` 一律 `eil::pow`"的错误规则——`x^^0.5` 是 `eil::sqrt`，
-判别证据是 `-0.0` 的符号；T-926 是 sketch 报出的 3 条 substrate 缺口）；
+**本轮新立并已闭合：T-920**（成对 `sin`/`cos` 被**两个编译器**都融合成 `sincos()`，
+415 角语料里 **401 行随参照系自己的 -O 移动**，规则上移 substrate）、
+**T-922**（端口给 **84 处** D 侧本不带抛出点的裸 `new Error` 编了 `__FILE__/__LINE__`；
+**83 处已改，剩 1 处是正确的**——`final switch` 越界抛 `SwitchError`，它带位置。
+核对用的是**括号配对逐调用计数**，先前用行窗口数出的 82/42 是错的，真数是 84/39，
+差额正是跨行调用）、**T-923**（`stmatrix` 读取失败路径**一条语料都没有**，因而藏着两条
+凭空造的异常文本；补 7 行语料并做过判别力验证）、**T-925**（更正本仓库自己的规则：
+`x^^0.5` 是 `eil::sqrt` 不是 `eil::pow`，判别证据是 `-0.0` 的符号）、
+**T-914**（有符号数组长度的 5 个本地副本收进 substrate）。
+**仍开着：T-926**（sketch 报出的 3 条 substrate 缺口：`to!string` 不派发 `toString()`、
+`Slice` 形参表达不了 D 的动态数组默认实参、没有 `readln()`）、
+T-921（本机无 GNU libplot，D 侧连二进制都产不出来）
 **T-920 已闭合**（本轮实测新立、本轮内修完：`cos(x)`+`sin(x)` 对被 **两个编译器**都从 -O1
 起融合成一次 glibc `sincos()`，与两次独立 libm 调用差 1 ULP；415 角语料里
 **401 行随参照系自己的 -O 移动**，故契约仍是 ldc2 -O0 的"两次独立调用"。
