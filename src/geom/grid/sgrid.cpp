@@ -1473,7 +1473,11 @@ double StructuredGrid::measure_of_badness() {
                 // D:1336-1337 verbatim, including the reference's own slip: when j is the
                 // last row the else branch re-sets b (not c), so c keeps whatever it had.
                 // Corpus rows sg.bad.* count this value, so it is not "fixed".
-                Vector3 b; if (i < niv - 1) { b.set(*opIndex(i + 1, j, k)); } else { b.set(*opIndex(i, j - 1, k)); }
+                // D:1336's else step is in i (`*this[i-1,j,k]`), NOT in j: the row 703
+                // replay (sg.surf.simple.bad) caught the port reading this[i, j-1, k] here,
+                // which at j==0 wraps the size_t and fires D:1337's step instead —
+                // "index j is invalid" on the very first vertex of a 5x4 lattice.
+                Vector3 b; if (i < niv - 1) { b.set(*opIndex(i + 1, j, k)); } else { b.set(*opIndex(i - 1, j, k)); }
                 Vector3 c; if (j < njv - 1) { c.set(*opIndex(i, j + 1, k)); } else { b.set(*opIndex(i, j - 1, k)); }
                 Vector3 ab = b; ab -= a; ab.normalize();
                 Vector3 ac = c; ac -= a; ac.normalize();

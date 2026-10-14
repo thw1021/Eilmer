@@ -26,6 +26,21 @@
 //   sg.str.*    rows 416-420  toString (sgrid.d:223-232)
 //   sg.tag.*    rows 421-433  set_tag / set_tags (sgrid.d:174-204)
 //   sg.dup.*    rows 434-459  dup and the copy constructor (sgrid.d:162-172)
+//   sg.sub.*    rows 460-527  subgrid and its six Error wordings (sgrid.d:376-420)
+//   sg.bnd/blc.* rows 528-633 get_boundary_grid / get_list_of_boundary_cells over a
+//               3x4x5 lattice (sgrid.d:422-578)
+//   sg.path.*   rows 634-662  the Path constructor, linear and quadratic clustering (D:73)
+//   sg.surf.*   rows 663-751  the ParametricSurface constructor, all four interpolation
+//               spellings, the padding of a short clusterf, and measure_of_badness (D:82)
+//   sg.rgrid.*  rows 752-830  the redistributed-parameter constructor and the
+//               list_to_rs_grids / rs_grids_to_list pair (D:104, :648, :1472-1522)
+//
+// Substrate gap worked around HERE (not in src/, so it is test-local and does not mask a
+// port defect): eil::Array::set_length value-initialises the grown tail
+// (substrate/include/eil/array.hpp:162-170) while D's `arr.length = n` fills it with the
+// element type's .init, which for double is NaN. probe_sgrid.d:712-713 and :1666-1667
+// rely on that — corpus rows 757-760 (`sg.rgrid.identity.s row[*] 0 nan nan 1`) are the
+// NaN slots. d_init_doubles() reproduces D's fill for the harness's own arrays.
 //
 // ROW TEXT IS PRODUCED BY THE SAME HELPER LOGIC AS THE REFERENCE, not by an equivalent
 // of our own. probe_sgrid.d's failure-capture helper is tryit() / tryit_cut()
@@ -77,6 +92,7 @@
 #include "geom/elements/vector3.hpp"
 #include "geom/grid/grid.hpp"
 #include "geom/grid/sgrid.hpp"
+#include "geom/gpath/line.hpp"
 #include "geom/misc/univariatefunctions.hpp"
 #include "geom/surface/coonspatch.hpp"
 #include "geom/volume/parametricvolume.hpp"
@@ -666,6 +682,184 @@ void grp_dup() {
     dump_grid("sg.dup.3d", c3);
 }
 
+// ------------------------------------------------------------------
+// sg.sub.* — subgrid (probe_sgrid.d:600-632, sgrid.d:376-420)
+// ------------------------------------------------------------------
+void grp_sub() {
+    auto g = std::make_shared<StructuredGrid>(4, 4, 1, "sub");
+    for (size_t j = 0; j < 4; ++j) {
+        for (size_t i = 0; i < 4; ++i) {
+            g->opIndex(i, j)->set(static_cast<double>(i) * 2.0, static_cast<double>(j) * 3.0,
+                                  static_cast<double>(i) * static_cast<double>(j));
+        }
+    }
+    dump_grid("sg.sub.a", g->subgrid(1, 3, 1, 2));
+    dump_grid("sg.sub.b", g->subgrid(0, 2, 0, 2));
+    dump_grid("sg.sub.c", g->subgrid(2, 2, 2, 2));
+    dump_grid("sg.sub.d", g->subgrid(0, 4, 0, 4));
+    auto g3 = std::make_shared<StructuredGrid>(3, 3, 3, "sub3");
+    for (size_t k = 0; k < 3; ++k) {
+        for (size_t j = 0; j < 3; ++j) {
+            for (size_t i = 0; i < 3; ++i) {
+                g3->opIndex(i, j, k)->set(static_cast<double>(i), static_cast<double>(j),
+                                          static_cast<double>(k));
+            }
+        }
+    }
+    dump_grid("sg.sub.3d", g3->subgrid(1, 2, 1, 2, 1, 2));
+    auto g1 = std::make_shared<StructuredGrid>(5, 1, 1, "sub1");
+    dump_grid("sg.sub.1d", g1->subgrid(1, 3));
+    // The six Error wordings of D:381-401 — bare `throw new Error`, so `err=`.
+    tryit("sg.sub.1d.ni1", [&g1]() { g1->subgrid(0, 1); });
+    tryit("sg.sub.1d.nj2", [&g1]() { g1->subgrid(0, 2, 0, 2); });
+    tryit("sg.sub.1d.nk2", [&g1]() { g1->subgrid(0, 2, 0, 1, 0, 2); });
+    tryit("sg.sub.2d.nj1", [&g]() { g->subgrid(0, 2, 0, 1); });
+    tryit("sg.sub.2d.nk2", [&g]() { g->subgrid(0, 2, 0, 2, 0, 2); });
+    tryit("sg.sub.2d.ovr.i", [&g]() { g->subgrid(2, 4, 0, 2); });
+    tryit("sg.sub.2d.ovr.j", [&g]() { g->subgrid(0, 2, 2, 4); });
+    tryit("sg.sub.3d.nk1", [&g3]() { g3->subgrid(0, 2, 0, 2, 0, 1); });
+    tryit("sg.sub.3d.ovr.k", [&g3]() { g3->subgrid(0, 2, 0, 2, 1, 3); });
+}
+
+// ------------------------------------------------------------------
+// sg.bnd.* / sg.blc.* — boundary extraction with distinct sizes
+// (probe_sgrid.d:634-652, sgrid.d:422-578)
+// ------------------------------------------------------------------
+void grp_bnd() {
+    // niv, njv, nkv all different so any mix-up in D:427-446 is visible.
+    std::shared_ptr<Grid> g = std::make_shared<StructuredGrid>(3, 4, 5, "bd");
+    for (size_t k = 0; k < 5; ++k) {
+        for (size_t j = 0; j < 4; ++j) {
+            for (size_t i = 0; i < 3; ++i) {
+                g->opIndex(i, j, k)->set(
+                    static_cast<double>(i) * 1.0 + 100.0 * static_cast<double>(k) +
+                        10.0 * static_cast<double>(j),
+                    static_cast<double>(j), static_cast<double>(k));
+            }
+        }
+    }
+    auto sg = std::static_pointer_cast<StructuredGrid>(g);
+    for (size_t b = 0; b < 6; ++b) {
+        dump_grid_base(eil::format("sg.bnd b=%d", b), sg->get_boundary_grid(b));
+        // probe:649-650 calls the getter twice — once for the count in the tag, once for
+        // the list — so the mirror does too rather than reusing one result.
+        dump_ids(eil::format("sg.blc b=%d n=%d", b, sg->get_list_of_boundary_cells(b).length()),
+                 sg->get_list_of_boundary_cells(b));
+    }
+}
+
+// ------------------------------------------------------------------
+// sg.path.* — Path constructor and make_grid_from_path
+// (probe_sgrid.d:654-667, sgrid.d:73, :580)
+// ------------------------------------------------------------------
+void grp_path() {
+    std::shared_ptr<eil::geom::Path> pth =
+        std::make_shared<eil::geom::Line>(Vector3(0.0, 0.1, 0.2), Vector3(1.0, 0.3, 0.4));
+    auto g = std::make_shared<StructuredGrid>(*pth, 6,
+                                             std::make_shared<LinearFunction>(0.0, 1.0), "p1d");
+    dump_grid("sg.path.linear", g);
+    auto g2 = std::make_shared<StructuredGrid>(*pth, 6,
+                                               std::make_shared<eil::geom::QuadraticFunction>(0.3,
+                                                                                             false),
+                                               "p1dc");
+    dump_grid("sg.path.quad", g2);
+    auto g3 = std::make_shared<StructuredGrid>(*pth, 6); // clusterf and label defaults (D:74-75)
+    dump_grid("sg.path.default", g3);
+    emit(eil::format("sg.path.dims=%d ncells=%d", g->dimensions, g->ncells));
+    tryit("sg.path.niv1", [&pth]() { (void)std::make_shared<StructuredGrid>(*pth, 1); });
+}
+
+// ------------------------------------------------------------------
+// sg.surf.* — ParametricSurface constructor (probe_sgrid.d:669-696, sgrid.d:82-101)
+// ------------------------------------------------------------------
+void grp_surf() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch =
+        std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf4;
+    cf4.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf4.append(std::make_shared<eil::geom::RobertsFunction>(true, true, 1.2));
+    cf4.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf4.append(std::make_shared<eil::geom::QuadraticFunction>(0.7, true));
+    auto gs = std::make_shared<StructuredGrid>(*patch, 5, 4, cf4, "simple", "sfs");
+    dump_grid("sg.surf.simple", gs);
+    emit(eil::format("sg.surf.simple.bad=%.17g", gs->measure_of_badness()));
+    auto gl = std::make_shared<StructuredGrid>(*patch, 5, 4, cf4, "linear", "sfl");
+    dump_grid("sg.surf.bilinear.by.linear", gl);
+    auto gb = std::make_shared<StructuredGrid>(*patch, 5, 4, cf4, "bilinear", "sfb");
+    dump_grid("sg.surf.bilinear", gb);
+    // clusterf shorter than 4 is padded with LinearFunction (D:89).
+    ClusterF cf2;
+    cf2.append(std::make_shared<eil::geom::QuadraticFunction>(0.3, false));
+    auto gp = std::make_shared<StructuredGrid>(*patch, 4, 3, cf2, "simple", "sfpad");
+    dump_grid("sg.surf.pad", gp);
+    emit(eil::format("sg.surf.pad.bad=%.17g", gp->measure_of_badness()));
+    tryit("sg.surf.unknown", [&patch, &cf2]() {
+        (void)std::make_shared<StructuredGrid>(*patch, 4, 3, cf2, "cubic", "x");
+    });
+    tryit("sg.surf.empty", [&patch, &cf2]() {
+        (void)std::make_shared<StructuredGrid>(*patch, 4, 3, cf2, "", "x");
+    });
+    // The 12-argument padding for the volume constructor (D:123) is in sg.vol.*.
+    emit(eil::format("sg.surf.tagcount=%d", gs->set_tags(tags({{"north", "N"}}))));
+}
+
+// ------------------------------------------------------------------
+// sg.rgrid.* — redistributed parameters (probe_sgrid.d:698-725, :1664-1673,
+// sgrid.d:104-113, :648-688, :1472-1522)
+// ------------------------------------------------------------------
+// D's `arr.length = n` extends with the element type's .init, and double.init is NaN.
+// eil::Array::set_length value-initialises instead (substrate/include/eil/array.hpp:162-170),
+// so the probe's half-filled 16-slot arrays are built through this helper to keep D's
+// untouched slots observable — corpus rows 757-760 (`sg.rgrid.identity.s row[*] 0 nan nan 1`)
+// are exactly those slots.
+eil::Array<double> d_init_doubles(size_t n) {
+    eil::Array<double> a;
+    a.set_length(n);
+    for (size_t i = 0; i < n; ++i) a[i] = eil::d_init<double>();
+    return a;
+}
+
+// probe_sgrid.d:1664-1673.
+void rs_grids_to_list_from_data(const std::string& tag, eil::geom::RSGrid& rg,
+                                eil::geom::RSGrid& sgr) {
+    eil::Array<double> id = d_init_doubles(16);
+    id[2] = 0.0; id[3] = 0.0; id[5] = 0.0; id[7] = 1.0;
+    id[8] = 0.0; id[9] = 0.0; id[11] = 0.0; id[13] = 1.0;
+    eil::geom::list_to_rs_grids(id, rg, sgr);
+    dump_g2d(tag + ".r", rg);
+    dump_g2d(tag + ".s", sgr);
+}
+
+void grp_rgrid() {
+    const Vector3 p00(0.0, 0.1), p10(1.0, 0.1), p11(1.0, 1.1), p01(0.0, 1.1);
+    std::shared_ptr<ParametricSurface> patch = std::make_shared<CoonsPatch>(p00, p10, p11, p01);
+    ClusterF cf;
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    cf.append(std::make_shared<LinearFunction>(0.0, 1.0));
+    eil::geom::RSGrid rg{}, sgr{};
+    rs_grids_to_list_from_data("sg.rgrid.identity", rg, sgr);
+    // The identity redistribution maps every (r,s) through a NaN s_star, so all twenty
+    // vertices stay .init — corpus rows 761-780 say so, and they are the reason this row
+    // group is in the gate at all.
+    auto g0 = std::make_shared<StructuredGrid>(*patch, 5, 4, cf, rg, sgr, "rgid");
+    dump_grid("sg.rgrid.ident", g0);
+    // A non-trivial redistribution: the 16 free values of D:1479-1494.
+    eil::Array<double> data = d_init_doubles(16);
+    for (size_t i = 0; i < 16; ++i) data[i] = 0.05 * static_cast<double>(i);
+    eil::geom::list_to_rs_grids(data, rg, sgr);
+    dump_g2d("sg.rgrid.r", rg);
+    dump_g2d("sg.rgrid.s", sgr);
+    auto g1 = std::make_shared<StructuredGrid>(*patch, 5, 4, cf, rg, sgr, "rg");
+    dump_grid("sg.rgrid.grid", g1);
+    emit(eil::format("sg.rgrid.bad=%.17g", g1->measure_of_badness()));
+    eil::Array<double> back = d_init_doubles(16);
+    eil::geom::rs_grids_to_list(rg, sgr, back);
+    dump_doubles("sg.rgrid.roundtrip", back);
+}
+
 //<<<SECTIONS-NOW>>>
 
 } // namespace
@@ -695,6 +889,11 @@ int main(int argc, char** argv) {
     grp_str();
     grp_tag();
     grp_dup();
+    grp_sub();
+    grp_bnd();
+    grp_path();
+    grp_surf();
+    grp_rgrid();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);
