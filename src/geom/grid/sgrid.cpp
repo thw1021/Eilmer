@@ -245,9 +245,12 @@ void d_set_length(eil::Array<T>& a, size_t n) {
 }
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
 template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = eil::to_int(fmt_read_int(in)); }
-template <> void fmt_into<long>(FormattedInput& in, long* dst) {
-    *dst = eil::to_long(fmt_read_int(in));
-}
+// No fmt_into<long>: all ten formattedRead sites of sgrid.d (D:861, :867, :869, :871, :873,
+// :875, :896, :910, :914, :933) target string, int (dimensions, grid.d:43), size_t
+// (niv/njv/nkv/ntags) or double (x,y,z), so a `long` destination is unreachable — measured
+// in grid brief section 11.2 and re-checked against the call sites in this file, which pass
+// only those four types. The specialisation is dead code, not a contract (a `-Wunused-function`
+// warning at -O0 build time).
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
     // D reads into a size_t (sgrid.d:910 `size_t ntags`), and std.format's integer reader
     // hands the token to std.conv, so the failure text names the RESOLVED target type:
