@@ -75,8 +75,26 @@
   交付时语料比探针少 33 行，且我最初用一个**半成品源码编出来的二进制**去验，
   看到的是一个并不存在的崩溃。教训：**重派之前先确认前一个已停**，
   以及"探针与其基线必须来自同一份源"要逐次核 sha。
-  **剩余**：`sgrid.d` 1865（G4）与 `usgrid.d` 2524（G5）**的实现**（见 §8/§10：两者互相引用，
-  是一个工作包，头文件互相前向声明）；四个 demo 里 `sgrid_demo`(101)/`usgrid_demo`(103)
+  **G4/G5 实现进行中（本轮派出的代理在 150 轮上限处被截断）**，
+  留下的状态**是量出来的，不是它自报的**：
+  `sgrid.hpp/cpp`（13.4 KB / 91.6 KB）+ `usgrid.hpp/cpp`（16.9 KB / 129 KB）
+  + `tests/test_geom_grid_usgrid.cpp`（50.8 KB）**全部能编**，
+  且**两个门禁都按纪律没有注册**（`wave2_grid_g4/g5.cmake` 里 `add_test` 被注释掉，
+  注册条件写死为"语料 0 差异才开"），所以全树仍是 **100/100 三配置**。
+  我手工把它编出来跑了一次真实回放：
+  **1393 行里只发出 315 行、301 行字节相同** ⇒ 约 **23%**，还差 1078 行；
+  `sgrid` 的测试**根本没开始写**。
+  **已定位的两类真实分歧**（下一位不必重新发现）：
+  1. `us.face.str.bigcount`（语料行 208）：D 抛
+     `std.conv.ConvOverflowException "Overflow in integral conversion"`，
+     端口走成了 `OutOfMemoryError "Memory allocation failed"` ⇒ 端口在越界转换之后
+     先去分配，次序与 D 不同；
+  2. `us.ctor.d{0,1,2,3,-1}.tostring`（行 267 起连续多行）：D 是
+     `ArrayIndexError "index [0] is out of bounds for array of length 0"`，
+     端口是 `index [18446744073709551615]` ⇒ 端口拿一个**下溢的 size_t** 去索引，
+     D 在那个位置用的是 0（`usgrid.d:880` 的 `toString()` 里）。
+  **剩余**：把 usgrid 回放到 1393 行 0 差异（当前 315 发出）、写 sgrid 的回放测试并到
+  2097 行 0 差异、然后才允许注册两条门禁；四个 demo 里 `sgrid_demo`(101)/`usgrid_demo`(103)
   的 D 基线**尚未抓取**；
   四个 demo（`paver2d_demo` 51、`paver_demo` 115、`sgrid_demo` 101、`usgrid_demo` 103；
   前两者的 D 基线**已抓取并验证可复生成**，见 `cmake/wave2_grid_g3.cmake` 的头注释）、
