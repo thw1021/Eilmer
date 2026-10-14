@@ -74,6 +74,7 @@
 #include "geom/elements/vector3.hpp"
 #include "geom/geometry_exception.hpp"
 #include "geom/grid/grid.hpp"
+#include "geom/grid/paver.hpp"
 #include "geom/grid/sgrid.hpp"
 #include "geom/misc/univariatefunctions.hpp"
 #include "geom/surface/coonspatch.hpp"
@@ -222,6 +223,22 @@ std::string mkr(const std::string& p, const std::string& body) {
     return p;
 }
 
+// Where D raised, as recorded by the probe: every throw row in the corpus states this
+// path, so it is transcribed as data rather than synthesised (see the header note).
+const std::string USG_PATH = "/tmp/gdtk_shadow/geom/grid/usgrid.d";
+const std::string SG_PATH = "/tmp/gdtk_shadow/geom/grid/sgrid.d";
+const std::string GRID_PATH = "/tmp/gdtk_shadow/geom/grid/grid.d";
+const std::string PAVER_PATH = "/tmp/gdtk_shadow/geom/grid/paver.d";
+const std::string CONV_PATH = "/home/tang/packages/dlang/bin/../import/std/conv.d";
+const std::string FMT_PATH = "/home/tang/packages/dlang/bin/../import/std/format/package.d";
+// std/format/spec.d is where Phobos' parseToFormatSpec raises for a literal that the
+// input does not carry (corpus rows 861-871).
+const std::string SPEC_PATH = "/home/tang/packages/dlang/bin/../import/std/format/spec.d";
+// std/stdio.d:624 and std/zlib.d:98 are Phobos' own raise sites for a failed File() open
+// and for a deflate stream that does not decode; neither is derivable from the port.
+const std::string STDIO_PATH = "std/stdio.d";
+const std::string ZLIB_PATH = "std/zlib.d";
+
 // ------------------------------------------------------------------
 // Throwable rows
 // ------------------------------------------------------------------
@@ -252,7 +269,19 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         return {"core.exception.RangeError", e.msg(), site.file, site.line};
     } catch (const eil::OutOfMemoryError& e) {
         return {"core.exception.OutOfMemoryError", e.msg(), site.file, site.line};
+    } catch (const eil::gzip::ZlibException& e) {
+        // std.zlib.ZlibException is a Phobos Exception subclass raised inside std/zlib.d;
+        // the port's eil::gzip::ZlibException (src/extern/gzip/gzip.hpp:83) carries the
+        // same getmsg() text, and the raise site is Phobos' own (corpus row 863).
+        return {"std.zlib.ZlibException", e.msg(), ZLIB_PATH, 98};
     } catch (const eil::ExceptionBase& e) {
+        // D's std.stdio.File(name, mode) failure is a std.exception.ErrnoException raised
+        // at std/stdio.d:624 (corpus rows 864, 1053, 1215, 1241, ...). The port's gzip and
+        // file helpers reproduce the message text (src/extern/gzip/gzip.cpp:24-34), which
+        // is what identifies the class here.
+        if (e.msg().compare(0, 18, "Cannot open file `") == 0) {
+            return {"std.exception.ErrnoException", e.msg(), STDIO_PATH, 624};
+        }
         // D's object.Exception carries the throw site; the port's site names this .cpp,
         // so the recorded D site is used, as in the other rows.
         return {"object.Exception", e.msg(), site.file, site.line};
@@ -287,26 +316,24 @@ std::string d_tostr1(const Row& r) {
 void report_row(const std::string& tag, long dline, const Row& r) {
     int n1 = 0, n2 = 0;
     const std::string m = upr(nl_escape(r.msg), n1);
-    const std::string t = upr(nl_escape(d_tostr1(r)), n2);
-    const std::string first = t.substr(0, t.find('\n'));
+    // The probe's tostr1 (probe_usgrid.d:279-285) cuts D's toString() at the FIRST REAL
+    // newline and escapes only what precedes it, so a message with embedded newlines
+    // contributes just its own first line to toString1= (corpus rows 1153-1158, where
+    // msg= carries "<newline>Cell i: 0 line:..." but toString1= stops before it). The
+    // cut therefore happens BEFORE nl_escape, not after.
+    const std::string full = d_tostr1(r);
+    const std::string first_raw = full.substr(0, full.find('\n'));
+    const std::string t = upr(nl_escape(first_raw), n2);
     if (dline > 0) {
         emit(eil::format("%s|dline=%d|class=%s|msg=[%s]|msgunprint=%d|file=[%s]|line=%d|"
                          "toString1=[%s]|toString1unprint=%d",
-                         tag, dline, r.cls, m, n1, r.file, r.line, first, n2));
+                         tag, dline, r.cls, m, n1, r.file, r.line, t, n2));
     } else {
         emit(eil::format("%s|class=%s|msg=[%s]|msgunprint=%d|file=[%s]|line=%d|"
                          "toString1=[%s]|toString1unprint=%d",
-                         tag, r.cls, m, n1, r.file, r.line, first, n2));
+                         tag, r.cls, m, n1, r.file, r.line, t, n2));
     }
 }
-
-// Where D raised, as recorded by the probe: every throw row in the corpus states this
-// path, so it is transcribed as data rather than synthesised (see the header note).
-const std::string USG_PATH = "/tmp/gdtk_shadow/geom/grid/usgrid.d";
-const std::string SG_PATH = "/tmp/gdtk_shadow/geom/grid/sgrid.d";
-const std::string GRID_PATH = "/tmp/gdtk_shadow/geom/grid/grid.d";
-const std::string CONV_PATH = "/home/tang/packages/dlang/bin/../import/std/conv.d";
-const std::string FMT_PATH = "/home/tang/packages/dlang/bin/../import/std/format/package.d";
 
 // The probe's twd(tag, dline, dg): the row states the D source line the throw is at.
 // `site_file`/`site_line` are the file and line D reported INSIDE the row (which is the
@@ -1343,6 +1370,1109 @@ void grp_sgbad() {
     dump_bnd("us.sgbad.alltags", UnstructuredGrid(*sg_t).boundaries);
 }
 
+// ------------------------------------------------------------------
+// paving-input builders (probe_usgrid.d:433-449)
+// ------------------------------------------------------------------
+eil::Array<Vector3> seg(const std::vector<double>& pts) {
+    eil::Array<Vector3> a;
+    for (size_t k = 0; k + 1 < pts.size(); k += 2) a.append(Vector3(pts[k], pts[k + 1]));
+    return a;
+}
+
+eil::Array<eil::Array<Vector3>> segs(std::vector<eil::Array<Vector3>> lists) {
+    eil::Array<eil::Array<Vector3>> out;
+    for (eil::Array<Vector3>& a : lists) out.append(a);
+    return out;
+}
+
+eil::Array<eil::Array<Vector3>> seg1(const std::vector<double>& a) { return segs({seg(a)}); }
+
+eil::Array<eil::Array<Vector3>> seg2(const std::vector<double>& a,
+                                     const std::vector<double>& b) {
+    return segs({seg(a), seg(b)});
+}
+
+// D:466 requires bPoints[0][0] to coincide with bPoints[$-1][$-1], so the outer segment
+// repeats its start point at the end.
+eil::Array<eil::Array<Vector3>> pave_square() {
+    return seg1({0.0, 0.0, 0.5, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.0,
+                 0.5, 0.0, 0.0});
+}
+
+eil::Array<eil::Array<Vector3>> pave_two_segments() {
+    return seg2({0.0, 0.0, 1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0, 0.0, 0.0});
+}
+
+// ------------------------------------------------------------------
+// us.pave.* — the Vector3[][] paving constructor (D:458-512)
+// (probe_usgrid.d:1705-1759; corpus rows 616-715)
+//
+// The two untagged rows ahead of every dump below are paver2d.fill_interior's own
+// writeln pair (src/geom/grid/paver2d.hpp:164, :203), reached through D:502.
+// ------------------------------------------------------------------
+void grp_pave() {
+    auto g = std::make_shared<UnstructuredGrid>(pave_square(), "paved");
+    dump_grid("us.pave.sq", g);
+    emit(eil::format("us.pave.sq repr=[%s]", g->toString()));
+    emit(eil::format("us.pave.sq fidx=%s", sorted_faceidx(g)));
+    for (size_t i = 0; i < g->ncells; ++i) {
+        Vector3 c;
+        double vol = 0.0;
+        g->compute_cell_properties(i, false, c, vol);
+        emit(eil::format("us.pave.sq ccp[%d] centroid=[%.17g %.17g %.17g] vol=%.17g bary=%s", i,
+                         c.x, c.y, c.z, vol, g->cell_barycentre(i).toString()));
+    }
+    auto g2 = std::make_shared<UnstructuredGrid>(pave_two_segments(), "twoseg");
+    dump_grid("us.pave.seg", g2);
+
+    auto sq = seg1({0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0});
+    twd("us.pave.mismatch.firstlast", 469, USG_PATH,
+        [&sq]() { UnstructuredGrid q(sq, "bad1"); });
+    auto near = seg1({0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1e-12, 1.0});
+    twd("us.pave.gap1e-12", 469, USG_PATH, [&near]() { UnstructuredGrid q(near, "near"); });
+    auto far = seg1({0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2e-9, 1.0});
+    twd("us.pave.gap2e-9", 469, USG_PATH, [&far]() { UnstructuredGrid q(far, "far"); });
+    auto ab = seg2({0.0, 0.0, 1.0, 0.0, 1.0, 1.0}, {2.0, 1.0, 0.0, 1.0, 0.0, 0.0});
+    twd("us.pave.mismatch.segment", 496, USG_PATH, [&ab]() { UnstructuredGrid q(ab, "bad2"); });
+    {
+        eil::Array<eil::Array<Vector3>> none;
+        twd("us.pave.empty", 466, USG_PATH, [&none]() { UnstructuredGrid q(none, "bad3"); });
+    }
+    {
+        eil::Array<Vector3> empty_inner;
+        auto inner = segs({seg({0.0, 0.0}), empty_inner});
+        twd("us.pave.emptyinner", 466, USG_PATH, [&inner]() { UnstructuredGrid q(inner, "bad4"); });
+    }
+    {
+        eil::Array<Vector3> empty_first;
+        auto first = segs({empty_first, seg({0.0, 0.0})});
+        twd("us.pave.emptyfirst", 466, USG_PATH, [&first]() { UnstructuredGrid q(first, "bad5"); });
+    }
+    {
+        auto ac = seg2({0.0, 0.0, 1.0, 0.0, 1.0, 1.0}, {1.0, 1.0});
+        twd("us.pave.onepointseg", 496, USG_PATH, [&ac]() {
+            UnstructuredGrid q(ac, "bad6");
+            emit(eil::format("us.pave.onepointseg.bnd=%s", q.boundaries[1]->toIOString()));
+            emit(eil::format("us.pave.onepointseg.repr=%s", q.toString()));
+        });
+    }
+    auto g3 = std::make_shared<UnstructuredGrid>(
+        seg2({0.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 0.0}), "degenerate");
+    dump_grid("us.pave.degenerate", g3);
+}
+
+// ------------------------------------------------------------------
+// us.paved.* — the PavedGrid constructor (D:514-551)
+// (probe_usgrid.d:1761-1797; corpus rows 716-784)
+//
+// Every row from "importing external boundary..." through the grid dump is paver.d's own
+// stdout plus dump_grid, emitted INSIDE the twd; the tagged row closes the group. The
+// POINT_LIST/FACE_LIST/CELL_LIST counts in the last two rows are the module-level globals
+// paver.d leaves behind (paver.hpp:195-197) — they do NOT reset between constructions,
+// which is what makes rows 780 and 783 the odd-count failures they are.
+// ------------------------------------------------------------------
+void grp_paved() {
+    const std::vector<std::pair<double, double>> bpts = {{0.0, 0.0}, {0.5, 0.0}, {1.0, 0.0},
+                                                         {1.0, 0.5}, {1.0, 1.0}, {0.5, 1.0},
+                                                         {0.0, 1.0}, {0.0, 0.5}};
+    eil::Array<Vector3> bd;
+    for (const auto& p : bpts) bd.append(Vector3(p.first, p.second));
+    eil::Array<std::shared_ptr<BoundaryFaceSet>> ib;
+    {
+        eil::Array<size_t> nof;
+        eil::Array<int> noo;
+        ib.append(std::make_shared<BoundaryFaceSet>("muir-wall", nof.all(), noo.all()));
+    }
+    twd("us.paved.ctor", 514, USG_PATH, 393, [&bd, &ib]() {
+        auto g = std::make_shared<UnstructuredGrid>(bd, ib, "muir");
+        dump_grid("us.paved", g);
+        emit(eil::format("us.paved repr=[%s]", g->toString()));
+        emit(eil::format("us.paved nboundaries=%d boundaries=%d cells=%d faces=%d",
+                         g->nboundaries, g->boundaries.length(), g->cells.length(),
+                         g->faces.length()));
+    });
+    emit(eil::format("us.paved.lists POINT_LIST=%d FACE_LIST=%d CELL_LIST=%d",
+                     eil::geom::POINT_LIST.length(), eil::geom::FACE_LIST.length(),
+                     eil::geom::CELL_LIST.length()));
+    {
+        eil::Array<Vector3> z = {Vector3(0.0, 0.0)};
+        eil::Array<std::shared_ptr<BoundaryFaceSet>> none;
+        twd("us.paved.badboundary", 522, USG_PATH, [&z, &none, &bd]() {
+            auto g = std::make_shared<UnstructuredGrid>(z, none, "z");
+            emit(eil::format("us.paved.badboundary cells=%d", g->cells.length()));
+        });
+        // bd is 8 points but the globals already hold 13, so this is the 21-point failure.
+        twd("us.paved.ctor2", 514, USG_PATH, [&bd, &ib]() {
+            auto g2 = std::make_shared<UnstructuredGrid>(bd, ib, "muir2");
+            emit(eil::format("us.paved.ctor2 nv=%d nf=%d nc=%d", g2->nvertices,
+                             g2->faces.length(), g2->cells.length()));
+        });
+    }
+    emit(eil::format("us.paved.lists.after2 POINT_LIST=%d FACE_LIST=%d CELL_LIST=%d",
+                     eil::geom::POINT_LIST.length(), eil::geom::FACE_LIST.length(),
+                     eil::geom::CELL_LIST.length()));
+}
+
+// ------------------------------------------------------------------
+// shared 3D builder (probe_usgrid.d:497-511 vol_grid3d)
+// ------------------------------------------------------------------
+std::shared_ptr<StructuredGrid> vol_grid3d(const std::string& label = "sg3d") {
+    eil::Array<Vector3> pp(8);
+    pp[0] = Vector3(0.0, 0.1, 0.0);
+    pp[1] = Vector3(1.0, 0.1, 0.0);
+    pp[2] = Vector3(1.0, 1.1, 0.0);
+    pp[3] = Vector3(0.0, 1.1, 0.0);
+    pp[4] = Vector3(0.0, 0.1, 3.0);
+    pp[5] = Vector3(1.0, 0.1, 3.0);
+    pp[6] = Vector3(1.0, 1.1, 3.0);
+    pp[7] = Vector3(1.0, 1.1, 3.0);
+    auto vol = std::make_shared<TFIVolume>(pp.all());
+    ClusterF cf;   // D:509 declares the array and never fills it
+    return std::make_shared<StructuredGrid>(*vol, 3, 3, 2, cf, "simple", label);
+}
+
+// A gzipped text file built from an explicit payload, the way the probe makes its
+// deliberately-broken inputs (probe_usgrid.d:1842-1915).
+void write_gz_payload(const std::string& p, const std::string& payload) {
+    eil::gzip::GzipOut fo(p);
+    fo.compress(payload);
+    fo.finish();
+}
+
+// split(gunzip_body_of(p), "<newline>") — the DECOMPRESSED payload of p, one entry per
+// line. The container bytes are not text (grid brief section 2 item 1), so the lines come
+// from GzipByLine and not from a raw read of the file.
+std::vector<std::string> gz_lines_of(const std::string& p) {
+    std::vector<std::string> out;
+    std::ifstream probe(p, std::ios::binary);
+    if (!probe) return out;
+    probe.close();
+    eil::gzip::GzipByLine r(p);
+    while (!r.empty()) {
+        out.push_back(r.front());
+        r.popFront();
+    }
+    return out;
+}
+
+// ------------------------------------------------------------------
+// us.gz.* — the native gzipped text format (D:1800 write, D:1275 read)
+// (probe_usgrid.d:1799-1916; corpus rows 785-874)
+// ------------------------------------------------------------------
+void grp_gz() {
+    auto g2 = std::make_shared<UnstructuredGrid>(pave_square(), "gz2d"); // rows 785-786
+    const std::string p = TD + "/gz2d.gz";
+    twd("us.gz.write2d", 1800, USG_PATH, [&g2, &p]() { g2->write_to_gzip_file(p); });
+    emit(eil::format("us.gz.write2d len=%d payload=[%s]", len_of(p), gunzip_body_of(p)));
+    twd("us.gz.read2d", 1275, USG_PATH, [&p]() {
+        auto r = std::make_shared<UnstructuredGrid>(p, "gziptext", true);
+        dump_grid("us.gz.read2d", r);
+        emit(eil::format("us.gz.read2d repr=[%s]", r->toString()));
+        const std::string p2 = TD + "/gz2d_again.gz";
+        r->write_to_gzip_file(p2);
+        emit(eil::format("us.gz.read2d reserialize same=%s",
+                         gunzip_body_of(p) == gunzip_body_of(p2) ? "true" : "false"));
+    });
+    twd("us.gz.read2scalet", 1275, USG_PATH, [&p]() {
+        auto r = std::make_shared<UnstructuredGrid>(p, "gziptext", true, 25.4);
+        emit(eil::format("us.gz.scaled vtx[1] bits=%s %s %s", bits(r->opIndex(1)->x),
+                         bits(r->opIndex(3)->x), bits(r->opIndex(4)->y)));
+        emit(eil::format("us.gz.scaled vtx[1]=%.17g %.17g", r->opIndex(1)->x,
+                         r->opIndex(4)->y));
+    });
+    auto g3 = std::make_shared<UnstructuredGrid>(*vol_grid3d("gz3d"));
+    const std::string p3 = TD + "/gz3d.gz";
+    twd("us.gz.write3d", 1800, USG_PATH, [&g3, &p3]() { g3->write_to_gzip_file(p3); });
+    emit(eil::format("us.gz.write3d len=%d payload=[%s]", len_of(p3), gunzip_body_of(p3)));
+    twd("us.gz.read3d", 1275, USG_PATH, [&p3]() {
+        auto r = std::make_shared<UnstructuredGrid>(p3, "gziptext", true);
+        emit(eil::format("us.gz.read3d dims=%d nvertices=%d nfaces=%d ncells=%d nboundaries=%d",
+                         r->dimensions, r->nvertices, r->nfaces, r->ncells, r->nboundaries));
+        r->link_faces_back_to_cells();
+        dump_faces("us.gz.read3d", r->faces);
+    });
+    // A label with spaces survives "label: %s" (D:1291).
+    auto gl = std::make_shared<UnstructuredGrid>(2, "my label with spaces");
+    const std::string pl = TD + "/label.gz";
+    gl->write_to_gzip_file(pl);
+    emit(eil::format("us.gz.label payload=[%s]", gunzip_body_of(pl)));
+    twd("us.gz.label-read", 1291, USG_PATH, [&pl]() {
+        auto r = std::make_shared<UnstructuredGrid>(pl, "gziptext", true);
+        emit(eil::format("us.gz.label read label=[%s] dims=%d", r->label, r->dimensions));
+    });
+    // Wrong format version (D:1286-1288) and a garbage header.
+    const std::string pv = TD + "/ver.gz";
+    write_gz_payload(pv, "unstructured_grid 2.0\nlabel: x\ndimensions: 2\n");
+    twd("us.gz.version", 1287, USG_PATH, [&pv]() {
+        UnstructuredGrid q(pv, "gziptext", true);
+    });
+    const std::string pv2 = TD + "/ver1.gz";
+    write_gz_payload(pv2, "structured_grid 1.0\nlabel: x\ndimensions: 2\n");
+    twd("us.gz.wronghead", 1285, SPEC_PATH, 565, [&pv2]() {
+        UnstructuredGrid q(pv2, "gziptext", true);
+    });
+    // An empty file, a non-gzip file, and a missing file.
+    const std::string pe = TD + "/empty.gz";
+    mkr(pe, "");
+    twd("us.gz.emptyfile", 1283, SPEC_PATH, 565,
+        [&pe]() { UnstructuredGrid q(pe, "gziptext", true); });
+    const std::string pnp = TD + "/notgz.gz";
+    mkr(pnp, "hello world\n");
+    twd("us.gz.notgzip", 1283, ZLIB_PATH, 98, [&pnp]() { UnstructuredGrid q(pnp, "gziptext", true); });
+    twd("us.gz.missing", 1282, STDIO_PATH, 624,
+        []() { UnstructuredGrid q(TD + "/no_such_file.gz", "gziptext", true); });
+    // Truncated at each header line in turn.
+    for (int n = 1; n <= 7; ++n) {
+        const std::string pt = eil::format("%s/trunc%d.gz", TD, n);
+        const std::vector<std::string> lines = gz_lines_of(p);
+        std::string body;
+        for (size_t i = 0; i < lines.size() && static_cast<int>(i) < n; ++i) {
+            if (i > 0) body += "\n";
+            body += lines[i];
+        }
+        write_gz_payload(pt, body + "\n");
+        twd(eil::format("us.gz.truncated%d", n), 1283, SPEC_PATH, 565,
+            [&pt]() { UnstructuredGrid q(pt, "gziptext", true); });
+    }
+    // A cell line whose declared counts do not agree with the tokens.
+    const std::string pcb = TD + "/badcell.gz";
+    write_gz_payload(pcb,
+        "unstructured_grid 1.0\nlabel: bc\ndimensions: 2\n"
+        "vertices: 4\n 0 0 0\n 1 0 0\n 1 1 0\n 0 1 0\n"
+        "faces: 4\n2 0 1\n2 1 2\n2 2 3\n2 3 0\n"
+        "cells: 1\nquad vtx 4 0 1 2 3 faces 5 0 1 2 3 outsigns 4 1 1 -1 -1\n"
+        "boundaries: 1\nwall faces 4 0 1 2 3 outsigns 4 1 1 -1 -1\n");
+    twd("us.gz.badcell.count", 1318, CONV_PATH, 2533,
+        [&pcb]() { UnstructuredGrid q(pcb, "gziptext", true); });
+    const std::string pcb2 = TD + "/badbnd.gz";
+    write_gz_payload(pcb2,
+        "unstructured_grid 1.0\nlabel: bb\ndimensions: 2\n"
+        "vertices: 4\n 0 0 0\n 1 0 0\n 1 1 0\n 0 1 0\n"
+        "faces: 4\n2 0 1\n2 1 2\n2 2 3\n2 3 0\n"
+        "cells: 1\nquad vtx 4 0 1 2 3 faces 4 0 1 2 3 outsigns 4 1 1 -1 -1\n"
+        "boundaries: 1\nwall faces 2 0 1 outsigns 3 1 -1 1\n");
+    twd("us.gz.badbnd.assert", 1325, USG_PATH, 362,
+        [&pcb2]() { UnstructuredGrid q(pcb2, "gziptext", true); });
+    // link_faces_back_to_cells outsign mismatch through the reader (D:1263).
+    const std::string pcb3 = TD + "/badoutsign.gz";
+    write_gz_payload(pcb3,
+        "unstructured_grid 1.0\nlabel: bo\ndimensions: 2\n"
+        "vertices: 4\n 0 0 0\n 1 0 0\n 1 1 0\n 0 1 0\n"
+        "faces: 4\n2 0 1\n2 1 2\n2 2 3\n2 3 0\n"
+        "cells: 1\nquad vtx 4 0 1 2 3 faces 4 0 1 2 3 outsigns 3 1 1 -1\n"
+        "boundaries: 1\nwall faces 4 0 1 2 3 outsigns 4 1 1 -1 -1\n");
+    twd("us.gz.badoutsign", 1327, USG_PATH, 1263,
+        [&pcb3]() { UnstructuredGrid q(pcb3, "gziptext", true); });
+}
+
+// ------------------------------------------------------------------
+// us.raw.* — the native raw binary format (D:1823 write, D:1330 read)
+// (probe_usgrid.d:1918-1986; corpus rows 875-929)
+// ------------------------------------------------------------------
+void grp_raw() {
+    auto g2 = std::make_shared<UnstructuredGrid>(pave_square(), "raw2d"); // rows 875-876
+    const std::string p = TD + "/raw2d.bin";
+    twd("us.raw.write", 1823, USG_PATH, [&g2, &p]() { g2->write_to_raw_binary_file(p); });
+    emit(eil::format("us.raw.write len=%d hex=%s", len_of(p), hex_of(p)));
+    twd("us.raw.read", 1330, USG_PATH, [&p]() {
+        auto r = std::make_shared<UnstructuredGrid>(p, "rawbinary", true);
+        dump_grid("us.raw.read", r);
+        const std::string p2 = TD + "/raw2d_again.bin";
+        r->write_to_raw_binary_file(p2);
+        emit(eil::format("us.raw.read reserialize same=%s len=%d",
+                         hex_of(p) == hex_of(p2) ? "true" : "false", len_of(p2)));
+    });
+    twd("us.raw.read-scale", 1330, USG_PATH, [&p]() {
+        auto r = std::make_shared<UnstructuredGrid>(p, "rawbinary", true, 0.3048);
+        emit(eil::format("us.raw.scaled vtx[2] bits=%s vtx[4] bits=%s",
+                         bits(r->opIndex(2)->x), bits(r->opIndex(4)->y)));
+    });
+    // A grid with an empty label takes the label_length == 0 branch (D:1347).
+    auto g0 = std::make_shared<UnstructuredGrid>(2, "");
+    const std::string p0 = TD + "/raw0.bin";
+    g0->write_to_raw_binary_file(p0);
+    emit(eil::format("us.raw.nolabel len=%d hex=%s", len_of(p0), hex_of(p0)));
+    twd("us.raw.nolabel-read", 1330, USG_PATH, [&p0]() {
+        auto r = std::make_shared<UnstructuredGrid>(p0, "rawbinary", true);
+        emit(eil::format("us.raw.nolabel label=[%s] dims=%d", r->label, r->dimensions));
+    });
+    // Wrong header, truncated header, empty file, missing file. The three header rows
+    // carry msgunprint>0: D:1339's `new char[expected_header.length]` keeps the bytes a
+    // short rawRead did not overwrite, and D:1343 pastes them into the message (probe
+    // MEASURED FINDINGS item 10). The port pre-fills the buffer with NULs, which are
+    // unprintable too, so the printable prefix and the count both come out (rows
+    // 924-926).
+    const std::string pw = TD + "/badhead.bin";
+    {
+        std::FILE* fo = std::fopen(pw.c_str(), "wb");
+        const std::string s = "structured_grid 1.0";
+        std::fwrite(s.data(), 1, s.size(), fo);
+        std::fclose(fo);
+    }
+    twd("us.raw.badheader", 1340, USG_PATH, [&pw]() {
+        UnstructuredGrid q(pw, "rawbinary", true);
+    });
+    const std::string pt2 = TD + "/shorthead.bin";
+    {
+        std::FILE* fo = std::fopen(pt2.c_str(), "wb");
+        const std::string s = "unstructured_g";
+        std::fwrite(s.data(), 1, s.size(), fo);
+        std::fclose(fo);
+    }
+    twd("us.raw.sheader", 1340, USG_PATH, [&pt2]() { UnstructuredGrid q(pt2, "rawbinary", true); });
+    const std::string pe = TD + "/empty.bin";
+    mkr(pe, "");
+    twd("us.raw.emptyfile", 1337, USG_PATH, [&pe]() { UnstructuredGrid q(pe, "rawbinary", true); });
+    twd("us.raw.missing", 1337, STDIO_PATH, 624,
+        []() { UnstructuredGrid q(TD + "/no_such_file.bin", "rawbinary", true); });
+    // A header followed by nothing: the label length read (D:1345) hits end of file.
+    const std::string ph = TD + "/headonly.bin";
+    {
+        std::FILE* fo = std::fopen(ph.c_str(), "wb");
+        const std::string s = "unstructured_grid 1.0";
+        std::fwrite(s.data(), 1, s.size(), fo);
+        std::fclose(fo);
+    }
+    twd("us.raw.headonly", 1345, USG_PATH, [&ph]() { UnstructuredGrid q(ph, "rawbinary", true); });
+    // Declared counts that exceed what is present.
+    const std::string pc = TD + "/badc.bin";
+    {
+        std::FILE* fo = std::fopen(pc.c_str(), "wb");
+        const std::string s = "unstructured_grid 1.0";
+        std::fwrite(s.data(), 1, s.size(), fo);
+        int zl[1] = {0};
+        std::fwrite(zl, 4, 1, fo);
+        int c5[5] = {2, 1, 1, 4, 1};   // 4 cells declared, none written
+        std::fwrite(c5, 4, 1, fo);
+        double v3[3] = {0.0, 0.0, 0.0};
+        std::fwrite(v3, 8, 1, fo);
+        int one[1] = {1};
+        std::fwrite(one, 4, 1, fo);
+        int f0[1] = {0};
+        std::fwrite(f0, 4, 1, fo);
+        std::fclose(fo);
+    }
+    // D:1373 is the reader's cell loop; the raise is USGCell's own (usgrid.d:280), the
+    // all-zero record it manages to read decoding as cell_type "none".
+    twd("us.raw.toofewcells", 1373, USG_PATH, 280,
+        [&pc]() { UnstructuredGrid q(pc, "rawbinary", true); });
+}
+
+// ------------------------------------------------------------------
+// Synthesised SU2 inputs (probe_usgrid.d:517-1045), joined with "\n" exactly as D's
+// std.array.join does, so the port regenerates byte-identical files.
+// ------------------------------------------------------------------
+std::vector<std::string> d_split(const std::string& s, const std::string& sep) {
+    std::vector<std::string> out;
+    size_t pos = 0;
+    while (true) {
+        const size_t k = s.find(sep, pos);
+        if (k == std::string::npos) { out.push_back(s.substr(pos)); break; }
+        out.push_back(s.substr(pos, k - pos));
+        pos = k + sep.size();
+    }
+    return out;
+}
+
+std::string su2_join(std::vector<std::string> L) {
+    std::string o;
+    for (size_t i = 0; i < L.size(); ++i) { if (i) o += "\n"; o += L[i]; }
+    return o;
+}
+
+std::string tri_su2() {
+    return su2_join({"NDIME= 2", "", "NELEM= 8",
+        "5 0 1 3 0", "5 1 4 3 1", "5 1 2 4 2", "5 2 5 4 3",
+        "5 3 4 6 4", "5 4 7 6 5", "5 4 5 7 6", "5 5 8 7 7",
+        "", "NPOIN= 9",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "0.0 1.0 6", "0.5 1.0 7", "1.0 1.0 8",
+        "", "NMARK= 4",
+        "MARKER_TAG= lower", "MARKER_ELEMS= 2", "3 0 1", "3 1 2",
+        "MARKER_TAG= right", "MARKER_ELEMS= 2", "3 2 5", "3 5 8",
+        "MARKER_TAG= upper", "MARKER_ELEMS= 2", "3 8 7", "3 7 6",
+        "MARKER_TAG= left", "MARKER_ELEMS= 2", "3 6 3", "3 3 0", ""});
+}
+
+std::string quad_su2() {
+    return su2_join({"NDIME= 2", "", "NELEM= 4",
+        "9 0 1 4 3 0", "9 1 2 5 4 1", "9 3 4 7 6 2", "9 4 5 8 7 3",
+        "", "NPOIN= 9",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "0.0 1.0 6", "0.5 1.0 7", "1.0 1.0 8",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 2", "3 0 1", "3 1 2",
+        "MARKER_TAG= east", "MARKER_ELEMS= 2", "3 2 5", "3 5 8",
+        "MARKER_TAG= north", "MARKER_ELEMS= 2", "3 8 7", "3 7 6",
+        "MARKER_TAG= west", "MARKER_ELEMS= 2", "3 6 3", "3 3 0", ""});
+}
+
+std::string hex_su2() {
+    return su2_join({"NDIME= 3", "", "NELEM= 2",
+        "12 0 1 4 3 6 7 10 9 0", "12 1 2 5 4 7 8 11 10 1",
+        "", "NPOIN= 12",
+        "0.0 0.0 0.0 0", "0.5 0.0 0.0 1", "1.0 0.0 0.0 2",
+        "0.0 1.0 0.0 3", "0.5 1.0 0.0 4", "1.0 1.0 0.0 5",
+        "0.0 0.0 1.0 6", "0.5 0.0 1.0 7", "1.0 0.0 1.0 8",
+        "0.0 1.0 1.0 9", "0.5 1.0 1.0 10", "1.0 1.0 1.0 11",
+        "", "NMARK= 6",
+        "MARKER_TAG= front", "MARKER_ELEMS= 2",
+        "9 0 1 4 3", "9 1 2 5 4",
+        "MARKER_TAG= back", "MARKER_ELEMS= 2",
+        "9 6 7 10 9", "9 7 8 11 10",
+        "MARKER_TAG= bottom", "MARKER_ELEMS= 1",
+        "9 0 1 7 6",
+        "MARKER_TAG= top", "MARKER_ELEMS= 1",
+        "9 3 4 10 9",
+        "MARKER_TAG= left", "MARKER_ELEMS= 1",
+        "9 0 3 9 6",
+        "MARKER_TAG= right", "MARKER_ELEMS= 1",
+        "9 2 5 11 8", ""});
+}
+
+std::string wedge_su2() {
+    return su2_join({"NDIME= 3", "", "NELEM= 1",
+        "13 0 1 2 3 4 5 0",
+        "", "NPOIN= 6",
+        "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "0.0 1.0 0.0 2",
+        "0.0 0.0 1.0 3", "1.0 0.0 1.0 4", "0.0 1.0 1.0 5",
+        "", "NMARK= 5",
+        "MARKER_TAG= bottom", "MARKER_ELEMS= 1", "5 0 1 2",
+        "MARKER_TAG= top", "MARKER_ELEMS= 1", "5 3 4 5",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "9 0 2 5 3",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "9 0 3 4 1",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "9 1 4 5 2", ""});
+}
+
+std::string su2_wedge_gmsh() {
+    return su2_join({"NDIME= 3", "", "NELEM= 1",
+        "13 0 2 1 3 5 4 0",
+        "", "NPOIN= 6",
+        "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "0.0 1.0 0.0 2",
+        "0.0 0.0 1.0 3", "1.0 0.0 1.0 4", "0.0 1.0 1.0 5",
+        "", "NMARK= 5",
+        "MARKER_TAG= bottom", "MARKER_ELEMS= 1", "5 0 1 2",
+        "MARKER_TAG= top", "MARKER_ELEMS= 1", "5 3 4 5",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "9 0 2 5 3",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "9 0 3 4 1",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "9 1 4 5 2", ""});
+}
+
+std::string su2_pyramid() {
+    return su2_join({"NDIME= 3", "", "NELEM= 1",
+        "14 0 1 2 3 4 0",
+        "", "NPOIN= 5",
+        "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "1.0 1.0 0.0 2", "0.0 1.0 0.0 3",
+        "0.5 0.5 1.0 4",
+        "", "NMARK= 5",
+        "MARKER_TAG= base", "MARKER_ELEMS= 1", "9 0 3 2 1",
+        "MARKER_TAG= f1", "MARKER_ELEMS= 1", "5 0 1 4",
+        "MARKER_TAG= f2", "MARKER_ELEMS= 1", "5 1 2 4",
+        "MARKER_TAG= f3", "MARKER_ELEMS= 1", "5 2 3 4",
+        "MARKER_TAG= f4", "MARKER_ELEMS= 1", "5 3 0 4", ""});
+}
+
+std::string su2_noindex() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "5 0 1 3", "5 1 2 3",
+        "", "NPOIN= 4", "0.0 0.0", "1.0 0.0", "1.0 1.0", "0.0 1.0",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= east", "MARKER_ELEMS= 1", "3 1 2",
+        "MARKER_TAG= north", "MARKER_ELEMS= 1", "3 2 3",
+        "MARKER_TAG= west", "MARKER_ELEMS= 1", "3 3 0", ""});
+}
+
+std::string su2_shuffled() {
+    return su2_join({"NDIME= 2", "", "NELEM= 8",
+        "5 0 1 3 4", "5 1 4 3 7", "5 1 2 4 1", "5 2 5 4 6",
+        "5 3 4 6 0", "5 4 7 6 3", "5 4 5 7 2", "5 5 8 7 5",
+        "", "NPOIN= 9",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "0.0 1.0 6", "0.5 1.0 7", "1.0 1.0 8",
+        "", "NMARK= 4",
+        "MARKER_TAG= lower", "MARKER_ELEMS= 2", "3 0 1", "3 1 2",
+        "MARKER_TAG= right", "MARKER_ELEMS= 2", "3 2 5", "3 5 8",
+        "MARKER_TAG= upper", "MARKER_ELEMS= 2", "3 8 7", "3 7 6",
+        "MARKER_TAG= left", "MARKER_ELEMS= 2", "3 6 3", "3 3 0", ""});
+}
+
+std::string su2_cw2d() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 3 4 1 0", "9 1 4 5 2 1",
+        "", "NPOIN= 6",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 2", "3 0 1", "3 1 2",
+        "MARKER_TAG= east", "MARKER_ELEMS= 1", "3 2 5",
+        "MARKER_TAG= north", "MARKER_ELEMS= 2", "3 5 4", "3 4 3",
+        "MARKER_TAG= west", "MARKER_ELEMS= 1", "3 3 0", ""});
+}
+
+std::string su2_orphan() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 4 3 0", "9 1 2 5 4 1",
+        "", "NPOIN= 6",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "", "NMARK= 3",
+        "MARKER_TAG= south", "MARKER_ELEMS= 2", "3 0 1", "3 1 2",
+        "MARKER_TAG= east", "MARKER_ELEMS= 1", "3 2 5",
+        "MARKER_TAG= west", "MARKER_ELEMS= 1", "3 3 0", ""});
+}
+
+std::string su2_orphan2() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "5 0 1 2 0",
+        "", "NPOIN= 3", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2",
+        "", "NMARK= 2",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "3 1 2", ""});
+}
+
+std::string su2_baditemcount() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "5 0 1 2 3 4 0",
+        "", "NPOIN= 3", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_badtype() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "99 0 1 2 0",
+        "", "NPOIN= 3", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_polygon() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "7 0 1 2 0",
+        "", "NPOIN= 3", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_triin3d() {
+    return su2_join({"NDIME= 3", "", "NELEM= 1",
+        "5 0 1 2 0",
+        "", "NPOIN= 3", "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "0.0 1.0 0.0 2",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_tetin2d() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "10 0 1 2 3 0",
+        "", "NPOIN= 4", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2", "0.5 0.5 3",
+        "", "NMARK= 1", "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_duplicate_cell() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 2 3 0", "9 0 1 2 3 1",
+        "", "NPOIN= 4", "0.0 0.0 0", "1.0 0.0 1", "1.0 1.0 2", "0.0 1.0 3",
+        "", "NMARK= 4",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "3 1 2",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "3 2 3",
+        "MARKER_TAG= d", "MARKER_ELEMS= 1", "3 3 0", ""});
+}
+
+std::string su2_marker_interior() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 4 3 0", "9 1 2 5 4 1",
+        "", "NPOIN= 6",
+        "0.0 0.0 0", "0.5 0.0 1", "1.0 0.0 2", "0.0 0.5 3", "0.5 0.5 4", "1.0 0.5 5",
+        "", "NMARK= 1",
+        "MARKER_TAG= inside", "MARKER_ELEMS= 1", "3 1 4", ""});
+}
+
+std::string su2_marker_unknown() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "9 0 1 2 3 0",
+        "", "NPOIN= 4", "0.0 0.0 0", "1.0 0.0 1", "1.0 1.0 2", "0.0 1.0 3",
+        "", "NMARK= 5",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "3 1 2",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "3 2 3",
+        "MARKER_TAG= d", "MARKER_ELEMS= 1", "3 3 0",
+        "MARKER_TAG= bogus", "MARKER_ELEMS= 1", "3 0 2", ""});
+}
+
+std::string su2_not_closed() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "5 0 1 2 0",
+        "", "NPOIN= 3", "0.0 0.0 0", "1.0 0.0 1", "0.0 1.0 2",
+        "", "NMARK= 4",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "3 1 2",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "3 2 0",
+        "MARKER_TAG= again", "MARKER_ELEMS= 1", "3 0 1", ""});
+}
+
+std::string su2_selfintersecting_quad() {
+    return su2_join({"NDIME= 2", "", "NELEM= 1",
+        "9 0 1 2 3 0",
+        "", "NPOIN= 4",
+        "0.0 0.0 0", "1.0 1.0 1", "1.0 0.0 2", "0.0 1.0 3",
+        "", "NMARK= 4",
+        "MARKER_TAG= a", "MARKER_ELEMS= 1", "3 2 3",
+        "MARKER_TAG= b", "MARKER_ELEMS= 1", "3 1 2",
+        "MARKER_TAG= c", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= d", "MARKER_ELEMS= 1", "3 3 0", ""});
+}
+
+std::string su2_left_block() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 3 2 0", "9 2 3 5 4 1",
+        "", "NPOIN= 6",
+        "0.0 0.0 0", "0.5 0.0 1", "0.0 0.5 2", "0.5 0.5 3", "0.0 1.0 4", "0.5 1.0 5",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= east", "MARKER_ELEMS= 2", "3 1 3", "3 3 5",
+        "MARKER_TAG= north", "MARKER_ELEMS= 1", "3 5 4",
+        "MARKER_TAG= west", "MARKER_ELEMS= 2", "3 4 2", "3 2 0", ""});
+}
+
+std::string su2_right_block() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 3 2 0", "9 2 3 5 4 1",
+        "", "NPOIN= 6",
+        "0.5 0.0 0", "1.0 0.0 1", "0.5 0.5 2", "1.0 0.5 3", "0.5 1.0 4", "1.0 1.0 5",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= east", "MARKER_ELEMS= 2", "3 1 3", "3 3 5",
+        "MARKER_TAG= north", "MARKER_ELEMS= 1", "3 5 4",
+        "MARKER_TAG= west", "MARKER_ELEMS= 2", "3 4 2", "3 2 0", ""});
+}
+
+std::string su2_far_block() {
+    return su2_join({"NDIME= 2", "", "NELEM= 2",
+        "9 0 1 3 2 0", "9 2 3 5 4 1",
+        "", "NPOIN= 6",
+        "5.0 0.0 0", "5.5 0.0 1", "5.0 0.5 2", "5.5 0.5 3", "5.0 1.0 4", "5.5 1.0 5",
+        "", "NMARK= 4",
+        "MARKER_TAG= south", "MARKER_ELEMS= 1", "3 0 1",
+        "MARKER_TAG= east", "MARKER_ELEMS= 2", "3 1 3", "3 3 5",
+        "MARKER_TAG= north", "MARKER_ELEMS= 1", "3 5 4",
+        "MARKER_TAG= west", "MARKER_ELEMS= 2", "3 4 2", "3 2 0", ""});
+}
+
+std::string su2_hex_block(bool right) {
+    const double x0 = right ? 1.0 : 0.0;
+    const double x1 = x0 + 1.0;
+    std::vector<std::string> L;
+    L.push_back("NDIME= 3"); L.push_back(""); L.push_back("NELEM= 1");
+    L.push_back("12 0 1 2 3 4 5 6 7 0");
+    L.push_back(""); L.push_back("NPOIN= 8");
+    L.push_back(eil::format("%.17g %.17g %.17g 0", x0, 0.0, 0.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 1", x1, 0.0, 0.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 2", x1, 1.0, 0.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 3", x0, 1.0, 0.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 4", x0, 0.0, 1.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 5", x1, 0.0, 1.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 6", x1, 1.0, 1.0));
+    L.push_back(eil::format("%.17g %.17g %.17g 7", x0, 1.0, 1.0));
+    L.push_back(""); L.push_back("NMARK= 6");
+    L.push_back("MARKER_TAG= north"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 2 3 7 6");
+    L.push_back("MARKER_TAG= east"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 1 2 6 5");
+    L.push_back("MARKER_TAG= south"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 1 0 4 5");
+    L.push_back("MARKER_TAG= west"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 0 3 7 4");
+    L.push_back("MARKER_TAG= top"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 4 5 6 7");
+    L.push_back("MARKER_TAG= bottom"); L.push_back("MARKER_ELEMS= 1"); L.push_back("9 0 1 2 3");
+    L.push_back("");
+    return su2_join(L);
+}
+
+std::string su2_scrambled_hex() {
+    return su2_join({"NDIME= 3", "", "NELEM= 1",
+        "12 0 2 1 3 4 6 5 7 0",
+        "", "NPOIN= 8",
+        "0.0 0.0 0.0 0", "1.0 0.0 0.0 1", "0.0 1.0 0.0 2", "1.0 1.0 0.0 3",
+        "0.0 0.0 1.0 4", "1.0 0.0 1.0 5", "0.0 1.0 1.0 6", "1.0 1.0 1.0 7",
+        "", "NMARK= 6",
+        "MARKER_TAG= front", "MARKER_ELEMS= 1", "9 0 1 3 2",
+        "MARKER_TAG= back", "MARKER_ELEMS= 1", "9 4 5 7 6",
+        "MARKER_TAG= bottom", "MARKER_ELEMS= 1", "9 0 1 5 4",
+        "MARKER_TAG= top", "MARKER_ELEMS= 1", "9 2 3 7 6",
+        "MARKER_TAG= left", "MARKER_ELEMS= 1", "9 0 2 6 4",
+        "MARKER_TAG= right", "MARKER_ELEMS= 1", "9 1 3 7 5", ""});
+}
+
+// The whole mesh with one header line removed (probe:946-965).
+std::string su2_missing(const std::string& drop) {
+    std::vector<std::string> keep;
+    const std::vector<std::string> all = d_split(tri_su2(), "\n");
+    for (const std::string& L : all) {
+        const bool head5 = L.size() >= 5;
+        if (head5 && L.compare(0, 5, "NELEM") == 0) { if (drop == "NELEM") continue; }
+        if (head5 && L.compare(0, 5, "NPOIN") == 0) { if (drop == "NPOIN") continue; }
+        if (head5 && L.compare(0, 5, "NDIME") == 0) { if (drop == "NDIME") continue; }
+        if (head5 && L.compare(0, 5, "NMARK") == 0) { if (drop == "NMARK") continue; }
+        keep.push_back(L);
+    }
+    return su2_join(keep);
+}
+
+// A header line with a non-numeric value (probe:968-976).
+std::string su2_bad_value(const std::string& key, const std::string& val) {
+    std::vector<std::string> keep;
+    const std::vector<std::string> all = d_split(tri_su2(), "\n");
+    for (const std::string& L : all) {
+        if (L.size() >= key.size() && L.compare(0, key.size(), key) == 0) {
+            keep.push_back(key + "= " + val);
+            continue;
+        }
+        keep.push_back(L);
+    }
+    return su2_join(keep);
+}
+
+// Replace one coordinate line of tri_su2() by a given spelling.
+std::string su2_replace_coord_line(const std::string& with) {
+    std::vector<std::string> keep;
+    const std::vector<std::string> all = d_split(tri_su2(), "\n");
+    for (const std::string& L : all) {
+        keep.push_back(L == "0.5 0.0 1" ? with : L);
+    }
+    return su2_join(keep);
+}
+
+std::string su2_bad_coord_line() { return su2_replace_coord_line("zero zero one"); }
+std::string su2_nan_coord_line() { return su2_replace_coord_line("nan 0.0 1"); }
+std::string su2_big_coord_line() { return su2_replace_coord_line("1.23456789012345e+300 0.0 1"); }
+std::string su2_oob_vertex_index() { return su2_replace_coord_line("0.5 0.0 99"); }
+
+std::string su2_oob_cell_index() {
+    std::vector<std::string> keep;
+    const std::vector<std::string> all = d_split(tri_su2(), "\n");
+    for (const std::string& L : all) keep.push_back(L == "5 0 1 3 0" ? "5 0 1 3 99" : L);
+    return su2_join(keep);
+}
+
+std::string su2_empty_marker_tag() {
+    std::vector<std::string> keep;
+    const std::vector<std::string> all = d_split(tri_su2(), "\n");
+    for (const std::string& L : all)
+        keep.push_back(L == "MARKER_TAG= lower" ? "MARKER_TAG=" : L);
+    return su2_join(keep);
+}
+
+// ------------------------------------------------------------------
+// us.su2.* — write_to_su2_file (D:1876)
+// (probe_usgrid.d:1988-2055; corpus rows 930-946)
+// ------------------------------------------------------------------
+void grp_su2() {
+    auto gt = std::make_shared<UnstructuredGrid>(pave_square(), "su2tri"); // rows 930-931
+    const std::string p = TD + "/tri.su2";
+    twd("us.su2.tri", 1876, USG_PATH, [&gt, &p]() { gt->write_to_su2_file(p); });
+    emit(eil::format("us.su2.tri len=%d body=[%s]", len_of(p), body_of(p)));
+    auto gq = std::make_shared<UnstructuredGrid>(*surf_grid2d("su2quad"), "su2quad");
+    const std::string p2 = TD + "/quad.su2";
+    twd("us.su2.quad", 1876, USG_PATH, [&gq, &p2]() { gq->write_to_su2_file(p2); });
+    emit(eil::format("us.su2.quad len=%d body=[%s]", len_of(p2), body_of(p2)));
+    auto gh = std::make_shared<UnstructuredGrid>(*vol_grid3d("su2hex"), "su2hex");
+    const std::string p3 = TD + "/hex.su2";
+    twd("us.su2.hex", 1876, USG_PATH, [&gh, &p3]() { gh->write_to_su2_file(p3); });
+    emit(eil::format("us.su2.hex len=%d body=[%s]", len_of(p3), body_of(p3)));
+    const std::string p4 = TD + "/hex_scaled.su2";
+    twd("us.su2.hex-scaled", 1876, USG_PATH,
+        [&gh, &p4]() { gh->write_to_su2_file(p4, 25.4); });
+    emit(eil::format("us.su2.hex scaled len=%d body=[%s]", len_of(p4), body_of(p4)));
+    const std::string p5 = TD + "/quad_scaled.su2";
+    gq->write_to_su2_file(p5, 0.0254);
+    emit(eil::format("us.su2.quad scaled len=%d body=[%s]", len_of(p5), body_of(p5)));
+    // A wedge cell, written in both vertex orders.
+    mkr(TD + "/wedge.su2", wedge_su2());
+    auto gw = std::make_shared<UnstructuredGrid>(TD + "/wedge.su2", "su2text", true);
+    const std::string p6 = TD + "/wedge_vtk.su2";
+    gw->write_to_su2_file(p6, 1.0, false);
+    emit(eil::format("us.su2.wedge vtkorder len=%d body=[%s]", len_of(p6), body_of(p6)));
+    const std::string p7 = TD + "/wedge_gmsh.su2";
+    gw->write_to_su2_file(p7, 1.0, true);
+    emit(eil::format("us.su2.wedge gmshorder len=%d body=[%s]", len_of(p7), body_of(p7)));
+    // An empty-tag boundary still prints "MARKER_TAG= " (D:1909).
+    auto ge = std::make_shared<UnstructuredGrid>(2, "emptytag");
+    ge->vertices = eil::Array<Vector3>{Vector3(0.0, 0.0), Vector3(1.0, 0.0), Vector3(1.0, 1.0),
+                                       Vector3(0.0, 1.0)};
+    ge->nvertices = 4;
+    std::vector<std::vector<size_t>> vls = {{0, 1}, {2, 3}, {1, 2}, {0, 3}};
+    for (const std::vector<size_t>& vl : vls) {
+        eil::Array<size_t> a = ids(vl);
+        ge->set_face_index(eil::geom::makeFaceTag(a.all()), ge->faces.length());
+        ge->faces.append(std::make_shared<USGFace>(a.all()));
+    }
+    ge->nfaces = 4;
+    {
+        eil::Array<size_t> cv = ids({0, 1, 2, 3}), cf = ids({0, 2, 1, 3});
+        eil::Array<int> co = {1, 1, -1, -1};
+        ge->cells.append(
+            std::make_shared<USGCell>(USGCell_type::quad, 0, cv.all(), cf.all(), co.all()));
+    }
+    ge->ncells = 1;
+    {
+        eil::Array<size_t> b = ids({0});
+        eil::Array<int> o = {1};
+        ge->boundaries.append(std::make_shared<BoundaryFaceSet>("", b.all(), o.all()));
+    }
+    ge->nboundaries = 1;
+    ge->niv = 4; ge->njv = 1; ge->nkv = 1;
+    const std::string p8 = TD + "/emptytag.su2";
+    ge->write_to_su2_file(p8);
+    emit(eil::format("us.su2.emptytag body=[%s]", body_of(p8)));
+    // The two directions of the sgrid delegation (sgrid.d:1313-1318 just forwards here).
+    auto sg = surf_grid2d("delegate");
+    const std::string pA = TD + "/deleg_usg.su2";
+    UnstructuredGrid(*sg, "delegate").write_to_su2_file(pA);
+    const std::string pB = TD + "/deleg_sgrid.su2";
+    sg->write_to_su2_file(pB);
+    emit(eil::format("us.su2.delegate direct len=%d sgrid len=%d same=%s", len_of(pA),
+                     len_of(pB), body_of(pA) == body_of(pB) ? "true" : "false"));
+    const std::string pC = TD + "/deleg_sgrid_scaled.su2";
+    sg->write_to_su2_file(pC, 2.0);
+    const std::string pD = TD + "/deleg_usg_scaled.su2";
+    UnstructuredGrid(*sg, "delegate").write_to_su2_file(pD, 2.0);
+    emit(eil::format("us.su2.delegate scaled same=%s body=[%s]",
+                     body_of(pC) == body_of(pD) ? "true" : "false", body_of(pC)));
+}
+
+// ------------------------------------------------------------------
+// us.su2rd.* — read_from_su2_file (D:1382)
+// (probe_usgrid.d:2057-2230; corpus rows 947-1189)
+//
+// The reader's own stdout ("Importing: <file> ... (done) scale=%s dim=%s ncells=%d
+// nbfs= %d", probe MEASURED FINDINGS item 9) is part of the corpus, so every row that
+// follows an mkr() line can carry it.
+// ------------------------------------------------------------------
+void grp_su2rd() {
+    const std::string tri_rd = TD + "/tri_rd.su2";
+    mkr(tri_rd, tri_su2());
+    twd("us.su2rd.tri", 1382, USG_PATH, [&tri_rd]() {
+        auto g = std::make_shared<UnstructuredGrid>(tri_rd, "su2text", true);
+        dump_grid("us.su2rd.tri", g);
+        emit(eil::format("us.su2rd.tri repr=[%s]", g->toString()));
+        emit(eil::format("us.su2rd.tri fidx=%s", sorted_faceidx(g)));
+    });
+    const std::string quad_rd = TD + "/quad_rd.su2";
+    mkr(quad_rd, quad_su2());
+    twd("us.su2rd.quad", 1382, USG_PATH, [&quad_rd]() {
+        auto g = std::make_shared<UnstructuredGrid>(quad_rd, "su2text", true);
+        dump_grid("us.su2rd.quad", g);
+        const std::string p = TD + "/quad_rt.su2";
+        g->write_to_su2_file(p);
+        emit(eil::format("us.su2rd.quad roundtrip len=%d body=[%s]", len_of(p), body_of(p)));
+        twd("us.su2rd.quad-reread", 1382, USG_PATH, [&p]() {
+            auto g2 = std::make_shared<UnstructuredGrid>(p, "su2text", true);
+            emit(eil::format("us.su2rd.quad reread nv=%d nf=%d nc=%d nb=%d", g2->nvertices,
+                             g2->nfaces, g2->ncells, g2->nboundaries));
+        });
+    });
+    const std::string hex_rd = TD + "/hex_rd.su2";
+    mkr(hex_rd, hex_su2());
+    twd("us.su2rd.hex", 1382, USG_PATH, [&hex_rd]() {
+        auto g = std::make_shared<UnstructuredGrid>(hex_rd, "su2text", true);
+        dump_grid("us.su2rd.hex", g);
+        emit(eil::format("us.su2rd.hex fidx=%s", sorted_faceidx(g)));
+    });
+    twd("us.su2rd.hex-scale", 1382, USG_PATH, [&hex_rd]() {
+        auto g = std::make_shared<UnstructuredGrid>(hex_rd, "su2text", true, 25.4, false,
+                                                    "scaled");
+        emit(eil::format("us.su2rd.hex scale label=[%s] vtx[1] bits=%s vtx[9] bits=%s", g->label,
+                         bits(g->opIndex(1)->x), bits(g->opIndex(9)->y)));
+    });
+    const std::string noidx = TD + "/noidx.su2";
+    mkr(noidx, su2_noindex());
+    twd("us.su2rd.noidx", 1382, USG_PATH, [&noidx]() {
+        auto g = std::make_shared<UnstructuredGrid>(noidx, "su2text", true);
+        eil::Array<size_t> cid;
+        for (size_t i = 0; i < g->cells.length(); ++i) cid.append(g->cells[i]->id);
+        emit(eil::format("us.su2rd.noidx nv=%d nf=%d nc=%d nb=%d cellids=%s", g->nvertices,
+                         g->nfaces, g->ncells, g->nboundaries, cid));
+    });
+    const std::string shuf = TD + "/shufidx.su2";
+    mkr(shuf, su2_shuffled());
+    twd("us.su2rd.shuffled", 1382, USG_PATH, [&shuf]() {
+        auto g = std::make_shared<UnstructuredGrid>(shuf, "su2text", true);
+        eil::Array<size_t> cid;
+        for (size_t i = 0; i < g->cells.length(); ++i) cid.append(g->cells[i]->id);
+        emit(eil::format("us.su2rd.shuffled cellids=%s cell0io=[%s]", cid,
+                         g->cells[0]->toIOString()));
+        dump_cells("us.su2rd.shuffled", g->cells);
+    });
+    const std::string wgm = TD + "/wedge_gmsh.su2";
+    mkr(wgm, su2_wedge_gmsh());
+    twd("us.su2rd.wedge-nomsh", 1382, USG_PATH, [&wgm]() {
+        auto g = std::make_shared<UnstructuredGrid>(wgm, "su2text", true, 1.0, false);
+        emit(eil::format("us.su2rd.wedge nomsh cell0=%s", g->cells[0]->toIOString()));
+    });
+    twd("us.su2rd.wedge-gmsh", 1382, USG_PATH, [&wgm]() {
+        auto g = std::make_shared<UnstructuredGrid>(wgm, "su2text", true, 1.0, true);
+        emit(eil::format("us.su2rd.wedge gmsh cell0=%s", g->cells[0]->toIOString()));
+        dump_faces("us.su2rd.wedge gmsh", g->faces);
+        dump_bnd("us.su2rd.wedge gmsh", g->boundaries);
+    });
+    const std::string pyr = TD + "/pyr.su2";
+    mkr(pyr, su2_pyramid());
+    twd("us.su2rd.pyramid", 1382, USG_PATH, [&pyr]() {
+        auto g = std::make_shared<UnstructuredGrid>(pyr, "su2text", true);
+        dump_grid("us.su2rd.pyramid", g);
+    });
+    const std::string cw = TD + "/cw2d.su2";
+    mkr(cw, su2_cw2d());
+    twd("us.su2rd.cw2d", 1382, USG_PATH, [&cw]() {
+        auto g = std::make_shared<UnstructuredGrid>(cw, "su2text", true);
+        dump_grid("us.su2rd.cw2d", g);
+    });
+    const std::string orph = TD + "/orphan.su2";
+    mkr(orph, su2_orphan());
+    twd("us.su2rd.orphan", 1777, USG_PATH, [&orph]() {
+        auto g = std::make_shared<UnstructuredGrid>(orph, "su2text", true);
+        std::string tags;
+        for (size_t i = 0; i < g->boundaries.length(); ++i) {
+            if (i) tags += ", ";
+            tags += "\"" + g->boundaries[i]->tag + "\"";
+        }
+        emit(eil::format("us.su2rd.orphan nb=%d tags=[%s]", g->nboundaries, tags));
+        dump_bnd("us.su2rd.orphan", g->boundaries);
+    });
+    const std::string orph2 = TD + "/orphan2.su2";
+    mkr(orph2, su2_orphan2());
+    twd("us.su2rd.orphan2", 1763, USG_PATH, [&orph2]() {
+        auto g = std::make_shared<UnstructuredGrid>(orph2, "su2text", true);
+        dump_bnd("us.su2rd.orphan2", g->boundaries);
+        emit(eil::format("us.su2rd.orphan2 nb=%d nfaces=%d ninterior=%d", g->nboundaries,
+                         g->nfaces, g->ninteriorfaces));
+    });
+    // ---- failure paths
+    const std::string bad_items = TD + "/bad_items.su2";
+    mkr(bad_items, su2_baditemcount());
+    twd("us.su2rd.baditems", 1439, USG_PATH,
+        [&bad_items]() { UnstructuredGrid q(bad_items, "su2text", true); });
+    const std::string bad_type = TD + "/bad_type.su2";
+    mkr(bad_type, su2_badtype());
+    // The 99-type line has 4 tokens, which is 1 + nv_expected(3) for a triangle, so D
+    // falls through the item-count test and reports the line it read (usgrid.d:1439).
+    twd("us.su2rd.badtype", 1445, USG_PATH, 1439,
+        [&bad_type]() { UnstructuredGrid q(bad_type, "su2text", true); });
+    const std::string poly = TD + "/poly.su2";
+    mkr(poly, su2_polygon());
+    twd("us.su2rd.polygon", 1445, USG_PATH, 1439,
+        [&poly]() { UnstructuredGrid q(poly, "su2text", true); });
+    const std::string poly_bare = TD + "/poly_bare.su2";
+    mkr(poly_bare, "NDIME= 2\n\nNELEM= 1\n7 0\n\nNPOIN= 3\n0.0 0.0 0\n1.0 0.0 1\n0.0 1.0 2\n\nNMARK= 1\nMARKER_TAG= a\nMARKER_ELEMS= 1\n3 0 1\n");
+    twd("us.su2rd.bare", 1445, USG_PATH,
+        [&poly_bare]() { UnstructuredGrid q(poly_bare, "su2text", true); });
+    const std::string unk_bare = TD + "/unknown_bare.su2";
+    mkr(unk_bare, "NDIME= 2\n\nNELEM= 1\n99 0\n\nNPOIN= 3\n0.0 0.0 0\n1.0 0.0 1\n0.0 1.0 2\n\nNMARK= 1\nMARKER_TAG= a\nMARKER_ELEMS= 1\n3 0 1\n");
+    twd("us.su2rd.unknownbare", 1445, USG_PATH,
+        [&unk_bare]() { UnstructuredGrid q(unk_bare, "su2text", true); });
+    const std::string onetok = TD + "/onetok.su2";
+    mkr(onetok, "NDIME= 2\n\nNELEM= 1\n99\n\nNPOIN= 3\n0.0 0.0 0\n1.0 0.0 1\n0.0 1.0 2\n\nNMARK= 1\nMARKER_TAG= a\nMARKER_ELEMS= 1\n3 0 1\n");
+    twd("us.su2rd.onetok", 1445, USG_PATH, [&onetok]() { UnstructuredGrid q(onetok, "su2text", true); });
+    const std::string tri3d = TD + "/tri_in3d.su2";
+    mkr(tri3d, su2_triin3d());
+    twd("us.su2rd.triin3d", 1690, USG_PATH, [&tri3d]() { UnstructuredGrid q(tri3d, "su2text", true); });
+    const std::string tet2d = TD + "/tet_in2d.su2";
+    mkr(tet2d, su2_tetin2d());
+    twd("us.su2rd.tetin2d", 1544, USG_PATH, [&tet2d]() { UnstructuredGrid q(tet2d, "su2text", true); });
+    const std::string dupc = TD + "/dupcell.su2";
+    mkr(dupc, su2_duplicate_cell());
+    twd("us.su2rd.dupcell", 1615, USG_PATH, [&dupc]() { UnstructuredGrid q(dupc, "su2text", true); });
+    const std::string mkint = TD + "/markerint.su2";
+    mkr(mkint, su2_marker_interior());
+    twd("us.su2rd.markerinterior", 1734, USG_PATH,
+        [&mkint]() { UnstructuredGrid q(mkint, "su2text", true); });
+    const std::string mkunk = TD + "/markerunk.su2";
+    mkr(mkunk, su2_marker_unknown());
+    twd("us.su2rd.markerunknown", 1739, USG_PATH,
+        [&mkunk]() { UnstructuredGrid q(mkunk, "su2text", true); });
+    const std::string noclose = TD + "/noclose.su2";
+    mkr(noclose, su2_not_closed());
+    // D:1776 is a format() with an argument but no conversion, so Phobos raises before
+    // D:1777's GeometryException can be constructed (probe MEASURED FINDINGS item 4).
+    twd("us.su2rd.noclose", 1777, FMT_PATH, 785,
+        [&noclose]() { UnstructuredGrid q(noclose, "su2text", true); });
+    const std::string selfint = TD + "/selfint.su2";
+    mkr(selfint, su2_selfintersecting_quad());
+    twd("us.su2rd.selfint", 1702, USG_PATH, [&selfint]() {
+        auto g = std::make_shared<UnstructuredGrid>(selfint, "su2text", true);
+        emit(eil::format("us.su2rd.selfint cell0=%s varea=%s", g->cells[0]->toIOString(),
+                         g->vectorAreaOfCell(*g->cells[0]).toString()));
+    });
+    const std::string scr = TD + "/scrambled.su2";
+    mkr(scr, su2_scrambled_hex());
+    twd("us.su2rd.scrambled", 1702, USG_PATH, [&scr]() { UnstructuredGrid q(scr, "su2text", true); });
+    // Header problems.
+    const std::string no_ndime = TD + "/no_ndime.su2";
+    mkr(no_ndime, su2_missing("NDIME"));
+    twd("us.su2rd.no-ndime", 1407, CONV_PATH, 2533,
+        [&no_ndime]() { UnstructuredGrid q(no_ndime, "su2text", true); });
+    const std::string no_nelem = TD + "/no_nelem.su2";
+    mkr(no_nelem, su2_missing("NELEM"));
+    twd("us.su2rd.no-nelem", 1412, CONV_PATH, 2533,
+        [&no_nelem]() { UnstructuredGrid q(no_nelem, "su2text", true); });
+    const std::string no_npoin = TD + "/no_npoin.su2";
+    mkr(no_npoin, su2_missing("NPOIN"));
+    twd("us.su2rd.no-npoin", 1478, CONV_PATH, 2533,
+        [&no_npoin]() { UnstructuredGrid q(no_npoin, "su2text", true); });
+    const std::string no_nmark = TD + "/no_nmark.su2";
+    mkr(no_nmark, su2_missing("NMARK"));
+    twd("us.su2rd.no-nmark", 1713, CONV_PATH, 2533,
+        [&no_nmark]() { UnstructuredGrid q(no_nmark, "su2text", true); });
+    const std::string bad_ndime = TD + "/bad_ndime.su2";
+    mkr(bad_ndime, su2_bad_value("NDIME", "two"));
+    twd("us.su2rd-bad-ndime", 1407, CONV_PATH, 2533,
+        [&bad_ndime]() { UnstructuredGrid q(bad_ndime, "su2text", true); });
+    const std::string neg_ndime = TD + "/neg_ndime.su2";
+    mkr(neg_ndime, su2_bad_value("NDIME", "-1"));
+    twd("us.su2rd-neg-ndime", 1407, USG_PATH, 1499,
+        [&neg_ndime]() { UnstructuredGrid q(neg_ndime, "su2text", true); });
+    const std::string dim4 = TD + "/dim4.su2";
+    mkr(dim4, su2_bad_value("NDIME", "4"));
+    twd("us.su2rd-dim4", 1499, USG_PATH, [&dim4]() { UnstructuredGrid q(dim4, "su2text", true); });
+    const std::string badcoord = TD + "/badcoord.su2";
+    mkr(badcoord, su2_bad_coord_line());
+    // Phobos' float parse raises at std/conv.d:3349, not the :2533 the integral path uses.
+    twd("us.su2rd-badcoord", 1491, CONV_PATH, 3349,
+        [&badcoord]() { UnstructuredGrid q(badcoord, "su2text", true); });
+    const std::string nancoord = TD + "/nancoord.su2";
+    mkr(nancoord, su2_nan_coord_line());
+    twd("us.su2rd-nancoord", 1491, USG_PATH, 1702, [&nancoord]() {
+        auto g = std::make_shared<UnstructuredGrid>(nancoord, "su2text", true);
+        emit(eil::format("us.su2rd nancoord vtx[0]=%.17g bits=%s", g->opIndex(0)->x,
+                         bits(g->opIndex(0)->x)));
+    });
+    const std::string bigcoord = TD + "/bigcoord.su2";
+    mkr(bigcoord, su2_big_coord_line());
+    twd("us.su2rd-bigcoord", 1491, USG_PATH, 1621, [&bigcoord]() {
+        auto g = std::make_shared<UnstructuredGrid>(bigcoord, "su2text", true);
+        emit(eil::format("us.su2rd bigcoord vtx[0]=%.17g bits=%s to!string=[%s]",
+                         g->opIndex(0)->x, bits(g->opIndex(0)->x),
+                         eil::to_string(g->opIndex(0)->x)));
+    });
+    const std::string badcount = TD + "/badcount.su2";
+    mkr(badcount, su2_bad_value("NELEM", "3"));
+    twd("us.su2rd-too-many-elems", 1418, USG_PATH, 1739,
+        [&badcount]() { UnstructuredGrid q(badcount, "su2text", true); });
+    const std::string oobvid = TD + "/oobvid.su2";
+    mkr(oobvid, su2_oob_vertex_index());
+    twd("us.su2rd-oob-vertex-id", 1509, USG_PATH,
+        [&oobvid]() { UnstructuredGrid q(oobvid, "su2text", true); });
+    const std::string oobcid = TD + "/oobcid.su2";
+    mkr(oobcid, su2_oob_cell_index());
+    twd("us.su2rd-oob-cell-id", 1458, USG_PATH,
+        [&oobcid]() { UnstructuredGrid q(oobcid, "su2text", true); });
+    const std::string etag_in = TD + "/emptytag.su2in";
+    mkr(etag_in, su2_empty_marker_tag());
+    twd("us.su2rd-empty-tag", 1715, USG_PATH, [&etag_in]() {
+        auto g = std::make_shared<UnstructuredGrid>(etag_in, "su2text", true);
+        dump_bnd("us.su2rd empty tag", g->boundaries);
+    });
+    twd("us.su2rd-missing-file", 1391, STDIO_PATH, 624,
+        []() { UnstructuredGrid q(TD + "/no_such_file.su2", "su2text", true); });
+    const std::string esu2 = TD + "/empty.su2";
+    mkr(esu2, "");
+    twd("us.su2rd-empty-file", 1407, CONV_PATH, 2533,
+        [&esu2]() { UnstructuredGrid q(esu2, "su2text", true); });
+}
+
 //<<<SECTIONS-NOW>>>
 
 } // namespace
@@ -1373,6 +2503,12 @@ int main(int argc, char** argv) {
     grp_sg2d();
     grp_sg3d();
     grp_sgbad();
+    grp_pave();
+    grp_paved();
+    grp_gz();
+    grp_raw();
+    grp_su2();
+    grp_su2rd();
     //<<<GROUP-CALLS-NOW>>>
 
     std::fflush(stdout);

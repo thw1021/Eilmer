@@ -240,23 +240,61 @@ inline double to_double(const std::string& s) {
     return neg ? -v : v;
 }
 
-// to!int / to!long — strict grammar [+-]?digit+, no surrounding whitespace.
-inline long to_long(const std::string& s) {
+// to!int / to!long / to!size_t — strict grammar, no surrounding whitespace.
+//
+// Two per-T facts here are MEASURED, not inferred, because a port cannot see them
+// in a signature (probe: probes/substrate/probe_conv_int_typename.d, rows:
+// baselines/e587b235/probes/substrate_conv_int_typename.txt):
+//
+//  1. The type name Phobos prints is the *resolved* one, so an alias target
+//     reports its base: `to!size_t("")` says "ulong", not "size_t", and
+//     `to!ptrdiff_t` says "long". The usgrid port routed its `to!size_t` sites
+//     through the `int` helper and printed "int" in three corpus rows.
+//  2. An UNSIGNED target does not accept a leading sign at all, so the sign is
+//     the offending character rather than a consumed prefix:
+//        to!int("+")      -> Unexpected end of input when converting ... type int
+//        to!ulong("+")    -> Unexpected '+' when converting ... type ulong
+//        to!size_t("-1")  -> Unexpected '-' ... type ulong   (as is "-0")
+//     A signed target consumes the sign first, so a bare "+"/"-" is an
+//     end-of-input error instead.
+inline long long parse_int_strict(const std::string& s, const char* tname, bool allow_sign) {
     const size_t n = s.size();
     size_t i = 0;
-    if (i < n && (s[i] == '+' || s[i] == '-')) ++i;
-    if (i >= n) detail::conv_fail(detail::unexpected_end("int"));
-    long long sign = (s[0] == '-') ? -1 : 1;
+    if (i < n && (s[i] == '+' || s[i] == '-')) {
+        if (!allow_sign) detail::conv_fail(detail::unexpected_char(s[i], tname));
+        ++i;
+    }
+    if (i >= n) detail::conv_fail(detail::unexpected_end(tname));
+    const long long sign = (s[0] == '-') ? -1 : 1;
     long long acc = 0;
     for (; i < n; ++i) {
         if (!std::isdigit(static_cast<unsigned char>(s[i]))) {
-            detail::conv_fail(detail::unexpected_char(s[i], "int"));
+            detail::conv_fail(detail::unexpected_char(s[i], tname));
         }
         acc = acc * 10 + (s[i] - '0');
     }
-    return static_cast<long>(sign * acc);
+    return sign * acc;
 }
-inline int to_int(const std::string& s) { return static_cast<int>(to_long(s)); }
+
+// The name the message carries, by measured target type. Narrow targets add a
+// third asymmetry that no ported file reaches yet, so it is recorded here rather
+// than implemented: for short/byte/ubyte the end-of-input and leading-character
+// errors name the BASE type ("int" for short, "uint" for ubyte) while the
+// trailing-junk error names the target itself ("short"/"ubyte").
+template <typename T> const char* d_int_type_name() {
+    if constexpr (std::is_same_v<T, int>) return "int";
+    else if constexpr (std::is_same_v<T, long>) return "long";
+    else if constexpr (std::is_same_v<T, unsigned>) return "uint";
+    else if constexpr (std::is_same_v<T, unsigned long>) return "ulong";
+    else static_assert(sizeof(T) == 0, "eil::to: measured type name needed for this integer type");
+}
+
+inline long to_long(const std::string& s) { return parse_int_strict(s, "long", true); }
+inline int to_int(const std::string& s) { return static_cast<int>(parse_int_strict(s, "int", true)); }
+// D's `to!size_t(text)`: size_t resolves to ulong in the message, and takes no sign.
+inline size_t to_size_t(const std::string& s) {
+    return static_cast<size_t>(parse_int_strict(s, d_int_type_name<size_t>(), false));
+}
 
 // The single entry point ports use, mirroring `to!T(value)`.
 template <typename T, typename U> T to(const U& v) {
@@ -265,7 +303,8 @@ template <typename T, typename U> T to(const U& v) {
     } else if constexpr (std::is_same_v<T, double>) {
         return to_double(::eil::to_string(v));
     } else if constexpr (std::is_integral_v<T>) {
-        return static_cast<T>(to_long(::eil::to_string(v)));
+        return static_cast<T>(parse_int_strict(::eil::to_string(v), d_int_type_name<T>(),
+                                               std::is_signed_v<T>));
     } else {
         static_assert(sizeof(T) == 0, "eil::to: add the conversion when a ported file needs it");
     }

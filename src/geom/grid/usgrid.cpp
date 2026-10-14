@@ -240,10 +240,15 @@ void fmt_read_lit(FormattedInput& in, char c) {
         while (!in.exhausted() && std::isspace(static_cast<unsigned char>(in.next()))) ++in.p;
         return;
     }
-    if (in.exhausted()) fmt_fail_missing_char(c);
-    if (in.next() != c) {
-        throw eil::format_error(std::string("found '") + in.next() + "' expected '" + c + "'");
-    }
+    // Phobos' parseToFormatSpec (std/format/spec.d:564-567) raises the SAME text whether
+    // the input ran out or the character at the current position simply differs:
+    //   enforceFmt(!r.empty && r.front == trailing.front,
+    //              text("parseToFormatSpec: Cannot find character '", c, "' ..."));
+    // Corpus row 861 (us.gz.wronghead) pins the mismatch arm: "structured_grid 1.0" read
+    // against "unstructured_grid %s" names the expected 'u', not the 's' that was there,
+    // and a forward *search* would name 'n' instead — so the match is positional and the
+    // wording is the missing-character one.
+    if (in.exhausted() || in.next() != c) fmt_fail_missing_char(c);
     ++in.p;
 }
 
@@ -267,10 +272,10 @@ std::string fmt_read_rest(FormattedInput& in) {
 // conversion" (corpus row 208: `new USGFace("9999999999999999999 1")` reports that class,
 // not the OutOfMemoryError a negative length would give — row 207 — because the conversion
 // is checked BEFORE `vtx_id_list.length = ...` can allocate).
-// eil::to_int (substrate/include/eil/conv.hpp:259) is `static_cast<int>(to_long(s))` with
-// no range check at all, so an overflowing count silently becomes a negative number and
-// the port reached the wrong failure path. SUBSTRATE GAP (reported to the main thread):
-// substrate has neither the check nor the ConvOverflowException child of
+// eil::to_int (substrate/include/eil/conv.hpp:293) is `static_cast<int>(parse_int_strict(s,
+// "int", true))` with no range check at all, so an overflowing count silently becomes a
+// negative number and the port reached the wrong failure path. SUBSTRATE GAP (reported to
+// the main thread): substrate has neither the check nor the ConvOverflowException child of
 // ConversionException, and this stage may not modify it, so both live here —
 // ConvOverflowException in src/geom/grid/usgrid.hpp, this scanner next to the other
 // port-local std.conv/std.format shims. The grammar failure texts stay substrate's
@@ -314,13 +319,36 @@ int d_to_int(const std::string& s) {    const size_t n = s.size();
 }
 
 template <typename T> void fmt_into(FormattedInput& in, T* dst);
-template <> void fmt_into<int>(FormattedInput& in, int* dst) { *dst = d_to_int(fmt_read_token(in)); }
-template <> void fmt_into<long>(FormattedInput& in, long* dst) { *dst = eil::to_long(fmt_read_token(in)); }
+// Phobos' numeric unformat (std/format/internal/read.d:196) is `std.conv.parse!T(input)`
+// after the whitespace skip, and `parse` on an EXHAUSTED input leaves the destination
+// exactly as it was and raises nothing. Measured directly against ldc2 1.40.0:
+//   formattedRead("", " %g %g %g", &x,&x,&x) -> ok, x unchanged;
+//   formattedRead("", "%d", &sz)              -> ok, sz unchanged.
+// That is what makes corpus rows 868-871 (us.gz.truncated4..7) come out the way they do:
+// the gzipped text declares 10 vertices but the file has run out, so ten reads of
+// " %g %g %g" over an exhausted GzipByLine (which yields "" per T-923) all succeed with
+// x=y=z=0, and the FIRST failure is the literal 'f' of "faces: %d" one step later. A
+// conversion attempt on the empty string instead would report
+// `Floating point conversion error for input ""` and the row would name the wrong class.
+template <> void fmt_into<int>(FormattedInput& in, int* dst) {
+    const std::string tok = fmt_read_token(in);
+    if (tok.empty()) return; // exhausted: D writes nothing
+    *dst = d_to_int(tok);
+}
+template <> void fmt_into<long>(FormattedInput& in, long* dst) {
+    const std::string tok = fmt_read_token(in);
+    if (tok.empty()) return;
+    *dst = eil::to_long(tok);
+}
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
-    *dst = static_cast<size_t>(eil::to_long(fmt_read_token(in)));
+    const std::string tok = fmt_read_token(in);
+    if (tok.empty()) return;
+    *dst = eil::to_size_t(tok);
 }
 template <> void fmt_into<double>(FormattedInput& in, double* dst) {
-    *dst = eil::to_double(fmt_read_token(in));
+    const std::string tok = fmt_read_token(in);
+    if (tok.empty()) return;
+    *dst = eil::to_double(tok);
 }
 template <> void fmt_into<std::string>(FormattedInput& in, std::string* dst) {
     *dst = fmt_read_rest(in);
@@ -748,12 +776,17 @@ UnstructuredGrid::UnstructuredGrid(const eil::Array<eil::Array<Vector3>>& bPoint
     // D:466-470 the first check is made against bPoints[0][0] and the last point of the
     // LAST list; both index operations are D array reads, so an empty bPoints is
     // ArrayIndexError here (corpus us.pave.empty).
-    if (distance_between(bPoints[0][0], bPoints[bPoints.length() - 1]
-                                          [bPoints[bPoints.length() - 1].length() - 1]) > tol) {
+    // D evaluates its arguments left to right, so bPoints[0][0] is read BEFORE
+    // bPoints[$-1][$-1]: an empty outer list (corpus row 695) and an empty FIRST list
+    // (row 697) both report index [0], while an empty LAST list reports the underflowed
+    // index [18446744073709551615] (row 696). C++ leaves argument order unspecified, so
+    // the two reads are sequenced explicitly here.
+    const Vector3& first_pt = bPoints[0][0];
+    const eil::Array<Vector3>& last_list = bPoints[bPoints.length() - 1];
+    const Vector3& last_pt = last_list[last_list.length() - 1];
+    if (distance_between(first_pt, last_pt) > tol) {
         const std::string msg = "Beginning point and end point do not coincide: " +
-            eil::to_string(bPoints[0][0].toString()) + " " +
-            eil::to_string(bPoints[bPoints.length() - 1]
-                                   [bPoints[bPoints.length() - 1].length() - 1].toString());
+            eil::to_string(first_pt.toString()) + " " + eil::to_string(last_pt.toString());
         throw eil::ErrorBase(msg); // D:469 bare Error: no file/line (T-922)
     }
     eil::Array<size_t> bndry_vtx_ids;
@@ -1731,7 +1764,18 @@ void UnstructuredGrid::read_from_raw_binary_file(const std::string& fileName, do
     std::FILE* raw = d_open(fileName, "rb");
     DFileGuard fin(raw);
     const std::string expected_header = "unstructured_grid 1.0"; // D:1338
-    std::vector<char> found_header(expected_header.size(), '\0');
+    // D:1339's `new char[expected_header.length]` is UNINITIALISED memory, and a short
+    // rawRead leaves the tail of it intact, so the tail bytes reach the error message
+    // (D:1343 pastes the whole buffer with to!string(char[])). Three corpus rows carry
+    // them: 924 has 2 non-printable bytes after "structured_grid 1.0", 925 has 7 after
+    // "unstructured_g", 926 has 21 for an empty file — probe MEASURED FINDINGS item 10
+    // states that the printable prefix and the COUNT are the contract and the bytes
+    // themselves are not portable in either direction. The port therefore fills the tail
+    // with a byte that is (a) non-printable, so upr() renders it as '?' and counts it
+    // exactly like D's garbage, and (b) not NUL, because eil::ThrowableBase carries its
+    // message through std::runtime_error, whose what() would truncate at the first NUL
+    // and lose the count entirely.
+    std::vector<char> found_header(expected_header.size(), '\x01');
     d_raw_read(raw, found_header.data(), found_header.size());   // D:1340
     if (std::string(found_header.data(), found_header.size()) != expected_header) {
         // D:1342-1343. to!string(found_header) of a char[] keeps every byte, including
@@ -1800,7 +1844,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
 
     dimensions = d_to_int(getHeaderContent("NDIME")); // D:1407
     f.do_rewind();                                       // D:1411
-    ncells = static_cast<size_t>(eil::to_long(getHeaderContent("NELEM"))); // D:1412
+    ncells = eil::to_size_t(getHeaderContent("NELEM")); // D:1412
     set_length_d(cells, ncells);                            // D:1413
     for (size_t i = 0; i < ncells; ++i) {
         if ((i % 100000) == 0) { d_stdout_write("."); d_stdout_flush(); } // D:1417
@@ -1812,13 +1856,13 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
         eil::Array<size_t> vtx_id_list;
         if (tokens.length() == static_cast<size_t>(2 + nv_expected)) {
             // All items present, including the cell index at the end. D:1431
-            indx = static_cast<size_t>(eil::to_long(tokens[tokens.length() - 1]));
+            indx = eil::to_size_t(tokens[tokens.length() - 1]);
             for (size_t j = 1; j + 1 < tokens.length(); ++j) {
-                vtx_id_list.append(static_cast<size_t>(eil::to_long(tokens[j])));
+                vtx_id_list.append(eil::to_size_t(tokens[j]));
             }
         } else if (tokens.length() == static_cast<size_t>(1 + nv_expected)) {
             for (size_t j = 1; j < tokens.length(); ++j) { // D:1435
-                vtx_id_list.append(static_cast<size_t>(eil::to_long(tokens[j])));
+                vtx_id_list.append(eil::to_size_t(tokens[j]));
             }
         } else {
             std::string msg = "Incorrect number of items on line for element."; // D:1437
@@ -1853,7 +1897,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
     }
 
     f.do_rewind();                                                  // D:1477
-    nvertices = static_cast<size_t>(eil::to_long(getHeaderContent("NPOIN"))); // D:1478
+    nvertices = eil::to_size_t(getHeaderContent("NPOIN")); // D:1478
     set_length_d(vertices, nvertices);                                 // D:1479
     for (size_t i = 0; i < nvertices; ++i) {
         if ((i % 100000) == 0) { d_stdout_write("."); d_stdout_flush(); }
@@ -1865,7 +1909,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
             x = scale * eil::to_double(tokens[0]);
             y = scale * eil::to_double(tokens[1]);
             if (ntokens == 3) {
-                indx = static_cast<size_t>(eil::to_long(tokens[2]));
+                indx = eil::to_size_t(tokens[2]);
             } else {
                 indx = i;
             }
@@ -1875,7 +1919,7 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
             y = scale * eil::to_double(tokens[1]);
             z = scale * eil::to_double(tokens[2]);
             if (ntokens == 4) {
-                indx = static_cast<size_t>(eil::to_long(tokens[3]));
+                indx = eil::to_size_t(tokens[3]);
             } else {
                 indx = i;
             }
@@ -2067,19 +2111,19 @@ void UnstructuredGrid::read_from_su2_file(const std::string& fileName, bool true
     nfaces = faces.length(); // D:1705
 
     for (size_t i = 0; i < faces.length(); ++i) faces[i]->is_on_boundary = false; // D:1710
-    nboundaries = static_cast<size_t>(eil::to_long(getHeaderContent("NMARK")));    // D:1713
+    nboundaries = eil::to_size_t(getHeaderContent("NMARK"));    // D:1713
     for (size_t i = 0; i < nboundaries; ++i) {
         const std::string tag = getHeaderContent("MARKER_TAG");   // D:1715
         eil::Array<size_t> face_id_list;
         eil::Array<int> outsign_list;
-        const size_t nelem = static_cast<size_t>(eil::to_long(getHeaderContent("MARKER_ELEMS")));
+        const size_t nelem = eil::to_size_t(getHeaderContent("MARKER_ELEMS"));
         for (size_t j = 0; j < nelem; ++j) {
             eil::Array<std::string> tokens = split_ws(d_strip(f.readln()));
             const int vtk_type = d_to_int(tokens[0]); // D:1721 (read, not used further)
             (void)vtk_type;
             eil::Array<size_t> my_vtx_id_list;
             for (size_t k = 1; k < tokens.length(); ++k) {
-                my_vtx_id_list.append(static_cast<size_t>(eil::to_long(tokens[k])));
+                my_vtx_id_list.append(eil::to_size_t(tokens[k]));
             }
             const std::string faceTag = makeFaceTag(my_vtx_id_list.all());
             if (faceIndices.contains(faceTag)) {                    // D:1725
