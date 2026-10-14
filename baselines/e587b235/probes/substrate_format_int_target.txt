@@ -1,0 +1,26 @@
+int.word|src=[two]|class=std.conv.ConvException|msg=[Unexpected 't' when converting from type string to type int]
+size_t.word|src=[two]|class=std.conv.ConvException|msg=[Unexpected 't' when converting from type string to type ulong]
+long.word|src=[two]|class=std.conv.ConvException|msg=[Unexpected 't' when converting from type string to type long]
+uint.word|src=[two]|class=std.conv.ConvException|msg=[Unexpected 't' when converting from type string to type uint]
+
+int.neg|src=[]|no-throw|value=-3
+long.neg|src=[]|no-throw|value=-3
+size_t.neg|src=[-3]|class=std.conv.ConvException|msg=[Unexpected '-' when converting from type string to type ulong]
+uint.neg|src=[-3]|class=std.conv.ConvException|msg=[Unexpected '-' when converting from type string to type uint]
+short.neg|src=[]|no-throw|value=-3
+ubyte.neg|src=[-3]|class=std.conv.ConvException|msg=[Unexpected '-' when converting from type string to type uint]
+
+int.overflow|src=[99999999999999999999]|class=std.conv.ConvOverflowException|msg=[Overflow in integral conversion]
+size_t.overflow|src=[99999999999999999999]|class=std.conv.ConvOverflowException|msg=[Overflow in integral conversion]
+short.overflow|src=[]|class=std.conv.ConvOverflowException|msg=[Overflow in integral conversion]
+
+int.empty-input|src=[]|class=std.format.FormatException|msg=[parseToFormatSpec: Cannot find character 'n' in the input string.]
+size_t.empty-input|src=[]|class=std.format.FormatException|msg=[parseToFormatSpec: Cannot find character 'n' in the input string.]
+int.exhausted|src=[]|class=std.format.FormatException|msg=[parseToFormatSpec: Cannot find character 'n' in the input string.]
+size_t.plus|src=[+7]|class=std.conv.ConvException|msg=[Unexpected '+' when converting from type string to type ulong]
+int.plus|src=[]|no-throw|value=7
+size_t.hex|src=[x10]|no-throw|value=0
+int.hex|src=[x10]|no-throw|value=0
+
+double.word|src=[zero]|class=std.conv.ConvException|msg=[no digits seen for input "zero".]
+double.empty|src=[]|class=std.format.FormatException|msg=[parseToFormatSpec: Cannot find character 'v' in the input string.]

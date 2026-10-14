@@ -249,7 +249,11 @@ template <> void fmt_into<long>(FormattedInput& in, long* dst) {
     *dst = eil::to_long(fmt_read_int(in));
 }
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
-    *dst = static_cast<size_t>(eil::to_long(fmt_read_int(in)));
+    // D reads into a size_t (sgrid.d:910 `size_t ntags`), and std.format's integer reader
+    // hands the token to std.conv, so the failure text names the RESOLVED target type:
+    // "ulong", and it rejects a leading sign. Measured in
+    // baselines/e587b235/probes/substrate_format_int_target.txt (size_t.word, size_t.neg).
+    *dst = eil::to_size_t(fmt_read_int(in));
 }
 template <> void fmt_into<double>(FormattedInput& in, double* dst) {
     *dst = eil::to_double(fmt_read_float(in));

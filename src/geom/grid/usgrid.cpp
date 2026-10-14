@@ -343,6 +343,9 @@ template <> void fmt_into<long>(FormattedInput& in, long* dst) {
 template <> void fmt_into<size_t>(FormattedInput& in, size_t* dst) {
     const std::string tok = fmt_read_token(in);
     if (tok.empty()) return;
+    // The size_t targets here are D's nvertices/ncells/nfaces/nboundaries (grid.d:45-46,
+    // usgrid.d:426), so the failure text must name ulong and reject a sign, exactly as the
+    // direct `to!size_t` sites above do (substrate_format_int_target.txt, size_t.word).
     *dst = eil::to_size_t(tok);
 }
 template <> void fmt_into<double>(FormattedInput& in, double* dst) {
