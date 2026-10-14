@@ -144,3 +144,77 @@ sec3 47  | cls  40  | make 31  | + D 侧 writeln 文本若干组（14/11/10/10/8
 或先做 G4 但把 `sgrid.d:1316` 那条路径标成"待 G5 验证"并**不注册**相关语料行。
 `usgrid.d` 还额外 `import geom.grid.paver`（选择性 import `PavedGrid, POINT_LIST, FACE_LIST, CELL_LIST`）
 → **G5 必须等 G2 落地**。
+
+## 9. G4（`sgrid.d` 1865）与 G5（`usgrid.d` 2524）开工前必读（2026-10-14 主线程实测）
+
+### 9.1 语料的**陈旧状态**——先修它，再写实现
+`baselines/e587b235/probes/geom_grid_sgrid.txt` 现在是 **2,079 行**，但
+`probes/geom/grid/probe_sgrid.d`（1,673 行，**能编、能跑，rc=0**）当场重跑产出
+**2,097 行**。`diff` 只有**一个 hunk**：`1096,1113d1095`，即前一次作业在**抓完基线之后**
+又给探针加了 18 行 `sg.frmt.*`（坏格式头、空版本串、双空格版本号一类的解析失败路径），
+**没有来得及重抓基线**。该 hunk 是**纯插入**，原 2,079 行**一行未变**
+（这很重要：说明重抓是安全的，不是"基线漂移"）。
+⇒ **开工第一步**：按 §4 的命令重抓 `geom_grid_sgrid.txt`（2,097 行），
+自己再跑第二遍确认逐字节相同，然后才动 C++。任何"先照着 2,079 行写、回头再补"的做法都会
+把 18 行解析失败路径写丢——而那 18 行恰好是本模块最容易漏的异常文本。
+
+### 9.2 G5 **还没有任何语料**
+`baselines/e587b235/probes/` 里**没有** usgrid 相关文件，`probes/geom/grid/` 里也**没有**
+`probe_usgrid.d`。⇒ G5 必须先写 D 探针并抓基线，才允许碰 `src/geom/grid/usgrid.*`。
+
+### 9.3 实测构造密度（决定语料必须覆盖什么）
+| | sgrid.d | usgrid.d |
+|---|---|---|
+| `^^` | **15** | 0 |
+| `atan2` | 1（:1294） | 0 |
+| `sin`/`cos` | 2/2（**:1299/:1304 同自变量成对**） | 0/0 |
+| `to!double` | **13** | 6 |
+| `to!string` | 3 | **29** |
+| `assert` | 32 | 42 |
+| `throw` | **42**：29 `new Error` + 12 `GeometryException` + 1 `Exception` | **28**：8 `new Error` + 19 `GeometryException` + 1 `Exception` |
+| `unittest` 块 | 1 | 1 |
+| `.dup` | 1 | **19** |
+| `iota` | 1 | 0 |
+| `File(`/`gzip`/`pipeShell` 站点 | 21 | 21 |
+| `version(...)` | 0 | 0 |
+
+由这张表直接得出的硬要求：
+1. `sgrid.d:1299` 与 `:1304` 是 `r*cos(theta…)` 与 `r*sin(theta…)` **同一自变量成对**
+   → 必须走 **`eil::cos`/`eil::sin`**（T-920：两个编译器都从 -O1 起融合成 glibc
+   `sincos()`，1 ULP，约每 1466 个分量一次）。`:1294` 的 `atan2` → **`eil::atan2`**
+   （T-910：Phobos 自带实现，与 glibc 在轴附近差 1 ULP，过零放大成 2.9e-09 相对）。
+2. 15 处 `^^` → **`eil::pow`**，**不得展开成乘法**（`(1.0-r)^^3` 这类三次曲线插值权重
+   是逐位可观测的）。
+3. 29 + 8 = **37 处 `throw new Error`**：按 **T-922** 实测，D 的裸 `object.Error`
+   `.file==""`、`.line==0`，所以端口必须写 `eil::ErrorBase(msg)`**不带** `__FILE__/__LINE__`；
+   而 31 处 `GeometryException`（`geometry_exception.d:11` 的默认实参是
+   `file=__FILE__, line=__LINE__`）**要**带抛出点。同一文件里两种规则并存，
+   逐站点看 D 的类，不要按端口方便统一。
+4. 74 处 `assert` → `eil_assert` / `eil_assert_msg`（T-918：D 的 `AssertError.msg`
+   分别是 `"Assertion failure"` 与**只有消息本身**，没有条件文本、没有类名前缀）。
+5. 19 处 `to!string` 与 13+6 处 `to!double`：前者是 `%.6g` 语义、后者由 **T-913**
+   按 443 个操作数重测过 7 条规则（`+nan` 可转但 `+inf` 不可、`1e` 与 `1e+` 的文本不同、
+   `_` 只在紧跟数字时才是分隔符、hex 尾数后 `p` 必需……）。**都是异常/文本可观测点**，
+   语料必须覆盖到出错分支，不能只走 happy path。
+6. `gzip`/`pipeShell` 各 21 处：比的是**解压后的 payload**，容器字节含 mtime，
+   D 自己两次运行都不相同（§2 第 1 条；`sgrid.d` 用 `pipeShell("gunzip -c …")` 走 popen）。
+
+### 9.4 与 G3 已落资产的**对齐点**（别把已绿的东西改红）
+`src/geom/grid/paver2d.hpp` 现在是**模板 + 前向声明**的写法，因为当时 usgrid 不存在：
+它的测试 fixture 手抄了 `usgrid.d:112`（`makeFaceTag`）、`:154`（`USGFace`）、
+`:218`（`USGCell`）、`:40-56`（`USGCell_type`），并且**两种容器写法**
+（`eil::Array<std::shared_ptr<USGFace>>` 与 `eil::Array<USGFace*>`）都实例化并验证过
+结果一致（`geom_grid_paver2d` 480/480 行 + 396/396 坐标）。
+⇒ G5 落地时必须：①`USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义**要与
+fixture 逐字段一致，或改 fixture 并**重跑 `geom_grid_paver2d`** 证明仍是 480/480；
+②把 `fill_interior` 从"模板 + 前向声明"收敛回 D 的非模板签名
+（`ref USGFace[] faces` 等），收敛时**不得**改变任何已验证数值；
+③删掉 paver2d.hpp 里那条"G5 未转"的说明段，换成指向真实定义。
+这三步是 `ctest:geom_grid_paver2d` 能不能继续算证据的前提。
+
+### 9.5 顺序
+`paver`(G2，进行中) → `usgrid`(G5，先写探针) → `sgrid`(G4) 或 G4 与 G5 同人成对做
+（§8 的双向耦合）→ G6：`sgrid_demo`(101)、`usgrid_demo`(103)、`paver_demo`(115)、
+`paver2d_demo`(51) 的 D 基线**已全部抓好在仓库里**（`geom_grid_paver2d_demo.txt` 98 字节、
+`geom_grid_paver_demo.txt` 5,097 字节 + `paved_grid.vtk` 141,490 字节等），
+再加 `gmopatch.d`(171)、`meshpatch.d`(100)。
