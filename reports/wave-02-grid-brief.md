@@ -91,3 +91,56 @@ cd /tmp/w2_gN && ctest -R "<你的测试名正则>" --output-on-failure
 不允许只写"通过"。每个结论带产生它的数字。发现 substrate 缺口 → 写进最终报告
 交主线程登记 T-9xx，**不要自己改 `substrate/`、`CMakeLists.txt`、`reports/backlog.md`、
 `reports/task-log.md`、别人的模块文件或别人的 cmake 片段**。
+
+## 7. G2（paver）恢复作业的**实测起点**（2026-10-14，主线程核对）
+
+前一个代理在 150 轮上限处被打断，产物**不在构建图里**，全部在 `wip/geom-grid-paver/`：
+
+| 文件 | 行数 | 状态 |
+|---|---|---|
+| `wip/geom-grid-paver/paver.hpp` | 268 | 声明齐（30 个 D 成员都在） |
+| `wip/geom-grid-paver/paver.cpp` | 1,720 | 按 D 顺序写的实现（D:21→D:1731），**未经语料验证** |
+| `wip/geom-grid-paver/test_geom_grid_paver.cpp` | 624 | 只写到 `sec3.ipr.*` 一节 |
+| `wip/geom-grid-paver/wave2_grid_g2.cmake.register` | — | 现成的注册片段 |
+
+**停在哪一行，是被量出来的**：`ctest:geom_grid_paver` 当前只发出 **219 行**，
+其中 **217 行字节相同**，最后一行是基线第 219 行 `sec3.ipr.emptyrow|0`，
+下一条应为 `make.npoints|4`。⇒ **缺的是测试侧各节的生成代码，不是 paver.cpp 的算术**。
+基线语料共 **1,961 行**，分组统计（`awk -F. '{print $1}'`）：
+
+```
+pave 922 | node 169 | sec2 131 | seam 127 | row 122 | smk 90 | seam2 62
+sec3 47  | cls  40  | make 31  | + D 侧 writeln 文本若干组（14/11/10/10/8/8/8/8 …）
+```
+
+**作业协议（必须照做，否则又是一次白干）**：
+
+1. 先把四个文件移回 `src/geom/grid/`、`tests/`，**但先不要注册测试**。
+   `cmake/wave2_grid_g2.cmake` 的注册是 `if(EXISTS tests/…)`，所以测试文件一落地就会红。
+   约定：**只有当整条语料 0 差异时才写注册片段**；未完成的实现可以留在 `src/` 里编译
+   （编译不产生红测试），但门禁必须始终 93/93 全绿。
+2. 按语料**分组顺序**一节一节补测试生成代码：`make.*` → `cls.*` → `node.*` → `row.*` →
+   `pave.*` → `seam.*`/`seam2.*` → `smk.*` → 剩余 `writeln` 文本组。每补一节就
+   `diff` 一次，把"本节第一处不同的行号"记进最终报告——**不要**攒到最后一次性比对。
+3. 语料是**全或无**的门禁（逐行字节相同），没有"先放过一半"的中间态。
+   如果某一节确实做不到，**停下来报告**：给出该节行号、D 值、端口值、你已排除的假设，
+   把现状留在 `wip/`，**绝不**放宽比较、改基线、或按容差放行。
+4. `paver.cpp` 里那套**本地** `sin`/`cos` volatile 规避（头注释 8-18 行）**删掉**，
+   改用 substrate 的 `eil::sin`/`eil::cos`（T-920 已入库）。同理成对 `^^` → `eil::pow`、
+   `atan`/`atan2` → `eil::atan`/`eil::atan2`。这些都是已钉死的规则，不要再造副本。
+5. `paver.d` **不**依赖 sgrid/usgrid（实测 `grep -n "StructuredGrid\|UnstructuredGrid" paver.d`
+   只在 :145 的一条注释里提到 `USGCell_type`），所以 G2 与 G4/G5 无顺序关系。
+
+## 8. G4/G5 的真实依赖（更正第 0 节表格的暗示，2026-10-14 实测）
+
+`sgrid.d` 与 `usgrid.d` **互相引用**，不是单向：
+
+- `usgrid.d:553` `this(const StructuredGrid sg, const string new_label="")` — usgrid 用 sgrid 类型
+- `sgrid.d:1316` `auto usg = new UnstructuredGrid(this);`（`write_to_su2_file` 内）— sgrid 用 usgrid 类型
+- 两者都通过 `import geom;`（`geom/grid/package.d` 同时 `public import` 二者）拿到对方的名字
+
+⇒ 在 C++ 里必须**成对**做，头文件互相前向声明、`.cpp` 里再 include 对方；
+单独先做 G4 会留下一个"要等 G5 才能验证"的函数体。安排时把 G4+G5 当一个工作包，
+或先做 G4 但把 `sgrid.d:1316` 那条路径标成"待 G5 验证"并**不注册**相关语料行。
+`usgrid.d` 还额外 `import geom.grid.paver`（选择性 import `PavedGrid, POINT_LIST, FACE_LIST, CELL_LIST`）
+→ **G5 必须等 G2 落地**。

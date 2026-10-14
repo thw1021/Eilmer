@@ -114,10 +114,31 @@
   usg `flow 181,024 / grid 145,581` 字节。
   **第二半受阻，不假装完成**："在 C++ 侧可跑"需要候选 `e4shared`，那是 **Wave 5** 的产物；
   Wave 2 无论怎么做都造不出这条证据 → 保持 `[~]`，随 Wave 5 复核
-- [ ] **T-019** `geom/misc/sketch.d`(964) + 配套 `rotating_a.d`(49) + `drifting_eye.d`(65) +
-  `sketch_demo.d`(83) — 从 T-013 拆出（原清单误记为已做）。
-  依赖 `geom.surface`/`geom.volume`/`geom.grid` 的具体子类（sketch 把曲面/体画成图），
-  故排在 **T-012 与 T-011 之后**；`libplot.d` 支仍按 `with_libplot` 变体推迟
+- [ ] **T-019** `geom/misc/sketch.d`(964) + `sketch_demo.d`(83) — 从 T-013 拆出（原清单误记为已做）。
+  **依赖更正（2026-10-14 实测，原条目把它排错了波次）**：本条原写作"依赖 geom.grid，
+  故排在 T-012 **与 T-011** 之后"。实测 `grep -cE "sgrid|usgrid|StructuredGrid|
+  UnstructuredGrid|geom\.grid" sketch.d` = **0** —— sketch.d 的**函数体完全不碰网格**，
+  它 `import geom;`（:36）只是包聚合器。它真正用的是 surface/volume/gpath 的具体子类
+  （demo 里 `new CoonsPatch(...)`、`new Arc(...)`），**全部已在 T-012 落地**。
+  另：`import ntypes.complex;`（:29）是**无条件**的，但 `Complex` 在全文件出现次数 = 1
+  （就是那行 import 自己）⇒ 无实际依赖，不需要等 T-904。
+  ⇒ **T-019 现在就能做，不等 T-011**。参照侧已实测可跑：
+  `ldc2` 编 `sketch_demo.d` 并链接 **rc=0**，stdout **恰好 2 行**、stderr 0 字节：
+  `Begin demonstration of the geometric rendering with svg` / `Done.`；
+  写出三个文件产物 `test.svg` 9,739 字节（md5 `510aea9d…`）、
+  `test2.svg` 1,955（`60bc566d…`）、`test3.svg` 8,856（`ae87fcbc…`）。
+  **D 侧连跑两次自比**：三个文件与 stdout 全部 SAME ⇒ 可当基线（同 T-015 的先自测再入库规矩）。
+  **`rotating_a.d`(49) 与 `drifting_eye.d`(65) 从本条移出** → 新开 **T-921**：
+  它们不是"排在后面"的问题，是**本机根本没有 GNU libplot**（`pkg-config --exists plplot` 失败、
+  `ldconfig -p | grep -c plplot` = 0），`ldc2 -c` 能过但**链接失败**
+  （`undefined reference to pl_parampl / pl_newpl / pl_selectpl / pl_openpl / pl_fspace`），
+  且两者**都没有 `void main`** ⇒ 参照侧连二进制都产不出来，Wave 2 抓不到任何基线。
+  `sketch.d` 自己的 libplot 支在 `version(with_libplot)` 内（:33-34、:62、:152、:178、:261），
+  按既有约定原样保留不编译
+- [ ] **T-921** `geom/misc/libplot.d`(428) + `rotating_a.d`(49) + `drifting_eye.d`(65)：
+  **外部库缺失**，非转写难度问题（判据见 T-019 本条内的实测）。装好 libplplot 之后再做，
+  或按 `with_libplot` 变体推到 Wave 12（与 T-904 `complex_numbers` 同批）。
+  留此条是为了**防止将来又把它当"T-011 做完就能做"** 而凭空造桩
 
 - [ ] **T-016** Wave 2 收尾报告 `wave-02.md` + `wave-02` tag + 本清单更新
 
