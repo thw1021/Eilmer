@@ -164,7 +164,11 @@ inline std::string string_or_null(const char* p) {
 inline int to_int_from_double(double v) {
     if (std::isnan(v)) throw eil::ExceptionBase("Input was NaN");
     // int range, exclusive of the endpoints, checked without overflow.
-    if (v >= static_cast<double>(std::numeric_limits<int>::max())) {
+    // Measured (probes/substrate/probe_to_int_from_double.d): the bound is STRICTLY
+    // exclusive on the top side too -- to!int(2147483647.0) converts, while 2147483647.5
+    // and 2147483648.0 raise "Conversion positive overflow". `>=` here rejected the
+    // largest legal int itself, contradicting the comment above it.
+    if (v > static_cast<double>(std::numeric_limits<int>::max())) {
         throw eil::ExceptionBase("Conversion positive overflow");
     }
     if (v < static_cast<double>(std::numeric_limits<int>::min())) {

@@ -1,0 +1,16 @@
+int.max|v=2147483647|no-throw|value=2147483647
+int.max+0.5|v=2147483647.5|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]
+int.max+1|v=2147483648|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]
+int.min|v=-2147483648|no-throw|value=-2147483648
+int.min-0.5|v=-2147483648.5|class=std.conv.ConvOverflowException|msg=[Conversion negative overflow]
+int.min+0.5|v=-2147483647.5|no-throw|value=-2147483647
+trunc.toward.zero.pos|v=3.8999999999999999|no-throw|value=3
+trunc.toward.zero.neg|v=-3.8999999999999999|no-throw|value=-3
+nan|v=nan|class=std.conv.ConvException|msg=[Input was NaN]
+inf|v=inf|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]
+minus.inf|v=-inf|class=std.conv.ConvOverflowException|msg=[Conversion negative overflow]
+1e30|v=1e+30|class=std.conv.ConvOverflowException|msg=[Conversion positive overflow]
+minus.1e30|v=-1e+30|class=std.conv.ConvOverflowException|msg=[Conversion negative overflow]
+zero|v=0|no-throw|value=0
+minus.zero|v=-0|no-throw|value=0
+just.below.min|v=-2147483647.9999001|no-throw|value=-2147483647
