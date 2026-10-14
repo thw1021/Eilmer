@@ -1,4 +1,4 @@
-# Wave 02 报告（进行中）— 几何库 geom/ 与 gasdyn/ 迁移
+# Wave 02 报告（已完成）— 几何库 geom/ 与 gasdyn/ 迁移
 
 参考：gdtk `e587b235`（ldc2 1.40.0）。产物：`/home/tang/packages/Eilmer`，git 逐阶段提交。
 范围：geom 非 luawrap 部分 + gasdyn 非 Lua 部分。Wave 2 的实范围与排除理由见
@@ -6,7 +6,8 @@
 所有待办项一律指回 `reports/backlog.md`，不在这里另立清单。
 
 > 逐任务的详细过程记录在 `reports/task-log.md`（T-010、T-017、T-014、T-013、T-910、
-> T-015/stage A、T-013续/stage B/T-913 各一节）。本报告是阶段汇总视角。
+> T-015/stage A、T-013续/stage B/T-913、T-011 各段 G1–G6、T-920、T-922/923/925/914、
+> T-927、T-019、以及收尾批 T-929/T-928/T-926① 各一节）。本报告是阶段汇总视角。
 
 ## 1. 已完成
 
@@ -14,12 +15,11 @@
 
 | 指标 | 值 |
 |---|---|
-| 已转写 C++ 模块头文件 | **75** 个（`find src -name '*.hpp'`） |
-| C++ 源码行（src + substrate） | **29,376** |
-| 测试/demo 行 | **30,337** |
-| D 对照语料总行数 | **84,656**（`cat baselines/e587b235/probes/*.txt`；含本轮新增的
-  sin/cos 415、stmatrix 失败路径 7、throw 身份 15、sketch 682 与四处补档的孤儿测量） |
-| CTest | **100 个测试：Debug 100/100、`-DEIL_SLICE_CHECK=ON` 100/100、Release 100/100**（本轮新增 7 条：`geom_grid_paver` 1、sketch 5、`nm_stmatrix_fails` 1；另有 `-flto -O3` 档单跑 grid/sin_cos 全绿）。（上一版此处记的是"87 个、Release 86/87、故意留红"——红行即 T-919，现已闭合；`geom_grid_grid` **643/643**、`geom_grid_nanadd` **638/638**、`substrate_sin_cos_pair` **415/415** 在四档构建一致） |
+| 已转写 C++ 模块头文件 | **81** 个（`find src -name '*.hpp'`） |
+| C++ 源码行（src + substrate） | **35,386** |
+| 测试/demo 行 | **37,179** |
+| D 对照语料总行数 | **87,263**（`cat baselines/e587b235/probes/*.txt`；收尾批又加三条 substrate 语料：`substrate_array_init` 30、`substrate_conv_int_typename` 92、`substrate_tostring_dispatch` 25） |
+| CTest | **113 个测试：default 113/113、Release 113/113、`-DEIL_SLICE_CHECK=ON` 113/113**。收尾批净增 3 条 substrate 门禁：`substrate_array_init`（T-929，30 行 0 差）、`substrate_conv_int_typename`（T-928，67 核对 / 29 窄类型跳过 / 0 差）、`substrate_tostring_dispatch`（T-926①，12 核对 / 13 需反射跳过 / 0 差）。此前从 87（含 Release 86/87 的 T-919 红行）一路推到 113：`geom_grid_grid` **643/643**、`geom_grid_paver` **1961/1961**、`geom_grid_nanadd` **638/638**、`substrate_sin_cos_pair` **415/415** 四档一致 |
 | 溯源 | `provenance/manifest.yml` 每条带 `d_blob`；`tools/check_staleness.sh` → `no drift` |
 | gdtk 树写入 | **0**（探针一律编 `/tmp/gdtk_shadow` 副本） |
 | 不在构建图内的半成品 | **无**（`wip/` 已清空删除：G2 在 1961/1961 的门禁下落地，见 `task-log.md`） |
@@ -82,6 +82,30 @@
 | `beziertrianglepatch` 是 `^^` 大户 | 我说它重度用 `^^` | 只有 3 处且全是**整数臂**；26 个 `iota` 全整数降序，累加写法恰好同值 |
 | ldc2 常量折叠暴露面为 0（T-909） | 先前"grep 声明处命中 0"的检索漏了函数体内字面量除法 | `svg.d:55` 的 `90.0/25.4` 就是实例，折叠值与运行值差 1 ULP；改用折叠出的十六进制字面量后 157 行 0 差异 |
 
+### 1.5 收尾批：三条 substrate 债一次清（T-929 / T-928 / T-926①）
+
+Wave 2 最后一步是 backlog 里攒下的三条 substrate 缺口，同批做（都要重建 `eil_geom`，且都不许
+由子代理碰 substrate，只能主线程落）。全部**先量后写**——每条的证据语料早就抓在盘上（T-011 G4/G5、
+T-019 sketch、T-927），这一步是"接线 + 实现 + 复跑三配置给数字"，探针重跑逐字节可复现：
+
+| 债 | 实测事实（推翻的直觉） | 落点 | 门禁 |
+|---|---|---|---|
+| **T-929** | `new double[n]` 与 `arr.length = n` **都填 NaN**（`0x7ff8000000000000`），不是 0；OOM 报 D 运行时位置 `rt/lifetime.d(1454)` | `array.hpp` `set_length` 增长槽走 `d_init<T>()`；删 `sgrid.cpp` `d_set_length`、`usgrid.cpp` `set_length_d`、测试 `d_init_doubles` 三个替身，51 处直连 `.set_length` | `substrate_array_init` 30 行；`geom_grid_usgrid` 5 条 OOM 行改由异常携带 `file()/line()` 修正 |
+| **T-928** | 整数 string→int **有逐目标类型的范围检查**，越界报 `ConvOverflowException "Overflow in integral conversion"`；有符号两端不对称；`ulong` 最大值放不进有符号累加器 | `error.hpp` 加 `ConvOverflowException`；`parse_int_strict` 改按 `T` 模板、`make_unsigned_t<T>` 累积逐位查界；删 `usgrid.hpp` 本地类 + `usgrid.cpp` `d_to_int` + `time_utils.cpp` `to_int_d` 三个扫描器；数值→int 两条 D 路径**按来源分立**只换类不改文本 | `substrate_conv_int_typename`（此前**无门禁**——正是缺口能长存的原因）；`test_util_time_utils` 断言从"只比 msg"加粗到**断言 D 类名** |
+| **T-926①** | `to!string` 对带无参 `toString()` 的 struct **和** class 都调它；无参重载**优先于** `(fmt,Args…)`；只有 fmt 版**不**被用 | `format.hpp` 加 `has_noarg_to_string`（void_t 探零参 `toString()`）与分派分支；容器仍 `[a,b]` dump 且**逐元素派发**；trait 随 `to_string` 重导出到 `eil::` | `substrate_tostring_dispatch` 25 行语料里 12 核对、13 需 C++ 反射（字段 dump / 类名 / enum 名）复现不了的跳过并点名 |
+
+**判别力每次都自证**：T-929 把 `grow_init` 退回 `T()` → 两道门禁转红；T-928 把范围检查改成
+`if(false)` → 5 条 overflow 语料行 + 2 条 time_utils 行转红（实测 `2147483648` 回绕成 `-2147483648`）；
+T-926① 若去掉分派分支 `to_string(Simple{7})` 直接编译失败，测试里 `static_assert` 反向锁死
+"fmt-only 不派发"。**三配置 113/113、`check_staleness` 无漂移、探针逐字节复现**。
+
+**这三条对后波的直接意义**：`to!string`（1,121 个 `!` 实例里的绝大多数）与整数解析是 Wave 3 `gas/`、
+Wave 4 `fluidblock`、Wave 5 求解器日志的硬入口——T-926① 让"把对象写进消息文本"从一个调用点派发，
+不必逐点手写；T-928 把端口里三处各写一遍的整数扫描收敛成一处。**仍欠**：T-926② `Slice` 动态数组
+默认实参、T-926③ `readln()`（与 T-923 同一 EOF-返空语义），以及 **T-930**（Phobos `to!double`
+十进制→二进制**不是正确舍入**——15 token 里 2 个差 1 ULP 且 D 是错的一方，Wave 3 起是硬依赖，实现前
+须先扫分歧率）、**T-931**（`paver` 内部铺面算术差 1 ULP，产物级、现有 1961 行语料覆盖不到）。
+
 ## 2. 与 D 非 1:1 之处
 
 全部登记在 `provenance/fidelity.yml` 并在对应 task-log 小节解释。本 Wave 新增的类别：
@@ -103,44 +127,37 @@ CoonsPatch 角点检查只报第一个开角；`channelpatch` 零叉乘得 `[pA,
 
 ## 3. 待完成
 
-**一律见 `reports/backlog.md`（唯一权威清单）**。本 Wave 尚未闭合的 ID：
-T-011（geom/grid：G1 `grid.d` 490、G3 `paver2d.d` 52、**G2 `paver.d` 1737** 三条已闭合
-（G2 于本轮从 219/1961 的归档状态推到 **1961/1961、0 差异**，且**探针与基线全程未改**
-`sha256 d96d146f…`）；余 **G4 `sgrid.d` 1865 + G5 `usgrid.d` 2524**——这两条是一个工作包，
-因为 `usgrid.d:553` 的构造入参是 `const StructuredGrid`、而 `sgrid.d:1313-1318` 的
-`write_to_su2_file` 是**纯委托**给 `new UnstructuredGrid(this)`，
-sgrid 语料里的 `sg.su2.*` 行必须等 usgrid 才能复现；usgrid 还需要已落地的 paver
-（选择性 import `PavedGrid, POINT_LIST, FACE_LIST, CELL_LIST`）；
-另余 G6 四个 demo（`sgrid_demo` 101、`usgrid_demo` 103 未抓；
-`paver_demo` 115、`paver2d_demo` 51 的 D 基线已在库中）+ `gmopatch.d` 171 / `meshpatch.d` 100
-（两者都要 `StructuredGrid` 类型，随 sgrid 之后））、
-**T-019 已闭合**（`sketch.d` 964 + `sketch_demo.d` 83：语料 682 行 0 差异、
-251/251 数值逐位、demo stdout 2 行 + 三个 SVG 文件逐字节；主线程独立复抓确认）、
-**本轮新立并已闭合：T-920**（成对 `sin`/`cos` 被**两个编译器**都融合成 `sincos()`，
-415 角语料里 **401 行随参照系自己的 -O 移动**，规则上移 substrate）、
-**T-922**（端口给 **84 处** D 侧本不带抛出点的裸 `new Error` 编了 `__FILE__/__LINE__`；
-**83 处已改，剩 1 处是正确的**——`final switch` 越界抛 `SwitchError`，它带位置。
-核对用的是**括号配对逐调用计数**，先前用行窗口数出的 82/42 是错的，真数是 84/39，
-差额正是跨行调用）、**T-923**（`stmatrix` 读取失败路径**一条语料都没有**，因而藏着两条
-凭空造的异常文本；补 7 行语料并做过判别力验证）、**T-925**（更正本仓库自己的规则：
-`x^^0.5` 是 `eil::sqrt` 不是 `eil::pow`，判别证据是 `-0.0` 的符号）、
-**T-914**（有符号数组长度的 5 个本地副本收进 substrate）。
-**仍开着：T-926**（sketch 报出的 3 条 substrate 缺口：`to!string` 不派发 `toString()`、
-`Slice` 形参表达不了 D 的动态数组默认实参、没有 `readln()`）、
-T-921（本机无 GNU libplot，D 侧连二进制都产不出来）
-**T-920 已闭合**（本轮实测新立、本轮内修完：`cos(x)`+`sin(x)` 对被 **两个编译器**都从 -O1
-起融合成一次 glibc `sincos()`，与两次独立 libm 调用差 1 ULP；415 角语料里
-**401 行随参照系自己的 -O 移动**，故契约仍是 ldc2 -O0 的"两次独立调用"。
-修法上移 substrate 成 `eil::sin`/`eil::cos`，改道 7 个源文件 + 9 个测试文件
-（改道前 Release 有 **11 个 .o**、其中 **4 个是测试自身**引用 `sincos`，改道后 **0**），
-门禁 `substrate_sin_cos_pair` 415/415 四档一致，代价 +22% 每对——
-见 `task-log.md` T-920 节）。
-仍待启：**T-016**（本报告收尾 + `wave-02` tag）、**T-019**（`geom/misc/sketch.d` 964
-及其 3 个配套程序，依赖 T-011/T-012 的具体子类，故只能在两者之后）、
-以及横切债务 T-902/903/904/905/907/909/911/912/914/915（各钉到自己的波次）。
-**T-012 与 T-910/911/913/917/918/919 已闭合**（T-012 的核对方式与余留说明见
-`task-log.md` 同名节：`gdtk/src/geom/{surface,volume}/*.d` 逐个查同名 `.cpp`/`.hpp`，
-缺失只剩 `package.d` 聚合文件、已转成 demo_equiv 的两个 demo、以及划归 T-011 的两个 patch）。
+**一律见 `reports/backlog.md`（唯一权威清单）**，逐任务过程见 `reports/task-log.md`。
+
+**本 Wave 范围内已全部闭合**：`geom/elements`(T-010)、`geom/gpath`(T-013)、`gasdyn` 非 CEA(T-014)、
+前置件 `nm/{spline,splinelsq,nelmin}`+`extern/gzip`(T-017)、`geom/surface`+`volume` 15 模块(T-012)、
+`geom/misc`(T-019 sketch)、`geom/grid` 整包(T-011 段 G1–G6)、以及四条 substrate/规则债
+T-914/T-920/T-922/T-923/T-925/T-927 和收尾批 T-929/T-928/T-926①。闭合时的核对方式与数字都在
+`task-log.md` 同名节里，此处不重复。
+
+**Wave 2 仍开着的 ID（各有明确去向，均已在 backlog 落档）：**
+
+- **T-015** `[~]`：门 (1)/(2) 的第一半已实测（gate.sh 拿参考 D 二进制当候选跑 sod-shock-tube 的
+  sg/usg 两链，各 17 产物 onlyD=0/onlyC=0 全 PASS）；第二半"C++ 侧可跑"需 **Wave 5 的候选二进制**，
+  故保持 `[~]`，不用 Wave 2 拿不到的证据去销它。
+- **T-921**：本机无 GNU libplot，D 侧连参考二进制都产不出来 → 环境阻塞，随 libplot 落地再启。
+- **T-926 余两条**：② `eil::Slice<T>` 无法表达 D 的动态数组默认实参（`double[] canvas_mm=[]`），
+  Wave 3 之前定形；③ 没有 `readln()`，只在未编译的 `with_libplot` 支里用到，且与 T-923 同一
+  "EOF 返空串、不抛"语义（已被 `nm_stmatrix_fails` 钉住），Wave 4/5 补时必须照该实测。
+- **T-930**（Wave 3 起硬依赖）：Phobos 的 `to!double` 十进制→二进制**不是正确舍入**——实测 15 个
+  数值 token 里 2 个差 1 ULP 且 **D 是错的一方**（`0.2929550221030571` → D `…bee`、strtod/
+  `eil::to_double`/Python 都给 `…bed`），差异纯来自解析、不经任何运算。**纪律**是"忠实于参照优先于
+  更正确"，但实现前必须先写 `probe_to_double_range.d` 扫分歧率与触发条件（先量后写）。
+  `demo_artefacts_geom_grid_sgrid` 因此**故意没注册**（16 行里 6 行不行：5 行归本条、1 行归 G6b）。
+- **T-931**：`geom/grid/paver.cpp` 的**内部铺面算术**与参照差 1 ULP 级（`paved_grid.vtk` 字节长度相同
+  但 398/1490 顶点末位不同，前 214 个逐字节相同 = 边界/gpath 对，分歧在内部铺面）。现有
+  `geom_grid_paver` 1961/1961 一条都没覆盖到这条路。`demo_artefacts_geom_grid_paver` 因此注释着，
+  stdout 门禁照常注册且绿。候选根因：T-920 的 cos/sin 融合、T-909 常量折叠、迭代 `a*b+c` 的融合次序。
+- **T-916**（Wave 3 硬任务）：D 的 `sinh` 有两处**结构**分歧（不是舍入），随 `gas/` 处理。
+- **横切债务**：T-902(`std.json`)、T-903(`toString()` 类名前缀无法与 D 一致)、T-904(复数支从未编译)、
+  T-905(nm/util 叶子按波次补迁)、T-907(`Slice<const T>`)、T-909(ldc2 常量折叠)、T-912(转写纪律)、
+  T-915(D 侧真实崩溃不加防护)——各钉到自己的波次。
+- **T-016**：本报告即其收尾产物；`wave-02` tag 随本报告打上。
 
 ## 4. 门禁状态
 
