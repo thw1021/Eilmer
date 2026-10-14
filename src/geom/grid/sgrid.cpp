@@ -455,8 +455,15 @@ std::string StructuredGrid::toString() const {
     std::string repr = "StructuredGrid(";                          // D:225
     repr += eil::format("dimensions=%d, niv=%d, njv=%d, nkv=%d, ncells=%d", dimensions, niv, njv,
                         nkv, ncells);                              // D:226-227
-    repr += eil::format(", vertices=[%s ... %s]", vertices[0].toString(),
-                        vertices[vertices.length() - 1].toString()); // D:228
+    // D:228 evaluates its two subscript expressions LEFT TO RIGHT, so on an empty lattice
+    // the failure is the read of vertices[0] and its text is "index [0] is out of bounds
+    // for array of length 0" (corpus row 58, sg.ctor.n0.tostr). C++ leaves the evaluation
+    // order of function arguments unspecified — and gcc evaluates them right to left, which
+    // reports vertices[$-1] instead, whose wrapped index is 18446744073709551615 — so the
+    // two reads are sequenced by hand here.
+    const Vector3& vfirst = vertices[0];
+    const Vector3& vlast = vertices[vertices.length() - 1];
+    repr += eil::format(", vertices=[%s ... %s]", vfirst.toString(), vlast.toString());
     repr += eil::format(", bcTags=%s", bcTags);                    // D:229
     repr += ")";
     return repr;
