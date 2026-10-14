@@ -333,7 +333,7 @@ C++ 里全部有对应实现（`single_cell_index`/`oldSingleIndex` 是 lambda�
 |---|---|---|
 | 1–459 | `ctor`(71) `idx`(67) `opidx`(47) `cell`(106) `abst`(124) `str`(5) `tag`(13) `dup`(26) | **含 harness 骨架**：`tw/twd`、`classify`、`emit`、`dump_*`，照 `test_geom_grid_usgrid.cpp` 的同一套行格式，否则格式差会伪装成数值差 |
 | 460–830 | `sub`(68) `bnd`(100) `blc`(6) `path`(29) `surf`(89) `rgrid`(79) | `sg.surf/vol` 要 `ParametricSurface`/`ParametricVolume`，G3 已注册可用 |
-| 831–1173 | `vol`(114) `readtxt`(84) `wgz`(5) `readgz`(59) `frmt`(18) `wraw`(4) `readraw`(50) `vtk`(11) `su2`(3) | **`sg.frmt.*` 必读 T-927**：`%d` 读进 `size_t` 报 `ulong`、读进 `long` 报 `long`；输入提前耗尽是 `FormatException`（`parseToFormatSpec: Cannot find character …`）而不是 conv 错误 |
+| 831–1173 | `vol`(114) `readtxt`(84) `wgz`(5) `readgz`(59) `frmt`(18) `wraw`(4) `readraw`(50) `vtk`(11) `su2`(3) | **`sg.frmt.*` 必读 T-927**：`%d` 读进 `size_t` 报 `ulong`、读进 `long` 报 `long`；输入提前耗尽是 `FormatException`（`parseToFormatSpec: Cannot find character …`）而不是 conv 错误。**顺一条实测**：sgrid.d 全部 10 处 `formattedRead`（:861/:867/:869/:871/:873/:875/:896/:910/:914/:933）的目标类型只有 `string`/`int`(dimensions, grid.d:43)/`size_t`(niv·njv·nkv·ntags)/`double`(x,y,z)——**没有 `long`**，所以端口里 `sgrid.cpp:248` 与 `usgrid.cpp:338` 那两个 `fmt_into<long>` 特化是**死代码**，下次碰到这两个文件时删掉即可，别照着它们加特化 |
 | 1174–1594 | `join`(97) `slab`(62) `wedge`(74) `bad`(9) `rs`(57) `determ`(52) `rotq`(44) `rot`(101) | `determ` 走 `nelmin.minimize`（已注册）；`wedge` 有 T-920 的 `cos/sin` 成对与 T-910 的 `atan2` |
 | 1595–2097 | `uflowz`(25) `vtkhdr`(9) `gridpro`(37) `rsgp`(31) `fswap`(41) `plot3d`(100) `ccp`(19) `pic`(32) `bin`(156) `fsc`(26) `unit`(8) | `plot3d` 的 `pipeShell("gunzip -c …")` 走 popen；`bin`(156) 是全语料最大的一段 |
 
