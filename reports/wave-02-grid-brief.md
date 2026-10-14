@@ -298,12 +298,28 @@ G5 落地时 `USGFace`/`USGCell`/`USGCell_type`/`makeFaceTag` 的**真实定义*
 
 ## 11. G4/G5 分段进度表（2026-10-14 主线程实测，按语料行号）
 
-**G5 现状**：`tests/test_geom_grid_usgrid.cpp` 已能发出语料 **1–1189 行，1189/1189 逐字节相同**
+**G5 现状**：`tests/test_geom_grid_usgrid.cpp` 已能发出语料 **1–1252 行，1252/1252 逐字节相同**
 （`/tmp/w2_g5r/test_geom_grid_usgrid <corpus>`，摘要行
-`probe replay 1393 D lines, 1189 C++ lines, 204 differ; 1189 of 1393 rows byte-identical`）。
-1190 之后**全部是 `<none>`**——不是数值不对，是**回放组还没写**。
+`probe replay 1393 D lines, 1252 C++ lines, 141 differ; 1252 of 1393 rows byte-identical`）。
+1253 之后**全部是 `<none>`**——不是数值不对，是**回放组还没写**。
 这一段红过一次：1170–1172 三行的类型名是 `int` 而 D 报 `ulong`，根因与规则见 **T-927**
-（已修，`eil::to_size_t`）。
+（已修，`eil::to_size_t`）。1190–1252 落地时又抓到一个**真端口缺陷**：
+`read_from_vtk_text_file` 为 D 的一行 `label = f.readln().strip()`（D:1791）读了**两行**，
+于是后面的 `"ASCII"` 扫描整体晚一行——1199/1201/1203 三行全报
+`Did not find ASCII while reading VTK grid file`。空白网格的行（304/305/310）当时是绿的，
+**只有真文件才会暴露"读了几个换行"这类错误**。
+
+**G4 现状**：`tests/test_geom_grid_sgrid.cpp` 从零建成，已发出 **1–830 行、830/830 逐字节相同**
+（`probe replay 2097 D lines, 830 C++ lines, 1267 differ; 830 of 2097 rows byte-identical`）。
+两段落地各抓到一个真缺陷（`sgrid.cpp`）：①`toString()` 的 D:228 两个下标**求值顺序**——D 从左到右，
+gcc 的函数实参从右到左，空格点上报了 `vertices[$-1]` 的回绕下标
+`18446744073709551615` 而 D 报 `index [0] … length 0`（行 58）⇒ 手工定序；
+②`measure_of_badness` 把 D:1336 的 else 分支**写错了下标方向**（`this[i,j-1,k]` 而非
+`this[i-1,j,k]`），`j==0` 时 size_t 回绕、把 D:1337 的步子提前触发（行 703）。
+D:1337 自身那个 `b` 写成而不是 `c` 的笔误**照抄不改**（语料在数这个值）。
+另报出 **T-929** 两条 substrate 缺口（数组增长填 0 而非 `T.init`；`set_length_signed` 只管负数）。
+harness 的行文本用的是 sgrid 探针自己的 `tryit/tryit_cut`（`err=`/`exc=`，**语料里 0 个 `class=`/`dline=`**），
+与 usgrid 的 `tw/twd` 不同——照抄 usgrid 的格式会全线红。
 
 **关键事实（省掉下一位的一段弯路）**：`src/geom/grid/sgrid.cpp`（1875 行）与
 `src/geom/grid/usgrid.cpp`（2883 行）**函数层面已经转完**——D 侧 31 个 sgrid 成员函数在
@@ -315,9 +331,9 @@ C++ 里全部有对应实现（`single_cell_index`/`oldSingleIndex` 是 lambda�
 
 | 行 | 组 | D 代码 | harness 里对应要mirror的 probe 段 |
 |---|---|---|---|
-| 1190–1205 | `grp_vtk()` | `write_to_vtk_file` D:1850 / `read_from_vtk_text_file` D:1785 | `probe_usgrid.d:2232-2296` |
-| 1206–1216 | `grp_stl()` | 继承的 `Grid.write_to_stl_file` grid.d:389 | `:2297-2317` |
-| 1217–1252 | `grp_foam()` | `write_openFoam_polyMesh` D:1930-2162 | `:2318-2379` |
+| ✅ 1190–1205 | `grp_vtk()` | `write_to_vtk_file` D:1850 / `read_from_vtk_text_file` D:1785 | `probe_usgrid.d:2232-2296` |
+| ✅ 1206–1216 | `grp_stl()` | 继承的 `Grid.write_to_stl_file` grid.d:389 | `:2297-2317` |
+| ✅ 1217–1252 | `grp_foam()` | `write_openFoam_polyMesh` D:1930-2162 | `:2318-2379` |
 | 1253–1267 | `grp_imp()` | import 构造器 D:830-846 + 其余够不到的 throw/assert | `:2380-2447` |
 | 1268–1282 | `grp_idx()`+`grp_conn()` | 抽象表下标 D:988-1010 / `get_connected_cell_ids_for_cell` D:1045 | `:2448-2479` |
 | 1283–1300 | `grp_sort/bnd/blc()` | D:888 / D:1057 / D:1106 | `:2480-2538` |
@@ -331,8 +347,8 @@ C++ 里全部有对应实现（`single_cell_index`/`oldSingleIndex` 是 lambda�
 
 | 行 | 内容（D 段） | 备注 |
 |---|---|---|
-| 1–459 | `ctor`(71) `idx`(67) `opidx`(47) `cell`(106) `abst`(124) `str`(5) `tag`(13) `dup`(26) | **含 harness 骨架**：`tw/twd`、`classify`、`emit`、`dump_*`，照 `test_geom_grid_usgrid.cpp` 的同一套行格式，否则格式差会伪装成数值差 |
-| 460–830 | `sub`(68) `bnd`(100) `blc`(6) `path`(29) `surf`(89) `rgrid`(79) | `sg.surf/vol` 要 `ParametricSurface`/`ParametricVolume`，G3 已注册可用 |
+| ✅ 1–459 | `ctor`(71) `idx`(67) `opidx`(47) `cell`(106) `abst`(124) `str`(5) `tag`(13) `dup`(26) | **含 harness 骨架**：`tw/twd`、`classify`、`emit`、`dump_*`，照 `test_geom_grid_usgrid.cpp` 的同一套行格式，否则格式差会伪装成数值差 |
+| ✅ 460–830 | `sub`(68) `bnd`(100) `blc`(6) `path`(29) `surf`(89) `rgrid`(79) | `sg.surf/vol` 要 `ParametricSurface`/`ParametricVolume`，G3 已注册可用 |
 | 831–1173 | `vol`(114) `readtxt`(84) `wgz`(5) `readgz`(59) `frmt`(18) `wraw`(4) `readraw`(50) `vtk`(11) `su2`(3) | **`sg.frmt.*` 必读 T-927**：`%d` 读进 `size_t` 报 `ulong`、读进 `long` 报 `long`；输入提前耗尽是 `FormatException`（`parseToFormatSpec: Cannot find character …`）而不是 conv 错误。**顺一条实测**：sgrid.d 全部 10 处 `formattedRead`（:861/:867/:869/:871/:873/:875/:896/:910/:914/:933）的目标类型只有 `string`/`int`(dimensions, grid.d:43)/`size_t`(niv·njv·nkv·ntags)/`double`(x,y,z)——**没有 `long`**，所以端口里 `sgrid.cpp:248` 与 `usgrid.cpp:338` 那两个 `fmt_into<long>` 特化是**死代码**，下次碰到这两个文件时删掉即可，别照着它们加特化 |
 | 1174–1594 | `join`(97) `slab`(62) `wedge`(74) `bad`(9) `rs`(57) `determ`(52) `rotq`(44) `rot`(101) | `determ` 走 `nelmin.minimize`（已注册）；`wedge` 有 T-920 的 `cos/sin` 成对与 T-910 的 `atan2` |
 | 1595–2097 | `uflowz`(25) `vtkhdr`(9) `gridpro`(37) `rsgp`(31) `fswap`(41) `plot3d`(100) `ccp`(19) `pic`(32) `bin`(156) `fsc`(26) `unit`(8) | `plot3d` 的 `pipeShell("gunzip -c …")` 走 popen；`bin`(156) 是全语料最大的一段 |

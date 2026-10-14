@@ -775,3 +775,50 @@
   正在做，1253–1393 待做；G4 = harness 尚未开始，2097 行全量待做；
   `add_test` 两个都还关着（**整条语料 0 差异才注册**），100/100 不变。
 
+## T-011 段 G4 起步 + G5（vtk/stl/foam）— 两个代理并行，捞出一个"读了两行"的端口缺陷  (2026-10-14)
+
+- **并行是怎么解决的**：§11.3 那条"一次只放一个 agent 碰 `eil_geom`"是被 *文件冲突* 逼出来的，
+  但真正的约束是**库**而不是文件，所以这次给 G4 用 `isolation: "worktree"`，
+  让它从 HEAD 拿一份干净树去编译，G5 的半成品就看不见对方了。
+  **环境纠正（代理自己发现并绕开的）**：`isolation: worktree` 挂的是**本会话主工作目录**
+  （`/home/tang/packages/gdtk`，那个只读的 D 树）的 worktree，不是 Eilmer 的——
+  那棵树里根本没有 `src/*.cpp`/`tests/`/`baselines/`/`cmake/`，什么都编不了。
+  代理没有往只读树里写任何东西，而是自己开了 **`/home/tang/packages/Eilmer-wt-g4`**
+  （分支 `worktree-g4-sgrid`，3 个提交）。**下次派 Eilmer 的隔离作业，直接要求它自建 Eilmer worktree。**
+- **两边的数，我自己复跑过才算**（两个都在 `/tmp/w2_g5r` 重新 configure+build，`build_rc=0`）：
+  - G5：`probe replay 1393 D lines, 1252 C++ lines, 141 differ; 1252 of 1393 rows byte-identical`
+    —— 141 行差异**全是** 1253–1393 的 `<none>`，`C++: |` 开头且非 `<none>` 的行数 **0**
+    （这条计数是关键：只比"发出行数"会把"发了但不对"混进来，上一轮就是这么栽的）。
+    为排除残留文件的假绿，让代理把 `/tmp/probe_usg_dir` 清空重跑一次，数一样。
+  - G4：`probe replay 2097 D lines, 830 C++ lines, 1267 differ; 830 of 2097 rows byte-identical`，
+    且 `head -830 corpus` 与捕获**逐字节相同**（代理做了三次连跑一致，我在主树里再跑一次一致）。
+  - 注册套件 **100/100** 不变，`check_staleness.sh` = `no drift`。
+- **三个真端口缺陷**（都是"读文件/求值顺序"这一类，不是数值）：
+  1. `usgrid.cpp:2211` `read_from_vtk_text_file` 对 D 的一行 `label = f.readln().strip()`
+     读了**两行** ⇒ `"ASCII"` 扫描整体晚一行、扫到文件尾。行 1199/1201/1203 三行全报
+     `Did not find ASCII…`，而**空白网格的行 304/305/310 一直是绿的**：
+     只有真文件的换行数才暴露它。改完逐行对 D:1788-1795 的顺序（vtk / label / ASCII /
+     UNSTRUCTURED_GRID / readln().split() / throw）。
+  2. `sgrid.cpp` `toString()`：D:228 的两个下标**从左到右**求值，gcc 的函数实参**从右到左**，
+     空格点上端口报 `vertices[$-1]` 的回绕值 `index [18446744073709551615]`
+     而 D 报 `index [0] … length 0`（行 58）。⇒ 两次读**手工定序**再格式化。
+     这是全树性的转写风险（凡 `f(g()[0], h()[last]))` 形状都中招），已写进本节。
+  3. `sgrid.cpp` `measure_of_badness`：D:1336 的 else 是 `*this[i-1,j,k]`，端口写成
+     `*this[i,j-1,k]`；`j==0` 时 `j-1` 回绕，把 D:1337 的步子提前触发（行 703，
+     `sg.surf.simple.bad`）。**D:1337 自己那句 `b`（而不是 `c`）的笔误照抄**，因为语料在数它。
+- **T-929（新，substrate 2 条）**：①`Array::set_length` 把新增尾部填 0，D 填 `T.init`
+  （`double` 是 **NaN**）——证据是行 757–760 那两个 `nan` 槽位；harness 侧先用
+  `d_init_doubles()` 复刻**输入**（这是复刻 D 探针"只写一部分"的数组，不是改结果凑数），
+  但生产路径的缺口还在，修法是 `new (p_+i) T(eil::d_init<T>())`（`number.hpp:58` 的
+  `d_init` 早就有，注释里也早写了"别写 0.0"，**数组增长这一处漏了**）。
+  ②`set_length_signed` 只拦负数，很大的正数在端口报自己的 `"Array allocation failed"`，
+  D 报 `OutOfMemoryError "Memory allocation failed"` @ `rt/lifetime.d(1454)`；
+  端口现有两份替身（`sgrid.cpp:238`、`usgrid.cpp:292`）。
+  **做完 T-929 的判定不是"能编过"**，而是三个替身**都从树里消失**、再全量复跑——
+  届时可能有原本"假绿"的语料转红，那才是真的。
+- **一条要写给下一个派活动作的人**：sgrid 探针的行文本用的是 `tryit`/`tryit_cut`
+  （`err=`/`exc=`，只有 `.msg`），语料里 `class=` 与 `dline=` **各 0 个**；usgrid 用的是
+  `twd`（`|dline=|class=|msg=|file=|line=|toString1=|`）。两个 corpus 的格式不同，
+  照抄另一个 harness 的格式会全线红——G4 的代理自己是按语料读的，没有猜。
+
+

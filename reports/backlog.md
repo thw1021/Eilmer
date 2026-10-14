@@ -703,6 +703,31 @@
   5. 全树扫描的其余命中都是**有语料钉住的**：`svgpath.cpp:76/:83`（`geom_gpath_svgpath` 注册通过）、
      `usgrid.cpp:304/311/315`（`geom_grid_usgrid` 行 208 钉住类与文本）、
      `sgrid.cpp:165/167` 只是注释。**没有第四处。**
+- [ ] **T-929** substrate 缺陷 **2 条**，都在 `substrate/include/eil/array.hpp`，由 G4 的代理报出
+  （它按纪律不许改 substrate），两条都有语料行做证据：
+  1. **`set_length` 把新增尾部填成 0，D 填 `T.init`**（`array.hpp:162-170` 是
+     `new (p_ + i) T()`；D 的 `arr.length = n` 对 `double` 填 **NaN**）。
+     证据：`geom_grid_sgrid.txt` 行 **757–760**（`sg.rgrid.identity.s row[*] 0 nan nan 1`
+     ——那两个 `nan` 就是 D 里**从未被写过**的槽位）。
+     现在的处置是**测试侧**补：`tests/test_geom_grid_sgrid.cpp:816` 的 `d_init_doubles(n)`
+     把 harness 自己构造的**输入**数组按 D 的 init 填满。这**不是**为了对上期望输出而改结果，
+     而是复刻 D 探针源码 `double[16] id; id[2]=…` 那种"只写一部分"的输入——所以门禁仍然有效。
+     **但端口侧的真实缺口还在**：任何 `Array<double>` 在 `set_length` 之后读未写槽位的地方，
+     D 得 NaN、端口得 0.0。实现就是 `new (p_ + i) T(eil::d_init<T>())`
+     （`substrate/include/eil/number.hpp:58` 已经有 `d_init`，注释里本来就要求"成员默认值写
+     `eil::d_init<number>()` 而不是 0.0"——数组增长这条漏了同一条规则）。
+     **做完必须**：删掉 `d_init_doubles`，让 harness 走生产路径，再复跑全量（当前 100/100
+     里凡是 `.length =` 之后读尾部的语料都可能因此**从假绿变红**——那才是真的）。
+  2. **`set_length_signed`（T-914）只拦负数**；一个**很大的正数**（D 里同样分配不出来）
+     在端口里走的是 `Array` 自己的 `"Array allocation failed"` + 自己的 `__FILE__/__LINE__`，
+     而 D 是 `core.exception.OutOfMemoryError "Memory allocation failed"` @
+     **`rt/lifetime.d(1454)`**（实测见 `substrate_throw_identity.txt`）。
+     ⇒ 端口现有**两份翻译替身**：`sgrid.cpp:238-245` 的 `d_set_length` 与
+     `usgrid.cpp:292` 的 `set_length_d`（后者注释里已写明是给 `us.sgbad.zeroj` 那行用的）。
+     实现应把这层收进 substrate（`set_length` 分配失败即报 D 的文本与 D 的**运行时位置**），
+     然后删掉两份替身。
+  → 与 T-926 第 1 条、T-928 同批做（都要重建 `eil_geom`）；**做完的判定不是"能编过"**，
+  而是三配置复跑 + `d_init_doubles`/`d_set_length`/`set_length_d` 三个替身**都从树里消失**。
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
