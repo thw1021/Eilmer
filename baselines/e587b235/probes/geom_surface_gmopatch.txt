@@ -1,0 +1,497 @@
+gmo.src|dfile=geom/surface/gmopatch.d|dlines=171|sha256=ba95d67bf561b72e5efd63eeb3fe3ca56ddd7e4a67d93a472d8eb5e134e8758f|probe=probes/geom/surface/probe_gmopatch.d|cc=ldc2 1.40.0 -O0 -i -I/tmp/gdtk_shadow -I/tmp/gdtk_shadow/extern/gzip|unittest=replayed-not-compiled
+gmo.ut.1 writeln=c=Vector3(0.476931, 0.646263, 3)
+gmo.ut.1 full x=0.47693091560917433 y=0.646263049951326 z=3
+gmo.ut.1 assert_holds=true
+gmo.ut.2 writeln=c=Vector3(0.117074, 0.234804, 3)
+gmo.ut.2 full x=0.11707421037452967 y=0.2348040536888098 z=3
+gmo.ut.2 assert_holds=true
+gmo.ut str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.441936, 0.262516, 0.35213, 0.200931], [0.728709, 0.79867, 0.450041, 0.546211], [1, 1, 1, 1]], s_grid=[[0, 0.487123, 0.384752, 1], [0, 0.552774, 0.281553, 1], [0, 0.722708, 0.67958, 1], [0, 0.812371, 0.59285, 1]])
+gmo.ut classname=GMOPatch
+gmo.ut p00 x=0 y=0.10000000000000001 z=3
+gmo.ut p10 x=1 y=0.10000000000000001 z=3
+gmo.ut p11 x=1 y=1.1000000000000001 z=3
+gmo.ut p01 x=0 y=1.1000000000000001 z=3
+gmo.ut south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.ut south t=0 x=0 y=0.10000000000000001 z=3
+gmo.ut south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.ut south t=1 x=1 y=0.10000000000000001 z=3
+gmo.ut north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.ut north t=0 x=0 y=1.1000000000000001 z=3
+gmo.ut north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.ut north t=1 x=1 y=1.1000000000000001 z=3
+gmo.ut west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.ut west t=0 x=0 y=0.10000000000000001 z=3
+gmo.ut west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.ut west t=1 x=0 y=1.1000000000000001 z=3
+gmo.ut east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.ut east t=0 x=1 y=0.10000000000000001 z=3
+gmo.ut east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.ut east t=1 x=1 y=1.1000000000000001 z=3
+gmo.ut r_grid[0] a=0 b=0 c=0 d=0
+gmo.ut r_grid[1] a=0.44193604347854304 b=0.26251645100286713 c=0.35212974931169244 d=0.20093136016842866
+gmo.ut r_grid[2] a=0.72870909297116193 b=0.79866999772003411 c=0.45004104549229601 d=0.54621130579691679
+gmo.ut r_grid[3] a=1 b=1 c=1 d=1
+gmo.ut s_grid[0] a=0 b=0.48712325693400632 c=0.38475226742813612 d=1
+gmo.ut s_grid[1] a=0 b=0.55277419556771157 c=0.28155327925120222 d=1
+gmo.ut s_grid[2] a=0 b=0.72270836258368176 c=0.67958017218336242 d=1
+gmo.ut s_grid[3] a=0 b=0.81237120563646947 c=0.59285030687179818 d=1
+gmo.ut opCall r=0 s=0 x=0 y=0.10000000000000001 z=3
+gmo.ut opCall r=0 s=0.25 x=0 y=0.37523591162611558 z=2.9999999999999996
+gmo.ut opCall r=0 s=0.5 x=0 y=0.55195332163580346 z=3
+gmo.ut opCall r=0 s=0.75 x=0 y=0.75269407082758955 z=3
+gmo.ut opCall r=0 s=1 x=0 y=1.1000000000000001 z=3
+gmo.ut opCall r=0.20000000000000001 s=0 x=0.24765951362099214 y=0.10000000000000001 z=3
+gmo.ut opCall r=0.20000000000000001 s=0.25 x=0.21109562297566531 y=0.39515181393747378 z=3
+gmo.ut opCall r=0.20000000000000001 s=0.5 x=0.18761933056121211 y=0.56724130884059343 z=2.9999999999999982
+gmo.ut opCall r=0.20000000000000001 s=0.75 x=0.16664673318669609 y=0.75571014932341651 z=3
+gmo.ut opCall r=0.20000000000000001 s=1 x=0.13759392766118067 y=1.1000000000000001 z=2.9999999999999991
+gmo.ut opCall r=0.5 s=0 x=0.56399192616863936 y=0.10000000000000001 z=3
+gmo.ut opCall r=0.5 s=0.25 x=0.5247624958136422 y=0.45380754698652026 z=3.0000000000000004
+gmo.ut opCall r=0.5 s=0.5 x=0.47693091560917433 y=0.646263049951326 z=3
+gmo.ut opCall r=0.5 s=0.75 x=0.43292648407653034 y=0.81558702794046845 z=3
+gmo.ut opCall r=0.5 s=1 x=0.40517849973700459 y=1.1000000000000001 z=3
+gmo.ut opCall r=0.75 s=0 x=0.79144640471137906 y=0.10000000000000001 z=3
+gmo.ut opCall r=0.75 s=0.25 x=0.77321286243158505 y=0.50674283572491885 z=3
+gmo.ut opCall r=0.75 s=0.5 x=0.7303705064614312 y=0.71826324652831519 z=3
+gmo.ut opCall r=0.75 s=0.75 x=0.69034546522759621 y=0.87065203406755409 z=3
+gmo.ut opCall r=0.75 s=1 x=0.68056386715675954 y=1.1000000000000001 z=3
+gmo.ut opCall r=1 s=0 x=1 y=0.10000000000000001 z=3
+gmo.ut opCall r=1 s=0.25 x=1 y=0.54171367678173221 z=3
+gmo.ut opCall r=1 s=0.5 x=1 y=0.75195806719060054 z=3
+gmo.ut opCall r=1 s=0.75 x=1 y=0.88622342400416843 z=3
+gmo.ut opCall r=1 s=1 x=1 y=1.1000000000000001 z=3
+gmo.ut area nr=10 ns=10 x=-1.048300915839477e-17 y=2.537371726837525e-16 z=1.0000000000000004
+gmo.ut area nr=3 ns=7 x=-2.6478174355622472e-16 y=1.2960927664923248e-16 z=1
+gmo.def str_eq_ut=true
+gmo.def grids_eq_ut=true
+gmo.def same=true
+gmo.size55 str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.273384, 0.449851, 0.278661, 0.41084], [0.497845, 0.454377, 0.666116, 0.508906], [1, 1, 1, 1]], s_grid=[[0, 0.536117, 0.589549, 1], [0, 0.480042, 0.596534, 1], [0, 0.251793, 0.795589, 1], [0, 0.319536, 0.696246, 1]])
+gmo.size55 classname=GMOPatch
+gmo.size55 p00 x=0 y=0.10000000000000001 z=3
+gmo.size55 p10 x=1 y=0.10000000000000001 z=3
+gmo.size55 p11 x=1 y=1.1000000000000001 z=3
+gmo.size55 p01 x=0 y=1.1000000000000001 z=3
+gmo.size55 south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.size55 south t=0 x=0 y=0.10000000000000001 z=3
+gmo.size55 south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.size55 south t=1 x=1 y=0.10000000000000001 z=3
+gmo.size55 north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size55 north t=0 x=0 y=1.1000000000000001 z=3
+gmo.size55 north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.size55 north t=1 x=1 y=1.1000000000000001 z=3
+gmo.size55 west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.size55 west t=0 x=0 y=0.10000000000000001 z=3
+gmo.size55 west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.size55 west t=1 x=0 y=1.1000000000000001 z=3
+gmo.size55 east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size55 east t=0 x=1 y=0.10000000000000001 z=3
+gmo.size55 east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.size55 east t=1 x=1 y=1.1000000000000001 z=3
+gmo.size55 r_grid[0] a=0 b=0 c=0 d=0
+gmo.size55 r_grid[1] a=0.27338397854923979 b=0.44985149402218516 c=0.27866111025336204 d=0.4108399359280534
+gmo.size55 r_grid[2] a=0.49784534872903363 b=0.45437685869836741 c=0.66611642549901739 d=0.50890568203366016
+gmo.size55 r_grid[3] a=1 b=1 c=1 d=1
+gmo.size55 s_grid[0] a=0 b=0.53611655172600214 c=0.58954853469386304 d=1
+gmo.size55 s_grid[1] a=0 b=0.48004170186542594 c=0.5965335069776958 d=1
+gmo.size55 s_grid[2] a=0 b=0.25179328482031282 c=0.79558897895342251 d=1
+gmo.size55 s_grid[3] a=0 b=0.31953597771775977 c=0.696245977968875 d=1
+gmo.size55 opCall r=0.5 s=0.5 x=0.46428090362463048 y=0.62406184968548761 z=3
+gmo.size55 opCall r=0.10000000000000001 s=0.10000000000000001 x=0.091200158063938302 y=0.24216380738107138 z=3.0000000000000004
+gmo.size55 opCall r=0.25 s=0.75 x=0.24662037328077202 y=0.85072707694385508 z=3
+gmo.size55 opCall r=0.90000000000000002 s=0.20000000000000001 x=0.85912156839967224 y=0.29501628930497154 z=3
+gmo.size33 str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.405615, 0.405806, 0.699834, 0.112118], [0.604875, 0.4814, 0.43391, 0.898334], [1, 1, 1, 1]], s_grid=[[0, 0.462855, 0.437309, 1], [0, 0.118101, 0.49265, 1], [0, 0.738378, 0.451196, 1], [0, 0.168469, 0.731716, 1]])
+gmo.size33 classname=GMOPatch
+gmo.size33 p00 x=0 y=0.10000000000000001 z=3
+gmo.size33 p10 x=1 y=0.10000000000000001 z=3
+gmo.size33 p11 x=1 y=1.1000000000000001 z=3
+gmo.size33 p01 x=0 y=1.1000000000000001 z=3
+gmo.size33 south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.size33 south t=0 x=0 y=0.10000000000000001 z=3
+gmo.size33 south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.size33 south t=1 x=1 y=0.10000000000000001 z=3
+gmo.size33 north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size33 north t=0 x=0 y=1.1000000000000001 z=3
+gmo.size33 north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.size33 north t=1 x=1 y=1.1000000000000001 z=3
+gmo.size33 west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.size33 west t=0 x=0 y=0.10000000000000001 z=3
+gmo.size33 west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.size33 west t=1 x=0 y=1.1000000000000001 z=3
+gmo.size33 east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size33 east t=0 x=1 y=0.10000000000000001 z=3
+gmo.size33 east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.size33 east t=1 x=1 y=1.1000000000000001 z=3
+gmo.size33 r_grid[0] a=0 b=0 c=0 d=0
+gmo.size33 r_grid[1] a=0.40561501994683813 b=0.40580600227092689 c=0.69983396886329852 d=0.11211756893990554
+gmo.size33 r_grid[2] a=0.60487548492717236 b=0.48140015006001846 c=0.43390966684957205 d=0.89833361838812775
+gmo.size33 r_grid[3] a=1 b=1 c=1 d=1
+gmo.size33 s_grid[0] a=0 b=0.46285490717848443 c=0.43730926680330429 d=1
+gmo.size33 s_grid[1] a=0 b=0.11810127817819679 c=0.49265030701089318 d=1
+gmo.size33 s_grid[2] a=0 b=0.73837829567507962 c=0.4511958840962762 d=1
+gmo.size33 s_grid[3] a=0 b=0.16846879232923401 c=0.73171587920050007 d=1
+gmo.size33 opCall r=0.5 s=0.5 x=0.50392770576563239 y=0.56256216283091542 z=3
+gmo.size33 opCall r=0.10000000000000001 s=0.10000000000000001 x=0.11683958351477818 y=0.20704107362258406 z=3
+gmo.size33 opCall r=0.25 s=0.75 x=0.2767694201613532 y=0.76841666797038022 z=3
+gmo.size33 opCall r=0.90000000000000002 s=0.20000000000000001 x=0.87269801010698789 y=0.28851507867156861 z=3
+gmo.size22 str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0, 0.333333, 0.666667, 1], [0, 0.333333, 0.666667, 1], [1, 1, 1, 1]], s_grid=[[0, 0, 0, 1], [0, 0.333333, 0.333333, 1], [0, 0.666667, 0.666667, 1], [0, 1, 1, 1]])
+gmo.size22 classname=GMOPatch
+gmo.size22 p00 x=0 y=0.10000000000000001 z=3
+gmo.size22 p10 x=1 y=0.10000000000000001 z=3
+gmo.size22 p11 x=1 y=1.1000000000000001 z=3
+gmo.size22 p01 x=0 y=1.1000000000000001 z=3
+gmo.size22 south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.size22 south t=0 x=0 y=0.10000000000000001 z=3
+gmo.size22 south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.size22 south t=1 x=1 y=0.10000000000000001 z=3
+gmo.size22 north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size22 north t=0 x=0 y=1.1000000000000001 z=3
+gmo.size22 north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.size22 north t=1 x=1 y=1.1000000000000001 z=3
+gmo.size22 west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.size22 west t=0 x=0 y=0.10000000000000001 z=3
+gmo.size22 west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.size22 west t=1 x=0 y=1.1000000000000001 z=3
+gmo.size22 east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size22 east t=0 x=1 y=0.10000000000000001 z=3
+gmo.size22 east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.size22 east t=1 x=1 y=1.1000000000000001 z=3
+gmo.size22 r_grid[0] a=0 b=0 c=0 d=0
+gmo.size22 r_grid[1] a=0 b=0.33333333333333331 c=0.66666666666666663 d=1
+gmo.size22 r_grid[2] a=0 b=0.33333333333333331 c=0.66666666666666663 d=1
+gmo.size22 r_grid[3] a=1 b=1 c=1 d=1
+gmo.size22 s_grid[0] a=0 b=0 c=0 d=1
+gmo.size22 s_grid[1] a=0 b=0.33333333333333331 c=0.33333333333333331 d=1
+gmo.size22 s_grid[2] a=0 b=0.66666666666666663 c=0.66666666666666663 d=1
+gmo.size22 s_grid[3] a=0 b=1 c=1 d=1
+gmo.size22 opCall r=0.5 s=0.5 x=0.5 y=0.60000000000000009 z=3
+gmo.size22 opCall r=0.10000000000000001 s=0.10000000000000001 x=0.028000000000000014 y=0.12800000000000003 z=3
+gmo.size22 opCall r=0.25 s=0.75 x=0.4375 y=0.66249999999999987 z=3
+gmo.size22 opCall r=0.90000000000000002 s=0.20000000000000001 x=0.78300000000000025 y=0.54000000000000026 z=3
+gmo.size2113 str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.391467, 0.46308, 0.424155, 0.366835], [0.706384, 0.630161, 0.722728, 0.674725], [1, 1, 1, 1]], s_grid=[[0, 0.346949, 0.611024, 1], [0, 0.458546, 0.492459, 1], [0, 0.363803, 0.674136, 1], [0, 0.301367, 0.71662, 1]])
+gmo.size2113 classname=GMOPatch
+gmo.size2113 p00 x=0 y=0.10000000000000001 z=3
+gmo.size2113 p10 x=1 y=0.10000000000000001 z=3
+gmo.size2113 p11 x=1 y=1.1000000000000001 z=3
+gmo.size2113 p01 x=0 y=1.1000000000000001 z=3
+gmo.size2113 south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.size2113 south t=0 x=0 y=0.10000000000000001 z=3
+gmo.size2113 south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.size2113 south t=1 x=1 y=0.10000000000000001 z=3
+gmo.size2113 north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size2113 north t=0 x=0 y=1.1000000000000001 z=3
+gmo.size2113 north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.size2113 north t=1 x=1 y=1.1000000000000001 z=3
+gmo.size2113 west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.size2113 west t=0 x=0 y=0.10000000000000001 z=3
+gmo.size2113 west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.size2113 west t=1 x=0 y=1.1000000000000001 z=3
+gmo.size2113 east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.size2113 east t=0 x=1 y=0.10000000000000001 z=3
+gmo.size2113 east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.size2113 east t=1 x=1 y=1.1000000000000001 z=3
+gmo.size2113 r_grid[0] a=0 b=0 c=0 d=0
+gmo.size2113 r_grid[1] a=0.39146724441402747 b=0.46308021509854425 c=0.42415519540477764 d=0.3668345443700205
+gmo.size2113 r_grid[2] a=0.70638382651149234 b=0.63016094793865807 c=0.72272821245535757 d=0.67472516034235785
+gmo.size2113 r_grid[3] a=1 b=1 c=1 d=1
+gmo.size2113 s_grid[0] a=0 b=0.34694882286081252 c=0.61102421008028363 d=1
+gmo.size2113 s_grid[1] a=0 b=0.45854636246888175 c=0.49245946512262601 d=1
+gmo.size2113 s_grid[2] a=0 b=0.36380253838322135 c=0.67413566035954564 d=1
+gmo.size2113 s_grid[3] a=0 b=0.30136694871355757 c=0.71662028287702628 d=1
+gmo.size2113 opCall r=0.5 s=0.5 x=0.54030239789046453 y=0.59731839110317975 z=3
+gmo.size2113 opCall r=0.10000000000000001 s=0.10000000000000001 x=0.1191470198817588 y=0.20776639762533866 z=2.9999999999999996
+gmo.size2113 opCall r=0.25 s=0.75 x=0.28337677953501772 y=0.81863255627698961 z=3
+gmo.size2113 opCall r=0.90000000000000002 s=0.20000000000000001 x=0.9052500033701647 y=0.29841134147024839 z=3
+gmo.size grids_differ_55_vs_11=true
+gmo.size grids_differ_33_vs_22=true
+gmo.size grids_differ_2113_vs_11=true
+gmo.skew str=GMOPatch(south=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(2, 0.75, -0.3)), north=Line(p0=Vector3(-0.5, 1.5, 0.9), p1=Vector3(1.25, 2.5, 0.05)), west=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(-0.5, 1.5, 0.9)), east=Line(p0=Vector3(2, 0.75, -0.3), p1=Vector3(1.25, 2.5, 0.05)), r_grid=[[0, 0, 0, 0], [0.322443, 0.304178, 0.317815, 0.405036], [0.641954, 0.618988, 0.839006, 0.75091], [1, 1, 1, 1]], s_grid=[[0, 0.592468, 0.576029, 1], [0, 0.655507, 0.675145, 1], [0, 0.498434, 0.545394, 1], [0, 0.392977, 0.603957, 1]])
+gmo.skew classname=GMOPatch
+gmo.skew p00 x=0.5 y=-0.25 z=0.10000000000000001
+gmo.skew p10 x=2 y=0.75 z=-0.29999999999999999
+gmo.skew p11 x=1.25 y=2.5 z=0.050000000000000003
+gmo.skew p01 x=-0.5 y=1.5 z=0.90000000000000002
+gmo.skew south class=Line str=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(2, 0.75, -0.3))
+gmo.skew south t=0 x=0.5 y=-0.25 z=0.10000000000000001
+gmo.skew south t=0.5 x=1.25 y=0.25 z=-0.099999999999999992
+gmo.skew south t=1 x=2 y=0.75 z=-0.29999999999999999
+gmo.skew north class=Line str=Line(p0=Vector3(-0.5, 1.5, 0.9), p1=Vector3(1.25, 2.5, 0.05))
+gmo.skew north t=0 x=-0.5 y=1.5 z=0.90000000000000002
+gmo.skew north t=0.5 x=0.375 y=2 z=0.47500000000000003
+gmo.skew north t=1 x=1.25 y=2.5 z=0.050000000000000003
+gmo.skew west class=Line str=Line(p0=Vector3(0.5, -0.25, 0.1), p1=Vector3(-0.5, 1.5, 0.9))
+gmo.skew west t=0 x=0.5 y=-0.25 z=0.10000000000000001
+gmo.skew west t=0.5 x=0 y=0.625 z=0.5
+gmo.skew west t=1 x=-0.5 y=1.5 z=0.90000000000000002
+gmo.skew east class=Line str=Line(p0=Vector3(2, 0.75, -0.3), p1=Vector3(1.25, 2.5, 0.05))
+gmo.skew east t=0 x=2 y=0.75 z=-0.29999999999999999
+gmo.skew east t=0.5 x=1.625 y=1.625 z=-0.125
+gmo.skew east t=1 x=1.25 y=2.5 z=0.050000000000000003
+gmo.skew r_grid[0] a=0 b=0 c=0 d=0
+gmo.skew r_grid[1] a=0.32244294068012858 b=0.3041782591689392 c=0.31781526397174809 d=0.40503560514292569
+gmo.skew r_grid[2] a=0.64195362230640196 b=0.61898761830469828 c=0.83900567423162242 d=0.75090969127386753
+gmo.skew r_grid[3] a=1 b=1 c=1 d=1
+gmo.skew s_grid[0] a=0 b=0.59246829727547001 c=0.57602940686353188 d=1
+gmo.skew s_grid[1] a=0 b=0.65550735055492471 c=0.67514457044125264 d=1
+gmo.skew s_grid[2] a=0 b=0.49843351752072862 c=0.54539444166105489 d=1
+gmo.skew s_grid[3] a=0 b=0.39297650358834851 c=0.60395671700505837 d=1
+gmo.skew opCall r=0 s=0 x=0.5 y=-0.25 z=0.10000000000000001
+gmo.skew opCall r=0 s=0.25 x=0.15342330174672691 y=0.35650922194322787 z=0.37726135860261845
+gmo.skew opCall r=0 s=0.5 x=-0.063186639052125737 y=0.73557661834122001 z=0.55054931124170059
+gmo.skew opCall r=0 s=0.75 x=-0.24820326032491546 y=1.059355705568602 z=0.69856260825993233
+gmo.skew opCall r=0 s=1 x=-0.5 y=1.5 z=0.90000000000000002
+gmo.skew opCall r=0.20000000000000001 s=0 x=0.79016845544387604 y=-0.056554363037415983 z=0.022621745214966404
+gmo.skew opCall r=0.20000000000000001 s=0.25 x=0.44886672695841501 y=0.56786137756806698 z=0.2778021423299335
+gmo.skew opCall r=0.20000000000000001 s=0.5 x=0.25032032384937997 y=0.96937272934434571 z=0.43177213346053744
+gmo.skew opCall r=0.20000000000000001 s=0.75 x=0.10227138707496308 y=1.305964376373391 z=0.55038564482147911
+gmo.skew opCall r=0.20000000000000001 s=1 x=-0.087663245209944285 y=1.7356210027371755 z=0.69972214767340157
+gmo.skew opCall r=0.5 s=0 x=1.2299730666799236 y=0.23664871111994895 z=-0.094659484447979558
+gmo.skew opCall r=0.5 s=0.25 x=0.94302399274628423 y=0.82809217492445064 z=0.097511572991070869
+gmo.skew opCall r=0.5 s=0.5 x=0.78733616369063508 y=1.2476168341711107 z=0.21122419002245252
+gmo.skew opCall r=0.5 s=0.75 x=0.66542227773629203 y=1.617115125651277 z=0.30087778057252712
+gmo.skew opCall r=0.5 s=1 x=0.47733910077352049 y=2.0584794861562976 z=0.42529243676714734
+gmo.skew opCall r=0.75 s=0 x=1.6070640844154847 y=0.48804272294365642 z=-0.19521708917746255
+gmo.skew opCall r=0.75 s=0.25 x=1.3740601697547505 y=1.0201506742773578 z=-0.058831350342327039
+gmo.skew opCall r=0.75 s=0.5 x=1.2337329779291104 y=1.440100999309077 z=0.029028325894244242
+gmo.skew opCall r=0.75 s=0.75 x=1.1023167816304285 y=1.835917294917019 z=0.10783224862971927
+gmo.skew opCall r=0.75 s=1 x=0.89234052646392681 y=2.2956231579793869 z=0.22372031571752127
+gmo.skew opCall r=1 s=0 x=2 y=0.75 z=-0.29999999999999999
+gmo.skew opCall r=1 s=0.25 x=1.8002424681648719 y=1.2161009076152991 z=-0.20677981847694019
+gmo.skew opCall r=1 s=0.5 x=1.6258625317081044 y=1.6229874260144235 z=-0.12540251479711534
+gmo.skew opCall r=1 s=0.75 x=1.4510513293972847 y=2.0308802314063361 z=-0.043823953718732808
+gmo.skew opCall r=1 s=1 x=1.25 y=2.5 z=0.050000000000000003
+gmo.skew area nr=10 ns=10 x=1.6687499999999997 y=-0.38750000000000007 z=3.7187500000000004
+gmo.skew area nr=3 ns=7 x=1.6687500000000002 y=-0.38750000000000001 z=3.7187500000000009
+gmo.bezier str=GMOPatch(south=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)]), north=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)]), west=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)]), east=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)]), r_grid=[[0, 0, 0, 0], [0.0372224, 0.361495, 1.02907, 0.217312], [0.85927, 0.29666, 0.409791, 0.547162], [1, 1, 1, 1]], s_grid=[[0, 0.362668, 0.586686, 1], [0, 0.644732, 0.557993, 1], [0, 0.495228, 0.212909, 1], [0, 0.0232011, 1.09952, 1]])
+gmo.bezier classname=GMOPatch
+gmo.bezier p00 x=0 y=0 z=0
+gmo.bezier p10 x=1 y=0 z=0
+gmo.bezier p11 x=1 y=1 z=0
+gmo.bezier p01 x=0 y=1 z=0
+gmo.bezier south class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+gmo.bezier south t=0 x=0 y=0 z=0
+gmo.bezier south t=0.5 x=0.5 y=-0.15000000000000002 z=0.075000000000000011
+gmo.bezier south t=1 x=1 y=0 z=0
+gmo.bezier north class=Bezier str=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)])
+gmo.bezier north t=0 x=0 y=1 z=0
+gmo.bezier north t=0.5 x=0.5 y=1.1499999999999999 z=0.075000000000000011
+gmo.bezier north t=1 x=1 y=1 z=0
+gmo.bezier west class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)])
+gmo.bezier west t=0 x=0 y=0 z=0
+gmo.bezier west t=0.5 x=-0.11249999999999999 y=0.5 z=0.075000000000000011
+gmo.bezier west t=1 x=0 y=1 z=0
+gmo.bezier east class=Bezier str=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)])
+gmo.bezier east t=0 x=1 y=0 z=0
+gmo.bezier east t=0.5 x=1.1124999999999998 y=0.5 z=0.075000000000000011
+gmo.bezier east t=1 x=1 y=1 z=0
+gmo.bezier r_grid[0] a=0 b=0 c=0 d=0
+gmo.bezier r_grid[1] a=0.037222387090632171 b=0.36149509602828062 c=1.0290682076591631 d=0.21731164104332865
+gmo.bezier r_grid[2] a=0.85926984483804258 b=0.29665961997408008 c=0.4097911748339032 d=0.54716165269558403
+gmo.bezier r_grid[3] a=1 b=1 c=1 d=1
+gmo.bezier s_grid[0] a=0 b=0.3626678177348131 c=0.58668606888582242 d=1
+gmo.bezier s_grid[1] a=0 b=0.64473243014029535 c=0.55799301238770616 d=1
+gmo.bezier s_grid[2] a=0 b=0.49522787209359626 c=0.21290851879982736 d=1
+gmo.bezier s_grid[3] a=0 b=0.023201102630895587 c=1.0995238887093322 d=1
+gmo.bezier opCall r=0 s=0 x=0 y=0 z=0
+gmo.bezier opCall r=0 s=0.25 x=-0.084628275369769163 y=0.25019214337578055 z=0.056418850246512775
+gmo.bezier opCall r=0 s=0.5 x=-0.11233768177122244 y=0.48091288303327562 z=0.074891787847481628
+gmo.bezier opCall r=0 s=0.75 x=-0.090644031128550212 y=0.72127118873492058 z=0.060429354085700146
+gmo.bezier opCall r=0 s=1 x=0 y=1 z=0
+gmo.bezier opCall r=0.20000000000000001 s=0 x=0.10404184548979549 y=-0.056282256853319161 z=0.028141128426659581
+gmo.bezier opCall r=0.20000000000000001 s=0.25 x=0.12227934628213349 y=0.25745685620119241 z=0.10717946182238569
+gmo.bezier opCall r=0.20000000000000001 s=0.5 x=0.208490438322399 y=0.51154490973962663 z=0.13309020376691771
+gmo.bezier opCall r=0.20000000000000001 s=0.75 x=0.23165753770118525 y=0.77208658125219354 z=0.12025360795337565
+gmo.bezier opCall r=0.20000000000000001 s=1 x=0.14309761376484784 y=1.0739478002942973 z=0.036973900147148429
+gmo.bezier opCall r=0.5 s=0 x=0.46099167952231568 y=-0.1490960182269378 z=0.074548009113468899
+gmo.bezier opCall r=0.5 s=0.25 x=0.44210503487104313 y=0.22233046714781513 z=0.13562839002700602
+gmo.bezier opCall r=0.5 s=0.5 x=0.49723312091216976 y=0.48805102472166018 z=0.1499733300813515
+gmo.bezier opCall r=0.5 s=0.75 x=0.5161616842844714 y=0.76034437750579298 z=0.13798662542987872
+gmo.bezier opCall r=0.5 s=1 x=0.41124965242102618 y=1.1453194800225646 z=0.072659740011282337
+gmo.bezier opCall r=0.75 s=0 x=0.79057609914472016 y=-0.099674285875849505 z=0.049837142937924753
+gmo.bezier opCall r=0.75 s=0.25 x=0.73355865621287575 y=0.17192798773624629 z=0.11751906377255648
+gmo.bezier opCall r=0.75 s=0.5 x=0.72812734094827314 y=0.47932105263970071 z=0.13958437056047246
+gmo.bezier opCall r=0.75 s=0.75 x=0.73178428034501952 y=0.79768882990653722 z=0.12158820903599082
+gmo.bezier opCall r=0.75 s=1 x=0.68406150353165363 y=1.1298476443412739 z=0.064923822170637122
+gmo.bezier opCall r=1 s=0 x=1 y=0 z=0
+gmo.bezier opCall r=1 s=0.25 x=1.0664296509570068 y=0.17908883370596745 z=0.044286433971337823
+gmo.bezier opCall r=1 s=0.5 x=1.1115468942941749 y=0.54625003161318997 z=0.074364596196116586
+gmo.bezier opCall r=1 s=0.75 x=1.0444057966078644 y=0.88976702110011097 z=0.029603864405242888
+gmo.bezier opCall r=1 s=1 x=1 y=1 z=0
+gmo.bezier area nr=10 ns=10 x=0.000322641326400454 y=-9.0642792520056244e-05 z=1.3462162721918234
+gmo.bezier.aftermut str=GMOPatch(south=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)]), north=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)]), west=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)]), east=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)]), r_grid=[[0, 0, 0, 0], [0.0372224, 0.361495, 1.02907, 0.217312], [0.85927, 0.29666, 0.409791, 0.547162], [1, 1, 1, 1]], s_grid=[[0, 0.362668, 0.586686, 1], [0, 0.644732, 0.557993, 1], [0, 0.495228, 0.212909, 1], [0, 0.0232011, 1.09952, 1]])
+gmo.bezier.aftermut classname=GMOPatch
+gmo.bezier.aftermut p00 x=0 y=0 z=0
+gmo.bezier.aftermut p10 x=1 y=0 z=0
+gmo.bezier.aftermut p11 x=1 y=1 z=0
+gmo.bezier.aftermut p01 x=0 y=1 z=0
+gmo.bezier.aftermut south class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 0.1), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+gmo.bezier.aftermut south t=0 x=0 y=0 z=0
+gmo.bezier.aftermut south t=0.5 x=0.5 y=-0.15000000000000002 z=0.075000000000000011
+gmo.bezier.aftermut south t=1 x=1 y=0 z=0
+gmo.bezier.aftermut north class=Bezier str=Bezier(B=[Vector3(0, 1, 0), Vector3(0.33, 1.2, 0.1), Vector3(0.67, 1.2, 0.1), Vector3(1, 1, 0)])
+gmo.bezier.aftermut north t=0 x=0 y=1 z=0
+gmo.bezier.aftermut north t=0.5 x=0.5 y=1.1499999999999999 z=0.075000000000000011
+gmo.bezier.aftermut north t=1 x=1 y=1 z=0
+gmo.bezier.aftermut west class=Bezier str=Bezier(B=[Vector3(0, 0, 0), Vector3(-0.15, 0.33, 0.1), Vector3(-0.15, 0.67, 0.1), Vector3(0, 1, 0)])
+gmo.bezier.aftermut west t=0 x=0 y=0 z=0
+gmo.bezier.aftermut west t=0.5 x=-0.11249999999999999 y=0.5 z=0.075000000000000011
+gmo.bezier.aftermut west t=1 x=0 y=1 z=0
+gmo.bezier.aftermut east class=Bezier str=Bezier(B=[Vector3(1, 0, 0), Vector3(1.15, 0.33, 0.1), Vector3(1.15, 0.67, 0.1), Vector3(1, 1, 0)])
+gmo.bezier.aftermut east t=0 x=1 y=0 z=0
+gmo.bezier.aftermut east t=0.5 x=1.1124999999999998 y=0.5 z=0.075000000000000011
+gmo.bezier.aftermut east t=1 x=1 y=1 z=0
+gmo.bezier.aftermut r_grid[0] a=0 b=0 c=0 d=0
+gmo.bezier.aftermut r_grid[1] a=0.037222387090632171 b=0.36149509602828062 c=1.0290682076591631 d=0.21731164104332865
+gmo.bezier.aftermut r_grid[2] a=0.85926984483804258 b=0.29665961997408008 c=0.4097911748339032 d=0.54716165269558403
+gmo.bezier.aftermut r_grid[3] a=1 b=1 c=1 d=1
+gmo.bezier.aftermut s_grid[0] a=0 b=0.3626678177348131 c=0.58668606888582242 d=1
+gmo.bezier.aftermut s_grid[1] a=0 b=0.64473243014029535 c=0.55799301238770616 d=1
+gmo.bezier.aftermut s_grid[2] a=0 b=0.49522787209359626 c=0.21290851879982736 d=1
+gmo.bezier.aftermut s_grid[3] a=0 b=0.023201102630895587 c=1.0995238887093322 d=1
+gmo.bezier.callerstr str=Bezier(B=[Vector3(0, 0, 0), Vector3(0.33, -0.2, 5), Vector3(0.67, -0.2, 0.1), Vector3(1, 0, 0)])
+gmo.lines str_eq_ut=true
+gmo.lines grids_eq_ut=true
+gmo.lines same=true
+gmo.lines str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.441936, 0.262516, 0.35213, 0.200931], [0.728709, 0.79867, 0.450041, 0.546211], [1, 1, 1, 1]], s_grid=[[0, 0.487123, 0.384752, 1], [0, 0.552774, 0.281553, 1], [0, 0.722708, 0.67958, 1], [0, 0.812371, 0.59285, 1]])
+gmo.lines classname=GMOPatch
+gmo.lines p00 x=0 y=0.10000000000000001 z=3
+gmo.lines p10 x=1 y=0.10000000000000001 z=3
+gmo.lines p11 x=1 y=1.1000000000000001 z=3
+gmo.lines p01 x=0 y=1.1000000000000001 z=3
+gmo.lines south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.lines south t=0 x=0 y=0.10000000000000001 z=3
+gmo.lines south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.lines south t=1 x=1 y=0.10000000000000001 z=3
+gmo.lines north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.lines north t=0 x=0 y=1.1000000000000001 z=3
+gmo.lines north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.lines north t=1 x=1 y=1.1000000000000001 z=3
+gmo.lines west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.lines west t=0 x=0 y=0.10000000000000001 z=3
+gmo.lines west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.lines west t=1 x=0 y=1.1000000000000001 z=3
+gmo.lines east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.lines east t=0 x=1 y=0.10000000000000001 z=3
+gmo.lines east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.lines east t=1 x=1 y=1.1000000000000001 z=3
+gmo.lines r_grid[0] a=0 b=0 c=0 d=0
+gmo.lines r_grid[1] a=0.44193604347854304 b=0.26251645100286713 c=0.35212974931169244 d=0.20093136016842866
+gmo.lines r_grid[2] a=0.72870909297116193 b=0.79866999772003411 c=0.45004104549229601 d=0.54621130579691679
+gmo.lines r_grid[3] a=1 b=1 c=1 d=1
+gmo.lines s_grid[0] a=0 b=0.48712325693400632 c=0.38475226742813612 d=1
+gmo.lines s_grid[1] a=0 b=0.55277419556771157 c=0.28155327925120222 d=1
+gmo.lines s_grid[2] a=0 b=0.72270836258368176 c=0.67958017218336242 d=1
+gmo.lines s_grid[3] a=0 b=0.81237120563646947 c=0.59285030687179818 d=1
+gmo.open.p00|class=object.Error|msg=[GMOPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.1, 0, 0)]|file=[]|line=0
+gmo.open.p00.corners|class=none|msg=[]|file=[]|line=-1
+gmo.open.p10|class=object.Error|msg=[GMOPatch open corner p10= Vector3(1, 0.1, 0) p10_alt= Vector3(1, 0, 0)]|file=[]|line=0
+gmo.open.p11|class=object.Error|msg=[GMOPatch open corner p11= Vector3(1, 1.1, 0) p11_alt= Vector3(1, 1, 0)]|file=[]|line=0
+gmo.open.p01|class=object.Error|msg=[GMOPatch open corner p01= Vector3(0.1, 1, 0) p01_alt= Vector3(0, 1, 0)]|file=[]|line=0
+gmo.open.all|class=object.Error|msg=[GMOPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.2, 0, 0)]|file=[]|line=0
+gmo.tol.1e-6|class=none|msg=[]|file=[]|line=-1
+gmo.tol.1e-3|class=object.Error|msg=[GMOPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.001, 0, 0)]|file=[]|line=0
+gmo.tol.5e-3|class=object.Error|msg=[GMOPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.005, 0, 0)]|file=[]|line=0
+gmo.tol.1.5e-2|class=object.Error|msg=[GMOPatch open corner p00= Vector3(0, 0, 0) p00_alt= Vector3(0.015, 0, 0)]|file=[]|line=0
+gmo.nan.corners|class=object.Error|msg=[GMOPatch open corner p00= Vector3(nan, nan, nan) p00_alt= Vector3(nan, nan, nan)]|file=[]|line=0
+gmo.copy str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.273384, 0.449851, 0.278661, 0.41084], [0.497845, 0.454377, 0.666116, 0.508906], [1, 1, 1, 1]], s_grid=[[0, 0.536117, 0.589549, 1], [0, 0.480042, 0.596534, 1], [0, 0.251793, 0.795589, 1], [0, 0.319536, 0.696246, 1]])
+gmo.copy classname=GMOPatch
+gmo.copy p00 x=0 y=0.10000000000000001 z=3
+gmo.copy p10 x=1 y=0.10000000000000001 z=3
+gmo.copy p11 x=1 y=1.1000000000000001 z=3
+gmo.copy p01 x=0 y=1.1000000000000001 z=3
+gmo.copy south class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3))
+gmo.copy south t=0 x=0 y=0.10000000000000001 z=3
+gmo.copy south t=0.5 x=0.5 y=0.10000000000000001 z=3
+gmo.copy south t=1 x=1 y=0.10000000000000001 z=3
+gmo.copy north class=Line str=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.copy north t=0 x=0 y=1.1000000000000001 z=3
+gmo.copy north t=0.5 x=0.5 y=1.1000000000000001 z=3
+gmo.copy north t=1 x=1 y=1.1000000000000001 z=3
+gmo.copy west class=Line str=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3))
+gmo.copy west t=0 x=0 y=0.10000000000000001 z=3
+gmo.copy west t=0.5 x=0 y=0.60000000000000009 z=3
+gmo.copy west t=1 x=0 y=1.1000000000000001 z=3
+gmo.copy east class=Line str=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3))
+gmo.copy east t=0 x=1 y=0.10000000000000001 z=3
+gmo.copy east t=0.5 x=1 y=0.60000000000000009 z=3
+gmo.copy east t=1 x=1 y=1.1000000000000001 z=3
+gmo.copy r_grid[0] a=0 b=0 c=0 d=0
+gmo.copy r_grid[1] a=0.27338397854923979 b=0.44985149402218516 c=0.27866111025336204 d=0.4108399359280534
+gmo.copy r_grid[2] a=0.49784534872903363 b=0.45437685869836741 c=0.66611642549901739 d=0.50890568203366016
+gmo.copy r_grid[3] a=1 b=1 c=1 d=1
+gmo.copy s_grid[0] a=0 b=0.53611655172600214 c=0.58954853469386304 d=1
+gmo.copy s_grid[1] a=0 b=0.48004170186542594 c=0.5965335069776958 d=1
+gmo.copy s_grid[2] a=0 b=0.25179328482031282 c=0.79558897895342251 d=1
+gmo.copy s_grid[3] a=0 b=0.31953597771775977 c=0.696245977968875 d=1
+gmo.copy opCall r=0.5 s=0.5 x=0.46428090362463048 y=0.62406184968548761 z=3
+gmo.copy opCall r=0.10000000000000001 s=0.10000000000000001 x=0.091200158063938302 y=0.24216380738107138 z=3.0000000000000004
+gmo.copy opCall r=0.25 s=0.75 x=0.24662037328077202 y=0.85072707694385508 z=3
+gmo.copy opCall r=0.90000000000000002 s=0.20000000000000001 x=0.85912156839967224 y=0.29501628930497154 z=3
+gmo.copy grids_eq_source=true
+gmo.copy str_eq_source=true
+gmo.copy same=true
+gmo.indep mutated=r_grid[1][2],p11
+gmo.indep copy r_grid[1] a=0.27338397854923979 b=0.44985149402218516 c=0.27866111025336204 d=0.4108399359280534
+gmo.indep copy p11 x=1 y=1.1000000000000001 z=3
+gmo.indep source r_grid[1] a=0.27338397854923979 b=0.44985149402218516 c=0.25 d=0.4108399359280534
+gmo.dup str_eq_ut=true
+gmo.dup grids_eq_ut=true
+gmo.dup same=true
+gmo.dup55 str=GMOPatch(south=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(1, 0.1, 3)), north=Line(p0=Vector3(0, 1.1, 3), p1=Vector3(1, 1.1, 3)), west=Line(p0=Vector3(0, 0.1, 3), p1=Vector3(0, 1.1, 3)), east=Line(p0=Vector3(1, 0.1, 3), p1=Vector3(1, 1.1, 3)), r_grid=[[0, 0, 0, 0], [0.441936, 0.262516, 0.35213, 0.200931], [0.728709, 0.79867, 0.450041, 0.546211], [1, 1, 1, 1]], s_grid=[[0, 0.487123, 0.384752, 1], [0, 0.552774, 0.281553, 1], [0, 0.722708, 0.67958, 1], [0, 0.812371, 0.59285, 1]])
+gmo.dup55 grids_eq_ut=true
+gmo.dup55 grids_eq_src55=false
+gmo.dup55 same=true
+gmo.dup22 grids_eq_ut=true
+gmo.oor r=-0.5 s=1.5 x=2.0604322265354433 y=0.52049644522744232 z=2.9999999999999996
+gmo.oor r=2 s=0 x=1.9071071452173136 y=0.10000000000000002 z=3
+gmo.oor r=-1 s=-1 x=-38.167650428233515 y=8.7531609455326702 z=2.9999999999998863
+gmo.oor r=0.5 s=10000000000 x=0 y=0 z=0
+gmo.nf0 r=nan s=0.5 x=nan y=nan z=nan
+gmo.nf0|class=none|msg=[]|file=[]|line=-1
+gmo.nf1 r=0.5 s=nan x=nan y=nan z=nan
+gmo.nf1|class=none|msg=[]|file=[]|line=-1
+gmo.nf2 r=inf s=0.5 x=-nan y=-nan z=-nan
+gmo.nf2|class=none|msg=[]|file=[]|line=-1
+gmo.nf3 r=-inf s=0.25 x=-nan y=-nan z=-nan
+gmo.nf3|class=none|msg=[]|file=[]|line=-1
+gmo.nf4 r=0.5 s=inf x=-nan y=-nan z=-nan
+gmo.nf4|class=none|msg=[]|file=[]|line=-1
+gmo.bad.njv1|class=object.Error|msg=[Not implemented.]|file=[]|line=0
+gmo.bad.njv0|class=object.Error|msg=[Not implemented.]|file=[]|line=0
+gmo.bad.niv1|class=core.exception.AssertError|msg=[index i is invalid]|file=[/tmp/gdtk_shadow/geom/grid/grid.d]|line=73
+gmo.bad.niv0|class=core.exception.AssertError|msg=[index i is invalid]|file=[/tmp/gdtk_shadow/geom/grid/grid.d]|line=73
+gmo.bad.niv1njv1|class=object.Error|msg=[Not implemented.]|file=[]|line=0
+gmo.point str=GMOPatch(south=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), north=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), west=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), east=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3)), r_grid=[[0, 0, 0, 0], [0, 0.333333, 0.666667, 1], [0, 0.333333, 0.666667, 1], [1, 1, 1, 1]], s_grid=[[0, 0, 0, 1], [0, 0.333333, 0.333333, 1], [0, 0.666667, 0.666667, 1], [0, 1, 1, 1]])
+gmo.point classname=GMOPatch
+gmo.point p00 x=1 y=2 z=3
+gmo.point p10 x=1 y=2 z=3
+gmo.point p11 x=1 y=2 z=3
+gmo.point p01 x=1 y=2 z=3
+gmo.point south class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+gmo.point south t=0 x=1 y=2 z=3
+gmo.point south t=0.5 x=1 y=2 z=3
+gmo.point south t=1 x=1 y=2 z=3
+gmo.point north class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+gmo.point north t=0 x=1 y=2 z=3
+gmo.point north t=0.5 x=1 y=2 z=3
+gmo.point north t=1 x=1 y=2 z=3
+gmo.point west class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+gmo.point west t=0 x=1 y=2 z=3
+gmo.point west t=0.5 x=1 y=2 z=3
+gmo.point west t=1 x=1 y=2 z=3
+gmo.point east class=Line str=Line(p0=Vector3(1, 2, 3), p1=Vector3(1, 2, 3))
+gmo.point east t=0 x=1 y=2 z=3
+gmo.point east t=0.5 x=1 y=2 z=3
+gmo.point east t=1 x=1 y=2 z=3
+gmo.point r_grid[0] a=0 b=0 c=0 d=0
+gmo.point r_grid[1] a=0 b=0.33333333333333331 c=0.66666666666666663 d=1
+gmo.point r_grid[2] a=0 b=0.33333333333333331 c=0.66666666666666663 d=1
+gmo.point r_grid[3] a=1 b=1 c=1 d=1
+gmo.point s_grid[0] a=0 b=0 c=0 d=1
+gmo.point s_grid[1] a=0 b=0.33333333333333331 c=0.33333333333333331 d=1
+gmo.point s_grid[2] a=0 b=0.66666666666666663 c=0.66666666666666663 d=1
+gmo.point s_grid[3] a=0 b=1 c=1 d=1
+gmo.point opCall r=0.5 s=0.5 x=1 y=2 z=3
+gmo.point opCall r=0.10000000000000001 s=0.10000000000000001 x=1 y=2 z=3
+gmo.point opCall r=0.25 s=0.75 x=1 y=2 z=3
+gmo.point opCall r=0.90000000000000002 s=0.20000000000000001 x=1 y=2 z=3
+gmo.point area nr=10 ns=10 x=2.6459199132993026e-30 y=0 z=0
