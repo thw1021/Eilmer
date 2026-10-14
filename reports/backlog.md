@@ -683,6 +683,26 @@
   `ExceptionBase` 换成 `ConvOverflowException`（**消息一字不改**）。
   → **实现窗口**：改 substrate 会重建 `eil_geom`，与在飞的 grid agent 撞，故与 T-926 第 1 条
   一起在无编译冲突的窗口做；做完必须三配置复跑并给数字（当前 100/100）。
+  **2026-10-14 全树扫了一遍"端口自己写的 conv 文本"，第三条替身与一条门禁盲区**
+  （扫法：`grep -rn 'unexpected_char\|unexpected_end\|converting from type\|Overflow in integral\|Input was NaN\|Conversion positive overflow' src/ substrate/`，
+  排除 substrate 自己那两个文件）：
+  3. **`src/util/time_utils.cpp:54` 的 `to_int_d` 是第三个严格整数扫描器**（另两个是 substrate 的
+     `parse_int_strict` 和 `usgrid.cpp:300` 的 `d_to_int`），三处文本各写一遍。
+     它按 D 的 `to!int`（已核：`time_utils.d:31/32/33/37` 全是 `to!int`）**类型名 `int` 是对的**，
+     但**类是 `ExceptionBase`**，而 D 抛 `std.conv.ConvException` 与超范围的
+     `ConvOverflowException`。
+  4. **这条为什么没人发现——注册门禁本身看不见**：`tests/test_util_time_utils.cpp:31-32`
+     只有两个种类标签 `kErrorPrefix="Error"` / `kConvPrefix="Exception"`，
+     `expect_throw` 是 `catch (ErrorBase&) / catch (ExceptionBase&)` 二选一
+     （`ConversionException` 派生自 `ExceptionBase`，所以**抛哪个都进同一支**），
+     它比的是 `.msg` 逐字符，**类名从来没进过断言**。⇒ 与 T-922 完全同形：
+     "门禁只比 msg"就会让类名错误长存。
+     **做完 T-928 必须顺手把这条断言加粗**：让 `expect_throw` 记录端口自己那个
+     "应当等于 D 类名"的字符串（对照 `substrate_throw_identity.txt` 的实测类名），
+     否则下一次还是没人看得见。
+  5. 全树扫描的其余命中都是**有语料钉住的**：`svgpath.cpp:76/:83`（`geom_gpath_svgpath` 注册通过）、
+     `usgrid.cpp:304/311/315`（`geom_grid_usgrid` 行 208 钉住类与文本）、
+     `sgrid.cpp:165/167` 只是注释。**没有第四处。**
 - [ ] **T-916** Wave 3 硬任务：D 的 `sinh` 有两处**结构**分歧（不是舍入）——
   (a) 奇对称破坏：`sinh(-20)`=-242582602.56479013 而 `sinh(20)`=+242582597.70489514，
   二者绝对值不等，且都不等于 `(exp(x)-exp(-x))/2`（＝glibc 值）；
