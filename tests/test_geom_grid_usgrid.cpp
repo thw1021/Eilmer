@@ -74,6 +74,7 @@
 #include "eil/aa.hpp"
 #include "eil/array.hpp"
 #include "eil/error.hpp"
+#include "eil/file.hpp"
 #include "eil/format.hpp"
 #include "eil/math.hpp"
 #include "eil/number.hpp"
@@ -286,7 +287,7 @@ Row classify(const std::exception_ptr& ep, const Row& site) {
         // the port's eil::gzip::ZlibException (src/extern/gzip/gzip.hpp:83) carries the
         // same getmsg() text, and the raise site is Phobos' own (corpus row 863).
         return {"std.zlib.ZlibException", e.msg(), ZLIB_PATH, 98};
-    } catch (const eil::geom::StdioException& e) {
+    } catch (const eil::StdioException& e) {
         // D's buffered File.readln() raises std.stdio.StdioException(strerror(errno)) when
         // the READ fails, which is not end of file (T-923: EOF returns "" and does not
         // throw). Corpus row 1267 is the only such site: the directory used as an SU2 file.

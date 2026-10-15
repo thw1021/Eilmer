@@ -87,19 +87,8 @@ namespace geom {
 // forward-declares UnstructuredGrid the same way.
 class StructuredGrid;
 
-// std.stdio.StdioException — D's buffered File reader raises this when the underlying
-// read fails, as opposed to reaching end of file (which returns an empty line and does
-// NOT throw; T-923). The one corpus row that reaches it is us.imp-directory (row 1267):
-// glibc's fopen(name, "r") SUCCEEDS on a directory and the first fgetc fails with EISDIR,
-// so D's readln() reports StdioException(strerror(errno)) — the message is exactly
-// "Is a directory" — from std/stdio.d:5171. Substrate has no such class (SUBSTRATE GAP,
-// reported for a T-9xx entry alongside T-926 item 3, "no readln()"), so it is declared
-// here as a port-local shim; d_readln() in usgrid.cpp raises it.
-class StdioException : public eil::ExceptionBase {
-  public:
-    explicit StdioException(const std::string& message)
-        : eil::ExceptionBase(message) {}
-};
+// std.stdio.StdioException now lives in the substrate (eil/file.hpp, backlog T-926
+// item 3); the port-local shim that used to be here is gone.
 
 // ---- usgrid.d:40-60: the cell-type tag tables ----
 // D:40-53 `enum USGCell_type`. `: int` is D's default enum base and the house

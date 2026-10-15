@@ -25,6 +25,14 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_substrate_acos_one.cpp)
                    ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_acos_one.txt)
 endif()
 
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_substrate_readln.cpp)
+  add_executable(test_substrate_readln tests/test_substrate_readln.cpp)
+  target_link_libraries(test_substrate_readln PRIVATE eil_substrate)
+  add_test(NAME substrate_readln
+           COMMAND test_substrate_readln
+                   ${CMAKE_CURRENT_SOURCE_DIR}/baselines/e587b235/probes/substrate_readln.txt)
+endif()
+
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_geom_grid_paver_stage.cpp)
   add_executable(test_geom_grid_paver_stage tests/test_geom_grid_paver_stage.cpp)
   target_link_libraries(test_geom_grid_paver_stage PRIVATE eil_geom eil_nm eil_substrate)

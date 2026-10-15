@@ -1,0 +1,35 @@
+# baselines/e587b235/probes/substrate_readln.txt
+# ldc2 1.40.0 at gdtk e587b235, -O0, via probes/substrate/probe_readln.d; two runs
+# byte-identical, no addresses in any row. Replayed by tests/test_substrate_readln.cpp
+# (ctest:substrate_readln) against eil::readln in substrate/include/eil/file.hpp.
+# Row kinds: `<tag>.r<i>' = line i of that file (escaped, with the eof() flag),
+# `<tag>|EXC' + `<tag>.site' = the thrown class, message and the Phobos-side file/line.
+term.r0|len=6|[alpha\n]|eof=false
+term.r1|len=5|[beta\n]|eof=false
+term.r2|len=6|[gamma\n]|eof=false
+term.r3|len=0|[]|eof=true
+noterm.r0|len=6|[alpha\n]|eof=false
+noterm.r1|len=5|[beta\n]|eof=false
+noterm.r2|len=5|[gamma]|eof=true
+noterm.r3|len=0|[]|eof=true
+crlf.r0|len=7|[alpha\r\n]|eof=false
+crlf.r1|len=6|[beta\r\n]|eof=false
+crlf.r2|len=0|[]|eof=true
+empty.r0|len=0|[]|eof=true
+blank.r0|len=4|[one\n]|eof=false
+blank.r1|len=1|[\n]|eof=false
+blank.r2|len=6|[three\n]|eof=false
+blank.r3|len=1|[\n]|eof=false
+blank.r4|len=0|[]|eof=true
+past.eofflag|[false]
+past.first|len=0|[]
+past.second|len=0|[]
+directory|EXC|std.stdio.StdioException|msg=[Is a directory]
+directory.site|file=[std/stdio.d]|line=5171
+missing|EXC|std.exception.ErrnoException|msg=[Cannot open file `/tmp/eil_readln_probe/nope.txt' in mode `r' (No such file or directory)]
+missing.site|file=[std/stdio.d]|line=624
+nul.r0|len=4|[a\0b\n]|eof=false
+nul.r1|len=4|[c\rd\n]|eof=false
+nul.r2|len=0|[]|eof=true
+termarg|len=6|[alpha\n]
+END|done

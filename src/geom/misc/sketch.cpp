@@ -30,9 +30,6 @@ namespace geom {
 
 namespace {
 
-// D:99's third default argument: `double[] canvas_mm = [0.0, 0.0, 120.0, 120.0]`.
-double default_canvas_mm[4] = {0.0, 0.0, 120.0, 120.0};
-
 // D:102 / D:111 `!find(names, name).empty` — std.algorithm.find over a string[] with a
 // string needle is a linear equality search, so the empty result means "not present".
 template <size_t N> bool is_known_name(const std::array<std::string, N>& names,
@@ -45,16 +42,11 @@ template <size_t N> bool is_known_name(const std::array<std::string, N>& names,
 
 } // namespace
 
-// D:99-168
-Sketch::Sketch()
-    : Sketch("svg", "xyortho", eil::Slice<double>(default_canvas_mm, 4, nullptr, 0)) {}
-
-Sketch::Sketch(const std::string& renderer_name, const std::string& projection_name)
-    : Sketch(renderer_name, projection_name,
-             eil::Slice<double>(default_canvas_mm, 4, nullptr, 0)) {}
-
+// D:99-168. D:99's `double[] canvas_mm = [0.0, 0.0, 120.0, 120.0]` default argument is
+// the const-Array parameter declared in the header; the body only reads canvas_mm, exactly
+// as D's does (backlog T-926 item 2 — three delegating overloads used to stand in for it).
 Sketch::Sketch(const std::string& renderer_name, const std::string& projection_name,
-               eil::Slice<double> canvas_mm) {
+               const eil::Array<double>& canvas_mm) {
     if (!is_known_name(rendererNames, renderer_name)) {
         throw eil::ExceptionBase("Unknown renderer: " + renderer_name, __FILE__, __LINE__);
     }

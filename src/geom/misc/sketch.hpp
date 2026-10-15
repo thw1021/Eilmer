@@ -180,12 +180,15 @@ class Sketch {
     Vector3 centre = Vector3(0.0, 0.0, -1.0);
     Vector3 up = Vector3(0.0, 1.0, 0.0);
 
-    // D:99-168. The three overloads are D:99's three default arguments (see the header
-    // note about a Slice default argument).
-    Sketch();
-    Sketch(const std::string& renderer_name, const std::string& projection_name);
-    Sketch(const std::string& renderer_name, const std::string& projection_name,
-           eil::Slice<double> canvas_mm);
+    // D:99-168, one constructor carrying D's three default arguments. A `double[] x =
+    // [..]` default cannot be a Slice parameter — a Slice only borrows, and the literal's
+    // buffer would be gone before the call — so the parameter is a const Array reference:
+    // the temporary binds to the reference and lives for the whole call. This replaces the
+    // three delegating overloads that stood in for the missing rule (backlog T-926 item 2).
+    Sketch(const std::string& renderer_name = "svg",
+           const std::string& projection_name = "xyortho",
+           const eil::Array<double>& canvas_mm =
+               eil::Array<double>{0.0, 0.0, 120.0, 120.0});
     ~Sketch(); // D:170-184
     Sketch(const Sketch&) = delete;
     Sketch& operator=(const Sketch&) = delete;

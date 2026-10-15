@@ -48,6 +48,7 @@
 
 #include "eil/conv.hpp"
 #include "eil/error.hpp"
+#include "eil/file.hpp"
 #include "eil/math.hpp"
 #include "extern/gzip/gzip.hpp"
 #include "geom/elements/properties.hpp"
@@ -118,32 +119,14 @@ struct DFileGuard {
     operator std::FILE*() const { return h; }
 };
 
-// D's f.readln(): the line without its terminator; null at EOF, which D's callers
-// immediately .strip().split() — an empty token list.
-// A FAILED READ is not EOF: D's buffered std.stdio.File raises StdioException(strerror
-// (errno)) out of readln, witnessed by corpus row 1267 (us.imp-directory, reading the
-// directory /tmp/probe_usg_dir as an SU2 file — glibc's fopen succeeds on a directory and
-// the first read fails with EISDIR). A true end of file still returns the empty line and
-// does not throw (T-923), which is what the eof rows in us.gz.*/us.raw.*/us.su2rd.* depend
-// on, so the two cases are told apart by the stream error indicator, not by EOF.
-std::string d_readln(std::FILE* f, bool& at_eof) {
-    std::string out;
-    errno = 0;
-    int c = std::fgetc(f);
-    if (c == EOF) {
-        if (ferror(f)) throw eil::geom::StdioException(std::strerror(errno));
-        at_eof = true;
-        return out;
-    }
-    while (c != EOF && c != '\n') {
-        out += static_cast<char>(c);
-        c = std::fgetc(f);
-        if (c == EOF && ferror(f)) throw eil::geom::StdioException(std::strerror(errno));
-    }
-    if (!out.empty() && out.back() == '\r') out.pop_back();
-    at_eof = (c == EOF);
-    return out;
-}
+// D's f.readln(), through the substrate (backlog T-926 item 3): the rule — empty string
+// and no throw at end of file, StdioException(strerror(errno)) when the read itself
+// FAILS, terminator and \r kept in the raw line — now lives in one place,
+// substrate/include/eil/file.hpp, with the measurement that fixed it
+// (probes/substrate/probe_readln.d). This wrapper is the strip-normalised shape the
+// parsing sites in this file use, i.e. D's `f.readln().strip()`; the substitution of the
+// strip for the call site is backlog T-936, not a change of behaviour here.
+std::string d_readln(std::FILE* f, bool& at_eof) { return eil::readln_line(f, at_eof); }
 
 void d_write(std::FILE* f, const std::string& s) {
     std::fwrite(s.data(), 1, s.size(), f);

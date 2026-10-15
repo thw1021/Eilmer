@@ -71,6 +71,15 @@ inline typename std::enable_if<!std::is_arithmetic<T>::value, T>::type grow_init
 
 } // namespace detail
 
+// D's dynamic-array DEFAULT ARGUMENT (`double[] a = []`, `double[] a = [0.0, 120.0]`)
+// cannot be a `Slice<T>` parameter: a Slice only borrows, so the buffer behind a literal
+// default would be gone before the callee read it. The spelling that keeps D's shape is a
+// `const eil::Array<T>&` parameter with an Array default argument — the temporary binds to
+// the reference and lives for the whole call — and `[]` becomes `eil::Array<T>{}`.
+// Callers holding a Slice or an Array keep compiling because Array has a non-explicit
+// constructor from Slice<T>. Applied at geom/misc/sketch.{hpp,cpp}, whose three delegating
+// overloads used to stand in for this (backlog T-926 item 2).
+
 template <typename T> class Slice {
   public:
     Slice() = default;

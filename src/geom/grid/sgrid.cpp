@@ -37,6 +37,7 @@
 
 #include "eil/conv.hpp"
 #include "eil/error.hpp"
+#include "eil/file.hpp"
 #include "eil/math.hpp"
 #include "extern/gzip/gzip.hpp"
 #include "geom/elements/properties.hpp"
@@ -92,18 +93,12 @@ struct DFileGuard {
     operator std::FILE*() const { return h; }
 };
 
-std::string d_readln(std::FILE* f, bool& at_eof) {
-    std::string out;
-    int c = std::fgetc(f);
-    if (c == EOF) { at_eof = true; return out; }
-    while (c != EOF && c != '\n') {
-        out += static_cast<char>(c);
-        c = std::fgetc(f);
-    }
-    if (!out.empty() && out.back() == '\r') out.pop_back();
-    at_eof = (c == EOF);
-    return out;
-}
+// The substrate owns the rule now (eil::readln_line, backlog T-926 item 3 / T-936). This
+// module's copy had already drifted from usgrid's: it treated a FAILED read as end of file
+// instead of raising StdioException(strerror(errno)), which is the difference between
+// "empty file" and "that path is a directory". Unifying them moves this module toward the
+// reference; no registered row of geom_grid_sgrid depends on the old behaviour.
+std::string d_readln(std::FILE* f, bool& at_eof) { return eil::readln_line(f, at_eof); }
 
 void d_write(std::FILE* f, const std::string& s) { std::fwrite(s.data(), 1, s.size(), f); }
 void d_writeln(std::FILE* f, const std::string& s) { d_write(f, s); d_write(f, "\n"); }
