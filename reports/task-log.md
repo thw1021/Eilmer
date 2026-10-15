@@ -1086,3 +1086,141 @@
 - **backlog.md**：T-016 标 `[x]` 并附完成段。Wave 2 的执行约束（4 条，源自 wave-01 返工）保留原位。
 - **收尾批三条债的提交链**：`dde23b3`/`2491b04`(T-929) → `fef8d4c`/`7a61abb`(T-928) →
   `7a964f0`/`c4f2660`(T-926①) → `f98a2ef`(T-016)。**Wave 2 到 T-016 闭；`wave-02` tag 落。**
+
+## T-931 / T-933 / T-934 — paver 内部铺面的 1 ULP，最后是两条端口规则被自己的语料推翻  (2026-10-15)
+<a id="t-931"></a>
+
+**产物现已逐字节复现**：`paved_grid.vtk` 141,490 字节，sha256 `40ac927a…e8a2bbb9`，与
+`baselines/e587b235/probes/geom_grid_paver_demo.paved_grid.vtk` 相同（先前 398/1490 顶点行末位不同）。
+`demo_artefacts_geom_grid_paver` 因此在 `cmake/wave2_grid_g6.cmake` 里**注册**了。
+
+### 怎么定位的：把 demo 的铺面按阶段打指纹，而不是猜
+
+现有 `geom_grid_paver` 语料 1961/1961 字节相同却漏掉这条路径，因为它只跑 6–32 点小边界。
+新探针 **`probes/geom/grid/probe_paver_stage.d`** 把 `paver_demo.d` 的 214 点边界送进
+`PavedGrid` 构造序列（paver.d:1607-1730 **逐语句内联**，每步之后打一次指纹），语料
+**4,249 行、两次 D 跑逐字节相同**，注册为 `ctest:geom_grid_paver_stage`。
+构造序列的正确性有一条硬证据：**探针里内联出来的 writeln/writefln 文本与已冻结的
+demo stdout 门（129 行）逐字节相同** —— 也就是说分支走向、迭代次数（12 次）都对得上，
+探针驱动的不是另一个程序。
+
+第一版指纹只对 x/y 求和，于是**它自己就是这条任务最重要的一条教训**：把 `^^2` 规则修好之后，
+x/y 指纹显示的分歧点从 `6row1` 移到 `12loop1.pave`，真原因却藏在前一阶段——
+`interior_angle` 已经差 1 ULP 而坐标还没动。指纹现在覆盖
+`x, y, interior_angle, V_R[0..1], V_L[0..1], growth, node_cat 长度, rowID`
+的位型和摘要，端口侧同步。逐步下钻用了三份**只诊断、不入库**的副本（`node_gen`、
+`assign_node_properties`、`pave_rows_until_intersection` 各一份，D/C++ 对称），
+在 o1.2 那一行只发现 **1 个节点（POINT_LIST 索引 749）差 1 ULP**，再往上追到它的
+`interior_angle`——即 `acos(r)`。
+
+### T-933：`x ^^ 2` 是**一次乘法**，不是 `eil::pow(x,2)`
+
+端口原来按 wave-02-brief §5 与 `substrate_pow`（7 个操作数）写的"每个 `^^` 都是 pow"。
+实测 2,222 个操作数（i/7、i*0.001、1/i、i*1e-8、0.05+i*1e-4 各 400 个、从
+0.040262832185305138 起步 200 步的密扫，加 0/−0/±1/±2/0.5/1/3/2/3/±min_normal/±5e-324/
+±DBL_MAX/溢出界两侧各一个/±inf/nan）：
+
+| 比较 | 结果 |
+|---|---|
+| D 的 `x ^^ 2` vs `x*x` | **2222/2222 位型相同** |
+| D 的 `x ^^ 2` vs Phobos `pow(x,2.0)` | 2222/2222 相同（D 自己两种写法一致） |
+| **glibc** `pow(x,2.0)` vs D 的 `x ^^ 2` | **差 3 个操作数**（各 1 ULP）——端口用的就是这个 |
+| D 的 `x ^^ 3` vs `(x*x)*x` | 差 **527/2222（23.7%）** ⇒ 指数≥3 必须留 pow |
+| D 的 `x ^^ 3` vs Phobos `pow(x,3.0)` | 2222/2222 相同 |
+
+所以 `^^2` 的正确转写是 `eil::sqr(x) = x*x`。**全树 89 个站点改道**（13 个文件；
+idealgasflow 36、properties 19、paver 10、sgrid 7、gmopatch 4、kdtree 4、vector3 3、
+wedgevolume 2、modifiedpath 1、beziertrianglepatch 1、nelmin 1、两个嵌套在参数里的补扫到）；
+`substrate_pow` 语料从 35 行扩到 **4,480 行**，其中 4,445 行按语义核对（不是逐行位置比对，
+因为端口没有 Phobos 的 pow 可回声）。核对口径：**sq2 组 0 容差**（`eil::sqr(in)` 必须等于
+D 的 `d=` 列），cu3 组给**上界 8**（Phobos pow 与 glibc pow 本身在 ~1/650 操作数上差 1 ULP，
+见 T-935；上界的作用是"把 `^^3` 展开成乘积就立刻红 527 行"）。
+
+### T-934：`eil::asin/eil::acos` 必须是 Phobos 的定义，不是 libm 的入口
+
+新探针 **`probes/substrate/probe_acos_one.d`** → `substrate_acos_one.txt` **8,492 行**
+（±1 两端各 61 级 2^-53 阶梯、端点本身与外一 ULP、[-1,1] 上 4,001 个均匀样本、
+余弦定理真实产生的 r、0/−0/±1/±inf/±nan/±min_normal 各再加 ±2^-30 的邻近值），
+注册 `ctest:substrate_acos_one`。实测：
+
+| 候选 | 与 D 不符的行 |
+|---|---|
+| **Phobos 定义** `atan2(sqrt(1-x*x), x)` 在 80 位 `real` 里成、窄回 double | **0 / 8,454** |
+| glibc `std::acos` / `std::asin`（端口当时用的） | **208 / 8,454**，其中 118 行在 ±1 的 2^-30 邻域内 |
+
+NaN 极性也照实测钉住：D 的 asin/acos 对**定义域外的有限值**和**±inf**都给**负**静默 NaN
+（`acosspec`/`asin*` 行 `7ff0…→fff8…`），`nan` 操作数则按 D 一样传播自身载荷。
+落点：`substrate/include/eil/math.hpp` 的 `eil::asin`/`eil::acos` 改成该定义；
+`src/gasdyn/idealgasflow.cpp` 里的本地 `d_asin` 副本**删除**、6 个站点走 substrate
+（同一规则留两份必漂移，T-910/T-920 的教训），`nozzleexpansionpatch.hpp` 指向该副本的注释同步更正。
+`geom/grid/paver.cpp:522` 的 `eil::acos(r)` 因此与参照一致——那 398 个顶点的另一半原因。
+
+语料里有 38 行（`asinatan2`/`acosatan2`，即 D 手写公式本身）**永久不进门禁**：±inf 处
+D 手写公式给 +NaN 而 D 的 `acos(±inf)` 给 −NaN，二者本来就不是同一个函数；测试把跳过行数
+打印出来而不是静默略过。
+
+### 验证与判别力
+
+- **三配置 116/116**：default（Debug）、`Release`、`Release+EIL_SLICE_CHECK`（后者在 -O3 下
+  同样复现产物门）。
+- 阶段回放 **4,249/4,249 行逐字节相同、0 差异**（修 `^^2` 前 58 行差、修前一半 46 行差）。
+- **判别力**：把 `eil::sqr` 退回 `std::pow(x,2.0)` ⇒ `substrate_pow` **3 行红**；
+  把 `eil::acos/asin` 退回 glibc ⇒ `substrate_acos_one` **70 行红**；两者都不需要改测试本身。
+- `check_staleness.sh` = `no drift`；`provenance/manifest.yml` 重生成（idealgasflow.cpp
+  净 −14 行 = 删掉的 `d_asin` 块）。
+- 中间提交 `9fcd18e`。
+
+### 新遗留
+
+- **T-935**：Phobos 的 `pow` 与 glibc 的 `std::pow` 在指数 3/4 上也有 ~1/650 的 1 ULP 分歧
+  （实测 3/2002 与 2/2002；cu3 组 6/2222）。这**不是**拼写能修的，T-911 当年"`pow` 32/32 相同"
+  的结论在 2,222 个操作数上不成立 ⇒ 记为横切债务，随 Wave 3+ 的 `^^3` 密集模块（gas LUT、
+  `univariatefunctions`）复查。
+- **T-930 量测完毕但实现需决策**，见下一节。
+
+## T-930 量测段 — Phobos `to!double` 的舍入：**量完了，结论是"拼不出等价物"，需决策**  (2026-10-15)
+<a id="t-930"></a>
+
+backlog 要求的顺序是"先量后写"。这一节把量到的东西落盘，**没有**改 `eil::to_double`，
+因为三条候选路线的代价/收益不是一个可以自动替用户做的决定。
+
+**证据语料**（未注册为门禁，理由写在文件头）：
+`probes/substrate/probe_to_double_range.d` → `baselines/e587b235/probes/substrate_to_double_range.txt`
+**5,309 行**：160 个来自 `examples/eilmer/3D/gridpro-import/blk.tmp` 的真实 token、
+1..25 位有效数字 × 指数 −30..30 的生成扫（三拼法）、边界样本（含溢出、denormal、±0），
+以及 200×3 个"由 double 自身 %17g 加一位"造出的近中点值。两次 D 跑逐字节相同。
+顺带钉住一条 D 语义：**文本超过 DBL_MAX 时 `to!double` 抛 `std.conv.ConvException`，不返回 inf**
+（`1.7976931348623159e308`、`1e309` 两行）。
+
+**全量真实网格上的暴露面**（不是抽样估计）：把 blk.tmp 的**全部 128,346 个数值 token**
+喂给 D 的 `to!double`，与 glibc `strtod` 逐位比：
+
+| | 与 D 不符的 token 数 | 占比 |
+|---|---|---|
+| `strtod`（正确舍入，端口现在用的） | **15** | 0.0117% |
+| 最接近的可复刻模型（整数尾数 × 长双精度二元累乘的 10^e，再窄化） | **3** | 0.0023% |
+| 先精确舍入到 80 位再舍入到 double（"双重舍入"模型） | 4（且只解释 15 中的 11） | — |
+
+15 个分歧 token 全是 **15–16 位有效数字**。另外测得
+`to!double(s) == cast(double)(to!real(s))` 在 201/201 个样本上成立 —— 误差发生在
+**Phobos 的十进制→80 位二进制那一步**，窄化本身没错。
+
+**为什么"更简单的模型"不是免费午餐**：那个把 13/15 修对的模型会在
+`1.00119321978101`（`1.001179321978101`）上把一行 strtod 本来正确的结果改坏
+（D 与 strtod 都是 `3ff004d49bd53d05`，模型给 `…d06`）。而 20 位以上的输入 Phobos 明显
+走了另一条路（大数路径），六种简单模型全都拟合不上生成扫里的这些行。也就是说：**要真正
+复刻必须搬 Phobos 的 `parseFloat` + 它的 80 位 `pow`**，而本机 ldc2 只发 `.di` 与编译好的库、
+没有 Phobos 源码，这条路只能黑盒拟合——黑盒拟合一个 exp/log 级算法不在"语法层面等价转换"
+的范围内，且不能保证收敛。
+
+**三条路线（需用户选一条）**：
+1. **保持现状（strtod）**：暴露面 15/128,346 token，后果是网格坐标差 1 ULP（相对 1e-16，
+   远低于门 (1) 的 1e-13），`demo_artefacts_geom_grid_sgrid` 继续**故意不注册**并点名 5 行。
+2. **改 `eil::to_double` 为 80 位模型**：分歧降到 3/128,346，但引入 1 行新的错误、且对
+   ≥20 位输入无效（要回退 strtod）。按"忠实于参照优先于更正确"的字面要求这是更接近的一条，
+   代价是规则本身没被证明。
+3. **搬 Phobos 的实数解析**：唯一能到 0 分歧的路，工作量大且无源码依据。
+
+主线程按纪律**不擅自选**：路线 2 会改变所有 Wave 3+ 入口（Lua 配置字面量、`.fld`/`.dat`、
+fluidblock 头）的解析行为，属于"改求解行为"的边界，需要用户判。语料已入库，任何一条路线
+都能立刻用这 5,309 行 + 128,346 token 复核。
