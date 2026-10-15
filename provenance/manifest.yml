@@ -382,7 +382,7 @@ files:
   d: src/geom/grid/sgrid.d
   d_blob: 244274d61654a18d1f6c5c0776b8657af84ec873
   d_lines: 1865
-  cpp_lines: 1935
+  cpp_lines: 1930
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_grid_sgrid, 2097 of 2097 rows byte-identical in default Release and slice-check, row 58 + row 1031 prove D's left-to-right argument evaluation vs gcc's right-to-left (hand-sequenced), row 703 = measure_of_badness else-step must step i-1 not j-1 per D:1336 with D:1337's own b-not-c slip kept verbatim, rows 1104/1106 = formattedRead at exhausted input neither assigns nor raises, row 1167 = rawRead does not raise on a short read and D locals start at .init, sg.frmt.* target type names per T-927 (size_t reads report ulong), d_init_doubles/d_set_length are the documented T-929 stand-ins]
@@ -398,7 +398,7 @@ files:
   d: src/geom/grid/usgrid.d
   d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
   d_lines: 2524
-  cpp_lines: 2865
+  cpp_lines: 2848
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 rows byte-identical in default Release and slice-check, rows 1170-1172 = to!size_t failure text names ulong and takes no sign (T-927), rows 1199/1201/1203 = read_from_vtk_text_file consumed two readln for D's one, row 1267 = a failed read raises std.stdio.StdioException while EOF returns empty and does not throw (port-local StdioException shim pending substrate), row 208 = ConvOverflowException before the allocation (port-local), T-929 positive-length translator set_length_d]
@@ -406,7 +406,7 @@ files:
   d: src/geom/grid/usgrid.d
   d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
   d_lines: 2524
-  cpp_lines: 354
+  cpp_lines: 343
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 probe rows byte-identical in default Release and slice-check]
@@ -446,7 +446,7 @@ files:
   d: src/geom/misc/sketch.d
   d_blob: a093e46b9f1d561935197f7cd47068785a742e17
   d_lines: 964
-  cpp_lines: 1155
+  cpp_lines: 1147
   fidelity: adapted-handles
   variants: [with_libplot kept uncompiled]
   verified_by: [ctest:geom_misc_sketch, ctest:demo_equiv_geom_misc_sketch stdout 2 lines, ctest:demo_artifact_geom_misc_sketch_test{, 2, 3} three SVGs byte-identical, 20 final switches kept default-free, 8 throws split Exception-vs-Error per T-922]
@@ -454,7 +454,7 @@ files:
   d: src/geom/misc/sketch.d
   d_blob: a093e46b9f1d561935197f7cd47068785a742e17
   d_lines: 964
-  cpp_lines: 287
+  cpp_lines: 290
   fidelity: adapted-handles
   variants: [with_libplot kept uncompiled]
   verified_by: [ctest:geom_misc_sketch, 682 of 682 probe rows byte-identical, 251 of 251 numerics bit-identical]

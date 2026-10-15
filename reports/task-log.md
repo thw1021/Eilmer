@@ -1224,3 +1224,37 @@ backlog 要求的顺序是"先量后写"。这一节把量到的东西落盘，*
 主线程按纪律**不擅自选**：路线 2 会改变所有 Wave 3+ 入口（Lua 配置字面量、`.fld`/`.dat`、
 fluidblock 头）的解析行为，属于"改求解行为"的边界，需要用户判。语料已入库，任何一条路线
 都能立刻用这 5,309 行 + 128,346 token 复核。
+
+## T-926 第 2、3 条 — readln 进 substrate（两份副本已漂移是量出来的），默认数组实参定形  (2026-10-15)
+<a id="t-926-23"></a>
+
+- **先量**：`probes/substrate/probe_readln.d` → `baselines/e587b235/probes/substrate_readln.txt`
+  **29 行、两次跑逐字节相同**。D 的 `readln()` 四条事实：
+  ① **返回含终止符**（`alpha\n`，空行是 `\n` 不是空串，CRLF 留 `\r`，NUL 原样穿过）；
+  ② 真 EOF 返回空串且**不抛**，并且可以一直返回空串；
+  ③ `eof()` 在"以 \n 结尾的最后一行"之后仍是 false，在"没有终止符的最后一行"之后是 true；
+  ④ **读失败 ≠ EOF**：抛 `std.stdio.StdioException(strerror(errno))`，位置是 Phobos 自己的
+  `std/stdio.d:5171`；打不开文件则是另一个类另一个位置（`ErrnoException` @ `std/stdio.d:624`）。
+- **量出来的缺陷不是假设**：端口有两份 `d_readln`（`usgrid.cpp` / `sgrid.cpp`）且**已经漂移**——
+  usgrid 那份会抛 StdioException，sgrid 那份把一切 EOF 当结束。后果：把目录当 `.grd` 读时
+  参照抛异常、端口返回空行。属于 T-923"只有畸形输入才暴露"那一类。
+- **落点**：`substrate/include/eil/file.hpp` 新增 `eil::StdioException`（携带 D 的
+  `std/stdio.d:5171`，不填端口自己的位置——T-922 的规则）与 `eil::readln(FILE*, bool&)`
+  （D 的原始形状），`readln_line()` = 端口现有站点在用的"剥终止符 + strip"那一层，
+  **两个名字分开**，这样每个站点是 D 的形状还是端口的形状可被读出来。
+  `usgrid.cpp`/`sgrid.cpp` 的副本删除、转发；`usgrid.hpp` 的本地 `StdioException` shim 删除。
+- **门禁 `substrate_readln`**：29/29 逐字节。**判别力**：让原始 reader 剥掉终止符 ⇒
+  **14/29 行立刻红**（`nul.r0` 变 `[a\0b]`），改回 29/29。合流后
+  `geom_grid_sgrid` 2097 行、`geom_grid_usgrid` 1393 行仍逐字节相同 ⇒ 统一**没有**改变任何
+  已注册站点的可观测行为，sgrid 那条只朝参照移动。
+- **新遗留 T-936**：端口在 shim 里剥终止符，D 在每个调用点 `.strip()`；今天等价（全部现有
+  站点都 strip），但那是"端口自己加的归一化"，Wave 4/5 的新格式读取器若直接比长度/下标就会错。
+  已注册的语料里 `blank.r1` 这类行把原始形状钉住，重构时有靶子。
+- **第 2 条（默认数组实参）**：规则写进 `substrate/include/eil/array.hpp` ——
+  `double[] a = [...]` **不能**做成 `Slice<T>` 形参（Slice 只借内存，字面量的缓冲区在
+  被调用方读之前就没了），正确拼法是 `const eil::Array<T>&` + Array 默认实参（临时量绑到
+  引用上、活过整个调用），`[]` 写 `eil::Array<T>{}`；调用方仍能给 Slice/Array，因为
+  `Array` 有非 explicit 的 Slice 构造。落地点：`geom/misc/sketch.{hpp,cpp}` 把 **3 个委托
+  重载收成 1 个带默认实参的构造**，`geom_misc_sketch` 682 行、demo stdout 2 行与三个 SVG
+  产物**仍逐字节相同**。`Slice<const T>` 那一半仍在 **T-907**。
+- 三配置 **117/117**；`check_staleness` = no drift；提交 `94c8b82`。
