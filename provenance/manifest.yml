@@ -30,7 +30,7 @@ files:
   d: src/gasdyn/idealgasflow.d
   d_blob: d238123a0357bb845636ebecfdb669eb2ac0686d
   d_lines: 952
-  cpp_lines: 659
+  cpp_lines: 645
   fidelity: exact
   variants: []
   verified_by: []
@@ -86,7 +86,7 @@ files:
   d: src/geom/elements/properties.d
   d_blob: 4794d8a3e408f7368bd3fc18b46f913d3b323086
   d_lines: 1168
-  cpp_lines: 268
+  cpp_lines: 270
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_elements_properties, 39 unittest assertions, 366 of 366 probe quantities bit-identical]
@@ -350,7 +350,7 @@ files:
   d: src/geom/grid/paver.d
   d_blob: 35f8624a383058116398d2960caa13024daff46b
   d_lines: 1737
-  cpp_lines: 1714
+  cpp_lines: 1721
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_paver 0 differ, corpus sha256 unchanged during the port, eil::sqrt for `^^0.5' per T-925 proven by rows 145-146, eil::sin/eil::cos per T-920 proven by sec2.lrm*/sec2.ulv* and pave.circle6.* at -O3]
@@ -358,7 +358,7 @@ files:
   d: src/geom/grid/paver.d
   d_blob: 35f8624a383058116398d2960caa13024daff46b
   d_lines: 1737
-  cpp_lines: 271
+  cpp_lines: 279
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_paver, 1961 of 1961 probe rows byte-identical in Release Debug and EIL_SLICE_CHECK]
@@ -382,7 +382,7 @@ files:
   d: src/geom/grid/sgrid.d
   d_blob: 244274d61654a18d1f6c5c0776b8657af84ec873
   d_lines: 1865
-  cpp_lines: 1944
+  cpp_lines: 1935
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_grid_sgrid, 2097 of 2097 rows byte-identical in default Release and slice-check, row 58 + row 1031 prove D's left-to-right argument evaluation vs gcc's right-to-left (hand-sequenced), row 703 = measure_of_badness else-step must step i-1 not j-1 per D:1336 with D:1337's own b-not-c slip kept verbatim, rows 1104/1106 = formattedRead at exhausted input neither assigns nor raises, row 1167 = rawRead does not raise on a short read and D locals start at .init, sg.frmt.* target type names per T-927 (size_t reads report ulong), d_init_doubles/d_set_length are the documented T-929 stand-ins]
@@ -398,7 +398,7 @@ files:
   d: src/geom/grid/usgrid.d
   d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
   d_lines: 2524
-  cpp_lines: 2894
+  cpp_lines: 2865
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 rows byte-identical in default Release and slice-check, rows 1170-1172 = to!size_t failure text names ulong and takes no sign (T-927), rows 1199/1201/1203 = read_from_vtk_text_file consumed two readln for D's one, row 1267 = a failed read raises std.stdio.StdioException while EOF returns empty and does not throw (port-local StdioException shim pending substrate), row 208 = ConvOverflowException before the allocation (port-local), T-929 positive-length translator set_length_d]
@@ -406,7 +406,7 @@ files:
   d: src/geom/grid/usgrid.d
   d_blob: 1be471ba1b349e93db7bae0c6834aabb615908e6
   d_lines: 2524
-  cpp_lines: 366
+  cpp_lines: 354
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_grid_usgrid, 1393 of 1393 probe rows byte-identical in default Release and slice-check]
@@ -534,7 +534,7 @@ files:
   d: src/geom/surface/beziertrianglepatch.d
   d_blob: 52b4cb3f84ea7dc5c36b149571f08f1bf8e8cbfc
   d_lines: 723
-  cpp_lines: 154
+  cpp_lines: 155
   fidelity: adapted-handles
   variants: []
   verified_by: [ctest:geom_surface_beziertrianglepatch, 268 of 268 probe rows byte-identical, 6 of 6 D unittest assertions]
@@ -622,7 +622,7 @@ files:
   d: src/geom/surface/meshpatch.d
   d_blob: 29b277c3a7b93a9e34bbcaee0d8482b2ab409c85
   d_lines: 100
-  cpp_lines: 158
+  cpp_lines: 155
   fidelity: adapted-arrays
   variants: []
   verified_by: [ctest:geom_surface_meshpatch, 303 of 303 rows byte-identical, to!int overflow boundary measured per T-932 (strictly beyond INT_MAX), unservable grid sizes reproduce object.Error Not implemented. and AssertError index i is invalid at grid.d:73]
@@ -646,7 +646,7 @@ files:
   d: src/geom/surface/nozzleexpansionpatch.d
   d_blob: 4b45cbfcfe0f63bf3af7cedf724a211883f31af3
   d_lines: 135
-  cpp_lines: 83
+  cpp_lines: 85
   fidelity: exact
   variants: []
   verified_by: []
@@ -870,7 +870,7 @@ files:
   d: src/geom/volume/wedgevolume.d
   d_blob: 5a50d20991233adb0a3ad73dd11c7f74b4075a77
   d_lines: 118
-  cpp_lines: 120
+  cpp_lines: 121
   fidelity: exact
   variants: []
   verified_by: []
@@ -878,7 +878,7 @@ files:
   d: src/geom/volume/wedgevolume.d
   d_blob: 5a50d20991233adb0a3ad73dd11c7f74b4075a77
   d_lines: 118
-  cpp_lines: 114
+  cpp_lines: 116
   fidelity: exact
   variants: []
   verified_by: []
@@ -990,7 +990,7 @@ files:
   d: src/nm/nelmin.d
   d_blob: 043dda8ecbdf28134974889ce7fc14bbc415f0cf
   d_lines: 432
-  cpp_lines: 729
+  cpp_lines: 731
   fidelity: exact
   variants: []
   verified_by: []
@@ -1230,7 +1230,7 @@ files:
   d: src/util/lua_service.d
   d_blob: cb0b158ed721d9981de183708c20bf10c251276d
   d_lines: 742
-  cpp_lines: 454
+  cpp_lines: 458
   fidelity: adapted-callback
   variants: []
   verified_by: [ctest:util_lua_roundtrip, 226-line transcript == D]
@@ -1254,7 +1254,7 @@ files:
   d: src/util/time_utils.d
   d_blob: 33dea4b461615f4020bb198cad491eb6ec08dc4e
   d_lines: 44
-  cpp_lines: 130
+  cpp_lines: 90
   fidelity: exact
   variants: []
   verified_by: [ctest:util_time_utils]

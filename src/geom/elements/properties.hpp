@@ -30,9 +30,11 @@
 //     local/parameter is *named* `xyplane_area`, shadowing the module function
 //     xyplane_area (D:151, :164). D resolves those uses to the variable, and so does
 //     C++; the shadowing name is kept rather than renamed.
-//   * D writes the squares as `x ^^ 2` (11 sites in this module). Those are
-//     std.math.pow, not multiplication (wave-02-brief section 5), so they are
-//     eil::pow(x, 2) here; `pow(volume, third)` (D:336, :478, :567) is eil::pow too.
+//   * D writes the squares as `x ^^ 2` (11 lines, 19 reachable sites in this module).
+//     Those are eil::sqr — one multiply: measured on 2,222 operands, D's `x ^^ 2` equals
+//     `x*x` on every one of them, while glibc pow(x,2.0) (what a port `eil::pow(x,2)`
+//     becomes) differs on 3 (backlog T-931). `pow(volume, third)` (D:336, :478, :567) is
+//     eil::pow too, because a non-integer exponent really is Phobos' pow.
 //   * For an inverted cell, `pow(volume, 1/3)` is a NaN and D's `fmin` swallows it
 //     (measured: probes/geom/elements/probe_properties.d row "nan.cbrt" prints
 //     pow3=nan but fmin=0.4082). std::fmin/std::fmax reproduce that, so L_min keeps

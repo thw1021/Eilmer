@@ -47,10 +47,12 @@
 //     matched glibc bit-for-bit on 12 of 12 sampled arguments (value plus %016x bit
 //     pattern, arguments spanning 0.05, PI/4, PI/2, PI, 3, -2, -0.75, 1e-20, 1/3,
 //     1.2345678901234567).
-//   * `(p0.y)^^2` (D:76) is eil::pow(p0.y, 2), never an expanded product
-//     (wave-02-brief section 5). Measured before writing: for 8 sampled doubles D's
-//     `x^^2`, x*x and std::pow(x,2.0) produced identical bit patterns 8 of 8, so the
-//     spelling is behaviour-neutral here — it is kept because the contract says so.
+//   * `(p0.y)^^2` and `(p0.z)^^2` (D:76) are eil::sqr, i.e. one multiply, which IS the
+//     expanded product — measured on 2,222 operands that D's `x ^^ 2` equals `x*x` on
+//     all of them while std::pow(x,2.0) differs on 3 (backlog T-931). The 8-operand
+//     sample this module was written against had all 8 agreeing, which is exactly the
+//     sampling error T-931 records; the two operands here still agree either way, so
+//     this routing changes no value in this module's corpus, only the rule it cites.
 //   * sweep_through_arc is private in D (D:70-80) and stays private; it is observable
 //     only through p[4..7] and opCall, which is how the corpus reaches it (including
 //     the signed-zero battery that pins atan2's quadrant choice).

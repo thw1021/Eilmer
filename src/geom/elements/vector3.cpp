@@ -359,8 +359,8 @@ double distance_between(const Vector3& v1, const Vector3& v2) {
     // D spells the squares with `^^2`, which is std.math.pow (see
     // probes/substrate/probe_pow.d); expanding it into multiplications is a
     // 1 ULP change, so eil::pow is used verbatim.
-    number d = eil::sqrt(eil::pow(v1.x - v2.x, 2) + eil::pow(v1.y - v2.y, 2) +
-                         eil::pow(v1.z - v2.z, 2));
+    number d = eil::sqrt(eil::sqr(v1.x - v2.x) + eil::sqr(v1.y - v2.y) +
+                         eil::sqr(v1.z - v2.z));
     return re(d);
 }
 

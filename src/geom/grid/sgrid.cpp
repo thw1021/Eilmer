@@ -896,15 +896,15 @@ void StructuredGrid::make_grid_from_surface(const ParametricSurface& surf,
         std::array<double, 4> rr{}; std::array<double, 4> sr{}; // D:662 `double[4] rr; sr;`
         for (size_t j = 0; j < 4; ++j) {
             rr[j] = eil::pow(1.0 - r, 3.0) * r_grid[0][j] +
-                    3.0 * r * eil::pow(1.0 - r, 2.0) * r_grid[1][j] +
+                    3.0 * r * eil::sqr(1.0 - r) * r_grid[1][j] +
                     3.0 * (1.0 - r) * r * r * r_grid[2][j] + eil::pow(r, 3.0) * r_grid[3][j];
             sr[j] = eil::pow(1.0 - r, 3.0) * s_grid[0][j] +
-                    3.0 * r * eil::pow(1.0 - r, 2.0) * s_grid[1][j] +
+                    3.0 * r * eil::sqr(1.0 - r) * s_grid[1][j] +
                     3.0 * (1.0 - r) * r * r * s_grid[2][j] + eil::pow(r, 3.0) * s_grid[3][j];
         }
-        r_star = eil::pow(1.0 - s, 3.0) * rr[0] + 3.0 * s * eil::pow(1.0 - s, 2.0) * rr[1] +
+        r_star = eil::pow(1.0 - s, 3.0) * rr[0] + 3.0 * s * eil::sqr(1.0 - s) * rr[1] +
                  3.0 * (1.0 - s) * s * s * rr[2] + eil::pow(s, 3.0) * rr[3];
-        s_star = eil::pow(1.0 - s, 3.0) * sr[0] + 3.0 * s * eil::pow(1.0 - s, 2.0) * sr[1] +
+        s_star = eil::pow(1.0 - s, 3.0) * sr[0] + 3.0 * s * eil::sqr(1.0 - s) * sr[1] +
                  3.0 * (1.0 - s) * s * s * sr[2] + eil::pow(s, 3.0) * sr[3];
     };
     const size_t k = 0;
@@ -1472,8 +1472,8 @@ std::shared_ptr<StructuredGrid> StructuredGrid::makeWedgeGrid(double dtheta, boo
             // implementation, which differs from glibc by 1 ULP near the axes), and the
             // cos/sin pair at D:1299 and :1304 shares one argument, which is T-920's
             // measured sincos() fusion case.
-            const double r = eil::sqrt(eil::pow(eil::re(p0->y), 2.0)
-                                       + eil::pow(eil::re(p0->z), 2.0));
+            const double r = eil::sqrt(eil::sqr(eil::re(p0->y))
+                                       + eil::sqr(eil::re(p0->z)));
             const double theta0 = eil::atan2(eil::re(p0->z), eil::re(p0->y));
             const double theta_slice = dtheta / static_cast<double>(nkv_new - 1);
             if (symmetric) {
@@ -1554,7 +1554,7 @@ double StructuredGrid::measure_of_badness() {
                                              jLen, minLen); // D:1363
                 const number perimeter = distance_between(p00, p10) + distance_between(p10, p11)
                                          + distance_between(p11, p01) + distance_between(p01, p00);
-                const number slenderness = eil::pow(perimeter, 2.0) / (16 * xyplane_area); // D:1367
+                const number slenderness = eil::sqr(perimeter) / (16 * xyplane_area); // D:1367
                 slenderness_max = std::max(slenderness_max, eil::re(slenderness));
                 slenderness_avg += eil::re(slenderness);
                 area_min = std::min(area_min, eil::re(xyplane_area));

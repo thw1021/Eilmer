@@ -21,8 +21,8 @@ namespace geom {
 
 // D:67-72
 double distance_squared(const Node& a, const Node& b) {
-    double result = eil::pow(a.x[0] - b.x[0], 2) + eil::pow(a.x[1] - b.x[1], 2) +
-                    eil::pow(a.x[2] - b.x[2], 2);
+    double result = eil::sqr(a.x[0] - b.x[0]) + eil::sqr(a.x[1] - b.x[1]) +
+                    eil::sqr(a.x[2] - b.x[2]);
     return result;
 } // end distance_squared()
 
@@ -37,7 +37,7 @@ void fast_nearest(const Node* root, const Node& nd, size_t i, const Node*& best,
 
     const double d = distance_squared(*root, nd);
     const double dx = root->x[i] - nd.x[i];
-    const double dx2 = eil::pow(dx, 2);
+    const double dx2 = eil::sqr(dx);
     nVisited++;
 
     if (!best || d < bestDist) {

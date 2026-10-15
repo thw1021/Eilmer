@@ -19,6 +19,7 @@
 #include <cstdio>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -55,7 +56,11 @@ std::string pat(double v) {
 
 void section_sq_cube() {
     for (double x : kXs) {
-        const double op = eil::pow(x, 2);
+        // `op' is D's `x ^^ 2'. Since T-931 that is eil::sqr (one multiply), NOT
+        // eil::pow(x,2): over 2,222 operands the two agree in D but glibc's pow(x,2.0)
+        // misses 3 of them by 1 ULP. On these 7 operands they happen to coincide, which
+        // is exactly how the old rule survived. See the sq2 sweep below.
+        const double op = eil::sqr(x);
         const double mul = x * x;
         emitf("sq %.17g op=%.17g mul=%.17g powd=%.17g powi=%.17g opIsPow=%s opIsMul=%s", x, op,
               mul, eil::pow(x, 2.0), op, op == eil::pow(x, 2.0) ? "true" : "false",
@@ -123,6 +128,65 @@ void section_tail() {
           eil::to_string(static_cast<double>(EIL_PI / 4.0L * 4.0L)).c_str());
 }
 
+
+// The sweep groups (T-931). These rows are not replayed positionally: the port has no
+// Phobos pow to echo, so a `powd' column would differ for reasons that are not the rule
+// under test. Instead each row is checked semantically against the port's own primitive.
+//   sq2: D's `x ^^ 2' MUST equal eil::sqr(in), row for row (0 differences allowed).
+//        eil::pow(in,2.0) is measured alongside and is expected to differ on a few.
+//   cu3: D's `x ^^ 3' is pow, so eil::pow(in,3.0) is the right routing; it differs from
+//        D on a small number of operands because Phobos' pow and glibc's pow are not the
+//        same function (T-911's 1-ULP class). The count is bounded rather than required
+//        to be zero, and expanding `^^3' into a product would blow it past the bound
+//        (527 of 2,222), which is what makes the bound discriminative.
+struct SweepCheck {
+    long sq_rows = 0, sq_bad = 0, sq_pow_bad = 0, sq_mul_bad = 0;
+    long cu_rows = 0, cu_bad = 0, cu_mul_bad = 0;
+};
+
+std::string cu_rows_msg(const SweepCheck& r) {
+    std::ostringstream o;
+    o << r.cu_rows << " rows, eil::pow(x,3.0) mismatches " << r.cu_bad
+      << " (Phobos pow vs glibc pow: T-911's 1-ULP class, bounded at 8), (x*x)*x mismatch "
+         "count against D's own column " << r.cu_mul_bad;
+    return o.str();
+}
+
+SweepCheck check_sweep(const std::vector<std::string>& rows) {
+    SweepCheck r;
+    for (const std::string& line : rows) {
+        const bool is_sq = line.rfind("sq2 ", 0) == 0;
+        const bool is_cu = line.rfind("cu3 ", 0) == 0;
+        if (!is_sq && !is_cu) continue;
+        std::istringstream ss(line);
+        std::string pre, xin, f_d, f_m, f_w;
+        ss >> pre >> xin >> f_d >> f_m >> f_w;
+        double x = 0.0;
+        unsigned long long ux = std::strtoull(xin.c_str(), nullptr, 16);
+        std::memcpy(&x, &ux, sizeof x);
+        const std::string want = f_d.substr(f_d.find('=') + 1);
+        const std::string mul = f_m.substr(f_m.find('=') + 1);
+        const std::string powd = f_w.substr(f_w.find('=') + 1);
+        const double m = is_sq ? x * x : (x * x) * x;
+        const double w = is_sq ? eil::pow(x, 2.0) : eil::pow(x, 3.0);
+        const double routed = is_sq ? eil::sqr(x) : eil::pow(x, 3.0);
+        if (pat(routed) != want) {
+            if (is_sq) ++r.sq_bad; else ++r.cu_bad;
+        }
+        if (is_sq) {
+            ++r.sq_rows;
+            // glibc's pow(x,2.0) against D's answer: the T-931 defect, reported not failed
+            if (pat(w) != want) ++r.sq_pow_bad;
+            if (pat(m) != mul) ++r.sq_mul_bad;    // D's own two columns disagreeing
+        } else {
+            ++r.cu_rows;
+            if (pat(w) != want) ++r.cu_bad;
+            if (pat(m) != mul) ++r.cu_mul_bad;    // D's own two columns disagreeing
+        }
+    }
+    return r;
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -143,8 +207,18 @@ int main(int argc, char** argv) {
     std::vector<std::string> expected;
     for (std::string line; std::getline(in, line);) expected.push_back(line);
 
+    const SweepCheck sw = check_sweep(expected);
+
     int diffs = 0;
+    size_t compared = 0, swept = 0;
     for (size_t i = 0; i < expected.size() || i < produced.size(); ++i) {
+        if (i < expected.size() &&
+            (expected[i].rfind("sq2 ", 0) == 0 || expected[i].rfind("cu3 ", 0) == 0 ||
+             expected[i].rfind("sweep|", 0) == 0)) {
+            ++swept;   // validated semantically above, not positionally
+            continue;
+        }
+        ++compared;
         if (i >= expected.size() || i >= produced.size() || expected[i] != produced[i]) {
             if (diffs < 20) {
                 std::cout << "line " << (i + 1) << "\n  D:  |"
@@ -155,7 +229,24 @@ int main(int argc, char** argv) {
             ++diffs;
         }
     }
+    // The sweep rows add their own failures to the same verdict.
+    if (sw.sq_bad != 0) {
+        std::cout << "sq2 rule broken: " << sw.sq_bad << " of " << sw.sq_rows
+                  << " rows where D's `x ^^ 2' is not eil::sqr(x)\n";
+        diffs += static_cast<int>(sw.sq_bad);
+    }
+    if (sw.cu_bad > 8) {
+        std::cout << "cu3 rule broken: " << sw.cu_bad << " of " << sw.cu_rows
+                  << " rows where D's `x ^^ 3' is not eil::pow(x,3.0) (bound 8)\n";
+        diffs += static_cast<int>(sw.cu_bad);
+    }
     std::cout << (diffs == 0 ? "PASS" : "FAIL") << ": pow corpus, " << expected.size()
-              << " D lines, " << produced.size() << " C++ lines, " << diffs << " differ\n";
+              << " D lines (" << compared << " replayed positionally, " << swept
+              << " sweep rows checked semantically), " << produced.size()
+              << " C++ lines, " << diffs << " differ\n";
+    std::cout << "  sq2: " << sw.sq_rows << " rows, eil::sqr mismatches " << sw.sq_bad
+              << ", glibc pow(x,2.0) mismatches " << sw.sq_pow_bad
+              << ", D's own mul column disagrees " << sw.sq_mul_bad << "\n";
+    std::cout << "  cu3: " << cu_rows_msg(sw) << "\n";
     return diffs == 0 ? 0 : 1;
 }

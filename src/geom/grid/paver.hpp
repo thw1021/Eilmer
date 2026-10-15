@@ -68,12 +68,20 @@
 //     `sincos()` call and that merged call is 1 ULP off glibc's own `sin`; ldc2 lowers
 //     Phobos' sin/cos to the two separate libm calls. The rule lives in
 //     substrate/include/eil/math.hpp and is NOT re-derived here.
-//   * D's `a ^^ b` is std.math.pow: every `^^` site here (point_dist, norm, squareness,
-//     assign_node_properties' cosine rule, biggest_cell, the constructor's avr_area)
-//     is eil::pow, never an expanded product. The two `^^0.5` sites are the exception
-//     and use eil::sqrt: ldc2 lowers `x ^^ 0.5` to a hardware sqrt, and over 62
-//     measured operands sqrt agrees with D on 62/62 while std::pow(x,0.5) differs on
-//     4 (x=nextafter(1,0), x=DBL_MAX, x=-0.0). Corpus rows sec2.ulv3.0/1 pin it.
+//   * The `^^` routing, measured (this module is where both rules were found):
+//       - `x ^^ 2` (10 sites: point_dist, norm, squareness, the cosine rule's three,
+//         biggest_cell, the constructor's avr_area) is eil::sqr — ONE MULTIPLY. D's
+//         `x ^^ 2` equals `x*x` on 2,222/2,222 operands while glibc pow(x,2.0), which
+//         what eil::pow(x,2) becomes, differs on 3 (backlog T-931, and the cause of
+//         398 mismatched vertices in paver_demo's paved_grid.vtk).
+//       - `x ^^ 0.5` (the two outer sites in point_dist and norm) is eil::sqrt: over
+//         62 measured operands sqrt agrees with D on 62/62 while pow(x,0.5) differs on
+//         4 (nextafter(1,0), DBL_MAX, -0.0). Corpus rows sec2.ulv3.0/1 pin it (T-925).
+//       - `acos(r)` at D:579 is eil::acos = Phobos' atan2 definition in 80-bit, NOT
+//         std::acos: glibc misses 208 of 8,454 measured arguments and 118 of those are
+//         within 2^-30 of +-1, the band the cosine rule puts a nearly-degenerate
+//         triangle's r into. ctest:substrate_acos_one, backlog T-931.
+//     Every exponent in this module is 2 or 0.5, so nothing here is eil::pow.
 //   * Phobos constants are 80-bit `real`, so `2*PI - angle`, `node.interior_angle < PI`,
 //     `theta < PI/2` and `SQRT2*V_length` are computed and COMPARED in extended
 //     precision and only narrowed on store; the port keeps eil::real (long double) at

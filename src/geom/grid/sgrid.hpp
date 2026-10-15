@@ -34,11 +34,11 @@
 //     D:60, :887, :911, :958, :981 and the read-from-text/raw paths) goes through
 //     eil::Array::set_length_signed (T-914); corpus row sg.frmt.nivbig is exactly
 //     this path and carries D's OutOfMemoryError text "Memory allocation failed".
-//   * 15 `^^` sites (grid brief section 9.3) become eil::pow, EXCEPT an exponent
-//     of 0.5 which would become eil::sqrt (T-925). Measured on this module: sgrid.d
-//     has no `^^0.5` at all (the 15 sites are :664-670 cubic-Bezier weights, :1367
-//     perimeter^^2), so every site here is eil::pow and none is expanded into
-//     multiplication.
+//   * 15 `^^` sites (grid brief section 9.3), split by exponent: sgrid.d has no
+//     `^^0.5` at all, the 8 cubic-Bezier weights at :664-670 are `^^3` and stay
+//     eil::pow, and the 7 `^^2` sites (:664-670's squared terms, :1293's two squares,
+//     :1367's perimeter^^2) are eil::sqr — one multiply (T-931: D's `x ^^ 2` is x*x on
+//     2,222/2,222 operands, glibc pow(x,2.0) differs on 3).
 //   * sgrid.d:1299 and :1304 pair cos(theta)/sin(theta) of one argument, and
 //     :1294 has atan2 — all three go to the substrate wrappers (T-920, T-910), as
 //     briefed.

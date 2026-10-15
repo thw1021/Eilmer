@@ -125,15 +125,15 @@ Vector3 GMOPatch::operator()(double r, double s) const {
         std::array<double, 4> rr{}; std::array<double, 4> sr{}; // D:116
         for (size_t j = 0; j < 4; ++j) {
             rr[j] = eil::pow(1.0 - r, 3.0) * r_grid[0][j] +
-                    3.0 * r * eil::pow(1.0 - r, 2.0) * r_grid[1][j] +
+                    3.0 * r * eil::sqr(1.0 - r) * r_grid[1][j] +
                     3.0 * (1.0 - r) * r * r * r_grid[2][j] + eil::pow(r, 3.0) * r_grid[3][j];
             sr[j] = eil::pow(1.0 - r, 3.0) * s_grid[0][j] +
-                    3.0 * r * eil::pow(1.0 - r, 2.0) * s_grid[1][j] +
+                    3.0 * r * eil::sqr(1.0 - r) * s_grid[1][j] +
                     3.0 * (1.0 - r) * r * r * s_grid[2][j] + eil::pow(r, 3.0) * s_grid[3][j];
         }
-        r_star = eil::pow(1.0 - s, 3.0) * rr[0] + 3.0 * s * eil::pow(1.0 - s, 2.0) * rr[1] +
+        r_star = eil::pow(1.0 - s, 3.0) * rr[0] + 3.0 * s * eil::sqr(1.0 - s) * rr[1] +
                  3.0 * (1.0 - s) * s * s * rr[2] + eil::pow(s, 3.0) * rr[3];
-        s_star = eil::pow(1.0 - s, 3.0) * sr[0] + 3.0 * s * eil::pow(1.0 - s, 2.0) * sr[1] +
+        s_star = eil::pow(1.0 - s, 3.0) * sr[0] + 3.0 * s * eil::sqr(1.0 - s) * sr[1] +
                  3.0 * (1.0 - s) * s * s * sr[2] + eil::pow(s, 3.0) * sr[3];
     };
     double rstar = 0.0; double sstar = 0.0; // D:126 declares without initialising

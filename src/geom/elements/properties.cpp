@@ -57,15 +57,15 @@ void triangle_properties(const Vector3& p0, const Vector3& p1, const Vector3& p2
     vector_area_x *= 0.5; vector_area_y *= 0.5; vector_area_z *= 0.5;
     // unit-normal and area
     // area = abs(vector_area);
-    area = eil::sqrt(eil::pow(vector_area_x, 2) + eil::pow(vector_area_y, 2) +
-                     eil::pow(vector_area_z, 2));
+    area = eil::sqrt(eil::sqr(vector_area_x) + eil::sqr(vector_area_y) +
+                     eil::sqr(vector_area_z));
     if (area > area_tol) {
         // n = unit(vector_area);
         n.set(vector_area_x / area, vector_area_y / area, vector_area_z / area);
         // Tangent unit-vectors:
         // t1 is parallel to side01
         // t2 is normal to n and t1
-        number abs_p01 = eil::sqrt(eil::pow(p01x, 2) + eil::pow(p01y, 2) + eil::pow(p01z, 2));
+        number abs_p01 = eil::sqrt(eil::sqr(p01x) + eil::sqr(p01y) + eil::sqr(p01z));
         // t1 = unit(p1-p0);
         t1.set(p01x / abs_p01, p01y / abs_p01, p01z / abs_p01);
         // t2 = unit(cross(n, t1)); // Calling unit() to tighten up the magnitude.
@@ -99,8 +99,8 @@ void quad_properties(const Vector3& p0, const Vector3& p1, const Vector3& p2, co
     vector_area_x *= 0.25; vector_area_y *= 0.25; vector_area_z *= 0.25;
     // unit-normal and area
     // area = abs(vector_area);
-    area = eil::sqrt(eil::pow(vector_area_x, 2) + eil::pow(vector_area_y, 2) +
-                     eil::pow(vector_area_z, 2));
+    area = eil::sqrt(eil::sqr(vector_area_x) + eil::sqr(vector_area_y) +
+                     eil::sqr(vector_area_z));
     if (area > area_tol) {
         // n = unit(vector_area);
         n.set(vector_area_x / area, vector_area_y / area, vector_area_z / area);
@@ -214,7 +214,7 @@ number xyplane_quad_squareness(const Vector3& p0, const Vector3& p1, const Vecto
     xyplane_quad_cell_properties(p0, p1, p2, p3, centroid, xyplane_area, iLen, jLen, minLen);
     number perimeter = distance_between(p0, p1) + distance_between(p1, p2) +
         distance_between(p2, p3) + distance_between(p3, p0);
-    return 16 * xyplane_area / eil::pow(perimeter, 2);
+    return 16 * xyplane_area / eil::sqr(perimeter);
 }
 
 // D:251-286
@@ -555,11 +555,11 @@ void hex_cell_properties(const Vector3& p0, const Vector3& p1, const Vector3& p2
     // when we later use these values as the widths of the hex cell.
     number dx, dy, dz;
     dx = pmE.x - pmW.x; dy = pmE.y - pmW.y; dz = pmE.z - pmW.z;
-    iLen = eil::sqrt(eil::pow(dx, 2) + eil::pow(dy, 2) + eil::pow(dz, 2));
+    iLen = eil::sqrt(eil::sqr(dx) + eil::sqr(dy) + eil::sqr(dz));
     dx = pmN.x - pmS.x; dy = pmN.y - pmS.y; dz = pmN.z - pmS.z;
-    jLen = eil::sqrt(eil::pow(dx, 2) + eil::pow(dy, 2) + eil::pow(dz, 2));
+    jLen = eil::sqrt(eil::sqr(dx) + eil::sqr(dy) + eil::sqr(dz));
     dx = pmT.x - pmB.x; dy = pmT.y - pmB.y; dz = pmT.z - pmB.z;
-    kLen = eil::sqrt(eil::pow(dx, 2) + eil::pow(dy, 2) + eil::pow(dz, 2));
+    kLen = eil::sqrt(eil::sqr(dx) + eil::sqr(dy) + eil::sqr(dz));
     // writeln("Single hexahedron divided into six tetragonal dipyramids.");
     // J. Grandy (1997) Efficient Computation of Volume of Hexahedral Cells
     // UCRL-ID-128886. Base of each dipyramid is specified clockwise from the outside.

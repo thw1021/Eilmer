@@ -40,7 +40,7 @@ Vector3 ReParameterizedPath::dpdt(double t) const {
 // multiplication (brief section 5).
 Vector3 ReParameterizedPath::d2pdt2(double t) const {
     double tdsh = underlying_t(t);
-    return underlying_path->d2pdt2(tdsh) * eil::pow(d_underlying_t_dt(tdsh), 2.0) +
+    return underlying_path->d2pdt2(tdsh) * eil::sqr(d_underlying_t_dt(tdsh)) +
         underlying_path->dpdt(tdsh) * d2_underlying_t_dt2(tdsh);
 }
 

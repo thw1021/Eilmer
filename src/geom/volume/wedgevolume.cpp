@@ -106,11 +106,12 @@ std::string WedgeVolume::toString() const {
 // from the +y axis toward +z (D:73-75). Statement order is D's: r first, then theta0,
 // then theta1, then the two products. sqrt is eil::sqrt (positive NaN on a domain
 // error), atan2 is eil::atan2 (Phobos' own implementation — see the header note; using
-// std::atan2 here is the T-910 mistake), `^^2` is eil::pow, and cos/sin are the library
+// std::atan2 here is the T-910 mistake), `^^2` is eil::sqr (one multiply, T-931), and
+// cos/sin are the library
 // ones because D's sin(double)/cos(double) were measured bit-identical to them — as
 // long as they stay two separate calls, which is what d_cos/d_sin above arrange.
 Vector3 WedgeVolume::sweep_through_arc(const Vector3& p0, number theta) const {
-    number r = eil::sqrt(eil::pow(p0.y, 2) + eil::pow(p0.z, 2)); // D:76
+    number r = eil::sqrt(eil::sqr(p0.y) + eil::sqr(p0.z)); // D:76
     number theta0 = eil::atan2(p0.z, p0.y);                       // D:77
     number theta1 = theta0 + theta;                               // D:78
     return Vector3(p0.x, r * d_cos(theta1), r * d_sin(theta1));     // D:79

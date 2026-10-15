@@ -67,26 +67,11 @@ double cone_error(double beta_guess) {
     return theta_guess - g_cone_theta;
 }
 
-// D's asin, measured rather than assumed (ldc2 1.40.0; std/math/trigonometry.d:620-628):
-//
-//     real   asin(real x)   { return atan2(x, sqrt(1-x*x)); }     // core.math sqrt
-//     double asin(double x) { return asin(cast(real) x); }        // computed WIDE
-//
-// Two consequences the port has to carry:
-//   1. the value is formed in 80-bit and rounded once, on the return; and
-//   2. its DOMAIN ERROR IS "-nan", not "+nan": 1-x*x goes negative, the x87 sqrt
-//      yields a sign-preserving indefinite NaN and atan2 propagates it.
-// glibc's std::asin(1.24) prints "nan" and the substrate's eil::asin canonicalises
-// every NaN to "+nan", so neither one matches D here; the 40 beta_obl2 rows of
-// baselines/e587b235/probes/gasdyn_idealgasflow.txt (all "v=-nan") measure it.
-// In-domain the three agree bit-for-bit on every one of the ~1500 asin values this
-// corpus evaluates (MachAngle, the Mach angle used as beta_obl's first bracket end,
-// and theta_cone/beta_cone's mu), which is why mirroring the formula is safe.
-inline double d_asin(double x) {
-    const eil::real r = static_cast<eil::real>(x);
-    const eil::real s = std::sqrt(static_cast<eil::real>(1.0) - r * r);
-    return static_cast<double>(std::atan2(r, s));
-}
+// asin goes through the substrate: eil::asin IS Phobos' definition
+// (atan2(x, sqrt(1-x*x)) formed in 80-bit, domain error printed as -nan), measured over
+// 8,492 arguments in probes/substrate/probe_acos_one.d. The 40 beta_obl2 rows of
+// baselines/e587b235/probes/gasdyn_idealgasflow.txt (all "v=-nan") are what first
+// forced this routing; a local copy of the rule used to live here and is gone.
 
 } // namespace
 
@@ -94,7 +79,7 @@ inline double d_asin(double x) {
 
 double A_Astar(double M, double g) {
     double t1 = (g + 1.0) / (g - 1.0);
-    double m2 = eil::pow(M, 2);
+    double m2 = eil::sqr(M);
     double t2 = 1.0 / m2 * eil::pow(2.0 / (g + 1.0) * (1.0 + (g - 1.0) * 0.5 * m2), t1);
     return eil::sqrt(t2);
 }
@@ -117,8 +102,8 @@ double m2_shock(double M1, double g) {
     if (M1 < 1.0) {
         EIL_THROW_GASFLOW(eil::text("r2_r1: subsonic Mach number: ", M1));
     }
-    double numer = 1.0 + (g - 1.0) * 0.5 * eil::pow(M1, 2);
-    double denom = g * eil::pow(M1, 2) - (g - 1.0) * 0.5;
+    double numer = 1.0 + (g - 1.0) * 0.5 * eil::sqr(M1);
+    double denom = g * eil::sqr(M1) - (g - 1.0) * 0.5;
     return eil::sqrt(numer / denom);
 }
 
@@ -126,8 +111,8 @@ double r2_r1(double M1, double g) {
     if (M1 < 1.0) {
         EIL_THROW_GASFLOW(eil::text("r2_r1: subsonic Mach number: ", M1));
     }
-    double numer = (g + 1.0) * eil::pow(M1, 2);
-    double denom = 2.0 + (g - 1.0) * eil::pow(M1, 2);
+    double numer = (g + 1.0) * eil::sqr(M1);
+    double denom = 2.0 + (g - 1.0) * eil::sqr(M1);
     return numer / denom;
 }
 
@@ -142,7 +127,7 @@ double p2_p1(double M1, double g) {
     if (M1 < 1.0) {
         EIL_THROW_GASFLOW(eil::text("p2_p1: subsonic Mach number: ", M1));
     }
-    return 1.0 + 2.0 * g / (g + 1.0) * (eil::pow(M1, 2) - 1.0);
+    return 1.0 + 2.0 * g / (g + 1.0) * (eil::sqr(M1) - 1.0);
 }
 
 double T2_T1(double M1, double g) {
@@ -150,8 +135,8 @@ double T2_T1(double M1, double g) {
 }
 
 double p02_p01(double M1, double g) {
-    double t1 = (g + 1.0) / (2.0 * g * eil::pow(M1, 2) - (g - 1.0));
-    double t2 = (g + 1.0) * eil::pow(M1, 2) / (2.0 + (g - 1.0) * eil::pow(M1, 2));
+    double t1 = (g + 1.0) / (2.0 * g * eil::sqr(M1) - (g - 1.0));
+    double t2 = (g + 1.0) * eil::sqr(M1) / (2.0 + (g - 1.0) * eil::sqr(M1));
     return eil::pow(t1, 1.0/(g-1.0)) * eil::pow(t2, g/(g-1.0));
 }
 
@@ -174,9 +159,9 @@ double pitot_p(double p1, double M1, double g) {
 //--------------------------------------------------- Rayleigh line (heat addition)
 
 double T0_T0star(double M, double g) {
-    double term1 = (g + 1.0) * eil::pow(M, 2);
-    double term2 = eil::pow(1.0 + g * eil::pow(M, 2), 2);
-    double term3 = 2.0 + (g - 1.0) * eil::pow(M, 2);
+    double term1 = (g + 1.0) * eil::sqr(M);
+    double term2 = eil::sqr(1.0 + g * eil::sqr(M));
+    double term3 = 2.0 + (g - 1.0) * eil::sqr(M);
     return term1 / term2 * term3;
 }
 
@@ -196,21 +181,21 @@ double M_Rayleigh(double T0T0star, double g) {
 }
 
 double T_Tstar(double M, double g) {
-    return eil::pow(M, 2) * eil::pow((1.0 + g) / (1.0 + g * eil::pow(M, 2)), 2);
+    return eil::sqr(M) * eil::sqr((1.0 + g) / (1.0 + g * eil::sqr(M)));
 }
 
 double p_pstar(double M, double g) {
-    return (1.0 + g) / (1.0 + g * eil::pow(M, 2));
+    return (1.0 + g) / (1.0 + g * eil::sqr(M));
 }
 
 double r_rstar(double M, double g) {
-    return 1.0 / eil::pow(M, 2) / (1.0 + g) * (1.0 + g * eil::pow(M, 2));
+    return 1.0 / eil::sqr(M) / (1.0 + g) * (1.0 + g * eil::sqr(M));
 }
 
 double p0_p0star(double M, double g) {
-    double term1 = (2.0 + (g - 1.0) * eil::pow(M, 2)) / (g + 1.0);
+    double term1 = (2.0 + (g - 1.0) * eil::sqr(M)) / (g + 1.0);
     double term2 = g / (g - 1.0);
-    return (1.0 + g) / (1.0 + g * eil::pow(M, 2)) * eil::pow(term1, term2);
+    return (1.0 + g) / (1.0 + g * eil::sqr(M)) * eil::pow(term1, term2);
 }
 
 //------------------------------------------------------- Prandtl-Meyer turning
@@ -300,7 +285,7 @@ double MachAngle(double M) {
     if (M < 1.0) {
         EIL_THROW_GASFLOW(eil::text("MachAngle: subsonic Mach number: ", M));
     } else {
-        return d_asin(1.0/M);
+        return eil::asin(1.0/M);
     } // end if
 } // end MachAngle()
 
@@ -319,7 +304,7 @@ double beta_obl(double M1, double theta, double g, double tol) {
     g_beta_theta = theta;
     g_beta_g = g;
     //
-    double b1 = d_asin(1.0/M1); // the weakest shock is at the Mach angle
+    double b1 = eil::asin(1.0/M1); // the weakest shock is at the Mach angle
     if (theta < tol) return sign_beta*b1;
     double f1 = beta_error(b1);
     if (std::fabs(f1) < tol) return sign_beta*b1;
@@ -346,7 +331,7 @@ double beta_obl2(double M1, double p2_p1, double g) {
     // function above for the extent of this body. Nothing here calls that function,
     // so the shadow is inert; the name is kept to show which value is which.
     double dum1 = eil::sqrt(((g+1.)*p2_p1+g-1.)/2./g);
-    return d_asin(dum1/M1);
+    return eil::asin(dum1/M1);
 } // end beta_obl2()
 
 double theta_obl(double M1, double beta, double g) {
@@ -364,20 +349,21 @@ double theta_obl(double M1, double beta, double g) {
                                    " for M1=", M1, " beta=", beta);
         EIL_THROW_GASFLOW(msg);
     } // end if
-    double t1 = 2.0 / std::tan(beta) * (eil::pow(M1n, 2) - 1.0);
-    double t2 = eil::pow(M1, 2) * (g + eil::cos(2.0 * beta)) + 2.0;
+    double t1 = 2.0 / std::tan(beta) * (eil::sqr(M1n) - 1.0);
+    double t2 = eil::sqr(M1) * (g + eil::cos(2.0 * beta)) + 2.0;
     return sign_beta*std::atan(t1/t2);
 } // end theta_obl()
 
 double dtan_theta(double M1, double beta, double g) {
     beta = std::fabs(beta);
-    double dum1 = eil::pow(M1, 2)*(eil::cos(2.0*beta)+g)+2.0;
+    double dum1 = eil::sqr(M1)*(eil::cos(2.0*beta)+g)+2.0;
     // D: `M1^^2*sin(beta)^^2` -- `^^` binds tighter than `*`, so it is
-    // (M1^^2) * pow(sin(beta), 2), not pow(M1* sin(beta), 2).
-    double dum2 = eil::pow(M1, 2)*eil::pow(eil::sin(beta), 2)-1.0;
-    return 4.0*eil::pow(M1, 2)*eil::pow(eil::cos(beta), 2)/dum1
-        + 4.0*eil::pow(M1, 2)*eil::sin(2.0*beta)*dum2/(eil::pow(dum1, 2))/std::tan(beta)
-        - 2.0*dum2/dum1/(eil::pow(eil::sin(beta), 2));
+    // (M1^^2) * (sin(beta)^^2), two separate squares, not the square of the product.
+    // Both `^^2` arms are eil::sqr (T-931).
+    double dum2 = eil::sqr(M1)*eil::sqr(eil::sin(beta))-1.0;
+    return 4.0*eil::sqr(M1)*eil::sqr(eil::cos(beta))/dum1
+        + 4.0*eil::sqr(M1)*eil::sin(2.0*beta)*dum2/(eil::sqr(dum1))/std::tan(beta)
+        - 2.0*dum2/dum1/(eil::sqr(eil::sin(beta)));
 } // end dtan_theta()
 
 double M2_obl(double M1, double beta, double theta, double g) {
@@ -385,9 +371,9 @@ double M2_obl(double M1, double beta, double theta, double g) {
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("M2_obl: subsonic normal Mach number: ", M1n));
     }
-    double numer = 1.0 + (g - 1.0) * 0.5 * eil::pow(M1n, 2);
-    double denom = g * eil::pow(M1n, 2) - (g - 1.0) * 0.5;
-    return eil::sqrt(numer / denom / eil::pow(eil::sin(beta - theta), 2) );
+    double numer = 1.0 + (g - 1.0) * 0.5 * eil::sqr(M1n);
+    double denom = g * eil::sqr(M1n) - (g - 1.0) * 0.5;
+    return eil::sqrt(numer / denom / eil::sqr(eil::sin(beta - theta)) );
 } // end M2_obl()
 
 double r2_r1_obl(double M1, double beta, double g) {
@@ -411,8 +397,8 @@ double V2_V1_obl(double M1, double beta, double g) {
     if (M1n < 1.0) {
         EIL_THROW_GASFLOW(eil::text("V2_V1_obl: subsonic normal Mach number: ", M1n));
     }
-    return eil::sqrt(eil::pow(eil::sin(beta) / r2_r1_obl(M1, beta, g), 2)
-                     + eil::pow(eil::cos(beta), 2));
+    return eil::sqrt(eil::sqr(eil::sin(beta) / r2_r1_obl(M1, beta, g))
+                     + eil::sqr(eil::cos(beta)));
 }
 
 double p2_p1_obl(double M1, double beta, double g) {
@@ -505,7 +491,7 @@ eil::Array<double> theta_cone(double V1, double p1, double T1, double beta,
     double rho1 = p1 / (R * T1);
     (void)h1;   // D computes the free-stream enthalpy here and never uses it
     // Test beta in relation to the Mach angle, mu
-    double mu = d_asin(1.0/M1);
+    double mu = eil::asin(1.0/M1);
     double beta2 = LINEAR_INTERP_SWITCH*mu;
     // Test for an infinitely-weak shock angle
     if (beta <= mu) { return eil::Array<double>{0.0, V1, p1, T1}; }
@@ -623,11 +609,11 @@ double beta_cone(double V1, double p1, double T1, double theta, double R, double
     g_cone_g = g;
     g_cone_theta = theta;
     // Initial guess at bracket for shock wave angle.
-    double b1 = d_asin(1.0/M1) * 1.01; // to be stronger than a Mach wave
+    double b1 = eil::asin(1.0/M1) * 1.01; // to be stronger than a Mach wave
     double b2 = 1.05 * b1;
     // D's x2_max argument is `PI/2`, Phobos' 80-bit enum, rounded to the double
     // parameter on the way in; the x1_min argument is the Mach angle itself.
-    eil::nm::bracket<cone_error, double>(b1, b2, d_asin(1.0/M1),
+    eil::nm::bracket<cone_error, double>(b1, b2, eil::asin(1.0/M1),
                                         static_cast<double>(EIL_PI / 2.0));
     return eil::nm::ridder::solve<cone_error, double>(b1, b2, 1.0e-4);
 } // end beta_cone()

@@ -45,7 +45,8 @@
 //     max3(1,nan,2)=2, max3(1,2,nan)=2, max3(nan,1,2)=nan, max(-0.0,0.0)=-0. The
 //     helper is file-local in the .cpp because it is D's private detail, not this
 //     module's API.
-//   * `a ^^ b` (D:219, :273, :332) is routed through eil::pow, never expanded.
+//   * `a ^^ b` (D:219, :273, :332) is routed through eil::sqr: the exponent is 2 and
+//     `x ^^ 2` is one multiply in D (T-931), not eil::pow(x,2).
 //     These three sites are the integer arm: measured `typeof(3 ^^ 2) == int` with
 //     value 9 and `(5-1) ^^ 2 == 16`, so D's result is an int and Phobos' `%d` on it
 //     prints an integer (a real under %d throws std.format.FormatException —

@@ -150,9 +150,47 @@ inline number mul_rhs_nan(number self, number factor) {
 inline number sqrt(number x) { return domain_nan(x, std::sqrt(x), quiet_nan_positive()); }
 inline number log(number x) { return domain_nan(x, std::log(x), quiet_nan_positive()); }
 inline number log10(number x) { return domain_nan(x, std::log10(x), quiet_nan_positive()); }
-inline number log2(number x) { return domain_nan(x, std::log2(x), quiet_nan_positive()); }
-inline number asin(number x) { return domain_nan(x, std::asin(x), quiet_nan_negative()); }
-inline number acos(number x) { return domain_nan(x, std::acos(x), quiet_nan_negative()); }
+inline number log2(number x) {
+    return domain_nan(x, std::log2(x), quiet_nan_positive());
+}
+
+// -----------------------------------------------------------------------------
+// eil::asin / eil::acos — Phobos' definition, not libm's entry point.
+//
+// Phobos writes them through atan2 and forms them in 80-bit `real`:
+//     acos(x) = atan2(sqrt(1 - x*x), x)      asin(x) = atan2(x, sqrt(1 - x*x))
+// glibc's std::acos/std::asin are other functions, and they agree with the above only in
+// the middle of the domain. Measured against ldc2 1.40.0 over 8,492 arguments
+// (probes/substrate/probe_acos_one.d -> baselines/e587b235/probes/substrate_acos_one.txt:
+// a +-2^-53..2^-53*61 ladder from both endpoints, the exact endpoints and one ULP past
+// them, 4,001 uniform samples across [-1,1], the cosine-rule arguments paver produces,
+// and the specials 0/-0/+-1/+-inf/+-nan/+-min_normal, each also stepped by 2^-30):
+//   * the formula reproduces D on 8,492/8,492 rows;
+//   * std::acos/std::asin miss 120 of them, and 118 of those 120 are arguments within
+//     2^-30 of +-1 or outside the domain -- where acos has its square-root singularity,
+//     so a difference in method is a whole ULP of *result*.
+// geom/grid/paver.d:579 computes acos(r) from the cosine rule and two nodes of the
+// paver_demo.d boundary land in that band; that is backlog T-931. The earlier
+// "measured bit-for-bit, so leave it glibc" reading (T-911, 11 samples; T-912) never put
+// an argument near an endpoint.
+//
+// NaN polarity is part of the contract and is NOT libm's: D gives a NEGATIVE quiet NaN
+// both for a finite argument outside [-1,1] and for +-inf (rows acosspec/asin* at
+// 7ff0000000000000 -> fff8000000000000), and a NaN operand propagates its own payload.
+inline number asin(number x) {
+    if (std::isnan(x)) return x;
+    const real r = static_cast<real>(x);
+    const real s = std::sqrt(static_cast<real>(1.0) - r * r);
+    number v = static_cast<number>(std::atan2(r, s));
+    return std::isnan(v) ? quiet_nan_negative() : v;
+}
+inline number acos(number x) {
+    if (std::isnan(x)) return x;
+    const real r = static_cast<real>(x);
+    const real s = std::sqrt(static_cast<real>(1.0) - r * r);
+    number v = static_cast<number>(std::atan2(s, r));
+    return std::isnan(v) ? quiet_nan_negative() : v;
+}
 
 // -----------------------------------------------------------------------------
 // eil::sin / eil::cos — keep a cos(x)+sin(x) pair as TWO libm calls.
@@ -213,10 +251,8 @@ inline number cos(number x) { volatile number a = x; return std::cos(a); }
 //
 // Any D call site of `atan2`/`atan` therefore maps here. Sites found so far:
 // geom/elements/vector3.d:523 (rotate_about_zaxis), geom/gpath/arc.d:92,
-// geom/gpath/helix.d:59. `asin`/`acos` are left as glibc: measured bit-for-bit
-// against Phobos over the ~1500 in-domain values of the gasdyn corpus, and D's own
-// asin is defined as atan2(x, sqrt(1-x*x)) computed in 80-bit real, which
-// src/gasdyn/idealgasflow.cpp:86 mirrors explicitly.
+// geom/gpath/helix.d:59. `asin`/`acos` are NOT libm either -- see the block above them;
+// the gasdyn sites that used to carry a local d_asin replica now call eil::asin.
 //
 // Translated statement for statement from std/math/trigonometry.d: atan2Impl
 // (990-1035) and the `realFormat == RealFormat.ieeeDouble` branch of atanImpl
@@ -344,14 +380,31 @@ inline double atan2(double y, double x) {
 inline bool isNaN(number x) { return std::isnan(x); }
 inline bool isInfinite(number x) { return std::isinf(x); }
 
-// D's `a ^^ b` is std.math.pow, and that is *not* the same bits as repeated
-// multiplication: measured at -O0 with ldc2 1.40.0 (probes/substrate/pow.d),
-// 1.2345^^3 = 1.8813659636249997 while 1.2345*1.2345*1.2345 = 1.8813659636249995,
-// and 2.0/3.0^^3 differs the same way. 107 `^^` sites are in Wave 2 scope (89 of
-// them `^^2`), mostly in Bezier/NURBS/Paver polynomial evaluation, so ports must
-// write eil::pow(x, 3) rather than expanding the product. std::pow reproduced
-// every measured D row bit-for-bit, including the integer-exponent overload
-// (pow(x,2) == pow(x,2.0)), so the widening here is only about spelling.
+// D's `a ^^ b` is std.math.pow, and it is *not* the same bits as repeated multiplication
+// -- except at exponent 2, where it is exactly one multiply. Measured at -O0 with ldc2
+// 1.40.0 over 2222 operands (i/7, i*0.001, 1/i, i*1e-8 and 0.05+i*1e-4 for i=1..400, a
+// 200-step walk from 0.040262832185305138, plus 0, -0, ±1, ±2, 0.5, 1/3, 2/3,
+// ±min_normal, ±5e-324, ±double.max, both sides of the squaring overflow boundary,
+// ±inf, nan):
+//   * `x ^^ 2` == `x*x` on 2222/2222 bit patterns (and == Phobos `pow(x,2.0)` on
+//     2222/2222, so D's two spellings of exponent 2 agree with each other);
+//   * `x ^^ 3` == Phobos `pow(x,3.0)` on 2222/2222, but differs from `(x*x)*x` on
+//     527/2222 (23.7%) -- so exponents 3 and up stay pow and must NOT be expanded;
+//   * glibc `pow(x,2.0)` -- which is what a port `eil::pow(x,2)` call becomes -- differs from
+//     D's `x ^^ 2` on 3 of the first 2002 operands, always by 1 ULP.
+// That last line is backlog T-931's root cause: geom/grid/paver.d:202 computed `b` one
+// bit away from the reference, and the demo's paved_grid.vtk lost 398 of 1490 vertices in
+// the last digit. So: `x ^^ 2` is eil::sqr(x), `x ^^ 0.5` is eil::sqrt(x), everything
+// else is eil::pow(x, e). Rows sq*/cu* of the substrate_pow corpus pin it.
+//
+// The rule was previously written the other way round, on the strength of a 7-operand
+// sample in which pow and multiply happened to agree on every operand. 0.15% divergence
+// needs a few hundred operands to show up, and 7 is not a few hundred.
+//
+// Residue this does NOT remove: Phobos' pow and glibc's pow disagree by 1 ULP on roughly
+// 1 operand in 650 for exponents 3 and 4 as well (3/2002 and 2/2002 measured). Spelling
+// cannot fix that; only a replica of powImpl could, and backlog T-911 decided not to
+// build replicas for 1-ULP classes. The census rows are in substrate_phobos_bits.
 //
 // ONE EXCEPTION, and it is not about pow: exponent 0.5. D's `x ^^ 0.5` is sqrt(x),
 // not pow(x, 0.5) -- measured over 765 non-negative operands, `x^^0.5` matches sqrt(x)
@@ -365,6 +418,10 @@ inline number pow(number x, number y) {
     return domain_nan2(x, y, std::pow(x, y), quiet_nan_positive());
 }
 inline number pow(number x, int y) { return pow(x, static_cast<number>(y)); }
+
+// D's `x ^^ 2` (and `pow(x,2)` / `pow(x,2.0)`): one hardware multiply, bit-for-bit.
+// Do not route exponent 2 through eil::pow -- see the measurement above.
+inline number sqr(number x) { return x * x; }
 
 // Determined from the boundary rows in tools/fmt_corpus.txt (D's own answers):
 //

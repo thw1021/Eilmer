@@ -28,9 +28,10 @@
 #
 # paver2d_demo has its artefact versioned as BYTES (the .vtk under probes/), not as a
 # checksum manifest, so its manifest is derived from those frozen bytes at configure time
-# with file(SIZE)/file(SHA256) and written into the BUILD tree. paver_demo has the same
-# arrangement but its gate is switched off (see its block), so its manifest lines are
-# commented out. Nothing under baselines/** is written, edited or re-captured here; the
+# with file(SIZE)/file(SHA256) and written into the BUILD tree; paver_demo now does the
+# same, while sgrid_demo's artefact gate is still withheld (its block says why) and
+# usgrid_demo compares against a captured manifest. Nothing under baselines/** is
+# written, edited or re-captured here; the
 # only files that appear there are the <expected>.norm siblings harness/compare_text.sh
 # writes for every stdout gate (10 of them are already tracked from earlier waves).
 
@@ -77,15 +78,11 @@ endif()
 #
 # STDOUT GATE: REGISTERED — 129 of 129 lines byte-identical to the captured text
 # (5,097 bytes, `cmp` clean on 2026-10-14).
-# ARTEFACT GATE: NOT registered. paved_grid.vtk has the same 141,490 byte length but
-# 398 of its 1,490 vertex lines differ from the frozen baseline, all in the last digits
-# (first difference at line 235 = vertex 228: reference
-# `6.036702247749276516e-03 3.683425520169235079e-01 0.000000000000000000e+00`, port
-# `6.036702247749274781e-03 ...`; worst relative gap measured over the file 4.3e-13).
-# The first 214 vertices ARE byte-identical, and 214 is exactly D's "there are 214 points
-# in the external boundary" (baseline line 2), so construct_boundary and the gpath arc/line
-# sampling match the reference and the divergence is inside geom/grid/paver.cpp's interior
-# paving arithmetic — a work package of its own, not something to patch from a demo.
+# ARTEFACT GATE: REGISTERED — see the block under the test. It was withheld on
+# 2026-10-14 because 398 of the 1,490 vertex lines differed in the last digits (first at
+# line 235 = vertex 228; the first 214 are construct_boundary's output and matched, which
+# is what localised the work to geom/grid/paver.cpp's interior paving arithmetic). T-931
+# closed it on 2026-10-15: paved_grid.vtk is now byte-identical to the frozen baseline.
 # ---------------------------------------------------------------------------
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_geom_grid_paver.cpp)
   add_executable(demo_geom_grid_paver tests/demo_geom_grid_paver.cpp)
@@ -104,16 +101,23 @@ if(BASH_PROGRAM AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_geom_grid_pave
                        WORKING_DIRECTORY ${G6A_PAV_DIR}
                        FIXTURES_SETUP g6a_ran_paver)
 
-  # Switched on when paver.cpp reproduces the vertex block (see the block comment).
-  #   file(SIZE ${G6A_PROBES}/geom_grid_paver_demo.paved_grid.vtk G6A_PAV_BYTES)
-  #   file(SHA256 ${G6A_PROBES}/geom_grid_paver_demo.paved_grid.vtk G6A_PAV_SHA)
-  #   file(WRITE ${G6A_WORK}/paver.artefacts.txt
-  #        "bytes\tpaved_grid.vtk\t${G6A_PAV_BYTES}\t${G6A_PAV_SHA}\n")
-  #   add_test(NAME demo_artefacts_geom_grid_paver
-  #            COMMAND ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/harness/compare_artefacts.sh
-  #                    ${G6A_WORK}/paver.artefacts.txt ${G6A_PAV_DIR})
-  #   set_tests_properties(demo_artefacts_geom_grid_paver PROPERTIES
-  #                        FIXTURES_REQUIRED g6a_ran_paver)
+  # ARTEFACT GATE: REGISTERED 2026-10-15. paved_grid.vtk is now byte-identical to the
+  # frozen 141,490 byte baseline (sha256 40ac927a52c3c185414c50e20d577e56ce13ff66fa61781f
+  # 3b24cef3e8a2bbb9, same on both sides), where it used to differ in 398 of its 1490
+  # vertex lines. Backlog T-931 closed by two port-rule corrections measured against this
+  # very geometry: `x ^^ 2' is one multiply, not glibc pow(x,2.0) (3 of 2,222 operands
+  # differ, and paver.d:202 hit one), and eil::asin/eil::acos are Phobos' atan2 definition
+  # in 80-bit, not std::acos/std::asin (glibc misses 208 of 8,454 arguments, concentrated
+  # within 2^-30 of +-1, which is where paver.d:579's cosine rule puts r twice).
+  file(SIZE ${G6A_PROBES}/geom_grid_paver_demo.paved_grid.vtk G6A_PAV_BYTES)
+  file(SHA256 ${G6A_PROBES}/geom_grid_paver_demo.paved_grid.vtk G6A_PAV_SHA)
+  file(WRITE ${G6A_WORK}/paver.artefacts.txt
+       "bytes\tpaved_grid.vtk\t${G6A_PAV_BYTES}\t${G6A_PAV_SHA}\n")
+  add_test(NAME demo_artefacts_geom_grid_paver
+           COMMAND ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/harness/compare_artefacts.sh
+                   ${G6A_WORK}/paver.artefacts.txt ${G6A_PAV_DIR})
+  set_tests_properties(demo_artefacts_geom_grid_paver PROPERTIES
+                       FIXTURES_REQUIRED g6a_ran_paver)
 endif()
 
 # ---------------------------------------------------------------------------

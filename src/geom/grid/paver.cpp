@@ -160,7 +160,10 @@ PointPtr midpoint(PointPtr a, PointPtr b) {
     return std::make_shared<Point>(0, 0.5 * (a->x + b->x), 0.5 * (a->y + b->y));
 }
 
-// D:198-204. `d ^^ 2` is eil::pow (it equals d*d here), but the OUTER `^^0.5` is
+// D:198-204. `d ^^ 2` is eil::sqr — one multiply, which is what D's `x ^^ 2` evaluates
+// to on all 2,222 measured operands (T-931; glibc pow(x,2.0) differs on 3 of them and
+// this very line was the one that broke the demo's paved_grid.vtk) — and the OUTER
+// `^^0.5` is
 // ldc2's sqrt, NOT std::pow: measured over 62 operands (/tmp sweep of D `x ^^ 0.5`
 // against Phobos sqrt and Phobos pow) `^^0.5` and `sqrt` agree on 62/62 while `pow`
 // differs on 4 — x=0x3fefffffffffffff (sqrt 0x3fefffffffffffff, pow 1.0), x=DBL_MAX
@@ -168,7 +171,7 @@ PointPtr midpoint(PointPtr a, PointPtr b) {
 // `^^0.5` sites, both here and in norm below, and the corpus proves the difference:
 // rows sec2.ulv3.0/sec2.ulv3.1 are 1 ULP apart between the two routings.
 double point_dist(PointPtr a, PointPtr b) {
-    return eil::sqrt(eil::pow(a->x - b->x, 2.0) + eil::pow(a->y - b->y, 2.0));
+    return eil::sqrt(eil::sqr(a->x - b->x) + eil::sqr(a->y - b->y));
 }
 
 // D:206-214
@@ -196,10 +199,10 @@ int LeftorRight(PointPtr a, PointPtr b, PointPtr X) {
     return ans;
 }
 
-// D:234-240. Same routing as point_dist: the inner `^^2` is eil::pow, the outer
+// D:234-240. Same routing as point_dist: the inner `^^2` is eil::sqr, the outer
 // `^^0.5` is ldc2's sqrt (see the measurement recorded at point_dist above).
 double norm(std::array<double, 2> vector) {
-    return eil::sqrt(eil::pow(vector[0], 2.0) + eil::pow(vector[1], 2.0));
+    return eil::sqrt(eil::sqr(vector[0]) + eil::sqr(vector[1]));
 }
 
 // D:242-247
@@ -245,7 +248,7 @@ double squareness(CellPtr cell) {
     perimeter = point_dist(points[0], points[1]) + point_dist(points[1], points[2]) +
                 point_dist(points[2], points[3]) + point_dist(points[3], points[0]);
 
-    return 16 * area / eil::pow(perimeter, 2.0);
+    return 16 * area / eil::sqr(perimeter);
 }
 
 // D:278-293
@@ -488,7 +491,11 @@ CellPtr makeCell(eil::Slice<PointPtr> points) {
     return cell;
 }
 
-// D:528-607. The cosine rule at D:575 is three `^^2` sites and a division; the
+// D:528-607. The cosine rule at D:575 is three `^^2` sites (eil::sqr, T-931) and a
+// division, and the acos at D:579 is eil::acos — Phobos' atan2 definition formed in
+// 80-bit, not glibc's std::acos, which is 1 ULP off D's answer for arguments inside
+// 2^-30 of +-1 (substrate_acos_one: 208 of 8,454; two nodes of the paver_demo boundary
+// land in that band, and that is what moved 398 vertices of paved_grid.vtk). The
 // bare assert at D:576 fires for a NaN r (both comparisons false), which is what a
 // zero-length leg produces, because 0/0 is NaN (measured, rows node.one.throw and
 // node.dup.throw).
@@ -515,7 +522,7 @@ void assign_node_properties(eil::Slice<PointPtr> surface) {
         double c = point_dist(pointL, pointR);
         double a = point_dist(pointL, point0);
         double b = point_dist(pointR, point0);
-        double r = (eil::pow(a, 2.0) + eil::pow(b, 2.0) - eil::pow(c, 2.0)) / (2 * a * b);
+        double r = (eil::sqr(a) + eil::sqr(b) - eil::sqr(c)) / (2 * a * b);
         eil_assert(r < 1.01 && r > -1.01); // checking calculated r is plausible
         if (r > 1.0) r = 1.0;
         if (r < -1.0) r = -1.0;
@@ -1269,7 +1276,7 @@ void fix_IDs(eil::Slice<UFacePtr> face_list, eil::Slice<CellPtr> cell_list) {
 
 // D:1304-1322
 double biggest_cell(eil::Slice<CellPtr> cells, double initial_size) {
-    double biggest_area = eil::pow(initial_size, 2.0);
+    double biggest_area = eil::sqr(initial_size);
     double current_area = eil::d_init<double>();
     for (size_t t = 0; t < cells.length(); ++t) {
         CellPtr cell = cells[t];
@@ -1628,7 +1635,7 @@ PavedGrid::PavedGrid(const eil::Array<eil::Array<double>>& boundary_points) {
 
     //--------calculate initial properties for later use------------
     eil::geom::initial_size = average_face_length(external_boundary.all());
-    eil::geom::avr_area = eil::pow(eil::geom::initial_size, 2.0);
+    eil::geom::avr_area = eil::sqr(eil::geom::initial_size);
 
     //---------------generate the first new row---------------------
     eil::writeln("generating first new row...");

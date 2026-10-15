@@ -96,9 +96,11 @@
 //     because a comparator that is not a strict weak ordering reaches it, and the
 //     objective functions in this codebase can return NaN (nelmin.d:87 says
 //     "Might have to check for NaNs as well").
-//   * `(vtx.fx - mean)^^2` (nelmin.d:207) is std.math.pow, not a multiply: it
-//     becomes eil::pow(), which reproduces the measured D bits (see
-//     substrate/include/eil/math.hpp and probes/substrate/probe_pow.d).
+//   * `(vtx.fx - mean)^^2` (nelmin.d:207) is ONE MULTIPLY: D's `x ^^ 2` equals
+//     `x*x` on 2,222/2,222 measured operands, while glibc's pow(x,2.0) — what a port
+//     eil::pow(x,2) call would become — misses 3 of them (backlog T-931). It
+//     becomes eil::sqr(); see substrate/include/eil/math.hpp and the sq2 rows of
+//     probes/substrate/probe_pow.d.
 
 #include <algorithm>
 #include <array>
@@ -507,7 +509,7 @@ class NMMinimizer {
         for (const auto& vtx : vertices) { mean += vtx.fx; }
         mean /= vertices.length();
         T ss = 0.0;
-        for (const auto& vtx : vertices) { ss += eil::pow(vtx.fx - mean, 2); }
+        for (const auto& vtx : vertices) { ss += eil::sqr(vtx.fx - mean); }
         T std_dev = eil::sqrt(ss/(vertices.length()-1));
         return {mean, std_dev};
     }

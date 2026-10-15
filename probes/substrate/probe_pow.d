@@ -58,4 +58,46 @@ void main() {
              sqrt(-1.0), log(-1.0));
     writefln("tostring %s %s %s", 1.0/3.0, to!string(1.0/3.0), to!string(3.141592653589793));
     writefln("pi %s %s %s", cast(real)PI, cast(double)(PI/4.0), cast(double)(PI/4.0*4.0));
+
+    // ---- sq2/cu3 sweep (backlog T-931) ----------------------------------
+    // The 7 operands above all had pow(x,2.0) == x*x, and from that the rule
+    // "`x ^^ 2` is eil::pow" was written down. It is wrong: over a wide sweep D's
+    // `x ^^ 2` is x*x on EVERY operand, while glibc's pow(x,2.0) -- which is what a
+    // port eil::pow(x,2) call becomes -- differs from it on about 1 operand in 650.
+    // paver.d:202 hit exactly that and lost 398 vertices in the demo's paved_grid.vtk.
+    // Rows print raw patterns for the same reason the `half` rows do.
+    double[] xs2;
+    xs2 ~= [0.021687283126135326, 0.03392281542249831];  // the operands that exposed it
+    for (int i = 1; i <= 400; ++i) {
+        xs2 ~= i / 7.0;
+        xs2 ~= i * 0.001;
+        xs2 ~= 1.0 / i;
+        xs2 ~= i * 1e-8;
+        xs2 ~= 0.05 + i * 1e-4;
+    }
+    for (int i = 0; i < 200; ++i) xs2 ~= 0.040262832185305138 + i * 1e-18;
+    xs2 ~= [0.0, -0.0, 1.0, -1.0, 2.0, -2.0, 0.5, 1.0 / 3.0, 2.0 / 3.0,
+            double.min_normal, -double.min_normal, 0x0.0000000000001p-1022,
+            -0x0.0000000000001p-1022, double.max, -double.max,
+            1.3407807929942596e154, 1.3407807929942597e154, double.infinity,
+            -double.infinity, double.nan];
+    // The flags compare PATTERNS, never `==`: the NaN operand in this list has identical
+    // bits in every column yet fails every `==`, which is the same false signal T-925
+    // records for the `half` rows.
+    string pat(double v) { return format("%016x", *cast(ulong*)&v); }
+    foreach (x; xs2) {
+        const double o = x ^^ 2;
+        const double m = x * x;
+        const double w = pow(x, 2.0);
+        writefln("sq2 %s d=%s mul=%s powd=%s dEqMul=%s dEqPowd=%s", pat(x), pat(o), pat(m),
+                 pat(w), pat(o) == pat(m), pat(o) == pat(w));
+    }
+    foreach (x; xs2) {
+        const double o = x ^^ 3;
+        const double ma = (x * x) * x;
+        const double w = pow(x, 3.0);
+        writefln("cu3 %s d=%s mulA=%s powd=%s dEqMulA=%s dEqPowd=%s", pat(x), pat(o), pat(ma),
+                 pat(w), pat(o) == pat(ma), pat(o) == pat(w));
+    }
+    writefln("sweep|operands=%d", xs2.length);
 }

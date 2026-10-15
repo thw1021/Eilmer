@@ -49,10 +49,10 @@ inline number d_max(number a, number b, number c) { return d_max(d_max(a, b), c)
 
 // D:219 `auto nCells = n^^2;`, D:273/D:332 `int nCells = (nEdgePts-1)^^2;`.
 // These are std.math.pow's integral arm (integerPow): measured typeof(3^^2) == int
-// with value 9 and (5-1)^^2 == 16. The value still goes through eil::pow
-// (wave-02-brief section 5 forbids expanding ^^ into a product) and is truncated to
-// int, which is exact well past the int range D's own nCells can hold.
-inline int pow2_as_int(int x) { return static_cast<int>(eil::pow(static_cast<number>(x), 2)); }
+// with value 9 and (5-1)^^2 == 16. The exponent is 2, so the value goes through
+// eil::sqr (one multiply — T-931's rule) and is truncated back to int, which is exact
+// well past the int range D's own nCells can hold.
+inline int pow2_as_int(int x) { return static_cast<int>(eil::sqr(static_cast<number>(x))); }
 
 // std.stdio.File(fileName, "w") — the Phobos failure text is the same one
 // src/geom/surface/parametricsurface.cpp:52-60 reproduces; std.exception

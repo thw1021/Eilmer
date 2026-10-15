@@ -21,8 +21,10 @@
 //     statement for statement (measured divergence from glibc: at x =
 //     0.90000000000000002 D's tan is 1.260158217550339 / bits 3ff4299ba9c2a137 and
 //     glibc's is 1.2601582175503392 / bits ...138, 1 ULP, and tan() feeds mid_pt_x
-//     directly). Same precedent as src/gasdyn/idealgasflow.cpp:86's local d_asin. The
-//     substrate gap (no eil::tan) is reported to the main thread as T-9xx material.
+//     directly). The same rule now sits in the substrate for
+//     asin/acos (substrate/include/eil/math.hpp, eil::asin/eil::acos); a local d_asin
+//     replica used to live at src/gasdyn/idealgasflow.cpp:86 and was folded into those.
+//     The remaining substrate gap is eil::tan.
 //   * D:56 sets p.z = 0.0 BEFORE the branch chain, while p.x/p.y are still
 //     Vector3.init (NaN, wave-02-brief section 5); the declaration order is preserved.
 //   * the branch order is r==0.0, r==1.0, s==1.0, else interior (D:57-69), so the
