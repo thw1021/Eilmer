@@ -144,15 +144,17 @@ T-914/T-920/T-922/T-923/T-925/T-927 和收尾批 T-929/T-928/T-926①。闭合�
 - **T-926 余两条**：② `eil::Slice<T>` 无法表达 D 的动态数组默认实参（`double[] canvas_mm=[]`），
   Wave 3 之前定形；③ 没有 `readln()`，只在未编译的 `with_libplot` 支里用到，且与 T-923 同一
   "EOF 返空串、不抛"语义（已被 `nm_stmatrix_fails` 钉住），Wave 4/5 补时必须照该实测。
-- **T-930**（Wave 3 起硬依赖）：Phobos 的 `to!double` 十进制→二进制**不是正确舍入**——实测 15 个
-  数值 token 里 2 个差 1 ULP 且 **D 是错的一方**（`0.2929550221030571` → D `…bee`、strtod/
-  `eil::to_double`/Python 都给 `…bed`），差异纯来自解析、不经任何运算。**纪律**是"忠实于参照优先于
-  更正确"，但实现前必须先写 `probe_to_double_range.d` 扫分歧率与触发条件（先量后写）。
-  `demo_artefacts_geom_grid_sgrid` 因此**故意没注册**（16 行里 6 行不行：5 行归本条、1 行归 G6b）。
-- **T-931**：`geom/grid/paver.cpp` 的**内部铺面算术**与参照差 1 ULP 级（`paved_grid.vtk` 字节长度相同
-  但 398/1490 顶点末位不同，前 214 个逐字节相同 = 边界/gpath 对，分歧在内部铺面）。现有
-  `geom_grid_paver` 1961/1961 一条都没覆盖到这条路。`demo_artefacts_geom_grid_paver` 因此注释着，
-  stdout 门禁照常注册且绿。候选根因：T-920 的 cos/sin 融合、T-909 常量折叠、迭代 `a*b+c` 的融合次序。
+- **T-930**（Wave 3 起硬依赖）**量测已完成于 2026-10-15，实现待用户选路线**：
+  全量 `blk.tmp` 的 128,346 个数值 token 上，strtod 与 D 差 15 个（0.0117%，全为 15–16 位有效数字），
+  最接近的简单复刻模型差 3 个但会把 1 行本来正确的结果改坏；≥20 位输入 Phobos 走另一条大数路径。
+  要到 0 分歧必须搬 Phobos 的 `parseFloat`（本机无源码，只剩黑盒拟合）。三条路线的代价见
+  `task-log.md` 的 T-930 节；`demo_artefacts_geom_grid_sgrid` 继续故意不注册。
+- **T-931** ~~候选根因：T-920 的 cos/sin 融合、T-909 常量折叠、迭代 `a*b+c` 的融合次序~~
+  **已于 2026-10-15 闭合，三个候选根因一个都不是**：真原因是 `x ^^ 2` 被转写成 glibc `pow(x,2.0)`
+  （T-933）与 `eil::acos` 用 glibc 而非 Phobos 的 80 位 `atan2` 定义（T-934）。
+  `paved_grid.vtk` 现与冻结基线逐字节相同，`demo_artefacts_geom_grid_paver` 已注册；
+  定位手段是新的 `ctest:geom_grid_paver_stage`（4,249 行阶段指纹）。数字与判别力见
+  `backlog.md` 的 T-931/T-933/T-934 条与 `task-log.md`。
 - **T-916**（Wave 3 硬任务）：D 的 `sinh` 有两处**结构**分歧（不是舍入），随 `gas/` 处理。
 - **横切债务**：T-902(`std.json`)、T-903(`toString()` 类名前缀无法与 D 一致)、T-904(复数支从未编译)、
   T-905(nm/util 叶子按波次补迁)、T-907(`Slice<const T>`)、T-909(ldc2 常量折叠)、T-912(转写纪律)、

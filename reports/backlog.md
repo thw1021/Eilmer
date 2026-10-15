@@ -158,7 +158,8 @@
     demo 的**工作目录契约**按基线头注释实现（cmake fixture 建 `examples` 符号链接、
     从 `<root>/src/eilmer` 运行），否则 D:96 的 `blk.tmp` 直接 `ErrnoException`。
   - **两条产物门禁故意不注册**，各自原因已升格成任务：`T-931`（paver 内部铺面，
-    1490 个顶点里 398 行末位不同、前 214 个全同 ⇒ 定位在内部而非边界）、
+    1490 个顶点里 398 行末位不同、前 214 个全同 ⇒ 定位在内部而非边界；
+    **已于 2026-10-15 闭合，`demo_artefacts_geom_grid_paver` 现注册且产物逐字节相同**）、
     `T-930`（**Phobos `to!double` 不是正确舍入**，主线程自己复测确认：
     15 个数值 token 里 2 个差 1 ULP、D 是错的一方）。
   - **G6b `gmopatch.d`/`meshpatch.d` 闭合**：先抓参照再写实现
@@ -382,6 +383,7 @@
   语料总行 84,656→**87,263**、CTest 100→**113** 且三配置全绿），新增 §1.5 收尾批表
   （T-929/T-928/T-926① 各自的实测事实、落点、门禁、判别力）；§3"待完成"去重并改为准确的分派清单
   （T-015 阻塞、T-921 环境阻塞、T-926②③、T-930、T-931、T-916 与横切债务）。`wave-02` git tag 随本报告打上。
+  **T-931 与 T-930 量测段已于 2026-10-15 之后另行完成，见本文件同名条与 `task-log.md`。**
 
 **Wave 2 执行约束**（源自 wave-01 集成的 3 类返工，必须写进每个子代理简报）：
 1. `.msg()/.file()/.line()/.toString()` 属 `ThrowableBase`，`Exception` 与 `Error` 是兄弟不是父子
@@ -820,46 +822,80 @@
   usgrid 的 5 条 OOM 语料行此前显示端口的模块位置、现在由 harness 从异常读 `file()/line()`
   修正为 D 运行时位置。**111/111 三配置全绿**，`substrate_array_init` 逐行复刻 30 行基线 0 差，
   `check_staleness` 无漂移；判别力已用"把 `grow_init` 退回 `T()` 看两道门禁转红"验证。
-- [ ] **T-930** **substrate 缺口（Wave 3 起就是硬依赖）：Phobos 的 `to!double` 十进制→二进制**不是正确舍入的**。
-  由 G6a 的 `sgrid_demo` 产物门禁暴露（`cmake/wave2_grid_g6.cmake` 里那条"10 of 16 rows
-  reproduce"的注释），主线程**自己复测确认**：
-  `probes/substrate/probe_to_double_rounding.d` → `substrate_to_double_rounding.txt`
-  （34 行、两跑逐字节相同、行内无地址），同一批 token 用 g++ -O0 打 `strtod` 的位型对比，
-  **15 个数值 token 里 2 个差 1 ULP，且 D 是错的那一方**：
-  `0.2929550221030571` → D `0x1.2bfc66bc86beep-2`（bits `3fd2bfc66bc86bee`）、
-  strtod/`eil::to_double`/Python `float()` 都给 `…bed`；`2.929550221030571e-1` 同样差 1 ULP
-  （说明指数写法走的是同一条路）。其余 13 个（含 `0.1`/`0.3`/`1e308`/denormal/
-  `…5712345` 长位串）**位型全同**。
-  - **为什么它现在就要记下来**：这些值不经过任何几何运算——`import_gridpro_grid`
-    （sgrid.d:1603）只做 `uflowz(scale * to!double(tks[m]))`、`scale=1.0`，
-    所以差异**完全来自解析**。而 Wave 3+ 的入口全是解析：Lua 配置里的浮点字面量、
-    `.fld`/`.dat` 表、`fluidblock` 头、网格文件。**只要用户写下一个 D 会误舍的十进制，
-    端口就给另一个 double**，之后每一步都跟着错。
-  - **纪律**：忠实复刻优先于"更正确"。本波要求是"行为与 D 求解器一致、不得优化"，
-    所以 `eil::to_double` 必须复刻 Phobos 的算法（`std/conv.d` 的 decimal→binary 快速路径），
-    **不能**停在 strtod。T-913 只管了它的**错误文本**，没管**舍入**。
-  - **实现前必须先扫范围**：写一个 `probes/substrate/probe_to_double_range.d`，
-    把 Phobos 路径与 strtod 在**大量随机/边界十进制串**上比位型，量出分歧率与触发条件
-    （位数？是否含指数？尾数超过 19 位？），再决定是复刻整条快速路径还是
-    只在"会分歧的类"上走复刻。**先量后写**，这是本仓库反复验证过的顺序。
-  - **门禁状态**：`demo_equiv_geom_grid_sgrid` 已注册且绿（26 行 stdout 在 `%.6g` 下看不出差）；
-    `demo_artefacts_geom_grid_sgrid` **故意没注册**——16 行里 6 行不行，
-    5 行是本条、1 行是 G6b 未落地（`test_gmo_grid-2D.vtk`）。
-    注册条件写死在 `wave2_grid_g6.cmake` 的注释里。
-- [ ] **T-931** `geom/grid/paver.cpp` 的**内部铺面算术**与参照差 1 ULP 级（不是格式化差异）。
-  由 `paver_demo` 的产物暴露：`paved_grid.vtk` **字节长度相同（141,490）**，
-  但 **398/1490 个顶点行的末位不同**，第一处差异在第 235 行（顶点 228）
-  `6.036702247749276516e-03` vs 端口 `6.036702247749274781e-03`，全文件最大相对差 **4.3e-13**。
-  **定位是量出来的**：前 **214** 个顶点逐字节相同，而 214 正是 D 基线第 2 行说的
-  "there are 214 points in the external boundary" ⇒ `construct_boundary` 与 gpath 的弧/线采样
-  与参照一致，分歧在 **paver 的内部铺面**里。
-  **为什么现有门禁没抓到**：`geom_grid_paver` 语料 **1961/1961 逐字节相同**——它数的量
-  覆盖不到这条路径（与 T-923"没有语料的路径能藏住东西"同一类，只是这里藏的是数值末位）。
-  **待做**：给 paver 的内部点补语料（按 `%.17g` + 位型），先复现"214 之后才开始差"，
-  再定位到具体表达式；候选是 T-920 的 `cos/sin` 融合、T-909 的常量折叠、以及
-  迭代里 `a*b+c` 的融合次序。**不许**为了产物一致而调容差。
-  `demo_artefacts_geom_grid_paver` 因此在 `wave2_grid_g6.cmake:112-119` 注释着，
-  stdout 门禁（129/129）照常注册且绿。
+- [BLOCKED:需用户选路线] **T-930** **Phobos 的 `to!double` 十进制→二进制不是正确舍入**。
+  原要求"实现前必须先扫范围"——**已扫完（2026-10-15）**，结论是**没有可证的等价物**，
+  所以本条不落到实现，等用户判路线。证据：
+  `probes/substrate/probe_to_double_range.d` → `baselines/…/substrate_to_double_range.txt`
+  （**5,309 行**，两次跑逐字节相同；未注册门禁，理由写在文件头），加上对
+  `examples/eilmer/3D/gridpro-import/blk.tmp` **全部 128,346 个数值 token** 的逐位对比：
+  * glibc `strtod`（端口现在用的）与 D 差 **15 个 token = 0.0117%**，全部是 15–16 位有效数字；
+  * `to!double(s) == cast(double)(to!real(s))` 在 201/201 样本上成立 ⇒ 误差在 Phobos 的
+    **十进制→80 位**那一步，不在窄化；
+  * 最接近的简单模型（整数尾数 × 长双精度 10^e 再窄化）差 **3/128,346**，但它把一行
+    strtod 本来正确的结果改坏（`1.001179321978101`：D 与 strtod 同为 `3ff004d49bd53d05`，
+    模型 `…d06`）；"先精确舍入到 80 位再舍入到 double"的双重舍入模型只解释 15 中的 11；
+  * **≥20 位输入 Phobos 明显走另一条（大数）路径**，六种简单模型全都拟合不上生成扫；
+  * 顺带钉住一条语义：文本超过 DBL_MAX 时 `to!double` **抛 `std.conv.ConvException`、不返回 inf**
+    （`1.7976931348623159e308`、`1e309`）。
+  ⇒ 要到 0 分歧必须搬 Phobos 的 `parseFloat` + 它的 80 位 `pow`，而本机 ldc2 只发 `.di` 与
+  编译好的库、**没有 Phobos 源码**，只剩黑盒拟合一个 exp/log 级算法——那不是"语法层面的等价转换"。
+  **三条路线与代价见 `task-log.md` 的 T-930 节**。现状保持（strtod），
+  `demo_artefacts_geom_grid_sgrid` 继续**故意不注册**（16 行里 5 行归本条，1 行归 T-931 已修）。
+- [x] **T-931** `geom/grid/paver.cpp` 的**内部铺面算术**与参照差 1 ULP 级（不是格式化差异）。
+  **完成 2026-10-15**，见 `task-log.md` 的 T-931/T-933/T-934 节。定位方式：新探针
+  `probes/geom/grid/probe_paver_stage.d` 把 `paver_demo.d` 的 214 点边界按
+  `PavedGrid` 构造序列**逐语句内联**，每步之后打一次 POINT_LIST 指纹；语料 **4,249 行、
+  两次 D 跑逐字节相同**，注册 `ctest:geom_grid_paver_stage`。构造序列的正确性有一条硬证据：
+  探针内联出的 writeln/writefln 文本与已冻结的 demo stdout 门（129 行）**逐字节相同**
+  ⇒ 分支走向与迭代次数（12 次）都对得上，驱动的不是另一个程序。
+  **结果是两条端口规则错**（各自成条：T-933 `^^2`、T-934 asin/acos），都不是"调容差"能糊的：
+  修完 `paved_grid.vtk` 与冻结基线**逐字节相同**（141,490 字节，sha256 `40ac927a…e8a2bbb9`），
+  `demo_artefacts_geom_grid_paver` 注册。**阶段指纹本身也要记一条教训**：第一版只对 x/y 求和，
+  修完 `^^2` 后分歧点从 `6row1` 移到 `12loop1.pave`，而真原因是前一阶段的
+  `interior_angle` 差 1 ULP——坐标还没动、指纹看不出来。指纹现覆盖
+  x/y/interior_angle/V_R/V_L/growth/node_cat 长度/rowID。
+  **判别力**：`eil::sqr` 退回 `std::pow(x,2.0)` ⇒ `substrate_pow` 3 行红；
+  `eil::acos/asin` 退回 glibc ⇒ `substrate_acos_one` 70 行红。三配置 **116/116**。
+- [x] **T-933** **更正端口规则：`x ^^ 2` 是一次乘法，不是 `eil::pow(x,2)`**（T-925 的姊妹条）。
+  **完成 2026-10-15**。规则原先写在 `substrate/include/eil/math.hpp` 的 `eil::pow` 注释头上
+  （"D 的 `a ^^ b` 是 std.math.pow，不是重复乘法"），依据是 `probes/substrate/probe_pow.d` 的
+  **7 个操作数**——而那 7 个上 pow 与乘法恰好全一致。**2,222 个操作数重测**
+  （i/7、i*0.001、1/i、i*1e-8、0.05+i*1e-4 各 400，从 0.040262832185305138 起 200 步密扫，
+  加 0/−0/±1/±2/0.5/1/3/2/3/±min_normal/±5e-324/±DBL_MAX/溢出界两侧/±inf/nan）：
+  `x ^^ 2` == `x*x` **2222/2222**；== Phobos `pow(x,2.0)` 2222/2222；
+  **glibc `pow(x,2.0)`（即端口 `eil::pow(x,2)` 的去向）差 3 个**；
+  `x ^^ 3` 与 `(x*x)*x` 差 **527/2222（23.7%）**、与 Phobos `pow(x,3.0)` 一致 2222/2222
+  ⇒ 指数≥3 **必须**留 pow。落点：`eil::sqr` 入 substrate，**全树 89 个站点改道**
+  （idealgasflow 36、properties 19、paver 10、sgrid 7、gmopatch 4、kdtree 4、vector3 3、
+  wedgevolume 2、modifiedpath/beziertrianglepatch/nelmin 各 1 + 两个嵌套在实参里的补扫）；
+  注释同步更正 12 处（`properties.hpp`、`sgrid.hpp`、`wedgevolume.{hpp,cpp}`、
+  `beziertrianglepatch.{hpp,cpp}`、`nelmin.hpp`、`paver.{hpp,cpp}`、`vector3.cpp`、
+  `nozzleexpansionpatch.hpp`）。门禁：`substrate_pow` 从 35 行扩到 **4,480 行**，
+  sq2 组 **0 容差**、cu3 组**上界 8**（展开成乘积就红 527 行）。
+  **踩过的两个坑**：① 用脚本批量改实参时**第二次扫描把注释里的 `eil::pow(x,2)` 也改了**，
+  留下四处指向不存在符号/语义反了的话——已全部手工改回并复述实测数（T-922 那条"机械改写必须
+  逐点核 + 编译验证"的再现）；② 布尔列最初用 `==` 比较，NaN 行报假信号，已改为**按位型**比较。
+- [x] **T-934** **`eil::asin`/`eil::acos` 必须是 Phobos 的定义，不是 libm 的入口**（T-912 的落实）。
+  **完成 2026-10-15**。新探针 `probes/substrate/probe_acos_one.d` → `substrate_acos_one.txt`
+  **8,492 行**：±1 两端各 61 级 2^-53 阶梯、端点本身与外一 ULP、[-1,1] 上 4,001 个均匀样本、
+  余弦定理真实产生的 r、 specials（0/−0/±1/±inf/±nan/±min_normal）各再加 ±2^-30 邻近值。
+  实测：Phobos 定义（`atan2(sqrt(1-x*x), x)` 在 80 位成、窄回 double）**0/8,454** 不符；
+  glibc `std::acos`/`std::asin` **208/8,454** 不符，其中 **118 行落在 ±1 的 2^-30 邻域**——
+  而 `paver.d:579` 的余弦定理正好把一个近退化三角形的 r 放进这个带里（这就是 T-931 的另一半）。
+  NaN 极性照实测：定义域外有限值**与 ±inf**都给**负**静默 NaN，`nan` 操作数传播自身载荷。
+  落点：`substrate/include/eil/math.hpp`；`src/gasdyn/idealgasflow.cpp` 的本地 `d_asin` 副本
+  **删除**、6 站点走 substrate（同一规则两份必漂移）；`nozzleexpansionpatch.hpp` 的指向同步。
+  **38 行永久不进门禁并打印行数**：`asinatan2/acosatan2` 是 D 手写公式本身，±inf 处它给 +NaN
+  而 D 的 `acos(±inf)` 给 −NaN——两者本来不是同一个函数，端口契约是函数而不是公式。
+  T-911 当年"acos 11/11 相同"的结论在 8,454 行上不成立，因为那 11 个样本没有一个靠近端点。
+- [ ] **T-935** **Phobos 的 `pow` 与 glibc 的 `std::pow` 本身就有 1 ULP 分歧**（新横切债务）。
+  实测：指数 3.0 差 **3/2002**、指数 4.0 差 **2/2002**、`substrate_pow` 的 cu3 组 6/2222
+  （≈1/650，均 1 ULP）。这**不是拼写问题**：`x ^^ 3` 在 D 里就是 pow，端口只能用 glibc 的 pow，
+  于是每个 `^^3`/`pow(x,3.0)` 站点有约 0.15% 的操作数差 1 ULP。T-911 决定不为 1 ULP 类建 replica，
+  但那条决定当时把 `pow` 划入"已经逐位相同"，本条把它移到"1 ULP 类"。
+  后果限于产物级字节比较（门 (1) 的 1e-13 远宽于此）。**Wave 3+ 复查点**：
+  `sgrid.d:664-670` 与 `gmopatch.d:118-124` 的三次 Bézier 权重（8 个 `^^3` 站点已注册且绿，
+  因为样本没落到分歧操作数上）、`gas/` 的 LUT 与 `univariatefunctions.d`。
 - [x] **T-932** **`to!int(double)` 的上界是"严格大于 `INT_MAX`"，端口按 `>=` 写会把最大合法 int 拒掉。**
   **完成 2026-10-14**。G6b 代理先在自己 helper 里发现（它把 `v >= 2147483648.0` 改成
   D 的判据），我复测时确认 **`src/util/lua_service.hpp:168` 的 `to_int_from_double` 同样错**，
@@ -897,8 +933,10 @@
   再决定 C++ 侧写 `std::xxx` 还是 `eil::xxx`。已知清单：
   `atan2`/`atan` = Phobos 自带（`trigonometry.d:945 → atan2Impl`）→ `eil::atan2`；
   `asin`/`acos` = D 定义为 `atan2(x, sqrt(1-x*x))` 且**在 80 位 real 里算**
-  （`trigonometry.d:620-628`）→ 既不是 `std::asin` 也不是 double 版 replica，
-  须逐点镜像该公式（见 `src/gasdyn/idealgasflow.cpp:86` 的 `d_asin`）；
+  （`trigonometry.d:620-628`）→ 既不是 `std::asin` 也不是 double 版 replica。**已落实**
+  （2026-10-15，T-934）：规则上移进 `substrate/include/eil/math.hpp` 的 `eil::asin`/`eil::acos`，
+  `src/gasdyn/idealgasflow.cpp` 的本地 `d_asin` 副本删除；当年的"逐点镜像"判断是对的，
+  但"acos 与 glibc 逐位相同"（T-911 的 11 样本）是错的——8,454 行里 glibc 差 208 行；
   `pow` = 实测与 `std::pow` 逐位相同（语料 26 行）→ `eil::pow` 只是拼写。
   判据一律是**位型**（`bits=%016x`），不是 `%.17g` 文本
 
