@@ -117,6 +117,21 @@ inline std::string unexpected_end(const std::string& type) {
 //     for input "X".`; "." and "-." are `no digits seen`.
 //  7. Overflow is a `Range error` (`1e1000`, `0x1p10000`); underflow is not (`1e-500`
 //     and `0x1p-10000` are 0).
+//
+// What this function does NOT reproduce, on purpose (backlog T-930, route 1 decided
+// 2026-10-15): Phobos' decimal->binary rounding. It forms the value in 80-bit `real` and
+// narrows, which is NOT correctly rounded — over all 128,346 numeric tokens of
+// examples/eilmer/3D/gridpro-import/blk.tmp, `strtod` (used below) differs from
+// `to!double' on 15 of them, 0.0117%, every one of them 15 or 16 significant digits, and
+// `to!double' is the less accurate side (e.g. `0.2929550221030571' -> D ...bee, strtod
+// ...bed). Reproducing it needs Phobos' parseFloat internals; the closest fit-able model
+// (exact integer mantissa x long double binary-powered 10^e) reaches 3 bad but turns 1
+// previously-correct row wrong (`1.001179321978101'), and it is only characterised for
+// inputs of at most 19 digits — see tools/to_double_exposure.cpp, which prints both
+// columns, and probes/substrate/probe_to_double_range.d for the 5,309-row corpus.
+// The consequence to remember: a grid or config literal in that band lands 1 ULP off the
+// reference (relative 1e-16, far below the 1e-13 acceptance gate), and it is why 5 of the
+// 16 artefact rows of demo_artefacts_geom_grid_sgrid are withheld rather than "fixed".
 inline double to_double(const std::string& s) {
     const size_t n = s.size();
     // (6) no operand at all.

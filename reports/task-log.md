@@ -1258,3 +1258,12 @@ fluidblock 头）的解析行为，属于"改求解行为"的边界，需要用�
   重载收成 1 个带默认实参的构造**，`geom_misc_sketch` 682 行、demo stdout 2 行与三个 SVG
   产物**仍逐字节相同**。`Slice<const T>` 那一半仍在 **T-907**。
 - 三配置 **117/117**；`check_staleness` = no drift；提交 `94c8b82`。
+
+### T-930 的结案（路线 1，2026-10-15 由用户选定）
+
+保持 `strtod`。落地三件让"决定"变成"可复查的事实"的东西：
+①`substrate/include/eil/conv.hpp` 的 `to_double` 头上写清**故意不复刻什么**、差多少、
+为什么拒绝模型；②`tools/to_double_exposure.cpp` + `probes/substrate/probe_to_double_tokens.d`
+一条命令复现 `strtod_bad=15 / model_bad=3 / model_only_bad=1`（本次已用它们复跑过一遍，
+数字与本节一致）；③`demo_artefacts_geom_grid_sgrid` 那 5 行继续在 cmake 里点名留着。
+**没有改任何解析行为**，所以三配置门禁数不变（117/117）。
